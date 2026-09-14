@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BeCoffee | Philippine Artisanal Specialty Coffee & Roastery</title>
+  <meta name="description" content="Specialty coffee roastery in Bonifacio Global City (BGC) and Benguet Highlands, Philippines. Highlighting Philippine single-origins, handcrafted espresso, pour-overs, cold brews, and artisanal brunch.">
+  
+  <!-- Favicon and Brand Icons -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☕</text></svg>">
+  
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Top Announcement Banner -->
+  <aside class="top-banner" aria-label="Announcement">
+    <div class="container top-banner-inner">
+      <div class="banner-left">
+        <span class="status-pulse" id="liveStatusText">
+          <span class="pulse-dot"></span> Open Today · 7:00 AM – 10:00 PM PHT
+        </span>
+        <span style="opacity: 0.5;">|</span>
+        <span>Bonifacio Global City, Taguig & Benguet Highlands</span>
+      </div>
+      <div class="banner-right">
+        <span>Fresh Roasts Shipped Nationwide across the Philippines</span>
+        <a href="#offers" class="banner-link">Subscribe to Beans</a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Sticky Main Header Navigation -->
+  <header class="site-header" id="siteHeader">
+    <div class="container nav-container">
+      <a href="#" class="brand-logo" aria-label="BeCoffee Home">
+        <div class="logo-symbol">B</div>
+        <div>
+          <span class="brand-name">BeCoffee</span>
+          <span class="brand-origin">Roastery · Philippines</span>
+        </div>
+      </a>
+
+      <!-- Desktop Nav -->
+      <nav aria-label="Main Navigation">
+        <ul class="nav-links" id="navLinks">
+          <li><a href="#terroir" class="nav-item">Philippine Terroir</a></li>
+          <li><a href="#menu" class="nav-item">Cafe Menu (₱)</a></li>
+          <li><a href="#offers" class="nav-item">Special Offers</a></li>
+          <li><a href="#space" class="nav-item">The Sanctuary</a></li>
+          <li><a href="#locations" class="nav-item">Outposts</a></li>
+          <li class="mobile-nav-cta" style="margin-top: 0.5rem;"><button type="button" class="btn btn-crema btn-sm open-reserve-trigger" data-preset-type="table" style="width: 100%;">Reserve Experience</button></li>
+        </ul>
+      </nav>
+
+      <!-- Nav Actions -->
+      <div class="nav-actions">
+        <!-- Cart Drawer Toggle -->
+        <button type="button" class="cart-toggle-btn" id="cartToggleBtn" aria-label="View Order Cart">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <path d="M16 10a4 4 0 0 1-8 0"></path>
+          </svg>
+          <span class="cart-badge" id="cartBadge" style="display: none;">0</span>
+        </button>
+
+        <!-- Reserve Table / Workshop CTA -->
+        <button type="button" class="btn btn-primary btn-sm open-reserve-trigger" data-preset-type="table">
+          Reserve Experience
+        </button>
+
+        <!-- Mobile Menu Toggle Button -->
+        <button type="button" class="mobile-toggle" id="mobileToggle" aria-label="Toggle Navigation Menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+    <!-- Hero Section -->
+    <section class="hero-section" id="hero">
+      <div class="container hero-grid">
+        <div class="hero-text-col">
+          <div class="hero-badge-row">
+            <span class="section-tag">Philippine Specialty Terroir</span>
+            <span class="terroir-pill">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path>
+                <path d="M2 12h20"></path>
+              </svg>
+              Direct Highland Trade
+            </span>
+          </div>
+
+          <h1 class="hero-heading">
+            Rooted in Highland Terroir, <em>Extracted with Precision.</em>
+          </h1>
+
+          <p class="hero-description">
+            BeCoffee bridges centuries-old Cordillera and Mindanao farming heritage with contemporary specialty extraction. Experience small-batch roast profiles, single-estate pour-overs, and slow coffee living in the heart of Bonifacio Global City.
+          </p>
+
+          <div class="hero-cta-group">
+            <a href="#menu" class="btn btn-crema">
+              Explore Menu in Pesos (₱)
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </a>
+            <button type="button" class="btn btn-secondary open-reserve-trigger" data-preset-type="table">
+              Book a Table
+            </button>
+          </div>
+
+          <!-- Hero Metrics -->
+          <div class="hero-stats">
+            <div class="stat-item">
+              <div class="stat-number">1,650<span>m</span></div>
+              <div class="stat-label">Peak Elevation</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-number">4<span>+</span></div>
+              <div class="stat-label">PH Terroirs</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-number">88.5</div>
+              <div class="stat-label">SCA Cup Score</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hero Visual Showcase -->
+        <div class="hero-visual-wrap">
+          <div class="hero-main-card">
+            <img src="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&w=1000&q=80" 
+                 alt="Artisanal BeCoffee Roastery & Slow Bar" 
+                 width="1000" 
+                 height="1250"
+                 loading="eager">
+            <div class="hero-floating-badge">
+              <div>
+                <span class="float-label">Signature Feature</span>
+                <div class="float-title">Pandan Sea Salt Cold Foam Brew</div>
+              </div>
+              <div class="float-price">₱240</div>
+            </div>
+          </div>
+
+          <!-- Floating Elevation Card -->
+          <div class="hero-elevation-tag">
+            <div class="elevation-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                <circle cx="12" cy="10" r="3"></circle>
+              </svg>
+            </div>
+            <div class="elevation-text">
+              <strong>Sagada & Benguet Roasts</strong>
+              <span>100% Arabica · Fresh This Week</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Philippine Terroir Section -->
+    <section class="section-spacing terroir-section" id="terroir">
+      <div class="container">
+        <div style="max-width: 720px;">
+          <span class="section-tag tag-dark">The Archipelago Spectrum</span>
+          <h2 class="section-title title-inverse">Four Terroirs. One Sovereign Cup.</h2>
+          <p class="section-subtitle subtitle-inverse">
+            The Philippines boasts rare microclimates from volcanic peaks to misty mountain ridges. We partner directly with smallholder farming cooperatives in Sagada, Benguet, Davao, and South Cotabato to guarantee transparent pricing and cup excellence.
+          </p>
+        </div>
+
+        <div class="terroir-grid">
+          <!-- Card 1: Sagada -->
+          <div class="terroir-card">
+            <div class="terroir-card-header">
+              <span class="terroir-loc">Mountain Province</span>
+              <span class="terroir-alt">1,500m MASL</span>
+            </div>
+            <h3 class="terroir-name">Sagada Typica Reserve</h3>
+            <p class="terroir-varietal">Ancestral forest shade-grown, wet fermented, washed dried on bamboo beds.</p>
+            <div class="terroir-notes">
+              <span class="note-chip">Orange Blossom</span>
+              <span class="note-chip">Wild Honey</span>
+              <span class="note-chip">Brown Sugar</span>
+            </div>
+          </div>
+
+          <!-- Card 2: Benguet Atok -->
+          <div class="terroir-card">
+            <div class="terroir-card-header">
+              <span class="terroir-loc">Cordillera Highlands</span>
+              <span class="terroir-alt">1,650m MASL</span>
+            </div>
+            <h3 class="terroir-name">Benguet Atok Honey</h3>
+            <p class="terroir-varietal">Cold mountain air creates dense beans with remarkable natural sweetness and nuttiness.</p>
+            <div class="terroir-notes">
+              <span class="note-chip">Green Apple</span>
+              <span class="note-chip">Roasted Macadamia</span>
+              <span class="note-chip">Milk Chocolate</span>
+            </div>
+          </div>
+
+          <!-- Card 3: Mt. Apo -->
+          <div class="terroir-card">
+            <div class="terroir-card-header">
+              <span class="terroir-loc">Davao del Sur</span>
+              <span class="terroir-alt">1,600m MASL</span>
+            </div>
+            <h3 class="terroir-name">Mt. Apo Anaerobic</h3>
+            <p class="terroir-varietal">72-hour barrel anaerobic fermentation on the slopes of the country’s highest peak.</p>
+            <div class="terroir-notes">
+              <span class="note-chip">Ripe Strawberry</span>
+              <span class="note-chip">Passionfruit</span>
+              <span class="note-chip">Cacao Nibs</span>
+            </div>
+          </div>
+
+          <!-- Card 4: Mt. Matutum -->
+          <div class="terroir-card">
+            <div class="terroir-card-header">
+              <span class="terroir-loc">South Cotabato</span>
+              <span class="terroir-alt">1,400m MASL</span>
+            </div>
+            <h3 class="terroir-name">Mt. Matutum Yellow Honey</h3>
+            <p class="terroir-varietal">Volcanic soil terroir delivering a silky floral cup with crisp stone fruit finish.</p>
+            <div class="terroir-notes">
+              <span class="note-chip">Jasmine Floral</span>
+              <span class="note-chip">Yellow Peach</span>
+              <span class="note-chip">Cane Sugar</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Interactive Flavor Matcher Quiz Banner -->
+        <div class="flavor-quiz-banner">
+          <div>
+            <h3 class="quiz-heading">Find Your Ideal Terroir Profile</h3>
+            <p class="quiz-sub">Select what flavors you enjoy in your morning brew to filter our cafe and roastery offerings:</p>
+          </div>
+          <div class="flavor-buttons">
+            <button type="button" class="flavor-btn" data-flavor="fruity-floral">🍓 Fruity & Floral</button>
+            <button type="button" class="flavor-btn" data-flavor="choc-nutty">🍫 Chocolatey & Nutty</button>
+            <button type="button" class="flavor-btn" data-flavor="sweet-caramel">🍯 Sweet & Caramel</button>
+            <button type="button" class="flavor-btn" data-flavor="citrus-bright">🍊 Citrus & Bright</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive Cafe Menu Section -->
+    <section class="section-spacing menu-section" id="menu">
+      <div class="container">
+        <div class="menu-header-wrap">
+          <span class="section-tag">Curated Cafe Offerings</span>
+          <h2 class="section-title">The BeCoffee Menu</h2>
+          <p class="section-subtitle">
+            Every extraction is calibrated daily using filtered spring water and seasonal roast batches. All prices in Philippine Pesos (₱) inclusive of VAT.
+          </p>
+        </div>
+
+        <!-- Filter Category Tabs -->
+        <div class="menu-filter-nav" role="tablist" aria-label="Menu Categories">
+          <button type="button" class="filter-tab active" data-category="all" role="tab">All Offerings</button>
+          <button type="button" class="filter-tab" data-category="terroir" role="tab">PH Single Origins</button>
+          <button type="button" class="filter-tab" data-category="espresso" role="tab">Espresso Bar</button>
+          <button type="button" class="filter-tab" data-category="cold" role="tab">Cold Brews & Signatures</button>
+          <button type="button" class="filter-tab" data-category="brunch" role="tab">Artisanal Brunch</button>
+        </div>
+
+        <!-- Dynamic Menu Grid Container -->
+        <div class="menu-grid" id="menuGrid">
+          <!-- Populated by JavaScript -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Other Offers & Experiences Section -->
+    <section class="section-spacing offers-section" id="offers">
+      <div class="container">
+        <div style="text-align: center; max-width: 720px; margin: 0 auto;">
+          <span class="section-tag">Beyond The Cup</span>
+          <h2 class="section-title">Experiences & Special Offers</h2>
+          <p class="section-subtitle">
+            Whether you are crafting espresso at home, refining your palate, or hosting an intimate dinner, BeCoffee offers tailored membership and guild services.
+          </p>
+        </div>
+
+        <div class="offers-grid">
+          <!-- Offer 1: Fresh Bean Subscription -->
+          <div class="offer-card featured-offer">
+            <span class="featured-ribbon">Roaster's Club</span>
+            <div class="offer-icon-wrap">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+              </svg>
+            </div>
+            <h3 class="offer-title">Whole Bean Roastery Subscription</h3>
+            <p>Freshly roasted single-origin Philippine and seasonal micro-lot beans delivered to your doorstep across Metro Manila and provinces.</p>
+            
+            <ul class="offer-features-list">
+              <li>
+                <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                2x 250g bags bi-weekly (Roast Date Guaranteed)
+              </li>
+              <li>
+                <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                Complimentary grind for V60, Espresso, or French Press
+              </li>
+              <li>
+                <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                Free shipping in NCR + 10% member cafe discount
+              </li>
+            </ul>
+
+            <div class="offer-pricing-row">
+              <span class="offer-price">₱950</span>
+              <span class="offer-period">/ month (2 shipments)</span>
+            </div>
+
+            <button type="button" class="btn btn-crema open-reserve-trigger" data-preset-type="cupping">
+              Subscribe to Beans
+            </button>
+          </div>
+
+          <!-- Offer 2: Barista Guild & Cupping Workshops -->
+          <div class="offer-card">
+            <div class="offer-icon-wrap">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+              </svg>
+            </div>
+            <h3 class="offer-title">Weekend Barista Guild & Cupping</h3>
+            <p>Hands-on 2.5-hour masterclasses conducted by our head roasters at our BGC Cupping Lab. Learn sensory evaluation and espresso calibration.</p>
+            
+            <ul class="offer-features-list">
+              <li>
+                <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                Sensory aroma training using World Coffee Research kit
+              </li>
+              <li>
+                <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                Hands-on manual pour-over and milk steaming
+              </li>
+              <li>
+                <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                Take-home 250g Sagada reserve bag + Certificate
+              </li>
+            </ul>
+
+            <div class="offer-pricing-row">
+              <span class="offer-price">₱1,850</span>
+              <span class="offer-period">/ attendee (Max 6 pax)</span>
+            </div>
+
+            <button type="button" class="btn btn-primary open-reserve-trigger" data-preset-type="cupping">
+              Book Workshop Slot
+            </button>
+          </div>
+
+          <!-- Offer 3: Day Pass & Creative Co-Working Sanctuary -->
+          <div class="offer-card">
+            <div class="offer-icon-wrap">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                <line x1="8" y1="21" x2="16" y2="21"></line>
+                <line x1="12" y1="17" x2="12" y2="21"></line>
+              </svg>
+            </div>
+            <h3 class="offer-title">Co-Working & Creative Sanctuary</h3>
+            <p>Quiet, productive daylight lounge designed for writers, founders, and creatives seeking high-speed fiber Wi-Fi and endless specialty brew.</p>
+            
+            <ul class="offer-features-list">
+              <li>
+                <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                Dedicated ergonomic seating with power plugs
+              </li>
+              <li>
+                <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                Two complimentary specialty drinks (Espresso or Cold Brew)
+              </li>
+              <li>
+                <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                500Mbps symmetrical fiber + quiet call booth
+              </li>
+            </ul>
+
+            <div class="offer-pricing-row">
+              <span class="offer-price">₱450</span>
+              <span class="offer-period">/ day pass (8AM - 6PM)</span>
+            </div>
+
+            <button type="button" class="btn btn-secondary open-reserve-trigger" data-preset-type="cowork">
+              Reserve Day Pass
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Space & Ambience Sanctuary Section -->
+    <section class="section-spacing space-section" id="space">
+      <div class="container space-grid">
+        <div class="space-image-mosaic">
+          <div class="mosaic-item">
+            <img src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=700&q=80" 
+                 alt="BeCoffee Warm Teak Wood Interior" 
+                 width="700" 
+                 height="875" 
+                 loading="lazy">
+          </div>
+          <div class="mosaic-item">
+            <img src="https://images.unsplash.com/photo-1497636577773-f1231844b336?auto=format&fit=crop&w=700&q=80" 
+                 alt="Specialty Pour-over Brew Station" 
+                 width="700" 
+                 height="875" 
+                 loading="lazy">
+          </div>
+        </div>
+
+        <div>
+          <span class="section-tag">Architectural Philosophy</span>
+          <h2 class="section-title">Designed for Stillness & Slow Living</h2>
+          <p class="section-subtitle">
+            Our spaces embrace warm Philippine mid-century minimalism: textured adobe plaster walls, reclaimed Zambales teak woodwork, hand-beaten brass details, and tropical foliage. A soothing refuge from urban haste.
+          </p>
+
+          <div class="space-perks-list">
+            <div class="perk-box">
+              <h4>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-crema-amber)" stroke-width="2.5"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                Acoustic Clarity
+              </h4>
+              <p>Curated ambient vinyl and Japanese jazz kissaten selections calibrated to comfortable conversation decibels.</p>
+            </div>
+            <div class="perk-box">
+              <h4>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-crema-amber)" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><path d="m4.93 4.93 4.24 4.24"></path><path d="m14.83 9.17 4.24-4.24"></path><path d="m14.83 14.83 4.24 4.24"></path><path d="m9.17 14.83-4.24 4.24"></path></svg>
+                Mineral Remineralized Water
+              </h4>
+              <p>Custom 7-stage filtration preserving magnesium and calcium ions for maximum flavor extraction.</p>
+            </div>
+            <div class="perk-box">
+              <h4>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-crema-amber)" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+                Pet-Friendly Patio
+              </h4>
+              <p>Shaded outdoor garden terrace with water bowls and pup-friendly treats in our BGC sanctuary.</p>
+            </div>
+            <div class="perk-box">
+              <h4>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-crema-amber)" stroke-width="2.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
+                Private Roastery Buyout
+              </h4>
+              <p>Available after hours for private celebrations, intimate dinners, and corporate tastings.</p>
+            </div>
+          </div>
+
+          <button type="button" class="btn btn-primary open-reserve-trigger" data-preset-type="private-roastery">
+            Inquire About Private Hire
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Philippine Outposts & Location Section -->
+    <section class="section-spacing locations-section" id="locations">
+      <div class="container">
+        <div>
+          <span class="section-tag tag-dark">Philippine Sanctuaries</span>
+          <h2 class="section-title title-inverse">Visit Our Roasteries</h2>
+          <p class="section-subtitle subtitle-inverse">
+            Experience our slow bars in the lively pulse of Taguig, Metro Manila or among the cool mountain pines of Benguet.
+          </p>
+        </div>
+
+        <div class="location-tabs" role="tablist" aria-label="Locations">
+          <button type="button" class="loc-tab-btn active" data-location="bgc" role="tab">BGC Flagship Sanctuary (Metro Manila)</button>
+          <button type="button" class="loc-tab-btn" data-location="benguet" role="tab">Benguet Highland Roastery (Mountain Outpost)</button>
+        </div>
+
+        <div class="location-card">
+          <div>
+            <span class="loc-badge" id="locCardBadge">Metro Manila Flagship & Slow Bar</span>
+            <h3 class="loc-name" id="locCardTitle">BGC Flagship Sanctuary</h3>
+            
+            <div class="loc-details">
+              <div class="loc-detail-row">
+                <svg class="loc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                <span id="locAddressText">Upper Ground Floor, Bonifacio High Street Central, 7th Ave, BGC, Taguig, Metro Manila</span>
+              </div>
+              <div class="loc-detail-row">
+                <svg class="loc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                <span id="locHoursText">Mon – Sun: 7:00 AM – 10:00 PM PHT</span>
+              </div>
+              <div class="loc-detail-row">
+                <svg class="loc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                <span id="locPhoneText">+63 2 8888-2633 / +63 917 555 2333</span>
+              </div>
+              <div class="loc-detail-row">
+                <svg class="loc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                <span id="locFeaturesText">High-speed 500Mbps Fiber, Outdoor Garden Seating, Slow Bar & Siphon, Pour-over Flights</span>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 2rem;">
+              <button type="button" class="btn btn-crema open-reserve-trigger" data-preset-type="table">
+                Reserve a Table Here
+              </button>
+              <a href="https://maps.google.com" target="_blank" rel="noopener" class="btn btn-secondary-inverse">
+                Get Directions (Google Maps)
+              </a>
+            </div>
+          </div>
+
+          <div class="loc-img-frame">
+            <img id="locImage" 
+                 src="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&w=800&q=80" 
+                 alt="BGC Flagship Sanctuary" 
+                 width="800" 
+                 height="550" 
+                 loading="lazy">
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Slide-Out Order / Cart Drawer -->
+  <div class="cart-drawer-overlay" id="cartDrawerOverlay" aria-modal="true" role="dialog" aria-label="Coffee Order Cart">
+    <div class="cart-drawer">
+      <div class="cart-drawer-header">
+        <h3 class="cart-drawer-title">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--color-crema-amber)" stroke-width="2">
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <path d="M16 10a4 4 0 0 1-8 0"></path>
+          </svg>
+          Your Coffee Order
+        </h3>
+        <button type="button" class="close-drawer-btn" id="closeDrawerBtn" aria-label="Close Order Drawer">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+
+      <div class="cart-items-container" id="cartItemsContainer">
+        <!-- Injected via JavaScript -->
+      </div>
+
+      <div class="cart-drawer-footer">
+        <div class="cart-summary-line">
+          <span>Subtotal</span>
+          <span id="cartSubtotal">₱0</span>
+        </div>
+        <div class="cart-summary-line">
+          <span>Sustainable Packaging</span>
+          <span id="cartEcoFee">₱25</span>
+        </div>
+        <div class="cart-summary-line grand-total">
+          <span>Total (VAT incl.)</span>
+          <span id="cartGrandTotal">₱0</span>
+        </div>
+        <button type="button" class="btn btn-crema" id="checkoutBtn" style="width: 100%; margin-top: 1rem;" disabled>
+          Confirm Order Pickup (₱)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reservation / Workshop Booking Modal -->
+  <div class="modal-overlay" id="reserveModalOverlay" aria-modal="true" role="dialog" aria-label="Reserve Table or Workshop">
+    <div class="modal-box">
+      <button type="button" class="modal-close-btn" id="closeReserveBtn" aria-label="Close Reservation Window">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+
+      <h3 class="modal-heading">Reserve Your Experience</h3>
+      <p class="modal-sub">Book a table at our BGC Slow Bar, register for our Barista Cupping Guild, or purchase a co-working sanctuary day pass.</p>
+
+      <form id="reservationForm">
+        <div class="form-group">
+          <label for="bookingType" class="form-label">Experience Type</label>
+          <select id="bookingType" class="form-select" required>
+            <option value="table">Table Reservation (Complimentary)</option>
+            <option value="cupping">Weekend Barista Guild & Cupping (₱1,850/pax)</option>
+            <option value="espresso-class">Home Espresso Dial-In Class (₱2,400/pax)</option>
+            <option value="cowork">Co-Working Sanctuary Day Pass (₱450/day)</option>
+            <option value="private-roastery">Private Roastery Event Hire (Custom Quote)</option>
+          </select>
+        </div>
+
+        <div class="form-row-2">
+          <div class="form-group">
+            <label for="bookingLocation" class="form-label">Location Outpost</label>
+            <select id="bookingLocation" class="form-select" required>
+              <option value="bgc">BGC Flagship Sanctuary (Taguig)</option>
+              <option value="benguet">Benguet Highland Roastery (Tuba)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="bookingGuests" class="form-label">Number of Guests</label>
+            <input type="number" id="bookingGuests" class="form-input" min="1" max="15" value="2" required>
+          </div>
+        </div>
+
+        <div class="form-row-2">
+          <div class="form-group">
+            <label for="bookingDate" class="form-label">Preferred Date</label>
+            <input type="date" id="bookingDate" class="form-input" required>
+          </div>
+          <div class="form-group">
+            <label for="bookingTime" class="form-label">Preferred Time Slot</label>
+            <select id="bookingTime" class="form-select" required>
+              <option value="08:00 AM">08:00 AM - Morning Cupping</option>
+              <option value="10:30 AM">10:30 AM - Mid-Morning Brunch</option>
+              <option value="02:00 PM">02:00 PM - Afternoon Slow Bar</option>
+              <option value="04:30 PM">04:30 PM - Golden Hour Tasting</option>
+              <option value="07:00 PM">07:00 PM - Evening Pour-Over</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row-2">
+          <div class="form-group">
+            <label for="bookingName" class="form-label">Your Full Name</label>
+            <input type="text" id="bookingName" class="form-input" placeholder="Maria Santos" required>
+          </div>
+          <div class="form-group">
+            <label for="bookingPhone" class="form-label">Philippine Mobile (+63)</label>
+            <input type="tel" id="bookingPhone" class="form-input" placeholder="+63 917 123 4567" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="bookingNotes" class="form-label">Dietary Preferences / Special Requests</label>
+          <input type="text" id="bookingNotes" class="form-input" placeholder="e.g. Oat milk preferred, birthday celebration">
+        </div>
+
+        <!-- Live Price Estimate Calculation -->
+        <div style="background: var(--color-bg-subtle); padding: 1rem 1.25rem; border-radius: var(--radius-sm); margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
+          <span style="font-size: 0.88rem; font-weight: 600; color: var(--color-text-secondary);">Estimated Total (PHP):</span>
+          <span id="bookingPriceEstimate" style="font-size: 1.15rem; font-weight: 700; color: var(--color-crema-amber);">Complimentary</span>
+        </div>
+
+        <button type="submit" class="btn btn-crema" style="width: 100%;">
+          Confirm Reservation Request
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="#" class="brand-logo" style="color:#fff;" aria-label="BeCoffee">
+            <div class="logo-symbol">B</div>
+            <div>
+              <span class="brand-name" style="color:#fff;">BeCoffee</span>
+              <span class="brand-origin" style="color:var(--color-crema-gold);">Philippine Terroir Roasters</span>
+            </div>
+          </a>
+          <p>
+            An artisanal specialty coffeehouse and roastery dedicated to uplifting the Philippine coffee origin story through meticulous craft, farm-level transparency, and mindful spaces.
+          </p>
+          <div class="ph-guild-badge">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            Member · Specialty Coffee Association of the Philippines
+          </div>
+        </div>
+
+        <div>
+          <h4 class="footer-col-title">Single Origins</h4>
+          <ul class="footer-nav-list">
+            <li><a href="#terroir">Sagada Typica Reserve</a></li>
+            <li><a href="#terroir">Benguet Atok Honey</a></li>
+            <li><a href="#terroir">Mt. Apo Anaerobic</a></li>
+            <li><a href="#terroir">Mt. Matutum Honey</a></li>
+            <li><a href="#offers">Roasters Club Subscription</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-col-title">The Cafe</h4>
+          <ul class="footer-nav-list">
+            <li><a href="#menu">Espresso & Pour-Over</a></li>
+            <li><a href="#menu">Cold Brews & Tonics</a></li>
+            <li><a href="#menu">Artisanal Bakery & Brunch</a></li>
+            <li><a href="#offers">Barista Guild Workshops</a></li>
+            <li><a href="#offers">Co-Working Sanctuary</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-col-title">Visit & Connect</h4>
+          <ul class="footer-nav-list">
+            <li><a href="#locations">BGC Flagship Sanctuary</a></li>
+            <li><a href="#locations">Benguet Highland Lab</a></li>
+            <li><a href="tel:+63288882633">+63 2 8888-2633</a></li>
+            <li><a href="mailto:hello@becoffee.ph">hello@becoffee.ph</a></li>
+            <li><a href="#">Instagram @becoffee.ph</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <span>© 2026 BeCoffee Roasters Inc. Crafted with pride in the Philippines. All rights reserved.</span>
+        <span>Currency: Philippine Peso (₱ / PHP) · BGC, Taguig & Tuba, Benguet</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Script -->
+  <script src="js/app.js"></script>
+</body>
+</html>
