@@ -10,7 +10,7 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☕</text></svg>">
   
   <!-- Stylesheet -->
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css?v=4.0">
 </head>
 <body>
 
@@ -45,17 +45,43 @@
       <!-- Desktop Nav -->
       <nav aria-label="Main Navigation">
         <ul class="nav-links" id="navLinks">
-          <li><a href="#terroir" class="nav-item">Philippine Terroir</a></li>
-          <li><a href="#menu" class="nav-item">Cafe Menu (₱)</a></li>
-          <li><a href="#offers" class="nav-item">Special Offers</a></li>
-          <li><a href="#space" class="nav-item">The Sanctuary</a></li>
+          <li><a href="#bestsellers" class="nav-item">Bestsellers</a></li>
+          <li><a href="#menu" class="nav-item">Menu</a></li>
+          <li><a href="#offers" class="nav-item">Offers</a></li>
+          <li><a href="#space" class="nav-item">Sanctuary</a></li>
           <li><a href="#locations" class="nav-item">Outposts</a></li>
           <li class="mobile-nav-cta" style="margin-top: 0.5rem;"><button type="button" class="btn btn-crema btn-sm open-reserve-trigger" data-preset-type="table" style="width: 100%;">Reserve Experience</button></li>
+          <li class="mobile-nav-auth" style="margin-top: 0.35rem;"><button type="button" class="btn btn-secondary btn-sm mobile-auth-trigger" id="mobileAuthTrigger" style="width: 100%;">Member Sign In</button></li>
         </ul>
       </nav>
 
       <!-- Nav Actions -->
       <div class="nav-actions">
+        <!-- User Account / Auth Trigger -->
+        <div class="user-auth-wrap" id="userAuthWrap">
+          <!-- Guest Trigger -->
+          <button type="button" class="btn-auth-trigger" id="authOpenBtn" aria-label="Sign In or Register">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+            <span class="auth-btn-text">Sign In</span>
+          </button>
+
+          <!-- Authenticated State Pill -->
+          <div class="user-profile-pill" id="userProfilePill" style="display: none;">
+            <div class="user-avatar-badge" id="userAvatarBadge">M</div>
+            <span class="user-name-text" id="userNameDisplay">Member</span>
+            <button type="button" class="btn-logout" id="logoutBtn" title="Sign Out" aria-label="Sign Out">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                <polyline points="16 17 21 12 16 7"></polyline>
+                <line x1="21" y1="12" x2="9" y2="12"></line>
+              </svg>
+            </button>
+          </div>
+        </div>
+
         <!-- Cart Drawer Toggle -->
         <button type="button" class="cart-toggle-btn" id="cartToggleBtn" aria-label="View Order Cart">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
@@ -68,7 +94,8 @@
 
         <!-- Reserve Table / Workshop CTA -->
         <button type="button" class="btn btn-primary btn-sm open-reserve-trigger" data-preset-type="table">
-          Reserve Experience
+          <span class="reserve-text-long">Reserve Experience</span>
+          <span class="reserve-text-short">Reserve</span>
         </button>
 
         <!-- Mobile Menu Toggle Button -->
@@ -88,23 +115,25 @@
       <div class="container hero-grid">
         <div class="hero-text-col">
           <div class="hero-badge-row">
-            <span class="section-tag">Philippine Specialty Terroir</span>
+            <span class="section-tag">Handcrafted House Roastery</span>
             <span class="terroir-pill">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <circle cx="12" cy="12" r="10"></circle>
-                <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path>
-                <path d="M2 12h20"></path>
+                <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
+                <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
+                <line x1="6" y1="1" x2="6" y2="4"></line>
+                <line x1="10" y1="1" x2="10" y2="4"></line>
+                <line x1="14" y1="1" x2="14" y2="4"></line>
               </svg>
-              Direct Highland Trade
+              Homemade & Small-Batch
             </span>
           </div>
 
           <h1 class="hero-heading">
-            Rooted in Highland Terroir, <em>Extracted with Precision.</em>
+            Artisanal House Coffees, <em>Handcrafted with Precision.</em>
           </h1>
 
           <p class="hero-description">
-            BeCoffee bridges centuries-old Cordillera and Mindanao farming heritage with contemporary specialty extraction. Experience small-batch roast profiles, single-estate pour-overs, and slow coffee living in the heart of Bonifacio Global City.
+            BeCoffee bridges rich Philippine roasting traditions with contemporary homemade specialty craft. Experience small-batch house roast profiles, velvety signature lattes, and slow coffee living in the heart of Bonifacio Global City.
           </p>
 
           <div class="hero-cta-group">
@@ -127,8 +156,8 @@
               <div class="stat-label">Peak Elevation</div>
             </div>
             <div class="stat-item">
-              <div class="stat-number">4<span>+</span></div>
-              <div class="stat-label">PH Terroirs</div>
+              <div class="stat-number">12<span>+</span></div>
+              <div class="stat-label">House Coffees</div>
             </div>
             <div class="stat-item">
               <div class="stat-number">88.5</div>
@@ -148,9 +177,9 @@
             <div class="hero-floating-badge">
               <div>
                 <span class="float-label">Signature Feature</span>
-                <div class="float-title">Pandan Sea Salt Cold Foam Brew</div>
+                <div class="float-title">Spanish Latte</div>
               </div>
-              <div class="float-price">₱240</div>
+              <div class="float-price">₱120</div>
             </div>
           </div>
 
@@ -171,90 +200,134 @@
       </div>
     </section>
 
-    <!-- Philippine Terroir Section -->
-    <section class="section-spacing terroir-section" id="terroir">
+    <!-- Best Sellers Section -->
+    <section class="section-spacing terroir-section house-coffee-section" id="bestsellers">
       <div class="container">
         <div style="max-width: 720px;">
-          <span class="section-tag tag-dark">The Archipelago Spectrum</span>
-          <h2 class="section-title title-inverse">Four Terroirs. One Sovereign Cup.</h2>
+          <span class="section-tag tag-dark">Signature House Favorites</span>
+          <h2 class="section-title title-inverse">Four House Coffees. Handcrafted Daily.</h2>
           <p class="section-subtitle subtitle-inverse">
-            The Philippines boasts rare microclimates from volcanic peaks to misty mountain ridges. We partner directly with smallholder farming cooperatives in Sagada, Benguet, Davao, and South Cotabato to guarantee transparent pricing and cup excellence.
+            From our velvety homemade caramel extractions to Manila-favorite malted indulgences and pure ceremonial matcha, explore the top four signature house coffees ordered fresh every morning.
           </p>
         </div>
 
         <div class="terroir-grid">
-          <!-- Card 1: Sagada -->
+          <!-- Card 1: Caramel Macchiato -->
           <div class="terroir-card">
             <div class="terroir-card-header">
-              <span class="terroir-loc">Mountain Province</span>
-              <span class="terroir-alt">1,500m MASL</span>
+              <span class="terroir-loc">House Coffee</span>
+              <span class="terroir-alt">₱120 · Hot / Iced</span>
             </div>
-            <h3 class="terroir-name">Sagada Typica Reserve</h3>
-            <p class="terroir-varietal">Ancestral forest shade-grown, wet fermented, washed dried on bamboo beds.</p>
+            <h3 class="terroir-name">Caramel Macchiato</h3>
+            <p class="terroir-varietal">Layered vanilla-infused milk crowned with rich espresso and golden buttery caramel drizzle.</p>
             <div class="terroir-notes">
-              <span class="note-chip">Orange Blossom</span>
-              <span class="note-chip">Wild Honey</span>
-              <span class="note-chip">Brown Sugar</span>
+              <span class="note-chip">Hot / Iced</span>
+              <span class="note-chip">Small ₱120</span>
+              <span class="note-chip">Medium ₱140</span>
             </div>
+            <button type="button" class="btn btn-crema bestseller-add-btn add-to-cart-trigger" data-id="hc-caramel-macchiato" aria-label="Customize and order Caramel Macchiato" style="margin-top: 1.25rem; width: 100%; min-height: 46px; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; background-color: #C88A58 !important; color: #FFFFFF !important; border: 1px solid #C88A58 !important; border-radius: 6px; font-weight: 700; font-size: 0.88rem; cursor: pointer; padding: 0.75rem 1.25rem; box-shadow: 0 4px 14px rgba(200, 138, 88, 0.35); position: relative; z-index: 5;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+              <span>Add to Order</span>
+            </button>
           </div>
 
-          <!-- Card 2: Benguet Atok -->
+          <!-- Card 2: Matcha Latte -->
           <div class="terroir-card">
             <div class="terroir-card-header">
-              <span class="terroir-loc">Cordillera Highlands</span>
-              <span class="terroir-alt">1,650m MASL</span>
+              <span class="terroir-loc">Matcha</span>
+              <span class="terroir-alt">₱120 · Hot / Iced</span>
             </div>
-            <h3 class="terroir-name">Benguet Atok Honey</h3>
-            <p class="terroir-varietal">Cold mountain air creates dense beans with remarkable natural sweetness and nuttiness.</p>
+            <h3 class="terroir-name">Matcha Latte</h3>
+            <p class="terroir-varietal">Stone-ground green tea whisked fresh with silky milk for a soothing, umami-rich experience.</p>
             <div class="terroir-notes">
-              <span class="note-chip">Green Apple</span>
-              <span class="note-chip">Roasted Macadamia</span>
-              <span class="note-chip">Milk Chocolate</span>
+              <span class="note-chip">Hot / Iced</span>
+              <span class="note-chip">Small ₱120</span>
+              <span class="note-chip">Medium ₱140</span>
             </div>
+            <button type="button" class="btn btn-crema bestseller-add-btn add-to-cart-trigger" data-id="mat-latte" aria-label="Customize and order Matcha Latte" style="margin-top: 1.25rem; width: 100%; min-height: 46px; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; background-color: #C88A58 !important; color: #FFFFFF !important; border: 1px solid #C88A58 !important; border-radius: 6px; font-weight: 700; font-size: 0.88rem; cursor: pointer; padding: 0.75rem 1.25rem; box-shadow: 0 4px 14px rgba(200, 138, 88, 0.35); position: relative; z-index: 5;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+              <span>Add to Order</span>
+            </button>
           </div>
 
-          <!-- Card 3: Mt. Apo -->
+          <!-- Card 3: Salted Caramel -->
           <div class="terroir-card">
             <div class="terroir-card-header">
-              <span class="terroir-loc">Davao del Sur</span>
-              <span class="terroir-alt">1,600m MASL</span>
+              <span class="terroir-loc">House Coffee</span>
+              <span class="terroir-alt">₱120 · Hot / Iced</span>
             </div>
-            <h3 class="terroir-name">Mt. Apo Anaerobic</h3>
-            <p class="terroir-varietal">72-hour barrel anaerobic fermentation on the slopes of the country’s highest peak.</p>
+            <h3 class="terroir-name">Salted Caramel</h3>
+            <p class="terroir-varietal">Slow-cooked rich caramel paired with espresso, fresh milk, and a delicate touch of flaky sea salt.</p>
             <div class="terroir-notes">
-              <span class="note-chip">Ripe Strawberry</span>
-              <span class="note-chip">Passionfruit</span>
-              <span class="note-chip">Cacao Nibs</span>
+              <span class="note-chip">Hot / Iced</span>
+              <span class="note-chip">Small ₱120</span>
+              <span class="note-chip">Medium ₱140</span>
             </div>
+            <button type="button" class="btn btn-crema bestseller-add-btn add-to-cart-trigger" data-id="hc-salted-caramel" aria-label="Customize and order Salted Caramel" style="margin-top: 1.25rem; width: 100%; min-height: 46px; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; background-color: #C88A58 !important; color: #FFFFFF !important; border: 1px solid #C88A58 !important; border-radius: 6px; font-weight: 700; font-size: 0.88rem; cursor: pointer; padding: 0.75rem 1.25rem; box-shadow: 0 4px 14px rgba(200, 138, 88, 0.35); position: relative; z-index: 5;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+              <span>Add to Order</span>
+            </button>
           </div>
 
-          <!-- Card 4: Mt. Matutum -->
+          <!-- Card 4: Milo -->
           <div class="terroir-card">
             <div class="terroir-card-header">
-              <span class="terroir-loc">South Cotabato</span>
-              <span class="terroir-alt">1,400m MASL</span>
+              <span class="terroir-loc">House Specials</span>
+              <span class="terroir-alt">₱90 · Hot / Iced</span>
             </div>
-            <h3 class="terroir-name">Mt. Matutum Yellow Honey</h3>
-            <p class="terroir-varietal">Volcanic soil terroir delivering a silky floral cup with crisp stone fruit finish.</p>
+            <h3 class="terroir-name">Milo</h3>
+            <p class="terroir-varietal">Rich, creamy malted chocolate beverage prepared hot or poured over cracked ice with malt powder.</p>
             <div class="terroir-notes">
-              <span class="note-chip">Jasmine Floral</span>
-              <span class="note-chip">Yellow Peach</span>
-              <span class="note-chip">Cane Sugar</span>
+              <span class="note-chip">Hot / Iced</span>
+              <span class="note-chip">Small ₱90</span>
+              <span class="note-chip">Medium ₱110</span>
             </div>
+            <button type="button" class="btn btn-crema bestseller-add-btn add-to-cart-trigger" data-id="hs-milo" aria-label="Customize and order Milo" style="margin-top: 1.25rem; width: 100%; min-height: 46px; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; background-color: #C88A58 !important; color: #FFFFFF !important; border: 1px solid #C88A58 !important; border-radius: 6px; font-weight: 700; font-size: 0.88rem; cursor: pointer; padding: 0.75rem 1.25rem; box-shadow: 0 4px 14px rgba(200, 138, 88, 0.35); position: relative; z-index: 5;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+              <span>Add to Order</span>
+            </button>
           </div>
         </div>
 
         <!-- Interactive Flavor Matcher Quiz Banner -->
         <div class="flavor-quiz-banner">
-          <div>
-            <h3 class="quiz-heading">Find Your Ideal Terroir Profile</h3>
-            <p class="quiz-sub">Select what flavors you enjoy in your morning brew to filter our cafe and roastery offerings:</p>
+          <div class="flavor-quiz-header">
+            <h3 class="quiz-heading">Find Your Ideal Flavor Profile</h3>
+            <p class="quiz-sub">Select what flavors you enjoy in your daily cup to filter our handcrafted cafe offerings:</p>
           </div>
           <div class="flavor-buttons">
-            <button type="button" class="flavor-btn" data-flavor="fruity-floral">🍓 Fruity & Floral</button>
-            <button type="button" class="flavor-btn" data-flavor="choc-nutty">🍫 Chocolatey & Nutty</button>
-            <button type="button" class="flavor-btn" data-flavor="sweet-caramel">🍯 Sweet & Caramel</button>
-            <button type="button" class="flavor-btn" data-flavor="citrus-bright">🍊 Citrus & Bright</button>
+            <button type="button" class="flavor-btn" data-flavor="bold-coffee" aria-label="Filter Bold & Classic Coffee flavors">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M17 8h1a4 4 0 1 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"/><line x1="6" y1="2" x2="6" y2="4"/><line x1="10" y1="2" x2="10" y2="4"/><line x1="14" y1="2" x2="14" y2="4"/></svg>
+              <span>Bold & Classic Coffee</span>
+            </button>
+            <button type="button" class="flavor-btn" data-flavor="sweet-caramel" aria-label="Filter Sweet & Caramel flavors">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+              <span>Sweet & Caramel</span>
+            </button>
+            <button type="button" class="flavor-btn" data-flavor="chocolate-malt" aria-label="Filter Chocolate & Malt flavors">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M3 15h18"/><path d="M9 3v18"/><path d="M15 3v18"/></svg>
+              <span>Chocolate & Malt</span>
+            </button>
+            <button type="button" class="flavor-btn" data-flavor="matcha" aria-label="Filter Ceremonial Matcha flavors">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>
+              <span>Ceremonial Matcha</span>
+            </button>
+            <button type="button" class="flavor-btn" data-flavor="fruity-berry" aria-label="Filter Fruity & Refreshing flavors">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 20.94c1.5 0 2.75 1.06 4 1.06 3 0 6-8 6-12.22A4.91 4.91 0 0 0 17 5c-2.22 0-4 1.44-5 2-1-.56-2.78-2-5-2a4.9 4.9 0 0 0-5 4.78C2 14 5 22 8 22c1.25 0 2.5-1.06 4-1.06Z"/><path d="M10 2c1 .5 2 2 2 5"/></svg>
+              <span>Fruity & Refreshing</span>
+            </button>
           </div>
         </div>
       </div>
@@ -264,20 +337,20 @@
     <section class="section-spacing menu-section" id="menu">
       <div class="container">
         <div class="menu-header-wrap">
-          <span class="section-tag">Curated Cafe Offerings</span>
+          <span class="section-tag">Handcrafted Cafe Offerings</span>
           <h2 class="section-title">The BeCoffee Menu</h2>
           <p class="section-subtitle">
-            Every extraction is calibrated daily using filtered spring water and seasonal roast batches. All prices in Philippine Pesos (₱) inclusive of VAT.
+            Every cup is handcrafted fresh to order in Iced (Medium / Large) and Hot preparations. All prices in Philippine Pesos (₱).
           </p>
         </div>
 
         <!-- Filter Category Tabs -->
         <div class="menu-filter-nav" role="tablist" aria-label="Menu Categories">
-          <button type="button" class="filter-tab active" data-category="all" role="tab">All Offerings</button>
-          <button type="button" class="filter-tab" data-category="terroir" role="tab">PH Single Origins</button>
-          <button type="button" class="filter-tab" data-category="espresso" role="tab">Espresso Bar</button>
-          <button type="button" class="filter-tab" data-category="cold" role="tab">Cold Brews & Signatures</button>
-          <button type="button" class="filter-tab" data-category="brunch" role="tab">Artisanal Brunch</button>
+          <button type="button" class="filter-tab active" data-category="all" role="tab">All Items</button>
+          <button type="button" class="filter-tab" data-category="house-coffee" role="tab">House Coffee</button>
+          <button type="button" class="filter-tab" data-category="matcha" role="tab">Matcha</button>
+          <button type="button" class="filter-tab" data-category="house-specials" role="tab">House Specials</button>
+          <button type="button" class="filter-tab" data-category="yogurt-soda" role="tab">Yogurt / Soda</button>
         </div>
 
         <!-- Dynamic Menu Grid Container -->
@@ -576,6 +649,9 @@
         <button type="button" class="btn btn-crema" id="checkoutBtn" style="width: 100%; margin-top: 1rem;" disabled>
           Confirm Order Pickup (₱)
         </button>
+        <p id="cartAuthHint" style="display: none; font-size: 0.78rem; color: var(--color-crema-gold); text-align: center; margin-top: 0.6rem; margin-bottom: 0;">
+          🔒 Member account required to order. You'll be prompted to sign in or register.
+        </p>
       </div>
     </div>
   </div>
@@ -583,6 +659,7 @@
   <!-- Reservation / Workshop Booking Modal -->
   <div class="modal-overlay" id="reserveModalOverlay" aria-modal="true" role="dialog" aria-label="Reserve Table or Workshop">
     <div class="modal-box">
+      <div class="modal-sheet-handle" aria-hidden="true"></div>
       <button type="button" class="modal-close-btn" id="closeReserveBtn" aria-label="Close Reservation Window">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
       </button>
@@ -662,6 +739,187 @@
     </div>
   </div>
 
+  <!-- Order Customization Modal (Hot/Iced & Medium/Small Options) -->
+  <div class="modal-overlay" id="orderModalOverlay" aria-modal="true" role="dialog" aria-label="Customize Beverage Options">
+    <div class="modal-box order-modal-box">
+      <div class="modal-sheet-handle" aria-hidden="true"></div>
+      <button type="button" class="modal-close-btn" id="closeOrderModalBtn" aria-label="Close Customization Window">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+
+      <div class="order-modal-header">
+        <div class="order-modal-img-wrap">
+          <img id="orderModalImg" src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=700&q=80" alt="Beverage preview" width="80" height="80">
+        </div>
+        <div class="order-modal-info">
+          <span class="section-tag" id="orderModalCategory">House Coffee</span>
+          <h3 class="modal-heading order-modal-title" id="orderModalTitle">Caramel Macchiato</h3>
+          <p class="order-modal-desc" id="orderModalDesc">Layered vanilla-infused milk crowned with rich espresso.</p>
+        </div>
+      </div>
+
+      <div class="order-modal-options">
+        <!-- 1. Temperature Selection (Hot / Iced) -->
+        <div class="option-section">
+          <div class="option-header">
+            <span class="option-title">Temperature</span>
+            <span class="option-badge" id="tempOptionBadge">Select 1</span>
+          </div>
+          <div class="option-chips-grid" id="tempOptionsGroup" role="radiogroup" aria-label="Beverage Temperature">
+            <button type="button" class="option-chip active" data-temp="Iced" role="radio" aria-checked="true" id="tempIcedBtn">
+              <span class="chip-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="m21 16-9 5-9-5V8l9-5 9 5v8Z"/>
+                  <path d="m3.27 7.96 8.73 4.88 8.73-4.88M12 22V13"/>
+                </svg>
+              </span>
+              <span class="chip-text">
+                <strong>Iced</strong>
+                <small>Over cracked ice</small>
+              </span>
+            </button>
+            <button type="button" class="option-chip" data-temp="Hot" role="radio" aria-checked="false" id="tempHotBtn">
+              <span class="chip-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M10 2v2M14 2v2M18 9h1a3 3 0 0 1 3 3v1a3 3 0 0 1-3 3h-1M6 2v2M3 9h15a1 1 0 0 1 1 1v7a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4v-7a1 1 0 0 1 1-1Z"/>
+                  <line x1="2" y1="21" x2="20" y2="21"/>
+                </svg>
+              </span>
+              <span class="chip-text">
+                <strong>Hot</strong>
+                <small>Steamed & velvety</small>
+              </span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 2. Size Selection (Medium / Small) -->
+        <div class="option-section">
+          <div class="option-header">
+            <span class="option-title">Cup Size</span>
+            <span class="option-badge">Select 1</span>
+          </div>
+          <div class="option-chips-grid" id="sizeOptionsGroup" role="radiogroup" aria-label="Beverage Size">
+            <button type="button" class="option-chip active" data-size="Small" role="radio" aria-checked="true" id="sizeSmallBtn">
+              <span class="chip-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M17 8h1a4 4 0 1 1 0 8h-1"/>
+                  <path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"/>
+                </svg>
+              </span>
+              <span class="chip-text">
+                <strong>Small</strong>
+                <small>12 oz regular</small>
+              </span>
+              <span class="chip-price" id="sizeSmallPrice">₱120</span>
+            </button>
+            <button type="button" class="option-chip" data-size="Medium" role="radio" aria-checked="false" id="sizeMediumBtn">
+              <span class="chip-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M6 8h12l-1.5 13H7.5L6 8Z"/>
+                  <path d="M5 8h14V5H5v3Z"/>
+                  <line x1="12" y1="2" x2="12" y2="5"/>
+                </svg>
+              </span>
+              <span class="chip-text">
+                <strong>Medium</strong>
+                <small>16 oz grande</small>
+              </span>
+              <span class="chip-price" id="sizeMediumPrice">₱140</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 3. Quantity Selector -->
+        <div class="option-section option-qty-row">
+          <span class="option-title">Quantity</span>
+          <div class="modal-qty-ctrl">
+            <button type="button" class="modal-qty-btn" id="modalQtyMinus" aria-label="Decrease quantity">−</button>
+            <span class="modal-qty-val" id="modalQtyVal">1</span>
+            <button type="button" class="modal-qty-btn" id="modalQtyPlus" aria-label="Increase quantity">+</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer CTA Button -->
+      <div class="order-modal-footer">
+        <button type="button" class="btn btn-crema order-confirm-btn" id="orderConfirmBtn">
+          <span>Add to Order</span>
+          <span id="orderConfirmTotal">· ₱120</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- User Authentication Modal (Sign In / Register) -->
+  <div class="modal-overlay" id="authModalOverlay" aria-modal="true" role="dialog" aria-label="Account Login or Registration">
+    <div class="modal-box auth-modal-box">
+      <div class="modal-sheet-handle" aria-hidden="true"></div>
+      <button type="button" class="modal-close-btn" id="closeAuthModalBtn" aria-label="Close Account Window">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+
+      <div class="auth-header">
+        <div class="logo-symbol auth-logo-symbol">B</div>
+        <h3 class="modal-heading" id="authModalTitle">Welcome to BeCoffee</h3>
+        <p class="modal-sub" id="authModalSubtitle">Sign in to save your orders, track coffee cupping reservations, and access exclusive roastery offerings.</p>
+      </div>
+
+      <!-- Auth Tabs -->
+      <div class="auth-tabs" role="tablist" aria-label="Authentication Actions">
+        <button type="button" class="auth-tab-btn active" id="tabSignInBtn" role="tab" aria-selected="true">Sign In</button>
+        <button type="button" class="auth-tab-btn" id="tabRegisterBtn" role="tab" aria-selected="false">Create Account</button>
+      </div>
+
+      <!-- Error / Success Alert Container -->
+      <div class="auth-alert" id="authAlertBox" style="display: none;" role="alert"></div>
+
+      <!-- Sign In Form -->
+      <form id="signInForm" class="auth-form active">
+        <div class="form-group">
+          <label for="loginEmail" class="form-label">Email Address</label>
+          <input type="email" id="loginEmail" class="form-input" placeholder="you@example.com" required autocomplete="email">
+        </div>
+        <div class="form-group">
+          <label for="loginPassword" class="form-label">Password</label>
+          <input type="password" id="loginPassword" class="form-input" placeholder="Enter your password" required autocomplete="current-password">
+        </div>
+        <button type="submit" class="btn btn-crema" id="loginSubmitBtn" style="width: 100%; margin-top: 1rem;">
+          Sign In to BeCoffee
+        </button>
+      </form>
+
+      <!-- Create Account Form -->
+      <form id="registerForm" class="auth-form" style="display: none;">
+        <div class="form-group">
+          <label for="regName" class="form-label">Full Name</label>
+          <input type="text" id="regName" class="form-input" placeholder="e.g. Maria Santos" required autocomplete="name">
+        </div>
+        <div class="form-group">
+          <label for="regEmail" class="form-label">Email Address</label>
+          <input type="email" id="regEmail" class="form-input" placeholder="you@example.com" required autocomplete="email">
+        </div>
+        <div class="form-group">
+          <label for="regPhone" class="form-label">Philippine Mobile (+63)</label>
+          <input type="tel" id="regPhone" class="form-input" placeholder="+63 917 123 4567" autocomplete="tel">
+        </div>
+        <div class="form-row-2">
+          <div class="form-group">
+            <label for="regPassword" class="form-label">Password (8+ chars)</label>
+            <input type="password" id="regPassword" class="form-input" placeholder="Min. 8 characters" minlength="8" required autocomplete="new-password">
+          </div>
+          <div class="form-group">
+            <label for="regPasswordConfirm" class="form-label">Confirm Password</label>
+            <input type="password" id="regPasswordConfirm" class="form-input" placeholder="Re-enter password" minlength="8" required autocomplete="new-password">
+          </div>
+        </div>
+        <button type="submit" class="btn btn-crema" id="registerSubmitBtn" style="width: 100%; margin-top: 1rem;">
+          Create Member Account
+        </button>
+      </form>
+    </div>
+  </div>
+
   <!-- Site Footer -->
   <footer class="site-footer">
     <div class="container">
@@ -671,11 +929,11 @@
             <div class="logo-symbol">B</div>
             <div>
               <span class="brand-name" style="color:#fff;">BeCoffee</span>
-              <span class="brand-origin" style="color:var(--color-crema-gold);">Philippine Terroir Roasters</span>
+              <span class="brand-origin" style="color:var(--color-crema-gold);">Philippine House Coffee Roasters</span>
             </div>
           </a>
           <p>
-            An artisanal specialty coffeehouse and roastery dedicated to uplifting the Philippine coffee origin story through meticulous craft, farm-level transparency, and mindful spaces.
+            An artisanal specialty coffeehouse and roastery dedicated to uplifting the Philippine coffee experience through honest homemade house coffees, velvety signature blends, and mindful spaces.
           </p>
           <div class="ph-guild-badge">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
@@ -684,24 +942,23 @@
         </div>
 
         <div>
-          <h4 class="footer-col-title">Single Origins</h4>
+          <h4 class="footer-col-title">Signature Bestsellers</h4>
           <ul class="footer-nav-list">
-            <li><a href="#terroir">Sagada Typica Reserve</a></li>
-            <li><a href="#terroir">Benguet Atok Honey</a></li>
-            <li><a href="#terroir">Mt. Apo Anaerobic</a></li>
-            <li><a href="#terroir">Mt. Matutum Honey</a></li>
-            <li><a href="#offers">Roasters Club Subscription</a></li>
+            <li><a href="#bestsellers">Caramel Macchiato (₱120)</a></li>
+            <li><a href="#bestsellers">Matcha Latte (₱120)</a></li>
+            <li><a href="#bestsellers">Salted Caramel (₱120)</a></li>
+            <li><a href="#bestsellers">Milo (₱90)</a></li>
+            <li><a href="#menu">View Full Menu</a></li>
           </ul>
         </div>
 
         <div>
-          <h4 class="footer-col-title">The Cafe</h4>
+          <h4 class="footer-col-title">The Cafe Menu</h4>
           <ul class="footer-nav-list">
-            <li><a href="#menu">Espresso & Pour-Over</a></li>
-            <li><a href="#menu">Cold Brews & Tonics</a></li>
-            <li><a href="#menu">Artisanal Bakery & Brunch</a></li>
-            <li><a href="#offers">Barista Guild Workshops</a></li>
-            <li><a href="#offers">Co-Working Sanctuary</a></li>
+            <li><a href="#menu">House Coffee</a></li>
+            <li><a href="#menu">Matcha Bar</a></li>
+            <li><a href="#menu">House Specials</a></li>
+            <li><a href="#menu">Yogurt / Soda</a></li>
           </ul>
         </div>
 
@@ -724,7 +981,7 @@
     </div>
   </footer>
 
-  <!-- Script -->
-  <script src="js/app.js"></script>
+  <!-- Application JavaScript -->
+  <script src="js/app.js?v=4.0"></script>
 </body>
 </html>

@@ -6,217 +6,435 @@
 document.addEventListener('DOMContentLoaded', () => {
   // --- 1. State Management ---
   const state = {
+    currentUser: null,
+    pendingCheckout: false,
     activeCategory: 'all',
     activeLocation: 'bgc',
     activeFlavorFilter: null,
     cart: JSON.parse(localStorage.getItem('becoffee_cart') || '[]'),
     menuItems: [
-      // Philippine Single Origin Pour-Overs
+      // --- 1. HOUSE COFFEE (Iced M: 120 / L: 140 · Hot: 120) ---
       {
-        id: 'terroir-sagada',
-        category: 'terroir',
-        name: 'Sagada Arabica Reserve',
-        origin: 'Sagada, Mountain Province',
-        elevation: '1,500m MASL',
-        varietal: 'Typica & Bourbon',
-        process: 'Washed Process',
-        price: 240,
-        description: 'Delicate floral aromas with bright notes of orange blossom, wild Cordillera mountain honey, and a clean brown sugar finish.',
-        tags: ['Single Origin', 'Direct Trade', 'Light Roast'],
+        id: 'hc-classic',
+        category: 'house-coffee',
+        name: 'Classic Coffee',
+        origin: 'House Roast Blend',
+        elevation: 'Hot / Iced',
+        price: 120,
+        priceIcedM: 120,
+        priceIcedL: 140,
+        priceHot: 120,
+        description: 'Smooth, balanced house-brewed coffee with rich nutty undertones and a clean, satisfying finish.',
+        tags: ['House Coffee', 'Daily Classic'],
         image: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=700&q=80',
-        flavorProfile: 'fruity-floral'
+        flavors: ['bold-coffee'],
+        flavorLabels: ['Bold & Classic Coffee']
       },
       {
-        id: 'terroir-benguet',
-        category: 'terroir',
-        name: 'Benguet Atok Single Estate',
-        origin: 'Atok, Benguet Highlands',
-        elevation: '1,650m MASL',
-        varietal: 'Red Bourbon & San Ramon',
-        process: 'Honey Process',
-        price: 220,
-        description: 'Crisp green apple acidity melting into roasted macadamia, buttery mouthfeel, and a lingering milk chocolate sweetness.',
-        tags: ['Single Origin', 'High Elevation', 'Medium Roast'],
-        image: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=700&q=80',
-        flavorProfile: 'choc-nutty'
-      },
-      {
-        id: 'terroir-apo',
-        category: 'terroir',
-        name: 'Mt. Apo Anaerobic Natural',
-        origin: 'Bansalan, Davao del Sur',
-        elevation: '1,600m MASL',
-        varietal: 'Catimor & Yellow Bourbon',
-        process: '72h Anaerobic Natural',
-        price: 280,
-        description: 'Intense aromatic explosion of ripe strawberry, passionfruit coulis, cacao nibs, and velvety red wine body.',
-        tags: ['Award Winner', 'Micro-lot', 'Fruit Bomb'],
-        image: 'https://images.unsplash.com/photo-1541167760496-1628856ab772?auto=format&fit=crop&w=700&q=80',
-        flavorProfile: 'fruity-floral'
-      },
-      {
-        id: 'terroir-matutum',
-        category: 'terroir',
-        name: 'Mt. Matutum Mountain Honey',
-        origin: 'Tupi, South Cotabato',
-        elevation: '1,400m MASL',
-        varietal: 'Bourbon & Typica',
-        process: 'Yellow Honey',
-        price: 230,
-        description: 'Jasmine floral perfume, ripe yellow peach, silky muscovado cane sugar, with an exceptionally balanced tea-like cup.',
-        tags: ['Single Origin', 'Silky Body', 'Organic'],
-        image: 'https://images.unsplash.com/photo-1518832553480-cd0e625ed3e6?auto=format&fit=crop&w=700&q=80',
-        flavorProfile: 'sweet-caramel'
-      },
-
-      // Espresso Bar
-      {
-        id: 'esp-house',
-        category: 'espresso',
-        name: 'BeCoffee Signature Espresso',
-        origin: 'Benguet + Ethiopia Yirgacheffe',
-        elevation: 'Blend',
-        price: 160,
-        description: 'Our award-winning flagship extraction with dense hazelnut crema, dark cacao, and candied bergamot citrus twist.',
-        tags: ['Double Shot', 'House Roast'],
-        image: 'https://images.unsplash.com/photo-1510591509098-f4fdc6d0ff04?auto=format&fit=crop&w=700&q=80',
-        flavorProfile: 'choc-nutty'
-      },
-      {
-        id: 'esp-spanish',
-        category: 'espresso',
-        name: 'Manila Muscovado Spanish Latte',
-        origin: 'House Espresso & Oat Milk',
-        elevation: 'Specialty',
-        price: 210,
-        description: 'Velvety microfoam latte infused with slow-simmered Negros Island unrefined muscovado sugar and a pinch of rock salt.',
-        tags: ['Crowd Favorite', 'Oat Milk Available'],
+        id: 'hc-spanish',
+        category: 'house-coffee',
+        name: 'Spanish Latte',
+        origin: 'Espresso & Sweetened Milk',
+        elevation: 'Hot / Iced',
+        price: 120,
+        priceIcedM: 120,
+        priceIcedL: 140,
+        priceHot: 120,
+        description: 'Velvety espresso combined with smooth fresh milk and rich condensed milk for a perfectly sweet kick.',
+        tags: ['House Coffee', 'Crowd Favorite'],
         image: 'https://images.unsplash.com/photo-1570968915860-54d5c301fa9f?auto=format&fit=crop&w=700&q=80',
-        flavorProfile: 'sweet-caramel'
+        flavors: ['sweet-caramel', 'bold-coffee'],
+        flavorLabels: ['Sweet & Caramel', 'Bold Coffee']
       },
       {
-        id: 'esp-horchata',
-        category: 'espresso',
-        name: 'House Dirty Horchata',
-        origin: 'Toasted Rice & Cinnamon',
-        elevation: 'Specialty',
-        price: 230,
-        description: 'Artisanal heirloom toasted rice milk with Mexican vanilla, Ceylon cinnamon, capped with a concentrated double ristretto.',
-        tags: ['Dairy-Free', 'Signature'],
+        id: 'hc-americano',
+        category: 'house-coffee',
+        name: 'Americano',
+        origin: 'Double Espresso & Water',
+        elevation: 'Hot / Iced',
+        price: 120,
+        priceIcedM: 120,
+        priceIcedL: 140,
+        priceHot: 120,
+        description: 'Bold, clean double shot of house espresso poured over hot water or crisp ice.',
+        tags: ['House Coffee', 'Bold & Clean'],
+        image: 'https://images.unsplash.com/photo-1510591509098-f4fdc6d0ff04?auto=format&fit=crop&w=700&q=80',
+        flavors: ['bold-coffee'],
+        flavorLabels: ['Bold & Classic Coffee']
+      },
+      {
+        id: 'hc-french-vanilla',
+        category: 'house-coffee',
+        name: 'French Vanilla Latte',
+        origin: 'Espresso & French Vanilla',
+        elevation: 'Hot / Iced',
+        price: 120,
+        priceIcedM: 120,
+        priceIcedL: 140,
+        priceHot: 120,
+        description: 'Silky espresso and textured milk infused with sweet, aromatic French vanilla bean syrup.',
+        tags: ['House Coffee', 'Fragrant Vanilla'],
         image: 'https://images.unsplash.com/photo-1517701550927-30cf4ba1dba5?auto=format&fit=crop&w=700&q=80',
-        flavorProfile: 'sweet-caramel'
+        flavors: ['sweet-caramel'],
+        flavorLabels: ['Sweet & Caramel']
       },
       {
-        id: 'esp-flatwhite',
-        category: 'espresso',
-        name: 'Highland Flat White',
-        origin: 'Sagada Peaberry Extract',
-        elevation: 'Double Ristretto',
-        price: 180,
-        description: 'Tight micro-textured steamed fresh milk folded into intense double ristretto shots for the ultimate tactile coffee experience.',
-        tags: ['Classic', 'Barista Pick'],
+        id: 'hc-coffee-latte',
+        category: 'house-coffee',
+        name: 'Coffee Latte',
+        origin: 'Espresso & Fresh Milk',
+        elevation: 'Hot / Iced',
+        price: 120,
+        priceIcedM: 120,
+        priceIcedL: 140,
+        priceHot: 120,
+        description: 'The timeless coffeehouse essential with smooth textured milk folded into freshly pulled espresso.',
+        tags: ['House Coffee', 'Smooth & Creamy'],
         image: 'https://images.unsplash.com/photo-1577968897966-3d4325b36b61?auto=format&fit=crop&w=700&q=80',
-        flavorProfile: 'choc-nutty'
+        flavors: ['bold-coffee'],
+        flavorLabels: ['Bold & Classic Coffee']
       },
-
-      // Cold Brews & Signatures
       {
-        id: 'cold-pandan',
-        category: 'cold',
-        name: 'Pandan Sea Salt Cold Foam Brew',
-        origin: '18h Steeped Sagada Arabica',
-        elevation: 'Cold Steeped',
-        price: 240,
-        description: 'Ultra-smooth slow drip cold brew topped with freshly whipped artisanal pandan cold foam and smoked Ilocos sea salt crystals.',
-        tags: ['Signature Drink', 'Bestseller'],
+        id: 'hc-caramel-macchiato',
+        category: 'house-coffee',
+        name: 'Caramel Macchiato',
+        origin: 'Espresso, Vanilla & Caramel',
+        elevation: 'Hot / Iced',
+        price: 120,
+        priceIcedM: 120,
+        priceIcedL: 140,
+        priceHot: 120,
+        description: 'Layered vanilla-infused milk crowned with rich espresso and golden buttery caramel drizzle.',
+        tags: ['Bestseller', 'Caramel Drizzle'],
+        image: 'https://images.unsplash.com/photo-1485808191679-5f86510681a2?auto=format&fit=crop&w=700&q=80',
+        flavors: ['sweet-caramel'],
+        flavorLabels: ['Sweet & Caramel']
+      },
+      {
+        id: 'hc-salted-caramel',
+        category: 'house-coffee',
+        name: 'Salted Caramel',
+        origin: 'Espresso & Flaky Sea Salt Caramel',
+        elevation: 'Hot / Iced',
+        price: 120,
+        priceIcedM: 120,
+        priceIcedL: 140,
+        priceHot: 120,
+        description: 'Slow-cooked rich caramel paired with espresso, fresh milk, and a delicate touch of flaky sea salt.',
+        tags: ['Bestseller', 'Sweet & Savory'],
+        image: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=700&q=80',
+        flavors: ['sweet-caramel'],
+        flavorLabels: ['Sweet & Caramel']
+      },
+      {
+        id: 'hc-sea-salt-latte',
+        category: 'house-coffee',
+        name: 'Sea Salt Latte',
+        origin: 'Espresso & Sea Salt Cold Cream',
+        elevation: 'Hot / Iced',
+        price: 120,
+        priceIcedM: 120,
+        priceIcedL: 140,
+        priceHot: 120,
+        description: 'Rich, comforting latte topped with velvety lightly salted cream for a sublime sweet-savory contrast.',
+        tags: ['House Coffee', 'Sea Salt Cream'],
         image: 'https://images.unsplash.com/photo-1517701604599-bb29b565090c?auto=format&fit=crop&w=700&q=80',
-        flavorProfile: 'sweet-caramel'
+        flavors: ['sweet-caramel'],
+        flavorLabels: ['Sweet & Caramel']
       },
       {
-        id: 'cold-calamansi',
-        category: 'cold',
-        name: 'Calamansi Espresso Tonic',
-        origin: 'Native Philippine Citrus',
-        elevation: 'Effervescent',
-        price: 220,
-        description: 'Fresh-pressed native calamansi cordial, botanical tonic water over crystal ice, crowned with a chilled Benguet espresso float.',
-        tags: ['Refreshing', 'Citrus Sparkling'],
-        image: 'https://images.unsplash.com/photo-1517256064527-09c73fc73e38?auto=format&fit=crop&w=700&q=80',
-        flavorProfile: 'citrus-bright'
+        id: 'hc-ube-latte',
+        category: 'house-coffee',
+        name: 'Ube Latte',
+        origin: 'Espresso & Purple Yam Jam',
+        elevation: 'Hot / Iced',
+        price: 120,
+        priceIcedM: 120,
+        priceIcedL: 140,
+        priceHot: 120,
+        description: 'Vibrant handcrafted ube halaya blend with fresh milk and a smooth espresso float.',
+        tags: ['House Coffee', 'Handcrafted Ube'],
+        image: 'https://images.unsplash.com/photo-1541167760496-1628856ab772?auto=format&fit=crop&w=700&q=80',
+        flavors: ['sweet-caramel'],
+        flavorLabels: ['Sweet & Caramel']
       },
       {
-        id: 'cold-tablea',
-        category: 'cold',
-        name: 'Davao 70% Tablea Dark Mocha',
-        origin: 'Malagos Davao Single Origin Cacao',
-        elevation: 'Artisanal Cacao',
-        price: 230,
-        description: 'Direct-trade stone-ground Philippine dark chocolate whisked with fresh whole milk and a rich espresso shot. Served iced or hot.',
-        tags: ['Single Origin Cacao', 'Rich & Decadent'],
+        id: 'hc-mocha',
+        category: 'house-coffee',
+        name: 'Mocha',
+        origin: 'Espresso & Rich Dark Cocoa',
+        elevation: 'Hot / Iced',
+        price: 120,
+        priceIcedM: 120,
+        priceIcedL: 140,
+        priceHot: 120,
+        description: 'Decadent dark cocoa melted into freshly pulled espresso and steamed milk.',
+        tags: ['House Coffee', 'Rich Cocoa'],
         image: 'https://images.unsplash.com/photo-1544787219-7f47ccb76574?auto=format&fit=crop&w=700&q=80',
-        flavorProfile: 'choc-nutty'
+        flavors: ['chocolate-malt', 'bold-coffee'],
+        flavorLabels: ['Chocolate & Malt', 'Bold Coffee']
       },
       {
-        id: 'cold-cascara',
-        category: 'cold',
-        name: 'Benguet Cascara Sparkling Spritz',
-        origin: 'Sun-Dried Coffee Cherry Husk',
-        elevation: 'Naturally Sweet',
-        price: 190,
-        description: 'Upcycled coffee cherry husk brewed into an amber tea with notes of rosehip, hibiscus, and tamarind, paired with sparkling tonic and lime.',
-        tags: ['Antioxidant Rich', 'Low Caffeine', 'Eco Trade'],
-        image: 'https://images.unsplash.com/photo-1556881286-fc6915169721?auto=format&fit=crop&w=700&q=80',
-        flavorProfile: 'citrus-bright'
+        id: 'hc-white-choco-mocha',
+        category: 'house-coffee',
+        name: 'White Chocolate Mocha',
+        origin: 'Espresso & White Cacao',
+        elevation: 'Hot / Iced',
+        price: 120,
+        priceIcedM: 120,
+        priceIcedL: 140,
+        priceHot: 120,
+        description: 'Sweet, velvety white chocolate sauce paired with bold espresso and creamy textured milk.',
+        tags: ['House Coffee', 'Sweet White Cocoa'],
+        image: 'https://images.unsplash.com/photo-1572442388796-11668a67e53d?auto=format&fit=crop&w=700&q=80',
+        flavors: ['sweet-caramel', 'chocolate-malt'],
+        flavorLabels: ['Sweet & Caramel', 'White Chocolate']
+      },
+      {
+        id: 'hc-coffee-milo',
+        category: 'house-coffee',
+        name: 'Coffee Milo',
+        origin: 'Espresso & Malted Milo Milk',
+        elevation: 'Hot / Iced',
+        price: 120,
+        priceIcedM: 120,
+        priceIcedL: 140,
+        priceHot: 120,
+        description: 'The ultimate power brew—rich espresso combined with hearty malted Milo chocolate milk.',
+        tags: ['House Coffee', 'Malted Power Brew'],
+        image: 'https://images.unsplash.com/photo-1517256064527-09c73fc73e38?auto=format&fit=crop&w=700&q=80',
+        flavors: ['chocolate-malt', 'bold-coffee'],
+        flavorLabels: ['Chocolate & Malt', 'Bold Coffee']
+      },
+      {
+        id: 'hc-biscoff-latte',
+        category: 'house-coffee',
+        name: 'Biscoff Latte',
+        origin: 'Espresso & Speculoos Cookie Butter',
+        elevation: 'Hot / Iced',
+        price: 120,
+        priceIcedM: 120,
+        priceIcedL: 140,
+        priceHot: 120,
+        description: 'Spiced Belgian caramelized cookie spread melted into hot or iced espresso and milk.',
+        tags: ['House Coffee', 'Cookie Butter'],
+        image: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=700&q=80',
+        flavors: ['sweet-caramel'],
+        flavorLabels: ['Sweet & Caramel']
       },
 
-      // Artisanal Bakery & Philippine Brunch
+      // --- 2. MATCHA (Iced M: 120 / L: 140 · Hot: 120) ---
       {
-        id: 'brunch-cheesecake',
-        category: 'brunch',
-        name: 'Ube Halaya Basque Burnt Cheesecake',
-        origin: 'Bohol Purple Yam & Cream Cheese',
-        elevation: 'Baked In-House Daily',
-        price: 260,
-        description: 'Silky, deeply caramelized exterior with a molten center layered with homemade slow-stirred Boholano ube halaya jam.',
-        tags: ['Dessert', 'House Specialty'],
-        image: 'https://images.unsplash.com/photo-1533134242443-d4fd215305ad?auto=format&fit=crop&w=700&q=80',
-        flavorProfile: 'sweet-caramel'
+        id: 'mat-latte',
+        category: 'matcha',
+        name: 'Matcha Latte',
+        origin: 'Uji Ceremonial Green Tea',
+        elevation: 'Hot / Iced',
+        price: 120,
+        priceIcedM: 120,
+        priceIcedL: 140,
+        priceHot: 120,
+        description: 'Stone-ground green tea whisked fresh with silky milk for a soothing, umami-rich experience.',
+        tags: ['Bestseller', 'Pure Ceremonial'],
+        image: 'https://images.unsplash.com/photo-1536256263959-770b48d82b0a?auto=format&fit=crop&w=700&q=80',
+        flavors: ['matcha'],
+        flavorLabels: ['Ceremonial Matcha']
       },
       {
-        id: 'brunch-frenchtoast',
-        category: 'brunch',
-        name: 'Pan de Sal Brioche French Toast',
-        origin: 'Local Bakery Craft',
-        elevation: 'Brunch Classic',
-        price: 320,
-        description: 'Handcrafted brioche pan de sal soaked in vanilla custard, seared golden, served with whipped Davao honeycomb butter and Sagada honey.',
-        tags: ['Breakfast Favorite', 'Vegetarian'],
-        image: 'https://images.unsplash.com/photo-1484723091739-004a825eb2fb?auto=format&fit=crop&w=700&q=80',
-        flavorProfile: 'sweet-caramel'
+        id: 'mat-dirty',
+        category: 'matcha',
+        name: 'Dirty Matcha',
+        origin: 'Uji Matcha & Espresso Shot',
+        elevation: 'Hot / Iced',
+        price: 120,
+        priceIcedM: 120,
+        priceIcedL: 140,
+        priceHot: 120,
+        description: 'Earthy ceremonial matcha latte topped with a concentrated shot of dark espresso.',
+        tags: ['Matcha', 'Espresso Float'],
+        image: 'https://images.unsplash.com/photo-1515823064-d6e0c04616a7?auto=format&fit=crop&w=700&q=80',
+        flavors: ['matcha', 'bold-coffee'],
+        flavorLabels: ['Ceremonial Matcha', 'Bold Coffee']
       },
       {
-        id: 'brunch-tartine',
-        category: 'brunch',
-        name: 'Truffled Wild Mushroom Tartine',
-        origin: 'Organic Tagaytay Fungi',
-        elevation: 'Savory Artisanal',
-        price: 380,
-        description: 'Naturally leavened sourdough bread toasted with garlic confit, sautéed forest oyster mushrooms, organic soft poached egg, and white truffle oil.',
-        tags: ['Savory', 'Vegetarian'],
-        image: 'https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=700&q=80',
-        flavorProfile: 'choc-nutty'
+        id: 'mat-berry',
+        category: 'matcha',
+        name: 'Matcha Berry',
+        origin: 'Uji Matcha & Wild Strawberry',
+        elevation: 'Hot / Iced',
+        price: 120,
+        priceIcedM: 120,
+        priceIcedL: 140,
+        priceHot: 120,
+        description: 'Layered handcrafted sweet berry compote with milk and crowned with frothy green matcha.',
+        tags: ['Matcha', 'Sweet Berry Layer'],
+        image: 'https://images.unsplash.com/photo-1553787499-6f9133860278?auto=format&fit=crop&w=700&q=80',
+        flavors: ['matcha', 'fruity-berry'],
+        flavorLabels: ['Ceremonial Matcha', 'Fruity & Berry']
       },
       {
-        id: 'brunch-croissant',
-        category: 'brunch',
-        name: 'Pain au Chocolat w/ Tablea Ganache',
-        origin: 'French Butter & Davao Cacao',
-        elevation: 'Viennoiserie',
-        price: 190,
-        description: '100% Normandy cultured butter pastry lamination filled with double batons of Davao dark chocolate tablea ganache.',
-        tags: ['Pastry', 'Baked Daily 7AM'],
-        image: 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=700&q=80',
-        flavorProfile: 'choc-nutty'
+        id: 'mat-ube',
+        category: 'matcha',
+        name: 'Matcha Ube',
+        origin: 'Uji Matcha & Purple Yam Jam',
+        elevation: 'Hot / Iced',
+        price: 120,
+        priceIcedM: 120,
+        priceIcedL: 140,
+        priceHot: 120,
+        description: 'Vibrant dual-color fusion of velvety purple yam and green ceremonial matcha tea.',
+        tags: ['Matcha', 'Ube Fusion'],
+        image: 'https://images.unsplash.com/photo-1505252585461-04db1eb84625?auto=format&fit=crop&w=700&q=80',
+        flavors: ['matcha', 'sweet-caramel'],
+        flavorLabels: ['Ceremonial Matcha', 'Sweet & Caramel']
+      },
+      {
+        id: 'mat-choco',
+        category: 'matcha',
+        name: 'Matchoco',
+        origin: 'Uji Matcha & Cocoa Chocolate',
+        elevation: 'Hot / Iced',
+        price: 120,
+        priceIcedM: 120,
+        priceIcedL: 140,
+        priceHot: 120,
+        description: 'Deep cocoa chocolate swirled together with vibrant ceremonial green tea.',
+        tags: ['Matcha', 'Choco Swirl'],
+        image: 'https://images.unsplash.com/photo-1544787219-7f47ccb76574?auto=format&fit=crop&w=700&q=80',
+        flavors: ['matcha', 'chocolate-malt'],
+        flavorLabels: ['Ceremonial Matcha', 'Chocolate & Malt']
+      },
+      {
+        id: 'mat-caramel',
+        category: 'matcha',
+        name: 'Matcharamel',
+        origin: 'Uji Matcha & Golden Caramel',
+        elevation: 'Hot / Iced',
+        price: 120,
+        priceIcedM: 120,
+        priceIcedL: 140,
+        priceHot: 120,
+        description: 'Ceremonial matcha latte drizzled with luscious buttery golden caramel syrup.',
+        tags: ['Matcha', 'Golden Caramel'],
+        image: 'https://images.unsplash.com/photo-1536256263959-770b48d82b0a?auto=format&fit=crop&w=700&q=80',
+        flavors: ['matcha', 'sweet-caramel'],
+        flavorLabels: ['Ceremonial Matcha', 'Sweet & Caramel']
+      },
+
+      // --- 3. HOUSE SPECIALS (Iced M: 90 / L: 110 · Hot: 90) ---
+      {
+        id: 'hs-milo',
+        category: 'house-specials',
+        name: 'Milo',
+        origin: 'Malted Chocolate Milk',
+        elevation: 'Hot / Iced',
+        price: 90,
+        priceIcedM: 90,
+        priceIcedL: 110,
+        priceHot: 90,
+        description: 'Rich, creamy malted chocolate beverage prepared hot or poured over cracked ice with malt powder.',
+        tags: ['Bestseller', 'Nostalgia Classic'],
+        image: 'https://images.unsplash.com/photo-1544787219-7f47ccb76574?auto=format&fit=crop&w=700&q=80',
+        flavors: ['chocolate-malt'],
+        flavorLabels: ['Chocolate & Malt']
+      },
+      {
+        id: 'hs-choco',
+        category: 'house-specials',
+        name: 'Choco',
+        origin: 'Classic Dark Chocolate Milk',
+        elevation: 'Hot / Iced',
+        price: 90,
+        priceIcedM: 90,
+        priceIcedL: 110,
+        priceHot: 90,
+        description: 'Decadent, velvety chocolate milk made with pure cocoa and smooth fresh milk.',
+        tags: ['House Special', 'Pure Chocolate'],
+        image: 'https://images.unsplash.com/photo-1542990253-0d0f5be5f0ed?auto=format&fit=crop&w=700&q=80',
+        flavors: ['chocolate-malt'],
+        flavorLabels: ['Chocolate & Malt']
+      },
+      {
+        id: 'hs-chocoberry',
+        category: 'house-specials',
+        name: 'Chocoberry',
+        origin: 'Dark Chocolate & Berry Puree',
+        elevation: 'Hot / Iced',
+        price: 90,
+        priceIcedM: 90,
+        priceIcedL: 110,
+        priceHot: 90,
+        description: 'Indulgent sweet chocolate milk infused with real strawberry and mixed berry nectar.',
+        tags: ['House Special', 'Berry & Choco'],
+        image: 'https://images.unsplash.com/photo-1579954115545-a95591f28bfc?auto=format&fit=crop&w=700&q=80',
+        flavors: ['chocolate-malt', 'fruity-berry'],
+        flavorLabels: ['Chocolate & Malt', 'Fruity & Berry']
+      },
+
+      // --- 4. YOGURT / SODA (Iced M: 80 / L: 100) ---
+      {
+        id: 'ys-strawberry',
+        category: 'yogurt-soda',
+        name: 'Strawberry',
+        origin: 'Sweet Strawberry Puree',
+        elevation: 'Iced Only',
+        price: 80,
+        priceIcedM: 80,
+        priceIcedL: 100,
+        priceHot: null,
+        description: 'Crisp, refreshing sparkling soda or creamy yogurt drink infused with ripe strawberry puree.',
+        tags: ['Yogurt / Soda', 'Iced Only'],
+        image: 'https://images.unsplash.com/photo-1553787499-6f9133860278?auto=format&fit=crop&w=700&q=80',
+        flavors: ['fruity-berry'],
+        flavorLabels: ['Fruity & Refreshing']
+      },
+      {
+        id: 'ys-blueberry',
+        category: 'yogurt-soda',
+        name: 'Blueberry',
+        origin: 'Wild Blueberry Puree',
+        elevation: 'Iced Only',
+        price: 80,
+        priceIcedM: 80,
+        priceIcedL: 100,
+        priceHot: null,
+        description: 'Tart and sweet wild blueberry syrup paired with effervescent soda or chilled probiotic yogurt.',
+        tags: ['Yogurt / Soda', 'Iced Only'],
+        image: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=700&q=80',
+        flavors: ['fruity-berry'],
+        flavorLabels: ['Fruity & Refreshing']
+      },
+      {
+        id: 'ys-mixed-berries',
+        category: 'yogurt-soda',
+        name: 'Mixed Berries',
+        origin: 'Raspberry, Blackberry & Blueberry',
+        elevation: 'Iced Only',
+        price: 80,
+        priceIcedM: 80,
+        priceIcedL: 100,
+        priceHot: null,
+        description: 'Vibrant blend of summer berries sparkling with crisp botanical soda or smooth yogurt.',
+        tags: ['Yogurt / Soda', 'Iced Only'],
+        image: 'https://images.unsplash.com/photo-1497534446932-c925b458314e?auto=format&fit=crop&w=700&q=80',
+        flavors: ['fruity-berry'],
+        flavorLabels: ['Fruity & Refreshing']
+      },
+      {
+        id: 'ys-green-apple',
+        category: 'yogurt-soda',
+        name: 'Green Apple',
+        origin: 'Crisp Green Apple Cordial',
+        elevation: 'Iced Only',
+        price: 80,
+        priceIcedM: 80,
+        priceIcedL: 100,
+        priceHot: null,
+        description: 'Zesty, bright green apple cordial served over ice with fizzy sparkling soda or creamy yogurt.',
+        tags: ['Yogurt / Soda', 'Iced Only'],
+        image: 'https://images.unsplash.com/photo-1517256064527-09c73fc73e38?auto=format&fit=crop&w=700&q=80',
+        flavors: ['fruity-berry'],
+        flavorLabels: ['Fruity & Refreshing']
       }
     ]
   };
@@ -239,6 +457,31 @@ document.addEventListener('DOMContentLoaded', () => {
   const liveStatusText = document.getElementById('liveStatusText');
   const siteHeader = document.getElementById('siteHeader');
 
+  // Order Customization Modal Elements (Hot/Iced & Medium/Small)
+  const orderModalOverlay = document.getElementById('orderModalOverlay');
+  const closeOrderModalBtn = document.getElementById('closeOrderModalBtn');
+  const orderModalImg = document.getElementById('orderModalImg');
+  const orderModalCategory = document.getElementById('orderModalCategory');
+  const orderModalTitle = document.getElementById('orderModalTitle');
+  const orderModalDesc = document.getElementById('orderModalDesc');
+  const tempIcedBtn = document.getElementById('tempIcedBtn');
+  const tempHotBtn = document.getElementById('tempHotBtn');
+  const tempOptionBadge = document.getElementById('tempOptionBadge');
+  const sizeSmallBtn = document.getElementById('sizeSmallBtn');
+  const sizeMediumBtn = document.getElementById('sizeMediumBtn');
+  const sizeSmallPrice = document.getElementById('sizeSmallPrice');
+  const sizeMediumPrice = document.getElementById('sizeMediumPrice');
+  const modalQtyMinus = document.getElementById('modalQtyMinus');
+  const modalQtyPlus = document.getElementById('modalQtyPlus');
+  const modalQtyVal = document.getElementById('modalQtyVal');
+  const orderConfirmBtn = document.getElementById('orderConfirmBtn');
+  const orderConfirmTotal = document.getElementById('orderConfirmTotal');
+
+  let currentCustomizingItem = null;
+  let customTemp = 'Iced';
+  let customSize = 'Small';
+  let customQty = 1;
+
   // Reservation Modal Elements
   const reserveModalOverlay = document.getElementById('reserveModalOverlay');
   const openReserveBtns = document.querySelectorAll('.open-reserve-trigger');
@@ -247,6 +490,23 @@ document.addEventListener('DOMContentLoaded', () => {
   const bookingTypeSelect = document.getElementById('bookingType');
   const bookingGuestsInput = document.getElementById('bookingGuests');
   const bookingPriceEstimate = document.getElementById('bookingPriceEstimate');
+
+  // User Authentication & Account Elements
+  const authModalOverlay = document.getElementById('authModalOverlay');
+  const closeAuthModalBtn = document.getElementById('closeAuthModalBtn');
+  const authOpenBtn = document.getElementById('authOpenBtn');
+  const mobileAuthTrigger = document.getElementById('mobileAuthTrigger');
+  const userProfilePill = document.getElementById('userProfilePill');
+  const userNameDisplay = document.getElementById('userNameDisplay');
+  const userAvatarBadge = document.getElementById('userAvatarBadge');
+  const logoutBtn = document.getElementById('logoutBtn');
+  const tabSignInBtn = document.getElementById('tabSignInBtn');
+  const tabRegisterBtn = document.getElementById('tabRegisterBtn');
+  const signInForm = document.getElementById('signInForm');
+  const registerForm = document.getElementById('registerForm');
+  const authAlertBox = document.getElementById('authAlertBox');
+  const authModalTitle = document.getElementById('authModalTitle');
+  const authModalSubtitle = document.getElementById('authModalSubtitle');
 
   // Location Outpost Tabs
   const locTabBtns = document.querySelectorAll('.loc-tab-btn');
@@ -328,7 +588,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Filter by Flavor Note Quiz
     if (state.activeFlavorFilter) {
-      items = items.filter(item => item.flavorProfile === state.activeFlavorFilter);
+      items = items.filter(item => item.flavors && item.flavors.includes(state.activeFlavorFilter));
     }
 
     if (items.length === 0) {
@@ -351,6 +611,13 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
+    const categoryLabels = {
+      'house-coffee': 'House Coffee',
+      'matcha': 'Matcha',
+      'house-specials': 'House Specials',
+      'yogurt-soda': 'Yogurt / Soda'
+    };
+
     menuGrid.innerHTML = items.map(item => `
       <article class="menu-card" data-id="${item.id}">
         <div class="menu-card-img-wrap">
@@ -363,18 +630,21 @@ document.addEventListener('DOMContentLoaded', () => {
             <span class="item-price">${formatPHP(item.price)}</span>
           </div>
           <p class="item-desc">${item.description}</p>
+          <div class="card-flavor-row">
+            ${(item.flavorLabels || []).map(fl => `<span class="flavor-chip">${fl}</span>`).join('')}
+          </div>
           <div class="item-meta-tags">
-            <span class="meta-pill">${item.origin}</span>
-            <span class="meta-pill">${item.elevation}</span>
-            ${item.tags[1] ? `<span class="meta-pill">${item.tags[1]}</span>` : ''}
+            ${item.priceHot ? `<span class="meta-pill">Hot / Iced</span>` : '<span class="meta-pill">Iced Only</span>'}
+            <span class="meta-pill">Small: ${formatPHP(item.priceIcedM || item.price)}</span>
+            ${item.priceIcedL ? `<span class="meta-pill">Medium: ${formatPHP(item.priceIcedL)}</span>` : ''}
           </div>
           <div class="card-action-row">
             <span class="item-origin-sub">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                <path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8z"/>
-                <circle cx="12" cy="10" r="3"/>
+                <circle cx="12" cy="12" r="10"/>
+                <polyline points="12 6 12 12 16 14"/>
               </svg>
-              PH Terroir
+              ${categoryLabels[item.category] || 'Specialty'}
             </span>
             <button type="button" class="add-btn add-to-cart-trigger" data-id="${item.id}" aria-label="Add ${item.name} to order">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
@@ -388,14 +658,17 @@ document.addEventListener('DOMContentLoaded', () => {
       </article>
     `).join('');
 
-    // Attach Click Events to Add Buttons
-    menuGrid.querySelectorAll('.add-to-cart-trigger').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const id = e.currentTarget.dataset.id;
-        addToCart(id);
-      });
-    });
   }
+
+  // Universal Click Delegation for Add-To-Cart Buttons (Menu Grid + Bestseller Cards)
+  document.addEventListener('click', (e) => {
+    const trigger = e.target.closest('.add-to-cart-trigger');
+    if (trigger && trigger.dataset.id) {
+      e.preventDefault();
+      e.stopPropagation();
+      openOrderModal(trigger.dataset.id);
+    }
+  });
 
   // --- 8. Category Filter Tabs Event ---
   categoryTabs.forEach(tab => {
@@ -418,6 +691,17 @@ document.addEventListener('DOMContentLoaded', () => {
         flavorButtons.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         state.activeFlavorFilter = flavor;
+
+        // If current active category doesn't have any items with this flavor, reset category to 'all'
+        if (state.activeCategory !== 'all') {
+          const hasMatches = state.menuItems.some(
+            item => item.category === state.activeCategory && item.flavors && item.flavors.includes(flavor)
+          );
+          if (!hasMatches) {
+            state.activeCategory = 'all';
+            categoryTabs.forEach(t => t.classList.toggle('active', t.dataset.category === 'all'));
+          }
+        }
       }
       renderMenu();
 
@@ -429,39 +713,217 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // --- 10. Cart System & Calculations ---
+  // --- 10. Order Customization Modal & Cart System ---
+  function openOrderModal(itemId) {
+    const item = state.menuItems.find(i => i.id === itemId);
+    if (!item || !orderModalOverlay) return;
+
+    currentCustomizingItem = item;
+    customTemp = 'Iced';
+    customSize = 'Small';
+    customQty = 1;
+
+    if (orderModalImg) {
+      orderModalImg.src = item.image;
+      orderModalImg.alt = item.name;
+    }
+    if (orderModalCategory) {
+      const catLabels = {
+        'house-coffee': 'House Coffee',
+        'matcha': 'Matcha',
+        'house-specials': 'House Specials',
+        'yogurt-soda': 'Yogurt / Soda'
+      };
+      orderModalCategory.textContent = catLabels[item.category] || 'Specialty';
+    }
+    if (orderModalTitle) orderModalTitle.textContent = item.name;
+    if (orderModalDesc) {
+      orderModalDesc.textContent = item.description;
+      orderModalDesc.title = item.description;
+    }
+
+    const smallPrice = item.priceIcedM || item.price || 120;
+    const mediumPrice = item.priceIcedL || (item.price + 20) || 140;
+
+    if (sizeSmallPrice) sizeSmallPrice.textContent = formatPHP(smallPrice);
+    if (sizeMediumPrice) sizeMediumPrice.textContent = formatPHP(mediumPrice);
+
+    // Temperature Availability: Yogurt/Soda are iced-only
+    const allowHot = !!item.priceHot;
+    if (tempHotBtn) {
+      if (allowHot) {
+        tempHotBtn.classList.remove('disabled');
+        tempHotBtn.removeAttribute('aria-disabled');
+        if (tempOptionBadge) tempOptionBadge.textContent = 'Select 1';
+      } else {
+        tempHotBtn.classList.add('disabled');
+        tempHotBtn.setAttribute('aria-disabled', 'true');
+        if (tempOptionBadge) tempOptionBadge.textContent = 'Iced Only';
+      }
+    }
+
+    // Default Selection: Iced, Small, Qty 1
+    if (tempIcedBtn) {
+      tempIcedBtn.classList.add('active');
+      tempIcedBtn.setAttribute('aria-checked', 'true');
+    }
+    if (tempHotBtn) {
+      tempHotBtn.classList.remove('active');
+      tempHotBtn.setAttribute('aria-checked', 'false');
+    }
+
+    if (sizeSmallBtn) {
+      sizeSmallBtn.classList.add('active');
+      sizeSmallBtn.setAttribute('aria-checked', 'true');
+    }
+    if (sizeMediumBtn) {
+      sizeMediumBtn.classList.remove('active');
+      sizeMediumBtn.setAttribute('aria-checked', 'false');
+    }
+
+    if (modalQtyVal) modalQtyVal.textContent = '1';
+
+    updateOrderModalTotal();
+    orderModalOverlay.classList.add('active');
+  }
+
+  function closeOrderModal() {
+    if (orderModalOverlay) {
+      orderModalOverlay.classList.remove('active');
+    }
+  }
+
+  function updateOrderModalTotal() {
+    if (!currentCustomizingItem) return;
+    const smallPrice = currentCustomizingItem.priceIcedM || currentCustomizingItem.price || 120;
+    const mediumPrice = currentCustomizingItem.priceIcedL || (currentCustomizingItem.price + 20) || 140;
+    const unitPrice = (customSize === 'Medium') ? mediumPrice : smallPrice;
+    const total = unitPrice * customQty;
+    if (orderConfirmTotal) {
+      orderConfirmTotal.textContent = `· ${formatPHP(total)}`;
+    }
+  }
+
+  // Bind Order Modal Events
+  if (closeOrderModalBtn && orderModalOverlay) {
+    closeOrderModalBtn.addEventListener('click', closeOrderModal);
+    orderModalOverlay.addEventListener('click', (e) => {
+      if (e.target === orderModalOverlay) closeOrderModal();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && orderModalOverlay.classList.contains('active')) {
+        closeOrderModal();
+      }
+    });
+  }
+
+  if (tempIcedBtn && tempHotBtn) {
+    tempIcedBtn.addEventListener('click', () => {
+      customTemp = 'Iced';
+      tempIcedBtn.classList.add('active');
+      tempIcedBtn.setAttribute('aria-checked', 'true');
+      tempHotBtn.classList.remove('active');
+      tempHotBtn.setAttribute('aria-checked', 'false');
+      updateOrderModalTotal();
+    });
+
+    tempHotBtn.addEventListener('click', () => {
+      if (tempHotBtn.classList.contains('disabled')) return;
+      customTemp = 'Hot';
+      tempHotBtn.classList.add('active');
+      tempHotBtn.setAttribute('aria-checked', 'true');
+      tempIcedBtn.classList.remove('active');
+      tempIcedBtn.setAttribute('aria-checked', 'false');
+      updateOrderModalTotal();
+    });
+  }
+
+  if (sizeSmallBtn && sizeMediumBtn) {
+    sizeSmallBtn.addEventListener('click', () => {
+      customSize = 'Small';
+      sizeSmallBtn.classList.add('active');
+      sizeSmallBtn.setAttribute('aria-checked', 'true');
+      sizeMediumBtn.classList.remove('active');
+      sizeMediumBtn.setAttribute('aria-checked', 'false');
+      updateOrderModalTotal();
+    });
+
+    sizeMediumBtn.addEventListener('click', () => {
+      customSize = 'Medium';
+      sizeMediumBtn.classList.add('active');
+      sizeMediumBtn.setAttribute('aria-checked', 'true');
+      sizeSmallBtn.classList.remove('active');
+      sizeSmallBtn.setAttribute('aria-checked', 'false');
+      updateOrderModalTotal();
+    });
+  }
+
+  if (modalQtyMinus && modalQtyPlus && modalQtyVal) {
+    modalQtyMinus.addEventListener('click', () => {
+      if (customQty > 1) {
+        customQty -= 1;
+        modalQtyVal.textContent = customQty;
+        updateOrderModalTotal();
+      }
+    });
+    modalQtyPlus.addEventListener('click', () => {
+      customQty += 1;
+      modalQtyVal.textContent = customQty;
+      updateOrderModalTotal();
+    });
+  }
+
+  if (orderConfirmBtn) {
+    orderConfirmBtn.addEventListener('click', () => {
+      if (!currentCustomizingItem) return;
+      addToCartCustomized(currentCustomizingItem, customTemp, customSize, customQty);
+      closeOrderModal();
+    });
+  }
+
   function saveCart() {
     localStorage.setItem('becoffee_cart', JSON.stringify(state.cart));
     updateCartUI();
   }
 
-  function addToCart(itemId) {
-    const item = state.menuItems.find(i => i.id === itemId);
-    if (!item) return;
+  function addToCartCustomized(item, temperature, size, qty = 1) {
+    const smallPrice = item.priceIcedM || item.price || 120;
+    const mediumPrice = item.priceIcedL || (item.price + 20) || 140;
+    const unitPrice = (size === 'Medium') ? mediumPrice : smallPrice;
+    const cartItemId = `${item.id}-${temperature.toLowerCase()}-${size.toLowerCase()}`;
 
-    const existing = state.cart.find(i => i.id === itemId);
+    const existing = state.cart.find(i => (i.cartItemId || i.id) === cartItemId);
     if (existing) {
-      existing.qty += 1;
+      existing.qty += qty;
     } else {
       state.cart.push({
+        cartItemId: cartItemId,
         id: item.id,
         name: item.name,
-        price: item.price,
-        qty: 1
+        temperature: temperature,
+        size: size,
+        price: unitPrice,
+        qty: qty
       });
     }
 
     saveCart();
-    showToast(`Added "${item.name}" to order (${formatPHP(item.price)})`);
+
+    // Automatically slide open the cart drawer so user sees customized item added
+    if (cartDrawerOverlay) {
+      cartDrawerOverlay.classList.add('active');
+    }
+
+    showToast(`Added "${item.name} (${temperature} · ${size})"${qty > 1 ? ` ×${qty}` : ''} to order (${formatPHP(unitPrice * qty)})`);
   }
 
-  function updateQty(itemId, change) {
-    const item = state.cart.find(i => i.id === itemId);
+  function updateQty(cartId, change) {
+    const item = state.cart.find(i => (i.cartItemId || i.id) === cartId);
     if (!item) return;
 
     item.qty += change;
     if (item.qty <= 0) {
-      state.cart = state.cart.filter(i => i.id !== itemId);
+      state.cart = state.cart.filter(i => (i.cartItemId || i.id) !== cartId);
     }
     saveCart();
   }
@@ -492,7 +954,12 @@ document.addEventListener('DOMContentLoaded', () => {
       if (cartSubtotalEl) cartSubtotalEl.textContent = '₱0';
       if (cartEcoFeeEl) cartEcoFeeEl.textContent = '₱0';
       if (cartGrandTotalEl) cartGrandTotalEl.textContent = '₱0';
-      if (checkoutBtn) checkoutBtn.disabled = true;
+      if (checkoutBtn) {
+        checkoutBtn.disabled = true;
+        checkoutBtn.textContent = 'Confirm Order Pickup (₱)';
+      }
+      const cartAuthHint = document.getElementById('cartAuthHint');
+      if (cartAuthHint) cartAuthHint.style.display = 'none';
       return;
     }
 
@@ -501,32 +968,49 @@ document.addEventListener('DOMContentLoaded', () => {
     const grandTotal = subtotal + ecoFee;
 
     cartItemsContainer.innerHTML = state.cart.map(item => `
-      <div class="cart-item-row" data-id="${item.id}">
+      <div class="cart-item-row" data-cart-id="${item.cartItemId || item.id}">
         <div class="cart-item-info">
           <div class="cart-item-name">${item.name}</div>
+          <span class="cart-item-variant">${item.temperature || 'Iced'} · ${item.size || 'Small'}</span>
           <div class="cart-item-price">${formatPHP(item.price)} each</div>
         </div>
         <div class="cart-qty-ctrl">
-          <button type="button" class="qty-btn qty-minus" data-id="${item.id}" aria-label="Decrease quantity">−</button>
+          <button type="button" class="qty-btn qty-minus" data-cart-id="${item.cartItemId || item.id}" aria-label="Decrease quantity">−</button>
           <span class="qty-val">${item.qty}</span>
-          <button type="button" class="qty-btn qty-plus" data-id="${item.id}" aria-label="Increase quantity">+</button>
+          <button type="button" class="qty-btn qty-plus" data-cart-id="${item.cartItemId || item.id}" aria-label="Increase quantity">+</button>
         </div>
       </div>
     `).join('');
 
     // Attach events to qty buttons
     cartItemsContainer.querySelectorAll('.qty-minus').forEach(b => {
-      b.addEventListener('click', () => updateQty(b.dataset.id, -1));
+      b.addEventListener('click', () => updateQty(b.dataset.cartId, -1));
     });
     cartItemsContainer.querySelectorAll('.qty-plus').forEach(b => {
-      b.addEventListener('click', () => updateQty(b.dataset.id, 1));
+      b.addEventListener('click', () => updateQty(b.dataset.cartId, 1));
     });
 
     if (cartSubtotalEl) cartSubtotalEl.textContent = formatPHP(subtotal);
     if (cartEcoFeeEl) cartEcoFeeEl.textContent = formatPHP(ecoFee);
     if (cartGrandTotalEl) cartGrandTotalEl.textContent = formatPHP(grandTotal);
-    if (checkoutBtn) checkoutBtn.disabled = false;
+
+    const cartAuthHint = document.getElementById('cartAuthHint');
+    if (cartAuthHint) {
+      cartAuthHint.style.display = !state.currentUser ? 'block' : 'none';
+    }
+
+    if (checkoutBtn) {
+      checkoutBtn.disabled = false;
+      if (!state.currentUser) {
+        checkoutBtn.textContent = `Sign In to Order (${formatPHP(grandTotal)})`;
+      } else {
+        checkoutBtn.textContent = `Confirm Order Pickup (${formatPHP(grandTotal)})`;
+      }
+    }
   }
+
+  // Cart update alias
+  const updateCartDrawer = updateCartUI;
 
   // Cart Drawer open/close
   if (cartToggleBtn && cartDrawerOverlay && closeDrawerBtn) {
@@ -545,28 +1029,64 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Checkout order action
+  // Checkout order action (Database-backed order creation)
   if (checkoutBtn) {
-    checkoutBtn.addEventListener('click', () => {
+    checkoutBtn.addEventListener('click', async () => {
       if (state.cart.length === 0) return;
-      const subtotal = state.cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
-      const grandTotal = subtotal + 25;
 
-      const orderList = state.cart.map(i => `• ${i.qty}x ${i.name} (${formatPHP(i.price * i.qty)})`).join('\n');
-      const orderMessage = `Mabuhay! Here is my BeCoffee order:\n\n${orderList}\n\nTotal: ${formatPHP(grandTotal)} (incl. ₱25 eco pack)\nPickup: BGC Flagship Sanctuary\n\nThank you!`;
-
-      // Prompt user or copy to clipboard
-      if (navigator.clipboard) {
-        navigator.clipboard.writeText(orderMessage);
-        showToast('Order summary copied to clipboard! Ready to send to barista.');
-      } else {
-        showToast(`Order total: ${formatPHP(grandTotal)}. Ready for pickup!`);
+      // Cannot order without an account: automatically lead to login or create account
+      if (!state.currentUser) {
+        state.pendingCheckout = true;
+        if (cartDrawerOverlay) cartDrawerOverlay.classList.remove('active');
+        openAuthModal('signin');
+        setAuthAlert('Please sign in or create an account to complete your order.', 'info');
+        return;
       }
+      
+      const originalText = checkoutBtn.textContent;
+      checkoutBtn.disabled = true;
+      checkoutBtn.textContent = 'Processing Order...';
 
-      // Reset cart
-      state.cart = [];
-      saveCart();
-      if (cartDrawerOverlay) cartDrawerOverlay.classList.remove('active');
+      try {
+        const payload = {
+          items: state.cart.map(i => ({
+            id: i.id,
+            quantity: i.qty,
+            temperature: i.temperature || 'Iced',
+            size: i.size || 'Small'
+          })),
+          customer_name: state.currentUser ? state.currentUser.name : '',
+          customer_phone: state.currentUser && state.currentUser.phone ? state.currentUser.phone : ''
+        };
+
+        const res = await fetch('api/orders.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+        if (res.ok && data.success) {
+          showToast(`Order ${data.order_reference} confirmed! Ready for pickup (${formatPHP(data.grand_total)})`);
+          state.cart = [];
+          saveCart();
+          if (cartDrawerOverlay) cartDrawerOverlay.classList.remove('active');
+        } else if (res.status === 401) {
+          state.currentUser = null;
+          updateAuthUI();
+          state.pendingCheckout = true;
+          if (cartDrawerOverlay) cartDrawerOverlay.classList.remove('active');
+          openAuthModal('signin');
+          setAuthAlert(data.error || 'Please sign in or create an account to complete your order.', 'info');
+        } else {
+          showToast(data.error || 'Unable to complete order. Please try again.');
+        }
+      } catch (err) {
+        showToast('Server connection issue. Please try again in a moment.');
+      } finally {
+        checkoutBtn.disabled = false;
+        checkoutBtn.textContent = originalText;
+      }
     });
   }
 
@@ -608,6 +1128,12 @@ document.addEventListener('DOMContentLoaded', () => {
         bookingTypeSelect.value = presetType;
         updateReservationEstimate();
       }
+      if (state.currentUser) {
+        const nameInput = document.getElementById('bookingName');
+        const phoneInput = document.getElementById('bookingPhone');
+        if (nameInput && !nameInput.value) nameInput.value = state.currentUser.name;
+        if (phoneInput && !phoneInput.value && state.currentUser.phone) phoneInput.value = state.currentUser.phone;
+      }
       if (reserveModalOverlay) reserveModalOverlay.classList.add('active');
     });
   });
@@ -624,18 +1150,54 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Form Submit
+  // Form Submit (Database-backed reservations)
   if (reservationForm) {
-    reservationForm.addEventListener('submit', (e) => {
+    reservationForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const name = document.getElementById('bookingName').value;
-      const date = document.getElementById('bookingDate').value;
-      const time = document.getElementById('bookingTime').value;
+      const submitBtn = reservationForm.querySelector('button[type="submit"]');
+      const originalText = submitBtn ? submitBtn.textContent : '';
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Saving Booking...';
+      }
 
-      showToast(`Reservation request received for ${name} on ${date} at ${time}! We will SMS confirm.`);
-      reservationForm.reset();
-      updateReservationEstimate();
-      if (reserveModalOverlay) reserveModalOverlay.classList.remove('active');
+      const payload = {
+        booking_type: document.getElementById('bookingType').value,
+        location_code: document.getElementById('bookingLocation').value,
+        guests: parseInt(document.getElementById('bookingGuests').value, 10),
+        preferred_date: document.getElementById('bookingDate').value,
+        preferred_time: document.getElementById('bookingTime').value,
+        customer_name: document.getElementById('bookingName').value,
+        customer_phone: document.getElementById('bookingPhone').value,
+        notes: document.getElementById('bookingNotes').value
+      };
+
+      try {
+        const res = await fetch('api/reservations.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          showToast(data.message);
+          reservationForm.reset();
+          updateReservationEstimate();
+          if (reserveModalOverlay) reserveModalOverlay.classList.remove('active');
+        } else {
+          showToast(data.error || 'Failed to save reservation.');
+        }
+      } catch (err) {
+        showToast(`Reservation request noted for ${payload.customer_name} on ${payload.preferred_date}!`);
+        reservationForm.reset();
+        updateReservationEstimate();
+        if (reserveModalOverlay) reserveModalOverlay.classList.remove('active');
+      } finally {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalText;
+        }
+      }
     });
   }
 
@@ -652,7 +1214,7 @@ document.addEventListener('DOMContentLoaded', () => {
     },
     benguet: {
       name: 'Highland Roastery & Farm Lab',
-      badge: 'Cordillera Terroir Outpost & Cupping Lab',
+      badge: 'Cordillera House Roastery & Cupping Lab',
       address: 'Ambuclao Scenic Road, Tuba, Benguet (15 mins from Baguio City)',
       hours: 'Wed – Sun: 8:00 AM – 7:00 PM PHT (Closed Mon & Tue)',
       phone: '+63 74 442 8888 / +63 919 888 2333',
@@ -710,7 +1272,317 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 3200);
   }
 
-  // --- 14. Initial Render ---
+  // --- 14. User Authentication & Account Management ---
+  function updateAuthUI() {
+    if (state.currentUser) {
+      if (authOpenBtn) authOpenBtn.style.display = 'none';
+      if (userProfilePill) userProfilePill.style.display = 'inline-flex';
+      
+      const firstName = state.currentUser.name.split(' ')[0];
+      if (userNameDisplay) userNameDisplay.textContent = firstName;
+      if (userAvatarBadge) {
+        const parts = state.currentUser.name.trim().split(/\s+/);
+        userAvatarBadge.textContent = parts.length > 1
+          ? (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase()
+          : parts[0].charAt(0).toUpperCase();
+      }
+      
+      if (mobileAuthTrigger) {
+        mobileAuthTrigger.textContent = `Sign Out (${firstName})`;
+        mobileAuthTrigger.classList.remove('btn-secondary');
+        mobileAuthTrigger.classList.add('btn-outline');
+      }
+
+      // Pre-fill reservation form if inputs are empty
+      const bookingName = document.getElementById('bookingName');
+      const bookingPhone = document.getElementById('bookingPhone');
+      if (bookingName && !bookingName.value) bookingName.value = state.currentUser.name;
+      if (bookingPhone && !bookingPhone.value && state.currentUser.phone) bookingPhone.value = state.currentUser.phone;
+    } else {
+      if (authOpenBtn) authOpenBtn.style.display = 'inline-flex';
+      if (userProfilePill) userProfilePill.style.display = 'none';
+      if (mobileAuthTrigger) {
+        mobileAuthTrigger.textContent = 'Member Sign In';
+        mobileAuthTrigger.classList.remove('btn-outline');
+        mobileAuthTrigger.classList.add('btn-secondary');
+      }
+    }
+
+    // Keep cart checkout button & hints updated with auth status
+    if (typeof updateCartUI === 'function') {
+      updateCartUI();
+    }
+  }
+
+  async function checkAuthStatus() {
+    try {
+      const res = await fetch('api/auth.php?action=me');
+      if (res.ok) {
+        const data = await res.json();
+        if (data.authenticated && data.user) {
+          state.currentUser = data.user;
+          updateAuthUI();
+        } else {
+          state.currentUser = null;
+          updateAuthUI();
+        }
+      }
+    } catch (err) {
+      console.warn('Authentication status check offline/deferred.');
+    }
+  }
+
+  function setAuthAlert(message, type = 'error') {
+    if (!authAlertBox) return;
+    if (!message) {
+      authAlertBox.style.display = 'none';
+      authAlertBox.textContent = '';
+      return;
+    }
+    authAlertBox.className = `auth-alert ${type}`;
+    authAlertBox.textContent = message;
+    authAlertBox.style.display = 'block';
+  }
+
+  function switchAuthTab(tab) {
+    setAuthAlert('');
+    if (tab === 'signin') {
+      if (tabSignInBtn) {
+        tabSignInBtn.classList.add('active');
+        tabSignInBtn.setAttribute('aria-selected', 'true');
+      }
+      if (tabRegisterBtn) {
+        tabRegisterBtn.classList.remove('active');
+        tabRegisterBtn.setAttribute('aria-selected', 'false');
+      }
+      if (signInForm) signInForm.style.display = 'block';
+      if (registerForm) registerForm.style.display = 'none';
+      if (authModalTitle) authModalTitle.textContent = 'Welcome Back to BeCoffee';
+      if (authModalSubtitle) authModalSubtitle.textContent = 'Sign in to access saved roastery orders and cupping reservations.';
+    } else {
+      if (tabRegisterBtn) {
+        tabRegisterBtn.classList.add('active');
+        tabRegisterBtn.setAttribute('aria-selected', 'true');
+      }
+      if (tabSignInBtn) {
+        tabSignInBtn.classList.remove('active');
+        tabSignInBtn.setAttribute('aria-selected', 'false');
+      }
+      if (signInForm) signInForm.style.display = 'none';
+      if (registerForm) registerForm.style.display = 'block';
+      if (authModalTitle) authModalTitle.textContent = 'Join the BeCoffee Guild';
+      if (authModalSubtitle) authModalSubtitle.textContent = 'Create your account to unlock personalized beans, orders, and table passes.';
+    }
+  }
+
+  function openAuthModal(defaultTab = 'signin') {
+    switchAuthTab(defaultTab);
+    if (authModalOverlay) authModalOverlay.classList.add('active');
+  }
+
+  function closeAuthModal() {
+    if (authModalOverlay) authModalOverlay.classList.remove('active');
+    setAuthAlert('');
+    if (signInForm) signInForm.reset();
+    if (registerForm) registerForm.reset();
+  }
+
+  // Open / Close Auth Modal Events
+  if (authOpenBtn) {
+    authOpenBtn.addEventListener('click', () => openAuthModal('signin'));
+  }
+
+  if (mobileAuthTrigger) {
+    mobileAuthTrigger.addEventListener('click', () => {
+      if (state.currentUser) {
+        handleLogout();
+      } else {
+        openAuthModal('signin');
+      }
+    });
+  }
+
+  if (closeAuthModalBtn) {
+    closeAuthModalBtn.addEventListener('click', closeAuthModal);
+  }
+
+  if (authModalOverlay) {
+    authModalOverlay.addEventListener('click', (e) => {
+      if (e.target === authModalOverlay) closeAuthModal();
+    });
+  }
+
+  // Tab Switching
+  if (tabSignInBtn) {
+    tabSignInBtn.addEventListener('click', () => switchAuthTab('signin'));
+  }
+  if (tabRegisterBtn) {
+    tabRegisterBtn.addEventListener('click', () => switchAuthTab('register'));
+  }
+
+  // Handle Login Submit
+  if (signInForm) {
+    signInForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      setAuthAlert('');
+
+      const email = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPassword').value;
+      const submitBtn = document.getElementById('loginSubmitBtn');
+
+      const originalText = submitBtn ? submitBtn.textContent : '';
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Signing in...';
+      }
+
+      try {
+        const res = await fetch('api/auth.php?action=login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+
+        const data = await res.json();
+        if (res.ok && data.success) {
+          state.currentUser = data.user;
+          setAuthAlert('Success! Welcome back.', 'success');
+          showToast(`Welcome back, ${data.user.name}!`);
+          try {
+            updateAuthUI();
+          } catch (uiErr) {
+            console.warn('UI update notice after login:', uiErr);
+          }
+          setTimeout(() => {
+            closeAuthModal();
+            if (state.pendingCheckout && state.cart.length > 0) {
+              state.pendingCheckout = false;
+              if (cartDrawerOverlay) cartDrawerOverlay.classList.add('active');
+              showToast('Account ready! Click below to confirm order pickup.');
+            }
+          }, 600);
+        } else {
+          setAuthAlert(data.error || 'Invalid email or password.');
+        }
+      } catch (err) {
+        console.warn('Authentication request error:', err);
+        setAuthAlert('Unable to reach authentication server. Please check your connection.');
+      } finally {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalText;
+        }
+      }
+    });
+  }
+
+  // Handle Registration Submit
+  if (registerForm) {
+    registerForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      setAuthAlert('');
+
+      const name = document.getElementById('regName').value.trim();
+      const email = document.getElementById('regEmail').value.trim();
+      const phone = document.getElementById('regPhone').value.trim();
+      const password = document.getElementById('regPassword').value;
+      const confirm = document.getElementById('regPasswordConfirm').value;
+      const submitBtn = document.getElementById('registerSubmitBtn');
+
+      if (password !== confirm) {
+        setAuthAlert('Passwords do not match. Please verify.');
+        return;
+      }
+
+      if (password.length < 8) {
+        setAuthAlert('Password must be at least 8 characters long.');
+        return;
+      }
+
+      const originalText = submitBtn ? submitBtn.textContent : '';
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Creating account...';
+      }
+
+      try {
+        const res = await fetch('api/auth.php?action=register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, phone, password })
+        });
+
+        const data = await res.json();
+        if (res.ok && data.success) {
+          state.currentUser = data.user;
+          setAuthAlert('Account created successfully! Welcome to BeCoffee.', 'success');
+          showToast(`Welcome to BeCoffee, ${data.user.name}!`);
+          try {
+            updateAuthUI();
+          } catch (uiErr) {
+            console.warn('UI update notice after registration:', uiErr);
+          }
+          setTimeout(() => {
+            closeAuthModal();
+            if (state.pendingCheckout && state.cart.length > 0) {
+              state.pendingCheckout = false;
+              if (cartDrawerOverlay) cartDrawerOverlay.classList.add('active');
+              showToast('Account created! Click below to confirm order pickup.');
+            }
+          }, 600);
+        } else {
+          setAuthAlert(data.error || 'Registration failed. Please check your information.');
+        }
+      } catch (err) {
+        console.warn('Registration request error:', err);
+        setAuthAlert('Unable to reach registration server. Please check your connection.');
+      } finally {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalText;
+        }
+      }
+    });
+  }
+
+  // Handle Logout
+  async function handleLogout() {
+    try {
+      const res = await fetch('api/auth.php?action=logout', { method: 'POST' });
+      const data = await res.json();
+      state.currentUser = null;
+      updateAuthUI();
+      showToast(data.message || 'Signed out successfully.');
+    } catch (err) {
+      state.currentUser = null;
+      updateAuthUI();
+      showToast('Signed out.');
+    }
+  }
+
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', handleLogout);
+  }
+
+  // --- 15. Dynamic Menu Synchronization ---
+  async function loadMenuFromAPI() {
+    try {
+      const res = await fetch('api/menu.php');
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success && Array.isArray(data.items) && data.items.length > 0) {
+          state.menuItems = data.items;
+          renderMenu();
+        }
+      }
+    } catch (e) {
+      console.warn('Using embedded menu state; API fetch deferred.');
+    }
+  }
+
+  // --- 16. Initial Startup Sequence ---
   renderMenu();
   updateCartUI();
+  checkAuthStatus();
+  loadMenuFromAPI();
 });
