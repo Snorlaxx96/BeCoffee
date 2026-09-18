@@ -550,6 +550,47 @@ document.addEventListener('DOMContentLoaded', () => {
   updatePhilippineHours();
   setInterval(updatePhilippineHours, 60000);
 
+  // --- 4b. Top Announcement Pop-up Auto-Dismiss (4 seconds) ---
+  const topBanner = document.getElementById('topBanner');
+  const closeBannerBtn = document.getElementById('closeBannerBtn');
+
+  if (topBanner) {
+    let bannerDismissed = false;
+    let dismissTimer = null;
+
+    const dismissBanner = () => {
+      if (bannerDismissed) return;
+      bannerDismissed = true;
+      topBanner.classList.add('banner-dismissed');
+      setTimeout(() => {
+        topBanner.style.display = 'none';
+        topBanner.setAttribute('aria-hidden', 'true');
+      }, 450);
+    };
+
+    // Auto dismiss after exactly 4 seconds
+    dismissTimer = setTimeout(dismissBanner, 4000);
+
+    // Manual dismiss button
+    if (closeBannerBtn) {
+      closeBannerBtn.addEventListener('click', () => {
+        clearTimeout(dismissTimer);
+        dismissBanner();
+      });
+    }
+
+    // Pause countdown when user hovers to click/read, resume with 2s grace on mouse leave
+    topBanner.addEventListener('mouseenter', () => {
+      clearTimeout(dismissTimer);
+    });
+
+    topBanner.addEventListener('mouseleave', () => {
+      if (!bannerDismissed) {
+        dismissTimer = setTimeout(dismissBanner, 2000);
+      }
+    });
+  }
+
   // --- 5. Sticky Header Effect ---
   window.addEventListener('scroll', () => {
     if (window.scrollY > 40) {

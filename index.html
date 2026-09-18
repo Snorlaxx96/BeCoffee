@@ -17,19 +17,25 @@
 </head>
 <body>
 
-  <!-- Top Announcement Banner -->
-  <aside class="top-banner" aria-label="Announcement">
-    <div class="container top-banner-inner">
+  <!-- Top Announcement Pop-up (Auto-dismisses in 4s) -->
+  <aside class="top-banner" id="topBanner" aria-label="Announcement">
+    <div class="top-banner-inner">
       <div class="banner-left">
         <span class="status-pulse" id="liveStatusText">
           <span class="pulse-dot"></span> Open Today · 7:00 AM – 10:00 PM PHT
         </span>
-        <span style="opacity: 0.5;">|</span>
-        <span>Bonifacio Global City, Taguig & Benguet Highlands</span>
+        <span class="banner-sep" aria-hidden="true">·</span>
+        <span class="banner-locations">BGC & Benguet Outposts</span>
       </div>
       <div class="banner-right">
-        <span>Fresh Roasts Shipped Nationwide across the Philippines</span>
+        <span class="banner-msg">Fresh Roasts Shipped Nationwide</span>
         <a href="#offers" class="banner-link">Subscribe to Beans</a>
+        <button type="button" class="banner-close-btn" id="closeBannerBtn" aria-label="Dismiss Announcement">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
       </div>
     </div>
   </aside>
