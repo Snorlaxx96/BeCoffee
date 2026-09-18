@@ -662,7 +662,7 @@ document.addEventListener('DOMContentLoaded', () => {
     menuGrid.innerHTML = items.map(item => `
       <article class="menu-card" data-id="${item.id}">
         <div class="menu-card-img-wrap">
-          <img src="${item.image}?v=6.0" alt="${item.name}" loading="lazy" width="700" height="438">
+          <img src="${item.image}?v=7.0" alt="${item.name}" loading="lazy" width="700" height="438">
           <span class="card-pill-tag">${item.tags[0] || 'Specialty'}</span>
         </div>
         <div class="menu-card-body">
@@ -765,7 +765,7 @@ document.addEventListener('DOMContentLoaded', () => {
     customQty = 1;
 
     if (orderModalImg) {
-      orderModalImg.src = `${item.image}?v=6.0`;
+      orderModalImg.src = `${item.image}?v=7.0`;
       orderModalImg.alt = item.name;
     }
     if (orderModalCategory) {
