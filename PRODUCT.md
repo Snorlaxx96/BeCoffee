@@ -37,3 +37,29 @@ BeCoffee is a premier Philippine third-wave cafe and specialty roastery celebrat
 
 ## Tone & Voice
 Refined, warm, knowledgeable, culturally proud, unpretentious, and sensory-driven.
+
+---
+
+## Strategic Scope & Feature Priority Matrix
+
+### P0 Features (Immediate Baseline Delivery)
+* **Interactive Menu System**: Category filtering (All, House Coffee, Espresso Bar, Philippine Terroir Pour-Overs, Signatures, Artisanal Brunch), hot/iced size toggles, dynamic price adjustments in ₱ (PHP).
+* **Live Cafe & Roastery Hours**: Automatic Philippine Standard Time (PST/PHT, UTC+8) open/closed computation with honest, non-simulated status badge.
+* **Shopping Cart & Checkout Drawer**: LocalStorage-persisted cart, real-time item counter, line item addition with size/addon options, dynamic subtotal & tax calculation.
+* **Responsive Layouts**: Full viewport adaptation from mobile (375px) to ultra-wide desktop (1440px+), 0 horizontal scroll overflow, >=44px touch targets.
+* **Philippine Terroir Showcase**: Origin cards detailing elevation, processing method (Anaerobic, Natural, Washed), tasting notes, and producer stories for Benguet, Sagada, Mt. Apo, and Davao origins.
+
+### P1 Features (Deferred Iteration)
+* **Custom Bean Bag Builder**: Real-time whole-bean subscription configurator (grind profile, roast level, delivery frequency).
+* **Table & Workshop Reservation Engine**: Multi-step booking modal for cupping sessions and slow-bar tasting seats.
+
+### P2 & P3 Features (Backlog)
+* **Roastery Loyalty & Barista Pass**: Digital loyalty stamp cards and tasting journal.
+* **B2B Wholesale Portal**: Direct green coffee sourcing inquiries for commercial cafes.
+
+---
+
+## Core Data Entities
+* **MenuItem**: `id`, `category`, `name`, `origin`, `elevation`, `price`, `priceIcedM`, `priceIcedL`, `priceHot`, `description`, `tags`, `image`, `flavors`.
+* **CartItem**: `id`, `name`, `size`, `price`, `quantity`, `customization`.
+* **Reservation**: `id`, `name`, `email`, `phone`, `date`, `time`, `partySize`, `location`, `specialRequests`.

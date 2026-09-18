@@ -5,10 +5,57 @@
 
 ---
 
-## 1. The Three Dials
-* **`DESIGN_VARIANCE: 7`** (Asymmetric hero framing, alternating editorial showcase modules, staggered grid menus)
-* **`VISUAL_DENSITY: 3`** (Spacious, airy coffeehouse ambiance, deliberate breathing room, comfortable line heights)
-* **`MOTION_INTENSITY: 5`** (Restrained, fluid 250ms–400ms ease transitions, smooth modal drawers, subtle image scale hovers)
+## Current State (Extracted)
+
+### Extracted Design Tokens
+* **Typography:**
+  - Headers: `'Playfair Display', serif` (Weights: 400, 700, 900)
+  - Body & UI: `'Plus Jakarta Sans', system-ui, sans-serif` (Weights: 400, 500, 600, 700)
+  - Body font-size: `16px` with line-height `1.6`
+* **Color Palette:**
+  - Roasted obsidian (`#15110E`), espresso dark (`#221B17`), surface (`#2D231E`)
+  - Crema amber (`#C88A58`), crema gold (`#DF9B64`), crema light (`#F5E9DF`)
+  - Highland moss (`#4A5D43`), cacao terracotta (`#8D3D2B`)
+  - Canvas background (`#FAF7F2`), card background (`#FFFFFF`), neutral subtle (`#F3ECE3`)
+* **Radii & Elevation:**
+  - Radii: `8px` (sm), `14px` (md), `20px` (lg), `9999px` (full)
+  - Shadows: `0 2px 8px rgba(21, 17, 14, 0.04)`, `0 8px 24px rgba(21, 17, 14, 0.08)`, `0 16px 40px rgba(21, 17, 14, 0.12)`
+* **Structural Components:**
+  - Sticky announcement banner + header navigation
+  - Split asymmetrical hero with origin counters
+  - Tabbed interactive menu grid with size/price toggles
+  - Terroir showcase grid with altitude cards
+  - Experience modals (Workshops, Roastery booking, Order Drawer)
+* **Impeccable Audit Findings (177 anti-patterns detected):**
+  - Repeated icon-tile-stack (52×52px squircle icon cards)
+  - Cramped text padding in bordered sections
+  - Overused font: Plus Jakarta Sans
+  - Kicker above heading pattern
+  - Generic cream background `#FAF7F2` default
+  - Pulsing status dot simulation
+
+---
+
+## Target Redesign Specification (Path B: Refined Terroir Baseline)
+
+### The Three Canonical Dials
+* **`DESIGN_VARIANCE: 7`** (Asymmetric hero framing, alternating editorial showcase modules, staggered grid menus, non-templated layouts)
+* **`VISUAL_DENSITY: 3`** (Spacious, airy coffeehouse ambiance, deliberate breathing room, comfortable line heights, zero cramped padding)
+* **`MOTION_INTENSITY: 5`** (Restrained, fluid 250ms–350ms transitions, smooth modal drawers, subtle image scale hovers)
+
+### Target Typography Pairing
+* **Display & Editorial Headings:** `'Playfair Display', Georgia, serif` (editorial craft, artisanal warmth)
+* **Body, UI, & Metadata:** `'Outfit', system-ui, -apple-system, sans-serif` (replaces overused Plus Jakarta Sans with refined geometric clarity)
+* **Accents & Notes:** `0.05em` letter-spacing, human-scale font sizes (14px–16px), zero all-caps on body text.
+
+### Anti-Pattern Remedies (Impeccable Compliance)
+1. **Font Replacement:** Upgrade body font to `'Outfit'` to clear `[overused-font]`.
+2. **Palette Calibration:** Refine canvas from generic off-white `#FAF7F2` to bespoke Terroir Alabaster `#FBF8F4` and rich oat surface `#F4EDE4`.
+3. **Eliminate Icon Tiles:** Remove 52×52px squircle icon containers above headings; present icons in organic visual flow or inline with titles.
+4. **Remove Kicker Blocks:** Eliminate disjointed tracked uppercase kickers floating above headings; let headings speak with self-contained strength.
+5. **Generous Inset Padding:** Enforce minimum 16px–24px interior padding on all cards, locations, and interactive wrappers to banish `[cramped-padding]`.
+6. **Honest Live Status:** Replace decorative blinking/pulsing dot with clean status capsule (`● Open Today · 7:00 AM – 10:00 PM PHT`).
+7. **Semantic Hierarchy:** Fix heading order from `h1` through `h4` with zero skipped levels.
 
 ---
 

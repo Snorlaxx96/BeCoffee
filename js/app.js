@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
         priceHot: 120,
         description: 'Smooth, balanced house-brewed coffee with rich nutty undertones and a clean, satisfying finish.',
         tags: ['House Coffee', 'Daily Classic'],
-        image: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=700&q=80',
+        image: 'images/menu/hc-classic.jpg',
         flavors: ['bold-coffee'],
         flavorLabels: ['Bold & Classic Coffee']
       },
@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
         priceHot: 120,
         description: 'Velvety espresso combined with smooth fresh milk and rich condensed milk for a perfectly sweet kick.',
         tags: ['House Coffee', 'Crowd Favorite'],
-        image: 'https://images.unsplash.com/photo-1570968915860-54d5c301fa9f?auto=format&fit=crop&w=700&q=80',
+        image: 'images/menu/hc-spanish.jpg',
         flavors: ['sweet-caramel', 'bold-coffee'],
         flavorLabels: ['Sweet & Caramel', 'Bold Coffee']
       },
@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
         priceHot: 120,
         description: 'Bold, clean double shot of house espresso poured over hot water or crisp ice.',
         tags: ['House Coffee', 'Bold & Clean'],
-        image: 'https://images.unsplash.com/photo-1510591509098-f4fdc6d0ff04?auto=format&fit=crop&w=700&q=80',
+        image: 'images/menu/hc-americano.jpg',
         flavors: ['bold-coffee'],
         flavorLabels: ['Bold & Classic Coffee']
       },
@@ -74,7 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
         priceHot: 120,
         description: 'Silky espresso and textured milk infused with sweet, aromatic French vanilla bean syrup.',
         tags: ['House Coffee', 'Fragrant Vanilla'],
-        image: 'https://images.unsplash.com/photo-1517701550927-30cf4ba1dba5?auto=format&fit=crop&w=700&q=80',
+        image: 'images/menu/hc-french-vanilla.jpg',
         flavors: ['sweet-caramel'],
         flavorLabels: ['Sweet & Caramel']
       },
@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
         priceHot: 120,
         description: 'The timeless coffeehouse essential with smooth textured milk folded into freshly pulled espresso.',
         tags: ['House Coffee', 'Smooth & Creamy'],
-        image: 'https://images.unsplash.com/photo-1577968897966-3d4325b36b61?auto=format&fit=crop&w=700&q=80',
+        image: 'images/menu/hc-coffee-latte.jpg',
         flavors: ['bold-coffee'],
         flavorLabels: ['Bold & Classic Coffee']
       },
@@ -106,7 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
         priceHot: 120,
         description: 'Layered vanilla-infused milk crowned with rich espresso and golden buttery caramel drizzle.',
         tags: ['Bestseller', 'Caramel Drizzle'],
-        image: 'https://images.unsplash.com/photo-1485808191679-5f86510681a2?auto=format&fit=crop&w=700&q=80',
+        image: 'images/menu/hc-caramel-macchiato.jpg',
         flavors: ['sweet-caramel'],
         flavorLabels: ['Sweet & Caramel']
       },
@@ -122,7 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
         priceHot: 120,
         description: 'Slow-cooked rich caramel paired with espresso, fresh milk, and a delicate touch of flaky sea salt.',
         tags: ['Bestseller', 'Sweet & Savory'],
-        image: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=700&q=80',
+        image: 'images/menu/hc-salted-caramel.jpg',
         flavors: ['sweet-caramel'],
         flavorLabels: ['Sweet & Caramel']
       },
@@ -138,7 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
         priceHot: 120,
         description: 'Rich, comforting latte topped with velvety lightly salted cream for a sublime sweet-savory contrast.',
         tags: ['House Coffee', 'Sea Salt Cream'],
-        image: 'https://images.unsplash.com/photo-1517701604599-bb29b565090c?auto=format&fit=crop&w=700&q=80',
+        image: 'images/menu/hc-sea-salt-latte.jpg',
         flavors: ['sweet-caramel'],
         flavorLabels: ['Sweet & Caramel']
       },
@@ -154,7 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
         priceHot: 120,
         description: 'Vibrant handcrafted ube halaya blend with fresh milk and a smooth espresso float.',
         tags: ['House Coffee', 'Handcrafted Ube'],
-        image: 'https://images.unsplash.com/photo-1541167760496-1628856ab772?auto=format&fit=crop&w=700&q=80',
+        image: 'images/menu/hc-ube-latte.jpg',
         flavors: ['sweet-caramel'],
         flavorLabels: ['Sweet & Caramel']
       },
@@ -170,7 +170,7 @@ document.addEventListener('DOMContentLoaded', () => {
         priceHot: 120,
         description: 'Decadent dark cocoa melted into freshly pulled espresso and steamed milk.',
         tags: ['House Coffee', 'Rich Cocoa'],
-        image: 'https://images.unsplash.com/photo-1544787219-7f47ccb76574?auto=format&fit=crop&w=700&q=80',
+        image: 'images/menu/hc-mocha.jpg',
         flavors: ['chocolate-malt', 'bold-coffee'],
         flavorLabels: ['Chocolate & Malt', 'Bold Coffee']
       },
@@ -186,7 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
         priceHot: 120,
         description: 'Sweet, velvety white chocolate sauce paired with bold espresso and creamy textured milk.',
         tags: ['House Coffee', 'Sweet White Cocoa'],
-        image: 'https://images.unsplash.com/photo-1572442388796-11668a67e53d?auto=format&fit=crop&w=700&q=80',
+        image: 'images/menu/hc-white-choco-mocha.jpg',
         flavors: ['sweet-caramel', 'chocolate-malt'],
         flavorLabels: ['Sweet & Caramel', 'White Chocolate']
       },
@@ -202,7 +202,7 @@ document.addEventListener('DOMContentLoaded', () => {
         priceHot: 120,
         description: 'The ultimate power brew—rich espresso combined with hearty malted Milo chocolate milk.',
         tags: ['House Coffee', 'Malted Power Brew'],
-        image: 'https://images.unsplash.com/photo-1517256064527-09c73fc73e38?auto=format&fit=crop&w=700&q=80',
+        image: 'images/menu/hc-coffee-milo.jpg',
         flavors: ['chocolate-malt', 'bold-coffee'],
         flavorLabels: ['Chocolate & Malt', 'Bold Coffee']
       },
@@ -218,7 +218,7 @@ document.addEventListener('DOMContentLoaded', () => {
         priceHot: 120,
         description: 'Spiced Belgian caramelized cookie spread melted into hot or iced espresso and milk.',
         tags: ['House Coffee', 'Cookie Butter'],
-        image: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=700&q=80',
+        image: 'images/menu/hc-biscoff-latte.jpg',
         flavors: ['sweet-caramel'],
         flavorLabels: ['Sweet & Caramel']
       },
@@ -236,7 +236,7 @@ document.addEventListener('DOMContentLoaded', () => {
         priceHot: 120,
         description: 'Stone-ground green tea whisked fresh with silky milk for a soothing, umami-rich experience.',
         tags: ['Bestseller', 'Pure Ceremonial'],
-        image: 'https://images.unsplash.com/photo-1536256263959-770b48d82b0a?auto=format&fit=crop&w=700&q=80',
+        image: 'images/menu/mat-latte.jpg',
         flavors: ['matcha'],
         flavorLabels: ['Ceremonial Matcha']
       },
@@ -252,7 +252,7 @@ document.addEventListener('DOMContentLoaded', () => {
         priceHot: 120,
         description: 'Earthy ceremonial matcha latte topped with a concentrated shot of dark espresso.',
         tags: ['Matcha', 'Espresso Float'],
-        image: 'https://images.unsplash.com/photo-1515823064-d6e0c04616a7?auto=format&fit=crop&w=700&q=80',
+        image: 'images/menu/mat-dirty.jpg',
         flavors: ['matcha', 'bold-coffee'],
         flavorLabels: ['Ceremonial Matcha', 'Bold Coffee']
       },
@@ -268,7 +268,7 @@ document.addEventListener('DOMContentLoaded', () => {
         priceHot: 120,
         description: 'Layered handcrafted sweet berry compote with milk and crowned with frothy green matcha.',
         tags: ['Matcha', 'Sweet Berry Layer'],
-        image: 'https://images.unsplash.com/photo-1553787499-6f9133860278?auto=format&fit=crop&w=700&q=80',
+        image: 'images/menu/mat-berry.jpg',
         flavors: ['matcha', 'fruity-berry'],
         flavorLabels: ['Ceremonial Matcha', 'Fruity & Berry']
       },
@@ -284,7 +284,7 @@ document.addEventListener('DOMContentLoaded', () => {
         priceHot: 120,
         description: 'Vibrant dual-color fusion of velvety purple yam and green ceremonial matcha tea.',
         tags: ['Matcha', 'Ube Fusion'],
-        image: 'https://images.unsplash.com/photo-1505252585461-04db1eb84625?auto=format&fit=crop&w=700&q=80',
+        image: 'images/menu/mat-ube.jpg',
         flavors: ['matcha', 'sweet-caramel'],
         flavorLabels: ['Ceremonial Matcha', 'Sweet & Caramel']
       },
@@ -300,7 +300,7 @@ document.addEventListener('DOMContentLoaded', () => {
         priceHot: 120,
         description: 'Deep cocoa chocolate swirled together with vibrant ceremonial green tea.',
         tags: ['Matcha', 'Choco Swirl'],
-        image: 'https://images.unsplash.com/photo-1544787219-7f47ccb76574?auto=format&fit=crop&w=700&q=80',
+        image: 'images/menu/mat-choco.jpg',
         flavors: ['matcha', 'chocolate-malt'],
         flavorLabels: ['Ceremonial Matcha', 'Chocolate & Malt']
       },
@@ -316,7 +316,7 @@ document.addEventListener('DOMContentLoaded', () => {
         priceHot: 120,
         description: 'Ceremonial matcha latte drizzled with luscious buttery golden caramel syrup.',
         tags: ['Matcha', 'Golden Caramel'],
-        image: 'https://images.unsplash.com/photo-1536256263959-770b48d82b0a?auto=format&fit=crop&w=700&q=80',
+        image: 'images/menu/mat-caramel.jpg',
         flavors: ['matcha', 'sweet-caramel'],
         flavorLabels: ['Ceremonial Matcha', 'Sweet & Caramel']
       },
@@ -334,7 +334,7 @@ document.addEventListener('DOMContentLoaded', () => {
         priceHot: 90,
         description: 'Rich, creamy malted chocolate beverage prepared hot or poured over cracked ice with malt powder.',
         tags: ['Bestseller', 'Nostalgia Classic'],
-        image: 'https://images.unsplash.com/photo-1544787219-7f47ccb76574?auto=format&fit=crop&w=700&q=80',
+        image: 'images/menu/hs-milo.jpg',
         flavors: ['chocolate-malt'],
         flavorLabels: ['Chocolate & Malt']
       },
@@ -350,7 +350,7 @@ document.addEventListener('DOMContentLoaded', () => {
         priceHot: 90,
         description: 'Decadent, velvety chocolate milk made with pure cocoa and smooth fresh milk.',
         tags: ['House Special', 'Pure Chocolate'],
-        image: 'https://images.unsplash.com/photo-1542990253-0d0f5be5f0ed?auto=format&fit=crop&w=700&q=80',
+        image: 'images/menu/hs-choco.jpg',
         flavors: ['chocolate-malt'],
         flavorLabels: ['Chocolate & Malt']
       },
@@ -366,7 +366,7 @@ document.addEventListener('DOMContentLoaded', () => {
         priceHot: 90,
         description: 'Indulgent sweet chocolate milk infused with real strawberry and mixed berry nectar.',
         tags: ['House Special', 'Berry & Choco'],
-        image: 'https://images.unsplash.com/photo-1579954115545-a95591f28bfc?auto=format&fit=crop&w=700&q=80',
+        image: 'images/menu/hs-chocoberry.jpg',
         flavors: ['chocolate-malt', 'fruity-berry'],
         flavorLabels: ['Chocolate & Malt', 'Fruity & Berry']
       },
@@ -384,7 +384,7 @@ document.addEventListener('DOMContentLoaded', () => {
         priceHot: null,
         description: 'Crisp, refreshing sparkling soda or creamy yogurt drink infused with ripe strawberry puree.',
         tags: ['Yogurt / Soda', 'Iced Only'],
-        image: 'https://images.unsplash.com/photo-1553787499-6f9133860278?auto=format&fit=crop&w=700&q=80',
+        image: 'images/menu/ys-strawberry.jpg',
         flavors: ['fruity-berry'],
         flavorLabels: ['Fruity & Refreshing']
       },
@@ -400,7 +400,7 @@ document.addEventListener('DOMContentLoaded', () => {
         priceHot: null,
         description: 'Tart and sweet wild blueberry syrup paired with effervescent soda or chilled probiotic yogurt.',
         tags: ['Yogurt / Soda', 'Iced Only'],
-        image: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=700&q=80',
+        image: 'images/menu/ys-blueberry.jpg',
         flavors: ['fruity-berry'],
         flavorLabels: ['Fruity & Refreshing']
       },
@@ -416,7 +416,7 @@ document.addEventListener('DOMContentLoaded', () => {
         priceHot: null,
         description: 'Vibrant blend of summer berries sparkling with crisp botanical soda or smooth yogurt.',
         tags: ['Yogurt / Soda', 'Iced Only'],
-        image: 'https://images.unsplash.com/photo-1497534446932-c925b458314e?auto=format&fit=crop&w=700&q=80',
+        image: 'images/menu/ys-mixed-berries.jpg',
         flavors: ['fruity-berry'],
         flavorLabels: ['Fruity & Refreshing']
       },
@@ -432,7 +432,7 @@ document.addEventListener('DOMContentLoaded', () => {
         priceHot: null,
         description: 'Zesty, bright green apple cordial served over ice with fizzy sparkling soda or creamy yogurt.',
         tags: ['Yogurt / Soda', 'Iced Only'],
-        image: 'https://images.unsplash.com/photo-1517256064527-09c73fc73e38?auto=format&fit=crop&w=700&q=80',
+        image: 'images/menu/ys-green-apple.jpg',
         flavors: ['fruity-berry'],
         flavorLabels: ['Fruity & Refreshing']
       }
@@ -621,7 +621,7 @@ document.addEventListener('DOMContentLoaded', () => {
     menuGrid.innerHTML = items.map(item => `
       <article class="menu-card" data-id="${item.id}">
         <div class="menu-card-img-wrap">
-          <img src="${item.image}" alt="${item.name}" loading="lazy" width="700" height="438">
+          <img src="${item.image}?v=6.0" alt="${item.name}" loading="lazy" width="700" height="438">
           <span class="card-pill-tag">${item.tags[0] || 'Specialty'}</span>
         </div>
         <div class="menu-card-body">
@@ -724,7 +724,7 @@ document.addEventListener('DOMContentLoaded', () => {
     customQty = 1;
 
     if (orderModalImg) {
-      orderModalImg.src = item.image;
+      orderModalImg.src = `${item.image}?v=6.0`;
       orderModalImg.alt = item.name;
     }
     if (orderModalCategory) {

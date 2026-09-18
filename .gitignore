@@ -95,6 +95,7 @@ playwright/.cache/
 .playwright/
 cypress/videos/
 cypress/screenshots/
+tests/screenshots/
 
 # Temporary, Cache & Scratch Directories
 .cache/
@@ -104,8 +105,8 @@ temp/
 scratch/
 
 # Agent / Antigravity Local Runtime Data
-# .agents/                    #Uncomment this if the agent is installed and you don't want to push the .agents directory
-# skills-lock.json           #Uncomment this if the agent is installed and you don't want to push the skills-lock.json file
+.agents/
+skills-lock.json
 .gemini/
 .antigravity/
 .system_generated/
