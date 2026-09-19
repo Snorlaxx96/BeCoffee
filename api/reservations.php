@@ -13,13 +13,17 @@ if ($method === 'POST') {
     $input = getJsonInput();
 
     $bookingType   = trim($input['booking_type'] ?? 'table');
-    $locationCode  = trim($input['location_code'] ?? 'bgc');
+    $locationCode  = trim($input['location_code'] ?? 'putik');
     $guests        = max(1, (int) ($input['guests'] ?? 2));
     $preferredDate = trim($input['preferred_date'] ?? '');
     $preferredTime = trim($input['preferred_time'] ?? '');
     $customerName  = trim($input['customer_name'] ?? '');
     $customerPhone = trim($input['customer_phone'] ?? '');
     $notes         = trim($input['notes'] ?? '');
+
+    if (in_array($bookingType, ['cupping', 'espresso-class']) && $guests > 6) {
+        jsonResponse(['success' => false, 'error' => 'Barista Guild & Cupping workshops are strictly capped at a maximum of 6 participants.'], 422);
+    }
 
     if (empty($preferredDate) || empty($preferredTime) || empty($customerName) || empty($customerPhone)) {
         jsonResponse(['success' => false, 'error' => 'Please fill in all required reservation fields.'], 422);

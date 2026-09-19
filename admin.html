@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Roastery Operations Studio | BeCoffee Admin CMS</title>
+  <meta name="description" content="Administrative catalog and inventory studio for BeCoffee Roastery Philippines.">
+  <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css?v=8.0">
+  <style>
+    body {
+      background: #0D0A08;
+      color: #EBD7C7;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .admin-header-nav {
+      background: rgba(21, 17, 14, 0.96);
+      border-bottom: 1px solid rgba(223, 155, 100, 0.2);
+      padding: 1rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(16px);
+    }
+    .admin-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      color: #FFF;
+    }
+    .admin-container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 1.5rem;
+      flex: 1;
+      width: 100%;
+    }
+    .admin-login-card {
+      max-width: 440px;
+      margin: 4rem auto;
+      background: #191410;
+      border: 1px solid rgba(223, 155, 100, 0.25);
+      border-radius: var(--radius-lg);
+      padding: 2.5rem;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+    }
+    .admin-panel-card {
+      background: #191410;
+      border: 1px solid rgba(223, 155, 100, 0.2);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+    }
+  </style>
+</head>
+<body>
+  <!-- Admin Header Navigation -->
+  <header class="admin-header-nav">
+    <a href="index.html" class="admin-brand">
+      <div class="logo-symbol">B</div>
+      <div>
+        <span class="brand-name" style="color: #FFF;">BeCoffee</span>
+        <span class="brand-origin" style="color: var(--color-crema-gold);">Admin Studio</span>
+      </div>
+    </a>
+    <div style="display: flex; align-items: center; gap: 1rem;">
+      <a href="index.html" class="btn btn-secondary btn-sm">← Back to Café</a>
+      <button type="button" class="btn btn-sm btn-outline" id="adminLogoutBtn" style="display: none;">Sign Out</button>
+    </div>
+  </header>
+
+  <main class="admin-container">
+    <!-- View 1: Protected Admin Sign-in Screen -->
+    <div class="admin-login-card" id="adminAuthSection">
+      <div style="text-align: center; margin-bottom: 1.5rem;">
+        <div class="logo-symbol" style="margin: 0 auto 1rem; width: 48px; height: 48px; font-size: 1.5rem;">⚙️</div>
+        <h2 style="font-family: var(--font-serif); color: #FFF; font-size: 1.6rem; margin-bottom: 0.35rem;">Staff & Roaster Portal</h2>
+        <p style="color: var(--color-text-secondary); font-size: 0.88rem; margin-bottom: 0;">Sign in with your verified administrative credentials.</p>
+      </div>
+
+      <div id="adminLoginAlert" style="display: none; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-size: 0.85rem; margin-bottom: 1.25rem;"></div>
+
+      <form id="adminLoginForm">
+        <div class="form-group" style="margin-bottom: 1.25rem;">
+          <label for="adminEmail" class="form-label" style="color: #EBD7C7;">Admin Email</label>
+          <input type="email" id="adminEmail" class="form-input" value="admin@becoffee.ph" required autocomplete="username">
+        </div>
+        <div class="form-group" style="margin-bottom: 1.5rem;">
+          <label for="adminPassword" class="form-label" style="color: #EBD7C7;">Master Password</label>
+          <input type="password" id="adminPassword" class="form-input" value="AdminBeCoffee2026!" required autocomplete="current-password">
+        </div>
+        <button type="submit" class="btn btn-crema" id="adminSubmitBtn" style="width: 100%;">
+          Authenticate & Enter Studio
+        </button>
+      </form>
+    </div>
+
+    <!-- View 2: Decoupled Menu Catalog Studio -->
+    <div class="admin-panel-card" id="adminStudioSection" style="display: none;">
+      <div class="cms-header">
+        <div class="cms-header-title-wrap">
+          <div class="cms-badge-symbol" aria-hidden="true">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="3"></circle>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+          </div>
+          <div>
+            <div class="cms-pretitle">Roastery Operations Studio</div>
+            <h1 class="modal-heading" style="margin-bottom: 0.2rem; font-size: 1.5rem; color: #FFF;">BeCoffee Catalog CMS</h1>
+            <p class="modal-sub" style="margin-bottom: 0;">Adjust live prices, toggle availability in 1-click, and manage your roastery catalog.</p>
+          </div>
+        </div>
+        <div class="cms-header-actions">
+          <button type="button" class="btn btn-crema btn-sm cms-add-btn" id="adminAddNewBtn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            Add New Product
+          </button>
+        </div>
+      </div>
+
+      <!-- CMS Summary KPI Cards -->
+      <div class="cms-kpi-grid">
+        <div class="cms-kpi-card total-card">
+          <div class="cms-kpi-icon-pill">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+            </svg>
+          </div>
+          <div class="cms-kpi-content">
+            <span class="cms-kpi-num" id="adminTotalCount">0</span>
+            <span class="cms-kpi-label">Total Catalog Items</span>
+          </div>
+        </div>
+        <div class="cms-kpi-card active-card">
+          <div class="cms-kpi-icon-pill">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+          </div>
+          <div class="cms-kpi-content">
+            <span class="cms-kpi-num" id="adminActiveCount">0</span>
+            <span class="cms-kpi-label">Available / In Stock</span>
+          </div>
+        </div>
+        <div class="cms-kpi-card unavailable-card">
+          <div class="cms-kpi-icon-pill">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
+            </svg>
+          </div>
+          <div class="cms-kpi-content">
+            <span class="cms-kpi-num" id="adminUnavailableCount">0</span>
+            <span class="cms-kpi-label">Unavailable / Sold Out</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- CMS Toolbar: Search & Category Filter Tabs -->
+      <div class="cms-toolbar">
+        <div class="cms-search-box">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input type="search" id="adminSearchInput" class="form-input cms-search-input" placeholder="Search drink name, origin, or slug...">
+        </div>
+        <div class="cms-cat-tabs" id="adminCategoryFilters" role="tablist">
+          <button type="button" class="cms-tab active" data-cat="all">All Items</button>
+          <button type="button" class="cms-tab" data-cat="house-coffee">House Coffee</button>
+          <button type="button" class="cms-tab" data-cat="matcha">Matcha</button>
+          <button type="button" class="cms-tab" data-cat="house-specials">House Specials</button>
+          <button type="button" class="cms-tab" data-cat="yogurt-soda">Yogurt / Soda</button>
+        </div>
+      </div>
+
+      <!-- CMS Product Items List / Table -->
+      <div class="cms-list-container" id="adminItemsContainer">
+        <div class="cms-loading-state">Connecting to catalog database...</div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Product Add / Edit Modal -->
+  <div class="modal-overlay" id="adminProductEditModal" aria-modal="true" role="dialog" aria-label="Edit Product">
+    <div class="modal-box prod-edit-modal-box">
+      <button type="button" class="modal-close-btn" id="closeAdminEditModalBtn" aria-label="Close Editor">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+
+      <h3 class="modal-heading" id="adminProdModalTitle">Add New Product</h3>
+      <p class="modal-sub" id="adminProdModalSubtitle">Fill in beverage specifications and pricing tiers.</p>
+
+      <form id="adminProductEditForm">
+        <input type="hidden" id="adminEditOriginalId">
+        <div class="form-row-2">
+          <div class="form-group">
+            <label for="adminEditCategory" class="form-label">Category</label>
+            <select id="adminEditCategory" class="form-select" required>
+              <option value="1">House Coffee</option>
+              <option value="2">Matcha</option>
+              <option value="3">House Specials</option>
+              <option value="4">Yogurt / Soda</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="adminEditName" class="form-label">Product Name</label>
+            <input type="text" id="adminEditName" class="form-input" placeholder="e.g. Hazelnut Macchiato" required>
+          </div>
+        </div>
+
+        <div class="form-row-2">
+          <div class="form-group">
+            <label for="adminEditSlug" class="form-label">Product ID / Slug</label>
+            <input type="text" id="adminEditSlug" class="form-input" placeholder="e.g. hc-hazelnut">
+          </div>
+          <div class="form-group">
+            <label for="adminEditPrice" class="form-label">Base Display Price (₱)</label>
+            <input type="number" id="adminEditPrice" class="form-input" min="0" step="any" placeholder="120" required>
+          </div>
+        </div>
+
+        <div class="form-row-3">
+          <div class="form-group">
+            <label for="adminEditPriceIcedM" class="form-label">Small / 12oz (₱)</label>
+            <input type="number" id="adminEditPriceIcedM" class="form-input" min="0" step="any" placeholder="120" required>
+          </div>
+          <div class="form-group">
+            <label for="adminEditPriceIcedL" class="form-label">Medium / 16oz (₱)</label>
+            <input type="number" id="adminEditPriceIcedL" class="form-input" min="0" step="any" placeholder="140">
+          </div>
+          <div class="form-group">
+            <label for="adminEditPriceHot" class="form-label">Hot Price (₱)</label>
+            <input type="number" id="adminEditPriceHot" class="form-input" min="0" step="any" placeholder="120">
+          </div>
+        </div>
+
+        <div class="form-row-2">
+          <div class="form-group">
+            <label for="adminEditOrigin" class="form-label">Origin / Blend Notes</label>
+            <input type="text" id="adminEditOrigin" class="form-input" placeholder="e.g. House Blend Roast">
+          </div>
+          <div class="form-group">
+            <label for="adminEditElevation" class="form-label">Serving Elevation / Temp</label>
+            <input type="text" id="adminEditElevation" class="form-input" placeholder="Hot / Iced or Iced Only">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="adminEditImage" class="form-label">Image URL / WebP Path</label>
+          <input type="text" id="adminEditImage" class="form-input" placeholder="images/menu/hc-classic.webp" required>
+        </div>
+
+        <div class="form-group">
+          <label for="adminEditDesc" class="form-label">Description</label>
+          <textarea id="adminEditDesc" class="form-input" rows="3" placeholder="Sensory notes and ingredients..."></textarea>
+        </div>
+
+        <div class="form-row-2" style="margin-top: 1rem;">
+          <label class="cms-checkbox-label" style="font-weight: 600;">
+            <input type="checkbox" id="adminEditBestseller"> Mark as Bestseller
+          </label>
+          <label class="cms-checkbox-label" style="font-weight: 600;">
+            <input type="checkbox" id="adminEditAvailable" checked> Available in Stock
+          </label>
+        </div>
+
+        <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+          <button type="submit" class="btn btn-crema" style="flex: 1;">Save Product</button>
+          <button type="button" class="btn btn-secondary" id="cancelAdminEditBtn">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="js/menu_data.js?v=8.0"></script>
+  <script src="js/admin.js?v=8.0"></script>
+</body>
+</html>

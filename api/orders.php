@@ -53,31 +53,27 @@ if ($method === 'POST') {
     $customerPhone = trim($input['customer_phone'] ?? '');
     $customerNotes = trim($input['customer_notes'] ?? '');
 
-    // Authentication required: guest ordering is disabled
+    // Guest Checkout Supported: Optional User Association
     $userId = $_SESSION['user_id'] ?? null;
-    if (!$userId) {
-        jsonResponse([
-            'success' => false,
-            'error'   => 'Account required. Please sign in or create an account to complete your order.'
-        ], 401);
-    }
-
-    // Fetch user details from database
-    $userStmt = $db->prepare("SELECT name, phone FROM users WHERE id = ?");
-    $userStmt->execute([$userId]);
-    $user = $userStmt->fetch();
-    if (!$user) {
-        jsonResponse([
-            'success' => false,
-            'error'   => 'User account not found. Please sign in again.'
-        ], 401);
+    if ($userId) {
+        $userStmt = $db->prepare("SELECT name, phone FROM users WHERE id = ?");
+        $userStmt->execute([$userId]);
+        $user = $userStmt->fetch();
+        if ($user) {
+            if (empty($customerName)) {
+                $customerName = $user['name'];
+            }
+            if (empty($customerPhone) && !empty($user['phone'])) {
+                $customerPhone = $user['phone'];
+            }
+        }
     }
 
     if (empty($customerName)) {
-        $customerName = $user['name'];
+        jsonResponse(['success' => false, 'error' => 'Please provide your name for order pickup.'], 422);
     }
     if (empty($customerPhone)) {
-        $customerPhone = !empty($user['phone']) ? $user['phone'] : '+63 900 000 0000';
+        jsonResponse(['success' => false, 'error' => 'Please provide a valid contact mobile number (+63).'], 422);
     }
 
     // Begin Database Transaction for Atomic Order Placement
@@ -103,15 +99,15 @@ if ($method === 'POST') {
         foreach ($items as $it) {
             $itemId = $it['id'] ?? '';
             $qty = max(1, (int) ($it['quantity'] ?? 1));
-            $temp = ($it['temperature'] ?? '') === 'Hot' ? 'Hot' : 'Iced';
-            $size = ($it['size'] ?? '') === 'Medium' ? 'Medium' : 'Small';
+            $rawSize = $it['size'] ?? '';
+            $size = ($rawSize === 'Large') ? 'Large' : 'Medium';
 
             if (!isset($dbMap[$itemId])) {
                 throw new Exception("One or more items in your cart are no longer available.");
             }
 
             $dbItem = $dbMap[$itemId];
-            $unitPrice = ($size === 'Medium')
+            $unitPrice = ($size === 'Large')
                 ? ((float)($dbItem['price_iced_l'] ?? ($dbItem['price'] + 20)))
                 : ((float)($dbItem['price_iced_m'] ?? $dbItem['price']));
 

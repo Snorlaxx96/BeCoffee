@@ -7,7 +7,7 @@
   <meta name="description" content="Specialty coffee roastery in Zamboanga City (Putik & Baliwasan), Philippines. Highlighting Philippine single-origins, handcrafted espresso, pour-overs, cold brews, and artisanal brunch.">
   
   <!-- Favicon and Brand Icons -->
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☕</text></svg>">
+  <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
@@ -30,7 +30,7 @@
       <div class="banner-right">
         <span class="banner-msg">Fresh Roasts Shipped Nationwide</span>
         <a href="#offers" class="banner-link">Subscribe to Beans</a>
-        <button type="button" class="banner-close-btn" id="closeBannerBtn" aria-label="Dismiss Announcement">
+        <button type="button" class="banner-close-btn" id="closeBannerBtn" aria-label="Dismiss Announcement" onclick="(function(btn){var b=btn.closest('#topBanner')||document.getElementById('topBanner');if(b){b.classList.add('banner-dismissed');setTimeout(function(){b.style.display='none';b.setAttribute('aria-hidden','true');},280);}})(this)">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
             <line x1="18" y1="6" x2="6" y2="18"></line>
             <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -62,7 +62,7 @@
           <li class="mobile-nav-cta" style="margin-top: 0.5rem;"><button type="button" class="btn btn-crema btn-sm open-reserve-trigger" data-preset-type="table" style="width: 100%;">Reserve Experience</button></li>
           <li class="mobile-nav-auth" style="margin-top: 0.35rem;"><button type="button" class="btn btn-secondary btn-sm mobile-auth-trigger" id="mobileAuthTrigger" style="width: 100%;">Member Sign In</button></li>
           <li class="mobile-nav-profile" style="margin-top: 0.35rem;" id="mobileAccountSettingsItem"><button type="button" class="btn btn-secondary btn-sm" id="mobileAccountSettingsTrigger" style="width: 100%;">Account Settings</button></li>
-          <li class="mobile-nav-admin" style="margin-top: 0.35rem;" id="mobileAdminCmsItem"><button type="button" class="btn btn-sm btn-primary mobile-admin-cms-trigger" id="mobileAdminCmsTrigger" style="width: 100%;">Admin CMS ⚙️</button></li>
+          <li class="mobile-nav-admin" style="display: none; margin-top: 0.35rem;" id="mobileAdminCmsItem"><a href="admin.html" class="btn btn-sm btn-primary mobile-admin-cms-trigger" id="mobileAdminCmsTrigger" style="width: 100%;">Admin Studio ⚙️</a></li>
         </ul>
       </nav>
 
@@ -96,13 +96,13 @@
         </div>
 
         <!-- Admin CMS Action Trigger (Visible when role === 'admin') -->
-        <button type="button" class="btn btn-sm btn-primary admin-cms-btn" id="adminCmsOpenBtn" style="display: none;" aria-label="Open Menu CMS">
+        <a href="admin.html" class="btn btn-sm btn-primary admin-cms-btn" id="adminCmsOpenBtn" style="display: none;" aria-label="Open Admin Studio">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
             <path d="M12 20h9"></path>
             <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
           </svg>
-          <span>Admin CMS</span>
-        </button>
+          <span>Admin Studio ⚙️</span>
+        </a>
 
         <!-- Cart Drawer Toggle -->
         <button type="button" class="cart-toggle-btn" id="cartToggleBtn" aria-label="View Order Cart">
@@ -155,7 +155,7 @@
           </h1>
 
           <p class="hero-description">
-            BeCoffee bridges rich Philippine roasting traditions with contemporary homemade specialty craft. Experience small-batch house roast profiles, velvety signature lattes, and slow coffee living in the heart of Bonifacio Global City.
+            BeCoffee bridges rich Philippine roasting traditions with contemporary homemade specialty craft. Experience small-batch house roast profiles, velvety signature lattes, and slow coffee living in the heart of Zamboanga City (Putik Slow Bar & Baliwasan Roastery).
           </p>
 
           <div class="hero-cta-group">
@@ -191,8 +191,8 @@
         <!-- Hero Visual Showcase -->
         <div class="hero-visual-wrap">
           <div class="hero-main-card">
-            <img src="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&w=1000&q=80" 
-                 alt="Artisanal BeCoffee Roastery & Slow Bar" 
+            <img src="images/sanctuary/warm_teak_interior.jpg" 
+                 alt="Artisanal BeCoffee Flagship Sanctuary & Slow Bar" 
                  width="1000" 
                  height="1250"
                  loading="eager">
@@ -229,7 +229,7 @@
           <span class="section-tag tag-dark">Signature House Favorites</span>
           <h2 class="section-title title-inverse">Four House Coffees. Handcrafted Daily.</h2>
           <p class="section-subtitle subtitle-inverse">
-            From our velvety homemade caramel extractions to Manila-favorite malted indulgences and pure ceremonial matcha, explore the top four signature house coffees ordered fresh every morning.
+            From our velvety homemade caramel extractions to Zamboanga-favorite malted indulgences and pure ceremonial matcha, explore the top four signature house coffees ordered fresh every morning.
           </p>
         </div>
 
@@ -380,8 +380,7 @@
 
         <!-- Filter Category Tabs -->
         <div class="menu-filter-nav" role="tablist" aria-label="Menu Categories">
-          <button type="button" class="filter-tab active" data-category="all" role="tab">All Items</button>
-          <button type="button" class="filter-tab" data-category="house-coffee" role="tab">House Coffee</button>
+          <button type="button" class="filter-tab active" data-category="house-coffee" role="tab">House Coffee</button>
           <button type="button" class="filter-tab" data-category="matcha" role="tab">Matcha</button>
           <button type="button" class="filter-tab" data-category="house-specials" role="tab">House Specials</button>
           <button type="button" class="filter-tab" data-category="yogurt-soda" role="tab">Yogurt / Soda</button>
@@ -415,7 +414,7 @@
               <span>Whole Bean Roastery Subscription</span>
               <span class="featured-ribbon">Roaster's Club</span>
             </h3>
-            <p>Freshly roasted single-origin Philippine and seasonal micro-lot beans delivered to your doorstep across Metro Manila and provinces.</p>
+            <p>Freshly roasted single-origin Philippine and seasonal micro-lot beans delivered to your doorstep across Zamboanga City and nationwide.</p>
             
             <ul class="offer-features-list">
               <li>
@@ -523,15 +522,15 @@
       <div class="container space-grid">
         <div class="space-image-mosaic">
           <div class="mosaic-item">
-            <img src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=700&q=80" 
-                 alt="BeCoffee Warm Teak Wood Interior" 
+            <img src="images/sanctuary/warm_teak_interior.jpg" 
+                 alt="BeCoffee Flagship Sanctuary Warm Teak Interior" 
                  width="700" 
                  height="875" 
                  loading="lazy">
           </div>
           <div class="mosaic-item">
-            <img src="https://images.unsplash.com/photo-1497636577773-f1231844b336?auto=format&fit=crop&w=700&q=80" 
-                 alt="Specialty Pour-over Brew Station" 
+            <img src="images/sanctuary/slow_bar_pourover.jpg" 
+                 alt="BeCoffee Slow Bar Artisanal Pour-over Station" 
                  width="700" 
                  height="875" 
                  loading="lazy">
@@ -595,8 +594,8 @@
         </div>
 
         <div class="location-tabs" role="tablist" aria-label="Locations">
-          <button type="button" class="loc-tab-btn active" data-location="bgc" role="tab">Zamboanga Flagship Sanctuary (Putik)</button>
-          <button type="button" class="loc-tab-btn" data-location="benguet" role="tab">Baliwasan Roastery & Slow Bar (San Jose Gusu)</button>
+          <button type="button" class="loc-tab-btn active" data-location="putik" role="tab">Zamboanga Flagship Sanctuary (Putik)</button>
+          <button type="button" class="loc-tab-btn" data-location="baliwasan" role="tab">Baliwasan Roastery & Slow Bar (San Jose Gusu)</button>
         </div>
 
         <div class="location-card">
@@ -617,7 +616,7 @@
               </div>
               <div class="loc-detail-row">
                 <svg class="loc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
-                <span id="locPhoneText">+63 62 991 2633 / +63 917 555 2333</span>
+                <a href="tel:+63629912633" id="locPhoneText" class="phone-link" style="color: inherit; text-decoration: underline; text-underline-offset: 3px;">+63 62 991 2633 / +63 917 555 2333</a>
               </div>
               <div class="loc-detail-row">
                 <svg class="loc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
@@ -637,8 +636,8 @@
 
           <div class="loc-img-frame">
             <img id="locImage" 
-                 src="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&w=800&q=80" 
-                 alt="Zamboanga Flagship Sanctuary" 
+                 src="images/locations/putik_flagship.jpg" 
+                 alt="BeCoffee Flagship Sanctuary Putik, Zamboanga City" 
                  width="800" 
                  height="550" 
                  loading="lazy">
@@ -676,17 +675,40 @@
         </div>
         <div class="cart-summary-line">
           <span>Sustainable Packaging</span>
-          <span id="cartEcoFee">₱25</span>
+          <span id="cartEcoFee">₱0</span>
         </div>
         <div class="cart-summary-line grand-total">
           <span>Total (VAT incl.)</span>
           <span id="cartGrandTotal">₱0</span>
         </div>
-        <button type="button" class="btn btn-crema" id="checkoutBtn" style="width: 100%; margin-top: 1rem;" disabled>
+
+        <!-- Frictionless Guest Checkout (No Forced Login Barrier) -->
+        <div class="guest-checkout-box" id="guestCheckoutBox" style="margin-top: 0.85rem; padding: 0.85rem; background: rgba(255,255,255,0.04); border: 1px solid rgba(250,247,242,0.12); border-radius: var(--radius-md);">
+          <div style="font-size: 0.82rem; font-weight: 600; color: #F4C194; margin-bottom: 0.5rem; display: flex; align-items: center; justify-content: space-between;">
+            <span>⚡ Express Checkout</span>
+            <span id="checkoutModeLabel" style="font-size: 0.72rem; color: var(--color-text-secondary); font-weight: 400;">No account required</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 0.45rem;">
+            <div>
+              <label for="orderCustomerName" class="sr-only">Full Name</label>
+              <input type="text" id="orderCustomerName" class="form-input" style="font-size: 0.82rem; padding: 0.45rem 0.65rem;" placeholder="Your Full Name (e.g. Maria Santos)" required>
+            </div>
+            <div>
+              <label for="orderCustomerPhone" class="sr-only">Contact Mobile</label>
+              <input type="tel" id="orderCustomerPhone" class="form-input" style="font-size: 0.82rem; padding: 0.45rem 0.65rem;" placeholder="Mobile Number (+63 9...)" required>
+            </div>
+            <div>
+              <label for="orderCustomerNotes" class="sr-only">Pickup Outpost</label>
+              <input type="text" id="orderCustomerNotes" class="form-input" style="font-size: 0.82rem; padding: 0.45rem 0.65rem;" placeholder="Pickup Outpost (Putik Flagship / Baliwasan)">
+            </div>
+          </div>
+        </div>
+
+        <button type="button" class="btn btn-crema" id="checkoutBtn" style="width: 100%; margin-top: 0.85rem;" disabled>
           Confirm Order Pickup (₱)
         </button>
-        <p id="cartAuthHint" style="display: none; font-size: 0.78rem; color: var(--color-crema-gold); text-align: center; margin-top: 0.6rem; margin-bottom: 0;">
-          🔒 Member account required to order. You'll be prompted to sign in or register.
+        <p id="cartAuthHint" style="font-size: 0.74rem; color: var(--color-text-secondary); text-align: center; margin-top: 0.5rem; margin-bottom: 0;">
+          💡 Pay cash or GCash upon counter pickup.
         </p>
       </div>
     </div>
@@ -719,13 +741,14 @@
           <div class="form-group">
             <label for="bookingLocation" class="form-label">Location Outpost</label>
             <select id="bookingLocation" class="form-select" required>
-              <option value="bgc">Zamboanga Flagship Sanctuary (Putik)</option>
-              <option value="benguet">Baliwasan Roastery & Slow Bar (San Jose Gusu)</option>
+              <option value="putik">Zamboanga Flagship Sanctuary (Putik)</option>
+              <option value="baliwasan">Baliwasan Roastery & Slow Bar (San Jose Gusu)</option>
             </select>
           </div>
           <div class="form-group">
             <label for="bookingGuests" class="form-label">Number of Guests</label>
-            <input type="number" id="bookingGuests" class="form-input" min="1" max="15" value="2" required>
+            <input type="number" id="bookingGuests" class="form-input" min="1" max="12" value="2" required>
+            <small id="bookingGuestsHelp" style="display:block; margin-top:0.35rem; font-size:0.78rem; color:var(--color-text-muted);">Standard table: 1–12. Workshop session: max 6 pax.</small>
           </div>
         </div>
 
@@ -768,6 +791,14 @@
           <span id="bookingPriceEstimate" style="font-size: 1.15rem; font-weight: 700; color: var(--color-crema-amber);">Complimentary</span>
         </div>
 
+        <!-- Privacy Consent Checkbox (RA 10173) -->
+        <div class="form-group privacy-consent-group" style="margin-top: 0.5rem; margin-bottom: 1.25rem;">
+          <label class="privacy-consent-label" style="display: flex; align-items: flex-start; gap: 0.6rem; font-size: 0.82rem; color: var(--color-text-secondary); cursor: pointer; line-height: 1.4;">
+            <input type="checkbox" id="reservePrivacyConsent" required style="margin-top: 0.15rem; accent-color: var(--color-crema-gold);">
+            <span>I consent to BeCoffee storing my contact details for table reservation and cupping updates in accordance with the <a href="#privacy" class="open-privacy-link" style="color: var(--color-crema-gold); text-decoration: underline;">Privacy Notice</a> (RA 10173).</span>
+          </label>
+        </div>
+
         <button type="submit" class="btn btn-crema" style="width: 100%;">
           Confirm Reservation Request
         </button>
@@ -785,7 +816,7 @@
 
       <div class="order-modal-header">
         <div class="order-modal-img-wrap">
-          <img id="orderModalImg" src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=700&q=80" alt="Beverage preview" width="80" height="80">
+          <img id="orderModalImg" src="images/menu/hc-caramel-macchiato.jpg" alt="Beverage preview" width="80" height="80">
         </div>
         <div class="order-modal-info">
           <span class="section-tag" id="orderModalCategory">House Coffee</span>
@@ -836,7 +867,7 @@
             <span class="option-badge">Select 1</span>
           </div>
           <div class="option-chips-grid" id="sizeOptionsGroup" role="radiogroup" aria-label="Beverage Size">
-            <button type="button" class="option-chip active" data-size="Small" role="radio" aria-checked="true" id="sizeSmallBtn">
+            <button type="button" class="option-chip active" data-size="Medium" role="radio" aria-checked="true" id="sizeMediumBtn">
               <span class="chip-icon">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                   <path d="M17 8h1a4 4 0 1 1 0 8h-1"/>
@@ -844,12 +875,12 @@
                 </svg>
               </span>
               <span class="chip-text">
-                <strong>Small</strong>
-                <small>12 oz regular</small>
+                <strong>Medium</strong>
+                <small>16 oz regular</small>
               </span>
-              <span class="chip-price" id="sizeSmallPrice">₱120</span>
+              <span class="chip-price" id="sizeMediumPrice">₱120</span>
             </button>
-            <button type="button" class="option-chip" data-size="Medium" role="radio" aria-checked="false" id="sizeMediumBtn">
+            <button type="button" class="option-chip" data-size="Large" role="radio" aria-checked="false" id="sizeLargeBtn">
               <span class="chip-icon">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                   <path d="M6 8h12l-1.5 13H7.5L6 8Z"/>
@@ -858,10 +889,10 @@
                 </svg>
               </span>
               <span class="chip-text">
-                <strong>Medium</strong>
-                <small>16 oz grande</small>
+                <strong>Large</strong>
+                <small>22 oz grande</small>
               </span>
-              <span class="chip-price" id="sizeMediumPrice">₱140</span>
+              <span class="chip-price" id="sizeLargePrice">₱140</span>
             </button>
           </div>
         </div>
@@ -949,7 +980,15 @@
             <input type="password" id="regPasswordConfirm" class="form-input" placeholder="Re-enter password" minlength="8" required autocomplete="new-password">
           </div>
         </div>
-        <button type="submit" class="btn btn-crema" id="registerSubmitBtn" style="width: 100%; margin-top: 1rem;">
+        <!-- Data Privacy Act of 2012 (RA 10173) Consent -->
+        <div class="form-group privacy-consent-group" style="margin-top: 0.75rem; margin-bottom: 0.25rem;">
+          <label class="privacy-consent-label" style="display: flex; align-items: flex-start; gap: 0.6rem; font-size: 0.82rem; color: var(--color-text-secondary); cursor: pointer; line-height: 1.4;">
+            <input type="checkbox" id="regPrivacyConsent" required style="margin-top: 0.15rem; accent-color: var(--color-crema-gold);">
+            <span>I have read and agree to the <a href="#privacy" class="open-privacy-link" style="color: var(--color-crema-gold); text-decoration: underline;">BeCoffee Privacy Notice</a> and consent to the processing of my account details in compliance with Republic Act No. 10173.</span>
+          </label>
+        </div>
+
+        <button type="submit" class="btn btn-crema" id="registerSubmitBtn" style="width: 100%; margin-top: 0.75rem;">
           Create Member Account
         </button>
       </form>
@@ -1027,204 +1066,7 @@
     </div>
   </div>
 
-  <!-- Admin CMS Management Modal / Dashboard Drawer -->
-  <div class="modal-overlay cms-modal-overlay" id="adminCmsModalOverlay" aria-modal="true" role="dialog" aria-label="Menu CMS Administration">
-    <div class="modal-box cms-modal-box">
-      <div class="modal-sheet-handle" aria-hidden="true"></div>
-      <button type="button" class="modal-close-btn" id="closeAdminCmsBtn" aria-label="Close CMS Window">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-      </button>
 
-      <div class="cms-header">
-        <div class="cms-header-title-wrap">
-          <div class="cms-badge-symbol" aria-hidden="true">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="12" r="3"></circle>
-              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-            </svg>
-          </div>
-          <div>
-            <div class="cms-pretitle">Roastery Operations Studio</div>
-            <h3 class="modal-heading" style="margin-bottom: 0.2rem;">BeCoffee Catalog CMS</h3>
-            <p class="modal-sub" style="margin-bottom: 0;">Adjust live prices, toggle availability in 1-click, and manage your roastery catalog.</p>
-          </div>
-        </div>
-        <div class="cms-header-actions">
-          <button type="button" class="btn btn-crema btn-sm cms-add-btn" id="cmsAddNewBtn">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-            Add New Product
-          </button>
-        </div>
-      </div>
-
-      <!-- CMS Summary KPI Cards -->
-      <div class="cms-kpi-grid">
-        <div class="cms-kpi-card total-card">
-          <div class="cms-kpi-icon-pill">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
-            </svg>
-          </div>
-          <div class="cms-kpi-content">
-            <span class="cms-kpi-num" id="cmsTotalCount">0</span>
-            <span class="cms-kpi-label">Total Catalog Items</span>
-          </div>
-        </div>
-        <div class="cms-kpi-card active-card">
-          <div class="cms-kpi-icon-pill">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-              <polyline points="22 4 12 14.01 9 11.01"></polyline>
-            </svg>
-          </div>
-          <div class="cms-kpi-content">
-            <span class="cms-kpi-num" id="cmsActiveCount">0</span>
-            <span class="cms-kpi-label">Available / In Stock</span>
-          </div>
-        </div>
-        <div class="cms-kpi-card unavailable-card">
-          <div class="cms-kpi-icon-pill">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-              <circle cx="12" cy="12" r="10"></circle>
-              <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
-            </svg>
-          </div>
-          <div class="cms-kpi-content">
-            <span class="cms-kpi-num" id="cmsUnavailableCount">0</span>
-            <span class="cms-kpi-label">Unavailable / Sold Out</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- CMS Toolbar: Search & Category Filter Tabs -->
-      <div class="cms-toolbar">
-        <div class="cms-search-box">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-          <input type="search" id="cmsSearchInput" class="form-input cms-search-input" placeholder="Search drink name, origin, or slug...">
-        </div>
-        <div class="cms-cat-tabs" id="cmsCategoryFilters" role="tablist">
-          <button type="button" class="cms-tab active" data-cat="all">All Items</button>
-          <button type="button" class="cms-tab" data-cat="house-coffee">House Coffee</button>
-          <button type="button" class="cms-tab" data-cat="matcha">Matcha</button>
-          <button type="button" class="cms-tab" data-cat="house-specials">House Specials</button>
-          <button type="button" class="cms-tab" data-cat="yogurt-soda">Yogurt / Soda</button>
-        </div>
-      </div>
-
-      <!-- CMS Product Items List / Table -->
-      <div class="cms-list-container" id="cmsItemsContainer">
-        <div class="cms-loading-state">Loading menu catalog from MySQL...</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Product Add / Edit Modal -->
-  <div class="modal-overlay" id="productEditModalOverlay" aria-modal="true" role="dialog" aria-label="Edit Product">
-    <div class="modal-box prod-edit-modal-box">
-      <button type="button" class="modal-close-btn" id="closeProdEditModalBtn" aria-label="Close Product Editor">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-      </button>
-
-      <h3 class="modal-heading" id="prodModalTitle">Add New Product</h3>
-      <p class="modal-sub" id="prodModalSubtitle">Fill in beverage specifications and pricing tiers.</p>
-
-      <form id="productEditForm">
-        <input type="hidden" id="editOriginalId">
-        <div class="form-row-2">
-          <div class="form-group">
-            <label for="editCategory" class="form-label">Category</label>
-            <select id="editCategory" class="form-select" required>
-              <option value="1">House Coffee</option>
-              <option value="2">Matcha</option>
-              <option value="3">House Specials</option>
-              <option value="4">Yogurt / Soda</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="editName" class="form-label">Product Name</label>
-            <input type="text" id="editName" class="form-input" placeholder="e.g. Hazelnut Macchiato" required>
-          </div>
-        </div>
-
-        <div class="form-row-2">
-          <div class="form-group">
-            <label for="editSlug" class="form-label">Product ID / Slug <small style="color:var(--color-text-secondary);">(auto-generated if empty)</small></label>
-            <input type="text" id="editSlug" class="form-input" placeholder="e.g. hc-hazelnut">
-          </div>
-          <div class="form-group">
-            <label for="editPrice" class="form-label">Base Display Price (₱)</label>
-            <input type="number" id="editPrice" class="form-input" min="0" step="any" placeholder="120" required>
-          </div>
-        </div>
-
-        <div class="form-row-3">
-          <div class="form-group">
-            <label for="editPriceIcedM" class="form-label">Small / 12oz (₱)</label>
-            <input type="number" id="editPriceIcedM" class="form-input" min="0" step="any" placeholder="120" required>
-          </div>
-          <div class="form-group">
-            <label for="editPriceIcedL" class="form-label">Medium / 16oz (₱)</label>
-            <input type="number" id="editPriceIcedL" class="form-input" min="0" step="any" placeholder="140">
-          </div>
-          <div class="form-group">
-            <label for="editPriceHot" class="form-label">Hot Price (₱) <small>(leave blank if iced only)</small></label>
-            <input type="number" id="editPriceHot" class="form-input" min="0" step="any" placeholder="120">
-          </div>
-        </div>
-
-        <div class="form-row-2">
-          <div class="form-group">
-            <label for="editOrigin" class="form-label">Origin / Blend Notes</label>
-            <input type="text" id="editOrigin" class="form-input" placeholder="e.g. House Blend Roast">
-          </div>
-          <div class="form-group">
-            <label for="editElevation" class="form-label">Serving Elevation / Temp</label>
-            <input type="text" id="editElevation" class="form-input" placeholder="Hot / Iced or Iced Only">
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label for="editImage" class="form-label">Image URL / Path</label>
-          <input type="text" id="editImage" class="form-input" placeholder="images/menu/hc-classic.jpg" required>
-        </div>
-
-        <div class="form-group">
-          <label for="editDesc" class="form-label">Description</label>
-          <textarea id="editDesc" class="form-input" rows="3" placeholder="Sensory notes and ingredients..."></textarea>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">Flavor Tags (Menu Matcher)</label>
-          <div class="cms-flavor-checkboxes">
-            <label class="cms-checkbox-label"><input type="checkbox" name="editFlavors" value="bold-coffee"> Bold & Classic Coffee</label>
-            <label class="cms-checkbox-label"><input type="checkbox" name="editFlavors" value="sweet-caramel"> Sweet & Caramel</label>
-            <label class="cms-checkbox-label"><input type="checkbox" name="editFlavors" value="chocolate-malt"> Chocolate & Malt</label>
-            <label class="cms-checkbox-label"><input type="checkbox" name="editFlavors" value="matcha"> Ceremonial Matcha</label>
-            <label class="cms-checkbox-label"><input type="checkbox" name="editFlavors" value="fruity-berry"> Fruity & Refreshing</label>
-          </div>
-        </div>
-
-        <div class="form-row-2" style="margin-top: 1rem;">
-          <label class="cms-checkbox-label" style="font-weight: 600;">
-            <input type="checkbox" id="editBestseller"> Mark as Bestseller
-          </label>
-          <label class="cms-checkbox-label" style="font-weight: 600;">
-            <input type="checkbox" id="editAvailable" checked> Available in Stock
-          </label>
-        </div>
-
-        <div style="display: flex; gap: 1rem; margin-top: 2rem;">
-          <button type="submit" class="btn btn-crema" id="saveProductBtn" style="flex: 1;">
-            Save Product to Menu
-          </button>
-          <button type="button" class="btn btn-secondary" id="cancelProdEditBtn">
-            Cancel
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
 
   <!-- Site Footer -->
   <footer class="site-footer">
@@ -1273,21 +1115,89 @@
           <ul class="footer-nav-list">
             <li><a href="#locations">Zamboanga Flagship Sanctuary</a></li>
             <li><a href="#locations">Baliwasan Roastery & Slow Bar</a></li>
-            <li><a href="tel:+63629912633">+63 62 991 2633</a></li>
+            <li><a href="tel:+63629912633">+63 62 991 2633 (Putik Flagship)</a></li>
+            <li><a href="tel:+639175552333">+63 917 555 2333 (Baliwasan Outpost)</a></li>
             <li><a href="mailto:hello@becoffee.ph">hello@becoffee.ph</a></li>
-            <li><a href="#">Instagram @becoffee.ph</a></li>
+            <li><a href="https://www.instagram.com/becoffee.ph" target="_blank" rel="noopener noreferrer">Instagram @becoffee.ph</a></li>
           </ul>
         </div>
       </div>
 
       <div class="footer-bottom">
+        <div class="footer-legal-row" style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; margin-bottom: 0.75rem; font-size: 0.85rem;">
+          <button type="button" class="footer-legal-btn open-privacy-link" style="background: none; border: none; color: var(--color-crema-gold); cursor: pointer; padding: 0; font-size: inherit; text-decoration: underline;">Privacy Notice (RA 10173)</button>
+          <span style="color: rgba(255,255,255,0.3);" aria-hidden="true">•</span>
+          <button type="button" class="footer-legal-btn open-privacy-link" style="background: none; border: none; color: var(--color-crema-gold); cursor: pointer; padding: 0; font-size: inherit; text-decoration: underline;">NPC Compliance & Data Subject Rights</button>
+          <span style="color: rgba(255,255,255,0.3);" aria-hidden="true">•</span>
+          <a href="#locations" style="color: var(--color-crema-gold); text-decoration: underline;">Putik & Baliwasan Roasteries</a>
+        </div>
         <span>© 2026 BeCoffee Roasters Inc. Crafted with pride in the Philippines. All rights reserved.</span>
         <span>Currency: Philippine Peso (₱ / PHP) · Putik & Baliwasan, Zamboanga City</span>
       </div>
     </div>
   </footer>
 
-  <!-- Application JavaScript -->
+  <!-- Philippine Data Privacy Act Notice Modal (RA 10173) -->
+  <div class="modal-overlay" id="privacyModalOverlay" aria-modal="true" role="dialog" aria-label="BeCoffee Privacy Notice">
+    <div class="modal-box" style="max-width: 680px; max-height: 85vh; display: flex; flex-direction: column;">
+      <div class="modal-sheet-handle" aria-hidden="true"></div>
+      <button type="button" class="modal-close-btn" id="closePrivacyBtn" aria-label="Close Privacy Window">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+
+      <div style="border-bottom: 1px solid var(--color-border-subtle); padding-bottom: 1rem; margin-bottom: 1rem;">
+        <span class="section-tag" style="margin-bottom: 0.35rem; display: inline-block;">Republic Act No. 10173 Compliance</span>
+        <h3 class="modal-heading" style="margin-bottom: 0.25rem;">BeCoffee Privacy Notice</h3>
+        <p class="modal-sub" style="margin-bottom: 0;">National Privacy Commission (NPC) Circular & Data Subject Rights</p>
+      </div>
+
+      <div style="overflow-y: auto; padding-right: 0.5rem; font-size: 0.88rem; line-height: 1.6; color: var(--color-text-secondary);">
+        <p style="margin-top: 0;"><strong>Effective Date:</strong> January 2026 · <strong>Operating Entity:</strong> BeCoffee Roasters Inc. (Zamboanga City, Philippines)</p>
+        
+        <h4 style="color: var(--color-roast-obsidian); margin-top: 1.25rem; margin-bottom: 0.4rem; font-size: 0.98rem;">1. General Principle & Commitment</h4>
+        <p>In adherence to <strong>Republic Act No. 10173</strong>, otherwise known as the <em>Data Privacy Act of 2012 (DPA)</em>, its Implementing Rules and Regulations (IRR), and issuances of the National Privacy Commission (NPC), BeCoffee is dedicated to safeguarding your personal data privacy and ensuring transparency in all our processing activities.</p>
+
+        <h4 style="color: var(--color-roast-obsidian); margin-top: 1.25rem; margin-bottom: 0.4rem; font-size: 0.98rem;">2. Personal Data We Collect</h4>
+        <ul style="margin: 0.25rem 0 0.75rem 1.25rem; list-style-type: disc;">
+          <li><strong>Member Accounts:</strong> Full name, verified email address, Philippine mobile contact number (+63), securely hashed password.</li>
+          <li><strong>Reservations & Cupping Experiences:</strong> Preferred outpost (Putik Flagship or Baliwasan Roastery), party size, reservation date & time slot, dietary notes or special requests.</li>
+          <li><strong>Orders & Transacting:</strong> Drink specifications (temperature, size, dairy preferences), delivery/pickup timeline, transaction totals in Philippine Pesos (₱).</li>
+        </ul>
+
+        <h4 style="color: var(--color-roast-obsidian); margin-top: 1.25rem; margin-bottom: 0.4rem; font-size: 0.98rem;">3. Purpose of Processing</h4>
+        <p>We collect and utilize your personal information exclusively for:</p>
+        <ul style="margin: 0.25rem 0 0.75rem 1.25rem; list-style-type: disc;">
+          <li>Facilitating specialty coffee pickup orders, brew workshop scheduling, and slow bar reservations.</li>
+          <li>Managing your authenticated member account credentials with bcrypt protection.</li>
+          <li>Direct transactional alerts (SMS/Email confirmations regarding your table bookings or fresh bean orders).</li>
+          <li>Internal roastery operations and fulfilling local Philippine tax/regulatory obligations.</li>
+        </ul>
+
+        <h4 style="color: var(--color-roast-obsidian); margin-top: 1.25rem; margin-bottom: 0.4rem; font-size: 0.98rem;">4. Your Rights as a Data Subject</h4>
+        <p>Under the Data Privacy Act of 2012, you possess the following statutory rights:</p>
+        <ul style="margin: 0.25rem 0 0.75rem 1.25rem; list-style-type: disc;">
+          <li><strong>Right to be Informed:</strong> To understand how and why your personal data is collected and processed.</li>
+          <li><strong>Right to Access:</strong> To request a copy of your personal record stored within our systems.</li>
+          <li><strong>Right to Rectification:</strong> To modify your name, contact phone, or password at any time via Account Settings.</li>
+          <li><strong>Right to Erasure or Blocking:</strong> To request account deletion and removal from reservation archives.</li>
+          <li><strong>Right to File a Complaint:</strong> Before the National Privacy Commission (<a href="https://privacy.gov.ph" target="_blank" rel="noopener" style="color: var(--color-crema-gold);">privacy.gov.ph</a>) should you feel your rights have been violated.</li>
+        </ul>
+
+        <h4 style="color: var(--color-roast-obsidian); margin-top: 1.25rem; margin-bottom: 0.4rem; font-size: 0.98rem;">5. Data Storage & Security Measures</h4>
+        <p>Your records are retained on secure servers with strict access boundaries, parameterized PDO statements, HTTPS encryption, and session isolation. We never sell or lease your personal information to third-party advertisers or brokers.</p>
+
+        <h4 style="color: var(--color-roast-obsidian); margin-top: 1.25rem; margin-bottom: 0.4rem; font-size: 0.98rem;">6. Contact Our Data Protection Officer</h4>
+        <p style="margin-bottom: 0;">For inquiries regarding your personal data rights, email our Data Protection Officer at <a href="mailto:privacy@becoffee.ph" style="color: var(--color-crema-gold); font-weight: 600;">privacy@becoffee.ph</a> or visit our Flagship Sanctuary: RCDAO Village, Putik, Zamboanga City, 7000, Philippines.</p>
+      </div>
+
+      <div style="margin-top: 1.25rem; border-top: 1px solid var(--color-border-subtle); padding-top: 1rem; text-align: right;">
+        <button type="button" class="btn btn-crema btn-sm" id="ackPrivacyBtn">Understood & Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Application JavaScript & Catalog Data -->
+  <script src="js/menu_data.js?v=7.0"></script>
   <script src="js/app.js?v=7.0"></script>
 </body>
 </html>

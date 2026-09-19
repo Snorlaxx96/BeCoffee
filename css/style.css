@@ -213,9 +213,8 @@ button:disabled {
 }
 
 .top-banner.banner-dismissed {
-  opacity: 0;
-  transform: translateX(-50%) translateY(-24px);
-  pointer-events: none;
+  animation: banner-pop-out 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+  pointer-events: none !important;
 }
 
 @keyframes banner-pop-in {
@@ -226,6 +225,19 @@ button:disabled {
   to {
     opacity: 1;
     transform: translateX(-50%) translateY(0);
+  }
+}
+
+@keyframes banner-pop-out {
+  from {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+    visibility: visible;
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-24px);
+    visibility: hidden;
   }
 }
 
@@ -284,14 +296,15 @@ button:disabled {
 .banner-link:hover {
   color: #FFFFFF;
 }
-
 .banner-close-btn {
   background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.16);
   color: #EBD7C7;
   cursor: pointer;
-  width: 26px;
-  height: 26px;
+  width: 30px;
+  height: 30px;
+  min-width: 30px;
+  min-height: 30px;
   border-radius: 50%;
   display: inline-flex;
   align-items: center;
@@ -300,17 +313,32 @@ button:disabled {
   transition: all var(--trans-fast);
   padding: 0;
   position: relative;
+  z-index: 5;
+  pointer-events: auto;
+  touch-action: manipulation;
 }
 
 .banner-close-btn::before {
   content: '';
   position: absolute;
-  inset: -9px;
+  inset: -10px;
+  background: transparent;
+  cursor: pointer;
 }
 
 .banner-close-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.25);
   color: #FFFFFF;
+  transform: scale(1.08);
+}
+
+.banner-close-btn:active {
+  transform: scale(0.92);
+}
+
+.banner-close-btn svg {
+  pointer-events: none;
+  display: block;
 }
 
 @media (max-width: 768px) {
@@ -2291,6 +2319,9 @@ nav {
     transition: all var(--trans-normal);
     gap: 1.15rem;
     align-items: flex-start;
+    max-height: calc(100dvh - 76px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
   .nav-links.active {
@@ -2328,10 +2359,6 @@ nav {
 
   .location-tabs {
     flex-direction: column;
-  }
-
-  .top-banner {
-    display: none;
   }
 
   .menu-grid {
@@ -2381,6 +2408,8 @@ nav {
     padding-bottom: max(1.5rem, env(safe-area-inset-bottom, 20px));
     transform: translateY(100%);
     transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
   .modal-overlay.active .modal-box {
@@ -2582,6 +2611,7 @@ nav {
 
   .nav-links {
     top: 64px;
+    max-height: calc(100dvh - 64px);
   }
 
   .brand-logo {

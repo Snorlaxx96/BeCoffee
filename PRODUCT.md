@@ -5,7 +5,7 @@
 - **Status:** Active / Greenfield
 - **Platform:** Web (Responsive Desktop & Mobile)
 - **Stack:** Modern Semantic HTML5, Modular Vanilla CSS (Modern CSS Variables & Tokens), Vanilla ES6+ JavaScript. Designed for zero-dependency local delivery and instant Apache / XAMPP / Web Server deployment.
-- **Location:** Bonifacio Global City (BGC), Taguig & Rizal Ridge, Philippines
+- **Location:** Putik & Baliwasan, Zamboanga City, Philippines
 - **Currency:** Philippine Peso (₱ / PHP)
 
 ## Mission & Positioning
