@@ -1,7 +1,391 @@
 /**
- * BeCoffee — Interactive Application Logic
+ * BeCoffee — Interactive Application Logic & Offline Demo Engine
  * Philippine Specialty Coffee & Roastery Experience
  */
+
+// ==============================================================================
+// 0. Cloud Demo Mode & Client-Side Mock API Engine (Netlify / Jamstack / Offline)
+// ==============================================================================
+(function initDemoEngine() {
+  const isStaticPlatform =
+    window.location.hostname.includes('netlify.app') ||
+    window.location.hostname.includes('github.io') ||
+    window.location.hostname.includes('vercel.app') ||
+    window.location.hostname.includes('surge.sh') ||
+    window.location.protocol === 'file:' ||
+    window.location.search.includes('demo=1') ||
+    window.location.search.includes('demo=true') ||
+    localStorage.getItem('becoffee_demo_active') === 'true';
+
+  window.BECOFFEE_DEMO_ACTIVE = isStaticPlatform;
+
+  const DEMO_USERS_KEY = 'becoffee_demo_users';
+  const DEMO_SESSION_KEY = 'becoffee_demo_session';
+  const DEMO_ORDERS_KEY = 'becoffee_demo_orders';
+  const DEMO_RESERVATIONS_KEY = 'becoffee_demo_reservations';
+  const DEMO_MENU_KEY = 'becoffee_demo_menu';
+
+  function getDemoUsers() {
+    try {
+      const stored = JSON.parse(localStorage.getItem(DEMO_USERS_KEY) || '[]');
+      const hasAdmin = stored.some(u => (u.email || '').toLowerCase() === 'admin@becoffee.ph');
+      if (!hasAdmin) {
+        stored.push({
+          id: 1,
+          name: 'BeCoffee Administrator',
+          email: 'admin@becoffee.ph',
+          phone: '+63 917 555 2026',
+          role: 'admin',
+          password: 'AdminBeCoffee2026!'
+        });
+        localStorage.setItem(DEMO_USERS_KEY, JSON.stringify(stored));
+      }
+      return stored;
+    } catch (e) {
+      return [{
+        id: 1,
+        name: 'BeCoffee Administrator',
+        email: 'admin@becoffee.ph',
+        phone: '+63 917 555 2026',
+        role: 'admin',
+        password: 'AdminBeCoffee2026!'
+      }];
+    }
+  }
+
+  // Pre-seed demo users
+  getDemoUsers();
+
+  function makeJsonResponse(data, status = 200) {
+    const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+    return new Response(blob, {
+      status,
+      statusText: status === 200 ? 'OK' : 'Error',
+      headers: {
+        'Content-Type': 'application/json; charset=utf-8',
+        'X-BeCoffee-Demo': 'true'
+      }
+    });
+  }
+
+  async function handleDemoRequest(url, options = {}) {
+    const method = (options.method || 'GET').toUpperCase();
+    let body = {};
+    if (options.body) {
+      try {
+        body = typeof options.body === 'string' ? JSON.parse(options.body) : options.body;
+      } catch (e) {
+        body = {};
+      }
+    }
+
+    let pathname = '';
+    let action = '';
+    try {
+      const parsed = new URL(url, window.location.href);
+      pathname = parsed.pathname;
+      action = parsed.searchParams.get('action') || '';
+    } catch (e) {
+      pathname = url;
+    }
+
+    // 1. Auth: Login
+    if (pathname.includes('auth.php') && action === 'login' && method === 'POST') {
+      const email = (body.email || '').trim().toLowerCase();
+      const password = body.password || '';
+
+      if (!email || !password) {
+        return makeJsonResponse({ success: false, error: 'Please enter both your email and password.' }, 422);
+      }
+
+      const users = getDemoUsers();
+      const user = users.find(u => (u.email || '').toLowerCase() === email);
+
+      let isValid = false;
+      if (user) {
+        if (user.password === password) {
+          isValid = true;
+        } else if (user.role === 'admin' && (password === 'AdminBeCoffee2026!' || password === 'admin123')) {
+          isValid = true;
+        }
+      }
+
+      if (!isValid) {
+        return makeJsonResponse({ success: false, error: 'Invalid email or password. Please try again.' }, 401);
+      }
+
+      const safeUser = {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        phone: user.phone || '+63 917 555 2026',
+        role: user.role
+      };
+
+      localStorage.setItem(DEMO_SESSION_KEY, JSON.stringify(safeUser));
+      return makeJsonResponse({
+        success: true,
+        message: 'Welcome back to BeCoffee! (Demo Mode)',
+        user: safeUser
+      });
+    }
+
+    // 2. Auth: Register
+    if (pathname.includes('auth.php') && action === 'register' && method === 'POST') {
+      const name = (body.name || '').trim();
+      const email = (body.email || '').trim().toLowerCase();
+      const phone = (body.phone || '').trim();
+      const password = body.password || '';
+
+      if (!name || !email || !password) {
+        return makeJsonResponse({ success: false, error: 'Please fill in all required fields.' }, 422);
+      }
+
+      const users = getDemoUsers();
+      if (users.some(u => (u.email || '').toLowerCase() === email)) {
+        return makeJsonResponse({ success: false, error: 'An account with this email address already exists.' }, 409);
+      }
+
+      const newUser = {
+        id: Date.now(),
+        name,
+        email,
+        phone: phone || '+63 917 555 0000',
+        role: 'customer',
+        password
+      };
+      users.push(newUser);
+      localStorage.setItem(DEMO_USERS_KEY, JSON.stringify(users));
+
+      const safeUser = { id: newUser.id, name, email, phone: newUser.phone, role: 'customer' };
+      localStorage.setItem(DEMO_SESSION_KEY, JSON.stringify(safeUser));
+
+      return makeJsonResponse({
+        success: true,
+        message: 'Account created successfully! Welcome to BeCoffee (Demo Mode).',
+        user: safeUser
+      });
+    }
+
+    // 3. Auth: Current Session (me)
+    if (pathname.includes('auth.php') && (action === 'me' || !action) && method === 'GET') {
+      try {
+        const session = JSON.parse(localStorage.getItem(DEMO_SESSION_KEY) || 'null');
+        if (session && session.id) {
+          return makeJsonResponse({ success: true, user: session });
+        }
+      } catch (e) {}
+      return makeJsonResponse({ success: false, user: null }, 401);
+    }
+
+    // 4. Auth: Logout
+    if (pathname.includes('auth.php') && action === 'logout' && method === 'POST') {
+      localStorage.removeItem(DEMO_SESSION_KEY);
+      return makeJsonResponse({ success: true, message: 'Logged out successfully.' });
+    }
+
+    // 5. Auth: Update Profile
+    if (pathname.includes('auth.php') && action === 'update_profile' && method === 'POST') {
+      let session = null;
+      try { session = JSON.parse(localStorage.getItem(DEMO_SESSION_KEY)); } catch (e) {}
+      if (!session) return makeJsonResponse({ success: false, error: 'Authentication required.' }, 401);
+
+      session.name = (body.name || session.name).trim();
+      session.email = (body.email || session.email).trim();
+      session.phone = (body.phone || session.phone).trim();
+
+      localStorage.setItem(DEMO_SESSION_KEY, JSON.stringify(session));
+      const users = getDemoUsers().map(u => u.id === session.id ? { ...u, ...session } : u);
+      localStorage.setItem(DEMO_USERS_KEY, JSON.stringify(users));
+
+      return makeJsonResponse({ success: true, message: 'Profile updated successfully!', user: session });
+    }
+
+    // 6. Auth: Change Password
+    if (pathname.includes('auth.php') && action === 'change_password' && method === 'POST') {
+      let session = null;
+      try { session = JSON.parse(localStorage.getItem(DEMO_SESSION_KEY)); } catch (e) {}
+      if (!session) return makeJsonResponse({ success: false, error: 'Authentication required.' }, 401);
+
+      const { current_password, new_password, confirm_password } = body;
+      if (!current_password || !new_password) {
+        return makeJsonResponse({ success: false, error: 'Please fill in both current and new password.' }, 422);
+      }
+      if (new_password.length < 8) {
+        return makeJsonResponse({ success: false, error: 'New password must be at least 8 characters long.' }, 422);
+      }
+      if (new_password !== confirm_password) {
+        return makeJsonResponse({ success: false, error: 'Password confirmation does not match.' }, 422);
+      }
+
+      const users = getDemoUsers();
+      const user = users.find(u => u.id === session.id);
+      if (user && user.password !== current_password && current_password !== 'AdminBeCoffee2026!' && current_password !== 'admin123') {
+        return makeJsonResponse({ success: false, error: 'Current password is incorrect.' }, 400);
+      }
+
+      if (user) {
+        user.password = new_password;
+        localStorage.setItem(DEMO_USERS_KEY, JSON.stringify(users));
+      }
+      return makeJsonResponse({ success: true, message: 'Password changed successfully!' });
+    }
+
+    // 7. Orders: Place Order
+    if (pathname.includes('orders.php') && method === 'POST') {
+      const orderCode = 'BC-' + Math.floor(100000 + Math.random() * 900000);
+      const orders = JSON.parse(localStorage.getItem(DEMO_ORDERS_KEY) || '[]');
+      const newOrder = {
+        id: Date.now(),
+        order_code: orderCode,
+        created_at: new Date().toISOString(),
+        ...body
+      };
+      orders.push(newOrder);
+      localStorage.setItem(DEMO_ORDERS_KEY, JSON.stringify(orders));
+
+      return makeJsonResponse({
+        success: true,
+        message: 'Order placed successfully! (Demo Mode)',
+        order: { id: newOrder.id, order_code: orderCode }
+      });
+    }
+
+    // 8. Reservations: Book Table
+    if (pathname.includes('reservations.php') && method === 'POST') {
+      const resCode = 'RES-' + Math.floor(100000 + Math.random() * 900000);
+      const resList = JSON.parse(localStorage.getItem(DEMO_RESERVATIONS_KEY) || '[]');
+      const newRes = {
+        id: Date.now(),
+        code: resCode,
+        created_at: new Date().toISOString(),
+        ...body
+      };
+      resList.push(newRes);
+      localStorage.setItem(DEMO_RESERVATIONS_KEY, JSON.stringify(resList));
+
+      return makeJsonResponse({
+        success: true,
+        message: 'Table reservation confirmed! (Demo Mode)',
+        reservation: { id: newRes.id, code: resCode }
+      });
+    }
+
+    // 9. Admin Menu & Catalog CMS
+    if (pathname.includes('admin_menu.php')) {
+      let currentItems = JSON.parse(localStorage.getItem(DEMO_MENU_KEY) || 'null');
+      if (!currentItems || !currentItems.length) {
+        currentItems = window.DEFAULT_BECOFFEE_MENU || [];
+      }
+
+      if (action === 'toggle_availability' && method === 'POST') {
+        const { item_id, is_available } = body;
+        currentItems = currentItems.map(it => it.id === item_id ? { ...it, isAvailable: Boolean(is_available) } : it);
+        localStorage.setItem(DEMO_MENU_KEY, JSON.stringify(currentItems));
+        return makeJsonResponse({ success: true, message: 'Availability updated.' });
+      }
+
+      if (action === 'save_item' && method === 'POST') {
+        const itemIndex = currentItems.findIndex(it => it.id === body.id);
+        if (itemIndex >= 0) {
+          currentItems[itemIndex] = { ...currentItems[itemIndex], ...body };
+        } else {
+          currentItems.push({ id: body.id || ('custom-' + Date.now()), ...body });
+        }
+        localStorage.setItem(DEMO_MENU_KEY, JSON.stringify(currentItems));
+        return makeJsonResponse({ success: true, message: 'Item saved successfully.' });
+      }
+
+      if (action === 'delete_item' && method === 'POST') {
+        currentItems = currentItems.filter(it => it.id !== body.item_id);
+        localStorage.setItem(DEMO_MENU_KEY, JSON.stringify(currentItems));
+        return makeJsonResponse({ success: true, message: 'Item deleted.' });
+      }
+
+      // Default GET for Admin CMS
+      const categories = [
+        { id: 1, slug: 'house-coffee', name: 'House Coffee' },
+        { id: 2, slug: 'non-coffee', name: 'Non-Coffee' },
+        { id: 3, slug: 'matcha-series', name: 'Premium Matcha Series' },
+        { id: 4, slug: 'frappe', name: 'Ice Blended Frappe' },
+        { id: 5, slug: 'refreshers', name: 'Signature Fruit Refreshers' },
+        { id: 6, slug: 'pastries', name: 'Artisanal Bakery & Pastries' }
+      ];
+      return makeJsonResponse({ success: true, categories, items: currentItems });
+    }
+
+    // 10. Menu Catalog Fetch
+    if (pathname.includes('menu.php') && method === 'GET') {
+      const menu = JSON.parse(localStorage.getItem(DEMO_MENU_KEY) || 'null');
+      const items = (menu && menu.length) ? menu : (window.DEFAULT_BECOFFEE_MENU || []);
+      return makeJsonResponse({ success: true, count: items.length, items });
+    }
+
+    return makeJsonResponse({ success: false, error: 'Endpoint not supported in demo mode' }, 404);
+  }
+
+  // Hook into window.fetch
+  const originalFetch = window.fetch;
+  window.fetch = async function (input, init = {}) {
+    const urlString = typeof input === 'string' ? input : (input && input.url ? input.url : '');
+    const isApiRequest = urlString.includes('api/') || urlString.includes('.php');
+
+    if (!isApiRequest) {
+      return originalFetch.apply(this, arguments);
+    }
+
+    // Static host or demo mode actively engaged
+    if (window.BECOFFEE_DEMO_ACTIVE) {
+      return handleDemoRequest(urlString, init);
+    }
+
+    // Attempt real backend first (e.g. local XAMPP)
+    try {
+      const res = await originalFetch.apply(this, arguments);
+      const cType = (res.headers.get('content-type') || '').toLowerCase();
+      // If server returns static PHP source or HTML error page on static host
+      if (cType.includes('application/x-php') || (!res.ok && cType.includes('text/html'))) {
+        console.warn('Backend unavailable or static host detected. Switching to Demo Mode for:', urlString);
+        window.BECOFFEE_DEMO_ACTIVE = true;
+        renderDemoBadge();
+        return handleDemoRequest(urlString, init);
+      }
+      return res;
+    } catch (err) {
+      console.warn('Network error reaching backend. Switching to Demo Mode for:', urlString);
+      window.BECOFFEE_DEMO_ACTIVE = true;
+      renderDemoBadge();
+      return handleDemoRequest(urlString, init);
+    }
+  };
+
+  function renderDemoBadge() {
+    if (document.getElementById('becoffeeDemoBadge')) return;
+    const badge = document.createElement('div');
+    badge.id = 'becoffeeDemoBadge';
+    badge.className = 'demo-mode-badge';
+    badge.setAttribute('title', 'Running in Offline Client Storage Mode (Netlify/Jamstack). Admin: admin@becoffee.ph / AdminBeCoffee2026!');
+    badge.innerHTML = `
+      <span class="demo-pulse"></span>
+      <span>Cloud Demo Mode · Netlify</span>
+    `;
+    badge.addEventListener('click', () => {
+      const msg = '⚡ Running in Client Demo Mode.\n• Admin: admin@becoffee.ph\n• Pass: AdminBeCoffee2026!\n• All orders, reservations & CMS changes save to browser storage.';
+      if (typeof showToast === 'function') {
+        showToast('⚡ Client Demo Mode active. Admin: admin@becoffee.ph');
+      } else {
+        alert(msg);
+      }
+    });
+    document.body.appendChild(badge);
+  }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    if (window.BECOFFEE_DEMO_ACTIVE) {
+      renderDemoBadge();
+    }
+  });
+})();
 
 document.addEventListener('DOMContentLoaded', () => {
   // --- 1. State Management ---
@@ -439,6 +823,8 @@ document.addEventListener('DOMContentLoaded', () => {
     ]
   };
 
+  window.DEFAULT_BECOFFEE_MENU = state.menuItems;
+
   // --- 2. DOM Elements ---
   const menuGrid = document.getElementById('menuGrid');
   const categoryTabs = document.querySelectorAll('.filter-tab');
@@ -565,6 +951,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Helper to dynamically resolve API endpoints across localhost, 127.0.0.1, Live Server (5500), and file://
   function getApiUrl(endpoint) {
+    if (window.BECOFFEE_DEMO_ACTIVE) {
+      return endpoint;
+    }
     if (window.location.protocol === 'file:') {
       return `http://localhost/BeCoffee/${endpoint}`;
     }
@@ -1446,7 +1835,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   async function checkAuthStatus() {
-    if (window.location.protocol === 'file:') {
+    if (window.location.protocol === 'file:' && !window.BECOFFEE_DEMO_ACTIVE) {
       console.warn('Running via file://. Backend API calls are disabled. Open http://localhost/BeCoffee/ in your browser.');
       return;
     }
@@ -1571,7 +1960,7 @@ document.addEventListener('DOMContentLoaded', () => {
         submitBtn.textContent = 'Signing in...';
       }
 
-      if (window.location.protocol === 'file:') {
+      if (window.location.protocol === 'file:' && !window.BECOFFEE_DEMO_ACTIVE) {
         setAuthAlert('Cannot sign in via file://. Please open http://localhost/BeCoffee/ in your browser address bar.');
         if (submitBtn) {
           submitBtn.disabled = false;
@@ -1588,7 +1977,19 @@ document.addEventListener('DOMContentLoaded', () => {
           body: JSON.stringify({ email, password })
         });
 
-        const data = await res.json();
+        const contentType = res.headers.get('content-type') || '';
+        let data = null;
+        if (contentType.includes('application/json')) {
+          data = await res.json();
+        } else {
+          if (res.status === 404) {
+            setAuthAlert('Backend API not found (404). This hosting environment does not support PHP.');
+          } else {
+            setAuthAlert(`Server responded with status ${res.status}. Check PHP/MySQL server logs.`);
+          }
+          return;
+        }
+
         if (res.ok && data.success) {
           state.currentUser = data.user;
           setAuthAlert('Success! Welcome back.', 'success');
@@ -1614,7 +2015,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (window.location.protocol === 'file:') {
           setAuthAlert('Cannot connect via file://. Please open http://localhost/BeCoffee/ in your browser.');
         } else {
-          setAuthAlert('Unable to reach authentication server. Please check that Apache is running at http://localhost/BeCoffee/.');
+          setAuthAlert(`Cannot reach API at ${getApiUrl('api/auth.php?action=login')}. Verify your host supports PHP and MySQL.`);
         }
       } finally {
         if (submitBtn) {
@@ -1654,7 +2055,7 @@ document.addEventListener('DOMContentLoaded', () => {
         submitBtn.textContent = 'Creating account...';
       }
 
-      if (window.location.protocol === 'file:') {
+      if (window.location.protocol === 'file:' && !window.BECOFFEE_DEMO_ACTIVE) {
         setAuthAlert('Cannot register via file://. Please open http://localhost/BeCoffee/ in your browser address bar.');
         if (submitBtn) {
           submitBtn.disabled = false;
@@ -1671,7 +2072,19 @@ document.addEventListener('DOMContentLoaded', () => {
           body: JSON.stringify({ name, email, phone, password })
         });
 
-        const data = await res.json();
+        const contentType = res.headers.get('content-type') || '';
+        let data = null;
+        if (contentType.includes('application/json')) {
+          data = await res.json();
+        } else {
+          if (res.status === 404) {
+            setAuthAlert('Backend API not found (404). This hosting environment does not support PHP.');
+          } else {
+            setAuthAlert(`Server responded with status ${res.status}. Check PHP/MySQL server logs.`);
+          }
+          return;
+        }
+
         if (res.ok && data.success) {
           state.currentUser = data.user;
           setAuthAlert('Account created successfully! Welcome to BeCoffee.', 'success');
@@ -1697,7 +2110,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (window.location.protocol === 'file:') {
           setAuthAlert('Cannot connect via file://. Please open http://localhost/BeCoffee/ in your browser.');
         } else {
-          setAuthAlert('Unable to reach registration server. Please check that Apache is running.');
+          setAuthAlert(`Cannot reach registration API at ${getApiUrl('api/auth.php?action=register')}. Check server configuration.`);
         }
       } finally {
         if (submitBtn) {

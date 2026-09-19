@@ -3741,4 +3741,49 @@ nav {
   }
 }
 
+/* ==========================================================================
+   Cloud Demo Mode Floating Badge
+   ========================================================================== */
+.demo-mode-badge {
+  position: fixed;
+  bottom: 1.25rem;
+  left: 1.25rem;
+  z-index: 10000;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(30, 24, 20, 0.94);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(223, 155, 100, 0.4);
+  color: #F8F5F0;
+  font-size: 0.76rem;
+  font-weight: 600;
+  padding: 0.45rem 0.9rem;
+  border-radius: 9999px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  user-select: none;
+}
 
+.demo-mode-badge:hover {
+  transform: translateY(-2px);
+  border-color: #DF9B64;
+  box-shadow: 0 6px 24px rgba(223, 155, 100, 0.3);
+}
+
+.demo-mode-badge .demo-pulse {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #DF9B64;
+  box-shadow: 0 0 10px #DF9B64;
+  animation: demoPulseAnim 2s infinite ease-in-out;
+}
+
+@keyframes demoPulseAnim {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.8); }
+}
