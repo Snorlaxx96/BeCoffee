@@ -104,6 +104,20 @@ temp/
 .temp/
 scratch/
 
+# PHP & Composer Dependencies
+vendor/
+composer.phar
+*.phar
+.phpunit.result.cache
+
+# XAMPP & Local Server Overrides / Backups
+*.bak
+*.backup
+*.orig
+*.swp
+*.sqlite
+*.sqlite3
+
 # Agent / Antigravity Local Runtime Data
 .agents/
 skills-lock.json

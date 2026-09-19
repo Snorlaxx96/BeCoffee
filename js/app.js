@@ -508,6 +508,50 @@ document.addEventListener('DOMContentLoaded', () => {
   const authModalTitle = document.getElementById('authModalTitle');
   const authModalSubtitle = document.getElementById('authModalSubtitle');
 
+  // User Account Settings Elements
+  const userProfileTrigger = document.getElementById('userProfileTrigger');
+  const mobileAccountSettingsItem = document.getElementById('mobileAccountSettingsItem');
+  const mobileAccountSettingsTrigger = document.getElementById('mobileAccountSettingsTrigger');
+  const accountSettingsModalOverlay = document.getElementById('accountSettingsModalOverlay');
+  const closeAccountModalBtn = document.getElementById('closeAccountModalBtn');
+  const accountAvatarLarge = document.getElementById('accountAvatarLarge');
+  const accountRolePill = document.getElementById('accountRolePill');
+  const accountModalTitle = document.getElementById('accountModalTitle');
+  const accountModalEmail = document.getElementById('accountModalEmail');
+  const accountAlertBox = document.getElementById('accountAlertBox');
+  const tabProfileBtn = document.getElementById('tabProfileBtn');
+  const tabPasswordBtn = document.getElementById('tabPasswordBtn');
+  const updateProfileForm = document.getElementById('updateProfileForm');
+  const changePasswordForm = document.getElementById('changePasswordForm');
+  const accountNameInput = document.getElementById('accountNameInput');
+  const accountEmailInput = document.getElementById('accountEmailInput');
+  const accountPhoneInput = document.getElementById('accountPhoneInput');
+  const saveProfileBtn = document.getElementById('saveProfileBtn');
+  const currentPasswordInput = document.getElementById('currentPasswordInput');
+  const newPasswordInput = document.getElementById('newPasswordInput');
+  const confirmPasswordInput = document.getElementById('confirmPasswordInput');
+  const savePasswordBtn = document.getElementById('savePasswordBtn');
+
+  // Admin CMS Elements
+  const adminCmsOpenBtn = document.getElementById('adminCmsOpenBtn');
+  const mobileAdminCmsItem = document.getElementById('mobileAdminCmsItem');
+  const mobileAdminCmsTrigger = document.getElementById('mobileAdminCmsTrigger');
+  const adminCmsModalOverlay = document.getElementById('adminCmsModalOverlay');
+  const closeAdminCmsBtn = document.getElementById('closeAdminCmsBtn');
+  const cmsAddNewBtn = document.getElementById('cmsAddNewBtn');
+  const cmsItemsContainer = document.getElementById('cmsItemsContainer');
+  const cmsSearchInput = document.getElementById('cmsSearchInput');
+  const cmsCategoryFilters = document.getElementById('cmsCategoryFilters');
+  const cmsTotalCount = document.getElementById('cmsTotalCount');
+  const cmsActiveCount = document.getElementById('cmsActiveCount');
+  const cmsUnavailableCount = document.getElementById('cmsUnavailableCount');
+  const productEditModalOverlay = document.getElementById('productEditModalOverlay');
+  const closeProdEditModalBtn = document.getElementById('closeProdEditModalBtn');
+  const cancelProdEditBtn = document.getElementById('cancelProdEditBtn');
+  const productEditForm = document.getElementById('productEditForm');
+  const prodModalTitle = document.getElementById('prodModalTitle');
+  const prodModalSubtitle = document.getElementById('prodModalSubtitle');
+
   // Location Outpost Tabs
   const locTabBtns = document.querySelectorAll('.loc-tab-btn');
   const locCardTitle = document.getElementById('locCardTitle');
@@ -517,6 +561,18 @@ document.addEventListener('DOMContentLoaded', () => {
   const locPhoneText = document.getElementById('locPhoneText');
   const locFeaturesText = document.getElementById('locFeaturesText');
   const locImage = document.getElementById('locImage');
+  const locDirectionsBtn = document.getElementById('locDirectionsBtn');
+
+  // Helper to dynamically resolve API endpoints across localhost, 127.0.0.1, Live Server (5500), and file://
+  function getApiUrl(endpoint) {
+    if (window.location.protocol === 'file:') {
+      return `http://localhost/BeCoffee/${endpoint}`;
+    }
+    if (window.location.port && window.location.port !== '80' && window.location.port !== '443') {
+      return `http://localhost/BeCoffee/${endpoint}`;
+    }
+    return endpoint;
+  }
 
   // --- 3. Format Currency in Philippine Pesos (₱) ---
   function formatPHP(amount) {
@@ -568,8 +624,8 @@ document.addEventListener('DOMContentLoaded', () => {
       }, 450);
     };
 
-    // Auto dismiss after exactly 4 seconds
-    dismissTimer = setTimeout(dismissBanner, 4000);
+    // Auto dismiss after exactly 5 seconds
+    dismissTimer = setTimeout(dismissBanner, 5000);
 
     // Manual dismiss button
     if (closeBannerBtn) {
@@ -659,11 +715,13 @@ document.addEventListener('DOMContentLoaded', () => {
       'yogurt-soda': 'Yogurt / Soda'
     };
 
-    menuGrid.innerHTML = items.map(item => `
-      <article class="menu-card" data-id="${item.id}">
+    menuGrid.innerHTML = items.map(item => {
+      const isAvailable = item.isAvailable !== false;
+      return `
+      <article class="menu-card ${isAvailable ? '' : 'item-unavailable'}" data-id="${item.id}">
         <div class="menu-card-img-wrap">
           <img src="${item.image}?v=7.0" alt="${item.name}" loading="lazy" width="700" height="438">
-          <span class="card-pill-tag">${item.tags[0] || 'Specialty'}</span>
+          ${isAvailable ? `<span class="card-pill-tag">${item.tags[0] || 'Specialty'}</span>` : '<span class="card-pill-tag tag-soldout">Sold Out</span>'}
         </div>
         <div class="menu-card-body">
           <div class="card-title-row">
@@ -687,17 +745,22 @@ document.addEventListener('DOMContentLoaded', () => {
               </svg>
               ${categoryLabels[item.category] || 'Specialty'}
             </span>
+            ${isAvailable ? `
             <button type="button" class="add-btn add-to-cart-trigger" data-id="${item.id}" aria-label="Add ${item.name} to order">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
                 <line x1="12" y1="5" x2="12" y2="19"></line>
                 <line x1="5" y1="12" x2="19" y2="12"></line>
               </svg>
               Add to Order
-            </button>
+            </button>` : `
+            <button type="button" class="add-btn" disabled aria-disabled="true">
+              Sold Out
+            </button>`}
           </div>
         </div>
       </article>
-    `).join('');
+      `;
+    }).join('');
 
   }
 
@@ -1100,9 +1163,10 @@ document.addEventListener('DOMContentLoaded', () => {
           customer_phone: state.currentUser && state.currentUser.phone ? state.currentUser.phone : ''
         };
 
-        const res = await fetch('api/orders.php', {
+        const res = await fetch(getApiUrl('api/orders.php'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
           body: JSON.stringify(payload)
         });
 
@@ -1214,9 +1278,10 @@ document.addEventListener('DOMContentLoaded', () => {
       };
 
       try {
-        const res = await fetch('api/reservations.php', {
+        const res = await fetch(getApiUrl('api/reservations.php'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
           body: JSON.stringify(payload)
         });
         const data = await res.json();
@@ -1242,25 +1307,27 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // --- 12. Philippine Outpost Tabs (BGC vs Benguet) ---
+  // --- 12. Philippine Outpost Tabs (Zamboanga vs Benguet) ---
   const locationsData = {
     bgc: {
-      name: 'BGC Flagship Sanctuary',
-      badge: 'Metro Manila Flagship & Slow Bar',
-      address: 'Upper Ground Floor, Bonifacio High Street Central, 7th Ave, BGC, Taguig, Metro Manila',
+      name: 'Zamboanga Flagship Sanctuary',
+      badge: 'Zamboanga City Flagship & Slow Bar',
+      address: 'RCDAO Village, Putik, Zamboanga City, 7000 Zamboanga Peninsula',
       hours: 'Mon – Sun: 7:00 AM – 10:00 PM PHT',
-      phone: '+63 2 8888-2633 / +63 917 555 2333',
+      phone: '+63 62 991 2633 / +63 917 555 2333',
       features: 'High-speed 500Mbps Fiber, Outdoor Garden Seating, Slow Bar & Siphon, Pour-over Flights',
-      image: 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&w=800&q=80'
+      image: 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&w=800&q=80',
+      directionsUrl: 'https://maps.app.goo.gl/RHdya1FR7aJFRbDx5'
     },
     benguet: {
-      name: 'Highland Roastery & Farm Lab',
-      badge: 'Cordillera House Roastery & Cupping Lab',
-      address: 'Ambuclao Scenic Road, Tuba, Benguet (15 mins from Baguio City)',
-      hours: 'Wed – Sun: 8:00 AM – 7:00 PM PHT (Closed Mon & Tue)',
-      phone: '+63 74 442 8888 / +63 919 888 2333',
-      features: 'Pine Forest Panorama, Direct Farm Cupping Pavilion, Solar Roasting Demonstration, Cold Mountain Air',
-      image: 'https://images.unsplash.com/photo-1442512595331-e89e73853f31?auto=format&fit=crop&w=800&q=80'
+      name: 'Baliwasan Roastery & Slow Bar',
+      badge: 'Zamboanga Peninsula Roastery & Brew Lab',
+      address: 'San Jose Street, Baliwasan Grande, San Jose Gusu, Zamboanga City, 7000',
+      hours: 'Wed – Sun: 8:00 AM – 8:00 PM PHT (Closed Mon & Tue)',
+      phone: '+63 62 991 8888 / +63 919 888 2333',
+      features: 'Direct Cupping Pavilion, Alfresco Seating, Artisan Roast Flights, High-Speed Fiber',
+      image: 'https://images.unsplash.com/photo-1442512595331-e89e73853f31?auto=format&fit=crop&w=800&q=80',
+      directionsUrl: 'https://maps.app.goo.gl/yeavai9XSWvr7YhN8'
     }
   };
 
@@ -1279,6 +1346,9 @@ document.addEventListener('DOMContentLoaded', () => {
       if (locHoursText) locHoursText.textContent = data.hours;
       if (locPhoneText) locPhoneText.textContent = data.phone;
       if (locFeaturesText) locFeaturesText.textContent = data.features;
+      if (locDirectionsBtn && data.directionsUrl) {
+        locDirectionsBtn.href = data.directionsUrl;
+      }
       if (locImage) {
         locImage.src = data.image;
         locImage.alt = data.name;
@@ -1334,6 +1404,18 @@ document.addEventListener('DOMContentLoaded', () => {
         mobileAuthTrigger.classList.add('btn-outline');
       }
 
+      // Admin CMS button visibility
+      const isAdmin = state.currentUser && state.currentUser.role === 'admin';
+      if (adminCmsOpenBtn) adminCmsOpenBtn.style.display = isAdmin ? 'inline-flex' : 'none';
+      if (mobileAdminCmsItem) {
+        mobileAdminCmsItem.classList.toggle('is-admin', Boolean(isAdmin));
+        mobileAdminCmsItem.style.display = '';
+      }
+
+      if (mobileAccountSettingsItem) {
+        mobileAccountSettingsItem.classList.add('is-auth');
+      }
+
       // Pre-fill reservation form if inputs are empty
       const bookingName = document.getElementById('bookingName');
       const bookingPhone = document.getElementById('bookingPhone');
@@ -1342,6 +1424,14 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       if (authOpenBtn) authOpenBtn.style.display = 'inline-flex';
       if (userProfilePill) userProfilePill.style.display = 'none';
+      if (adminCmsOpenBtn) adminCmsOpenBtn.style.display = 'none';
+      if (mobileAdminCmsItem) {
+        mobileAdminCmsItem.classList.remove('is-admin');
+        mobileAdminCmsItem.style.display = '';
+      }
+      if (mobileAccountSettingsItem) {
+        mobileAccountSettingsItem.classList.remove('is-auth');
+      }
       if (mobileAuthTrigger) {
         mobileAuthTrigger.textContent = 'Member Sign In';
         mobileAuthTrigger.classList.remove('btn-outline');
@@ -1356,8 +1446,12 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   async function checkAuthStatus() {
+    if (window.location.protocol === 'file:') {
+      console.warn('Running via file://. Backend API calls are disabled. Open http://localhost/BeCoffee/ in your browser.');
+      return;
+    }
     try {
-      const res = await fetch('api/auth.php?action=me');
+      const res = await fetch(getApiUrl('api/auth.php?action=me'), { credentials: 'include' });
       if (res.ok) {
         const data = await res.json();
         if (data.authenticated && data.user) {
@@ -1412,7 +1506,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (signInForm) signInForm.style.display = 'none';
       if (registerForm) registerForm.style.display = 'block';
       if (authModalTitle) authModalTitle.textContent = 'Join the BeCoffee Guild';
-      if (authModalSubtitle) authModalSubtitle.textContent = 'Create your account to unlock personalized beans, orders, and table passes.';
+      if (authModalSubtitle) authModalSubtitle.textContent = 'Create your account to track bean orders, curate cuppings, and earn member perks.';
     }
   }
 
@@ -1477,10 +1571,20 @@ document.addEventListener('DOMContentLoaded', () => {
         submitBtn.textContent = 'Signing in...';
       }
 
+      if (window.location.protocol === 'file:') {
+        setAuthAlert('Cannot sign in via file://. Please open http://localhost/BeCoffee/ in your browser address bar.');
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalText;
+        }
+        return;
+      }
+
       try {
-        const res = await fetch('api/auth.php?action=login', {
+        const res = await fetch(getApiUrl('api/auth.php?action=login'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
           body: JSON.stringify({ email, password })
         });
 
@@ -1507,7 +1611,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       } catch (err) {
         console.warn('Authentication request error:', err);
-        setAuthAlert('Unable to reach authentication server. Please check your connection.');
+        if (window.location.protocol === 'file:') {
+          setAuthAlert('Cannot connect via file://. Please open http://localhost/BeCoffee/ in your browser.');
+        } else {
+          setAuthAlert('Unable to reach authentication server. Please check that Apache is running at http://localhost/BeCoffee/.');
+        }
       } finally {
         if (submitBtn) {
           submitBtn.disabled = false;
@@ -1546,10 +1654,20 @@ document.addEventListener('DOMContentLoaded', () => {
         submitBtn.textContent = 'Creating account...';
       }
 
+      if (window.location.protocol === 'file:') {
+        setAuthAlert('Cannot register via file://. Please open http://localhost/BeCoffee/ in your browser address bar.');
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalText;
+        }
+        return;
+      }
+
       try {
-        const res = await fetch('api/auth.php?action=register', {
+        const res = await fetch(getApiUrl('api/auth.php?action=register'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
           body: JSON.stringify({ name, email, phone, password })
         });
 
@@ -1576,7 +1694,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       } catch (err) {
         console.warn('Registration request error:', err);
-        setAuthAlert('Unable to reach registration server. Please check your connection.');
+        if (window.location.protocol === 'file:') {
+          setAuthAlert('Cannot connect via file://. Please open http://localhost/BeCoffee/ in your browser.');
+        } else {
+          setAuthAlert('Unable to reach registration server. Please check that Apache is running.');
+        }
       } finally {
         if (submitBtn) {
           submitBtn.disabled = false;
@@ -1589,7 +1711,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Handle Logout
   async function handleLogout() {
     try {
-      const res = await fetch('api/auth.php?action=logout', { method: 'POST' });
+      const res = await fetch(getApiUrl('api/auth.php?action=logout'), { method: 'POST', credentials: 'include' });
       const data = await res.json();
       state.currentUser = null;
       updateAuthUI();
@@ -1608,7 +1730,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // --- 15. Dynamic Menu Synchronization ---
   async function loadMenuFromAPI() {
     try {
-      const res = await fetch('api/menu.php');
+      const res = await fetch(getApiUrl('api/menu.php'));
       if (res.ok) {
         const data = await res.json();
         if (data.success && Array.isArray(data.items) && data.items.length > 0) {
@@ -1619,6 +1741,598 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (e) {
       console.warn('Using embedded menu state; API fetch deferred.');
     }
+  }
+
+  // --- 17. Admin Menu CMS (Prices, Availability, Products) ---
+  const cmsState = {
+    items: [],
+    categories: [],
+    activeCategory: 'all',
+    searchQuery: '',
+    stats: { total: 0, active: 0, unavailable: 0 }
+  };
+
+  function openAdminCms() {
+    if (!state.currentUser || state.currentUser.role !== 'admin') {
+      showToast('Administrator privileges required.');
+      return;
+    }
+    if (adminCmsModalOverlay) {
+      adminCmsModalOverlay.classList.add('active');
+      loadCmsData();
+    }
+  }
+
+  function closeAdminCms() {
+    if (adminCmsModalOverlay) {
+      adminCmsModalOverlay.classList.remove('active');
+    }
+  }
+
+  if (adminCmsOpenBtn) {
+    adminCmsOpenBtn.addEventListener('click', openAdminCms);
+  }
+
+  if (mobileAdminCmsTrigger) {
+    mobileAdminCmsTrigger.addEventListener('click', () => {
+      if (mobileToggle) mobileToggle.classList.remove('active');
+      if (navLinks) navLinks.classList.remove('active');
+      openAdminCms();
+    });
+  }
+
+  if (closeAdminCmsBtn) {
+    closeAdminCmsBtn.addEventListener('click', closeAdminCms);
+  }
+
+  // Load CMS Data from backend
+  async function loadCmsData() {
+    if (!cmsItemsContainer) return;
+    cmsItemsContainer.innerHTML = '<div class="cms-loading-state">Loading menu catalog from MySQL...</div>';
+
+    try {
+      const res = await fetch(getApiUrl('api/admin_menu.php'), { credentials: 'include' });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        cmsState.items = data.items || [];
+        cmsState.categories = data.categories || [];
+        cmsState.stats = data.stats || { total: 0, active: 0, unavailable: 0 };
+
+        updateCmsKpis();
+        renderCmsItems();
+      } else {
+        cmsItemsContainer.innerHTML = `<div class="cms-loading-state" style="color:#dc2626;">${data.error || 'Failed to load catalog.'}</div>`;
+      }
+    } catch (err) {
+      cmsItemsContainer.innerHTML = `<div class="cms-loading-state" style="color:#dc2626;">Network error loading CMS catalog.</div>`;
+    }
+  }
+
+  function updateCmsKpis() {
+    if (cmsTotalCount) cmsTotalCount.textContent = cmsState.stats.total;
+    if (cmsActiveCount) cmsActiveCount.textContent = cmsState.stats.active;
+    if (cmsUnavailableCount) cmsUnavailableCount.textContent = cmsState.stats.unavailable;
+  }
+
+  function renderCmsItems() {
+    if (!cmsItemsContainer) return;
+
+    let items = cmsState.items;
+
+    // Filter by Category
+    if (cmsState.activeCategory !== 'all') {
+      items = items.filter(item => item.category === cmsState.activeCategory);
+    }
+
+    // Filter by Search Query
+    if (cmsState.searchQuery) {
+      const q = cmsState.searchQuery.toLowerCase();
+      items = items.filter(item => 
+        item.name.toLowerCase().includes(q) || 
+        item.id.toLowerCase().includes(q) ||
+        (item.origin && item.origin.toLowerCase().includes(q))
+      );
+    }
+
+    if (items.length === 0) {
+      cmsItemsContainer.innerHTML = '<div class="cms-loading-state">No products matching your search filter.</div>';
+      return;
+    }
+
+    cmsItemsContainer.innerHTML = items.map(item => `
+      <div class="cms-item-row ${item.isAvailable ? '' : 'is-unavailable'}" data-id="${item.id}">
+        <div class="cms-thumb-wrap">
+          <img src="${item.image}?v=7.0" alt="${item.name}" loading="lazy">
+        </div>
+
+        <div class="cms-item-info">
+          <div class="cms-item-name">
+            <span>${item.name}</span>
+            ${item.isBestseller ? '<span class="cms-bestseller-badge">★ Bestseller</span>' : ''}
+          </div>
+          <div class="cms-item-meta">
+            <span class="cms-cat-badge">${item.categoryName || item.category}</span>
+            <code class="cms-code-badge">${item.id}</code>
+            ${(item.origin || item.elevation) ? `<span class="cms-origin-text">${item.origin || item.elevation}</span>` : ''}
+          </div>
+        </div>
+
+        <div class="cms-price-col">
+          <span class="cms-base-price">${formatPHP(item.price)}</span>
+          <div class="cms-sub-prices">
+            <span class="cms-sub-price-tag">M: ${formatPHP(item.priceIcedM || item.price)}</span>
+            ${item.priceIcedL ? `<span class="cms-sub-price-tag">L: ${formatPHP(item.priceIcedL)}</span>` : ''}
+            ${item.priceHot ? `<span class="cms-sub-price-tag hot">Hot: ${formatPHP(item.priceHot)}</span>` : ''}
+          </div>
+        </div>
+
+        <div class="cms-status-col">
+          <div class="cms-switch-wrap">
+            <label class="cms-switch" title="Toggle Available / Sold Out">
+              <input type="checkbox" class="cms-availability-toggle" data-id="${item.id}" ${item.isAvailable ? 'checked' : ''} aria-label="Toggle availability for ${item.name}">
+              <span class="cms-slider"></span>
+            </label>
+          </div>
+          <span class="cms-status-pill ${item.isAvailable ? 'avail' : 'unavail'}">
+            <span class="cms-status-dot"></span>
+            ${item.isAvailable ? 'In Stock' : 'Sold Out'}
+          </span>
+        </div>
+
+        <div class="cms-actions-col">
+          <button type="button" class="cms-action-icon-btn cms-edit-trigger" data-id="${item.id}" title="Edit Product" aria-label="Edit Product ${item.name}">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M12 20h9"></path>
+              <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+            </svg>
+          </button>
+          <button type="button" class="cms-action-icon-btn delete cms-delete-trigger" data-id="${item.id}" title="Delete Product" aria-label="Delete Product ${item.name}">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <polyline points="3 6 5 6 21 6"></polyline>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // Event Delegation for CMS Items (Toggle, Edit, Delete)
+  if (cmsItemsContainer) {
+    // 1. Toggle Availability Switch
+    cmsItemsContainer.addEventListener('change', async (e) => {
+      const toggle = e.target.closest('.cms-availability-toggle');
+      if (toggle) {
+        const id = toggle.dataset.id;
+        const isAvailable = toggle.checked;
+
+        // Optimistic UI update
+        const item = cmsState.items.find(i => i.id === id);
+        if (item) {
+          item.isAvailable = isAvailable;
+          if (isAvailable) {
+            cmsState.stats.active++;
+            cmsState.stats.unavailable = Math.max(0, cmsState.stats.unavailable - 1);
+          } else {
+            cmsState.stats.active = Math.max(0, cmsState.stats.active - 1);
+            cmsState.stats.unavailable++;
+          }
+          updateCmsKpis();
+          renderCmsItems();
+        }
+
+        try {
+          const res = await fetch(getApiUrl('api/admin_menu.php?action=toggle_availability'), {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ id, is_available: isAvailable })
+          });
+          const data = await res.json();
+          if (res.ok && data.success) {
+            showToast(data.message || 'Availability updated.');
+            loadMenuFromAPI(); // sync public menu
+          } else {
+            showToast(data.error || 'Failed to update availability.');
+            loadCmsData(); // rollback
+          }
+        } catch (err) {
+          showToast('Network error updating availability.');
+          loadCmsData(); // rollback
+        }
+      }
+    });
+
+    // 2. Edit Button
+    cmsItemsContainer.addEventListener('click', (e) => {
+      const editBtn = e.target.closest('.cms-edit-trigger');
+      if (editBtn) {
+        const id = editBtn.dataset.id;
+        const item = cmsState.items.find(i => i.id === id);
+        if (item) openProductModal('edit', item);
+      }
+
+      // 3. Delete Button
+      const deleteBtn = e.target.closest('.cms-delete-trigger');
+      if (deleteBtn) {
+        const id = deleteBtn.dataset.id;
+        const item = cmsState.items.find(i => i.id === id);
+        const name = item ? item.name : id;
+        if (confirm(`Are you sure you want to remove "${name}" from the catalog?`)) {
+          deleteProduct(id);
+        }
+      }
+    });
+  }
+
+  // Search Filter
+  if (cmsSearchInput) {
+    cmsSearchInput.addEventListener('input', (e) => {
+      cmsState.searchQuery = e.target.value.trim();
+      renderCmsItems();
+    });
+  }
+
+  // Category Filter Tabs
+  if (cmsCategoryFilters) {
+    cmsCategoryFilters.addEventListener('click', (e) => {
+      const tab = e.target.closest('.cms-tab');
+      if (tab) {
+        cmsCategoryFilters.querySelectorAll('.cms-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        cmsState.activeCategory = tab.dataset.cat;
+        renderCmsItems();
+      }
+    });
+  }
+
+  // Add Product Button
+  if (cmsAddNewBtn) {
+    cmsAddNewBtn.addEventListener('click', () => {
+      openProductModal('create');
+    });
+  }
+
+  // Open Product Modal (Create or Edit)
+  function openProductModal(mode = 'create', item = null) {
+    if (!productEditModalOverlay || !productEditForm) return;
+
+    if (mode === 'create') {
+      if (prodModalTitle) prodModalTitle.textContent = 'Add New Product';
+      if (prodModalSubtitle) prodModalSubtitle.textContent = 'Enter beverage specifications and pricing.';
+      productEditForm.reset();
+      document.getElementById('editOriginalId').value = '';
+      document.getElementById('editAvailable').checked = true;
+      document.getElementById('editBestseller').checked = false;
+      document.querySelectorAll('input[name="editFlavors"]').forEach(cb => cb.checked = false);
+    } else if (mode === 'edit' && item) {
+      if (prodModalTitle) prodModalTitle.textContent = `Edit ${item.name}`;
+      if (prodModalSubtitle) prodModalSubtitle.textContent = `Update prices, description, and status for ${item.id}.`;
+      document.getElementById('editOriginalId').value = item.id;
+      document.getElementById('editCategory').value = item.categoryId || 1;
+      document.getElementById('editName').value = item.name || '';
+      document.getElementById('editSlug').value = item.id || '';
+      document.getElementById('editPrice').value = item.price || '';
+      document.getElementById('editPriceIcedM').value = item.priceIcedM || item.price || '';
+      document.getElementById('editPriceIcedL').value = item.priceIcedL || '';
+      document.getElementById('editPriceHot').value = item.priceHot || '';
+      document.getElementById('editOrigin').value = item.origin || '';
+      document.getElementById('editElevation').value = item.elevation || '';
+      document.getElementById('editImage').value = item.image || '';
+      document.getElementById('editDesc').value = item.description || '';
+      document.getElementById('editBestseller').checked = Boolean(item.isBestseller);
+      document.getElementById('editAvailable').checked = item.isAvailable !== false;
+
+      // Flavor checkboxes
+      const itemFlavors = item.flavors || [];
+      document.querySelectorAll('input[name="editFlavors"]').forEach(cb => {
+        cb.checked = itemFlavors.includes(cb.value);
+      });
+    }
+
+    productEditModalOverlay.classList.add('active');
+  }
+
+  function closeProductModal() {
+    if (productEditModalOverlay) {
+      productEditModalOverlay.classList.remove('active');
+    }
+  }
+
+  if (closeProdEditModalBtn) closeProdEditModalBtn.addEventListener('click', closeProductModal);
+  if (cancelProdEditBtn) cancelProdEditBtn.addEventListener('click', closeProductModal);
+
+  // Submit Product Form
+  if (productEditForm) {
+    productEditForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const originalId = document.getElementById('editOriginalId').value;
+      const slugInput = document.getElementById('editSlug').value.trim();
+
+      const selectedFlavors = Array.from(document.querySelectorAll('input[name="editFlavors"]:checked')).map(cb => cb.value);
+
+      const payload = {
+        id: slugInput || originalId || '',
+        category_id: parseInt(document.getElementById('editCategory').value, 10),
+        name: document.getElementById('editName').value.trim(),
+        price: parseFloat(document.getElementById('editPrice').value),
+        price_iced_m: parseFloat(document.getElementById('editPriceIcedM').value),
+        price_iced_l: document.getElementById('editPriceIcedL').value ? parseFloat(document.getElementById('editPriceIcedL').value) : null,
+        price_hot: document.getElementById('editPriceHot').value ? parseFloat(document.getElementById('editPriceHot').value) : null,
+        origin: document.getElementById('editOrigin').value.trim(),
+        elevation: document.getElementById('editElevation').value.trim(),
+        image: document.getElementById('editImage').value.trim(),
+        description: document.getElementById('editDesc').value.trim(),
+        is_bestseller: document.getElementById('editBestseller').checked,
+        is_available: document.getElementById('editAvailable').checked,
+        flavors: selectedFlavors
+      };
+
+      const submitBtn = document.getElementById('saveProductBtn');
+      const originalText = submitBtn ? submitBtn.textContent : 'Save';
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Saving...';
+      }
+
+      try {
+        const res = await fetch(getApiUrl('api/admin_menu.php?action=save_item'), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          showToast(data.message || 'Product saved successfully!');
+          closeProductModal();
+          loadCmsData();
+          loadMenuFromAPI();
+        } else {
+          showToast(data.error || 'Failed to save product.');
+        }
+      } catch (err) {
+        showToast('Network error saving product.');
+      } finally {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalText;
+        }
+      }
+    });
+  }
+
+  // Delete Product
+  async function deleteProduct(id) {
+    try {
+      const res = await fetch(getApiUrl('api/admin_menu.php?action=delete_item'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ id })
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        showToast(data.message || 'Product deleted.');
+        loadCmsData();
+        loadMenuFromAPI();
+      } else {
+        showToast(data.error || 'Failed to delete product.');
+      }
+    } catch (err) {
+      showToast('Network error deleting product.');
+    }
+  }
+
+  // --- 18. User Account Settings (Profile & Password Change) ---
+  function setAccountAlert(message, type = 'error') {
+    if (!accountAlertBox) return;
+    if (!message) {
+      accountAlertBox.style.display = 'none';
+      accountAlertBox.textContent = '';
+      accountAlertBox.className = 'account-alert';
+      return;
+    }
+    accountAlertBox.textContent = message;
+    accountAlertBox.className = `account-alert ${type}`;
+    accountAlertBox.style.display = 'block';
+  }
+
+  function openAccountModal() {
+    if (!state.currentUser) {
+      openAuthModal('signin');
+      return;
+    }
+
+    setAccountAlert('');
+    if (accountModalTitle) accountModalTitle.textContent = state.currentUser.name || 'Account Settings';
+    if (accountModalEmail) accountModalEmail.textContent = state.currentUser.email || '';
+    
+    const isAdmin = state.currentUser.role === 'admin';
+    if (accountRolePill) {
+      accountRolePill.textContent = isAdmin ? 'Administrator' : 'Customer Member';
+      accountRolePill.className = `account-role-pill ${isAdmin ? 'admin' : 'customer'}`;
+    }
+
+    if (accountAvatarLarge) {
+      const parts = (state.currentUser.name || 'Member').trim().split(/\s+/);
+      accountAvatarLarge.textContent = parts.length > 1
+        ? (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase()
+        : parts[0].charAt(0).toUpperCase();
+    }
+
+    if (accountNameInput) accountNameInput.value = state.currentUser.name || '';
+    if (accountEmailInput) accountEmailInput.value = state.currentUser.email || '';
+    if (accountPhoneInput) accountPhoneInput.value = state.currentUser.phone || '';
+
+    if (changePasswordForm) changePasswordForm.reset();
+
+    // Default to Profile tab
+    switchAccountTab('profile');
+
+    if (accountSettingsModalOverlay) {
+      accountSettingsModalOverlay.classList.add('active');
+    }
+  }
+
+  function closeAccountModal() {
+    if (accountSettingsModalOverlay) {
+      accountSettingsModalOverlay.classList.remove('active');
+    }
+    setAccountAlert('');
+  }
+
+  function switchAccountTab(tabName) {
+    setAccountAlert('');
+    if (tabName === 'profile') {
+      if (tabProfileBtn) {
+        tabProfileBtn.classList.add('active');
+        tabProfileBtn.setAttribute('aria-selected', 'true');
+      }
+      if (tabPasswordBtn) {
+        tabPasswordBtn.classList.remove('active');
+        tabPasswordBtn.setAttribute('aria-selected', 'false');
+      }
+      if (updateProfileForm) updateProfileForm.style.display = 'flex';
+      if (changePasswordForm) changePasswordForm.style.display = 'none';
+    } else {
+      if (tabPasswordBtn) {
+        tabPasswordBtn.classList.add('active');
+        tabPasswordBtn.setAttribute('aria-selected', 'true');
+      }
+      if (tabProfileBtn) {
+        tabProfileBtn.classList.remove('active');
+        tabProfileBtn.setAttribute('aria-selected', 'false');
+      }
+      if (updateProfileForm) updateProfileForm.style.display = 'none';
+      if (changePasswordForm) changePasswordForm.style.display = 'flex';
+    }
+  }
+
+  if (userProfileTrigger) userProfileTrigger.addEventListener('click', openAccountModal);
+  if (mobileAccountSettingsTrigger) {
+    mobileAccountSettingsTrigger.addEventListener('click', () => {
+      openAccountModal();
+      if (navLinks) navLinks.classList.remove('active');
+      if (mobileToggle) mobileToggle.classList.remove('active');
+    });
+  }
+  if (closeAccountModalBtn) closeAccountModalBtn.addEventListener('click', closeAccountModal);
+
+  if (tabProfileBtn) tabProfileBtn.addEventListener('click', () => switchAccountTab('profile'));
+  if (tabPasswordBtn) tabPasswordBtn.addEventListener('click', () => switchAccountTab('password'));
+
+  // Submit Profile & Username Changes
+  if (updateProfileForm) {
+    updateProfileForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      setAccountAlert('');
+      const name = accountNameInput ? accountNameInput.value.trim() : '';
+      const email = accountEmailInput ? accountEmailInput.value.trim().toLowerCase() : '';
+      const phone = accountPhoneInput ? accountPhoneInput.value.trim() : '';
+
+      if (name.length < 2) {
+        setAccountAlert('Name must be at least 2 characters.', 'error');
+        return;
+      }
+
+      if (!email || !email.includes('@')) {
+        setAccountAlert('Please enter a valid email address.', 'error');
+        return;
+      }
+
+      if (saveProfileBtn) {
+        saveProfileBtn.disabled = true;
+        saveProfileBtn.textContent = 'Saving...';
+      }
+
+      try {
+        const res = await fetch(getApiUrl('api/auth.php?action=update_profile'), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ name, email, phone })
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          state.currentUser = data.user;
+          updateAuthUI();
+          if (accountModalTitle) accountModalTitle.textContent = data.user.name;
+          if (accountModalEmail) accountModalEmail.textContent = data.user.email;
+          if (accountAvatarLarge) {
+            const parts = data.user.name.trim().split(/\s+/);
+            accountAvatarLarge.textContent = parts.length > 1
+              ? (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase()
+              : parts[0].charAt(0).toUpperCase();
+          }
+          setAccountAlert(data.message || 'Profile updated successfully!', 'success');
+          showToast(data.message || 'Profile updated successfully!');
+        } else {
+          setAccountAlert(data.error || 'Failed to update profile.', 'error');
+        }
+      } catch (err) {
+        setAccountAlert('Network error while updating profile.', 'error');
+      } finally {
+        if (saveProfileBtn) {
+          saveProfileBtn.disabled = false;
+          saveProfileBtn.textContent = 'Save Profile Changes';
+        }
+      }
+    });
+  }
+
+  // Submit Password Change
+  if (changePasswordForm) {
+    changePasswordForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      setAccountAlert('');
+      const currentPassword = currentPasswordInput ? currentPasswordInput.value : '';
+      const newPassword = newPasswordInput ? newPasswordInput.value : '';
+      const confirmPassword = confirmPasswordInput ? confirmPasswordInput.value : '';
+
+      if (newPassword.length < 8) {
+        setAccountAlert('New password must be at least 8 characters long.', 'error');
+        return;
+      }
+
+      if (newPassword !== confirmPassword) {
+        setAccountAlert('New password confirmation does not match.', 'error');
+        return;
+      }
+
+      if (savePasswordBtn) {
+        savePasswordBtn.disabled = true;
+        savePasswordBtn.textContent = 'Updating...';
+      }
+
+      try {
+        const res = await fetch(getApiUrl('api/auth.php?action=change_password'), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({
+            current_password: currentPassword,
+            new_password: newPassword,
+            confirm_password: confirmPassword
+          })
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          changePasswordForm.reset();
+          setAccountAlert(data.message || 'Password changed successfully!', 'success');
+          showToast(data.message || 'Password changed successfully!');
+        } else {
+          setAccountAlert(data.error || 'Failed to change password.', 'error');
+        }
+      } catch (err) {
+        setAccountAlert('Network error while changing password.', 'error');
+      } finally {
+        if (savePasswordBtn) {
+          savePasswordBtn.disabled = false;
+          savePasswordBtn.textContent = 'Update Password';
+        }
+      }
+    });
   }
 
   // --- 16. Initial Startup Sequence ---

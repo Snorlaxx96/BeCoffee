@@ -31,13 +31,17 @@ $query = "
         m.is_available AS isAvailable
     FROM menu_items m
     JOIN categories c ON m.category_id = c.id
-    WHERE m.is_available = TRUE
 ";
 
+$conditions = [];
 $params = [];
 if ($categoryFilter !== 'all') {
-    $query .= " AND c.slug = ?";
+    $conditions[] = "c.slug = ?";
     $params[] = $categoryFilter;
+}
+
+if (!empty($conditions)) {
+    $query .= " WHERE " . implode(" AND ", $conditions);
 }
 
 $query .= " ORDER BY c.sort_order ASC, m.price DESC, m.name ASC";
@@ -87,6 +91,7 @@ foreach ($items as $item) {
         'priceHot'     => $item['priceHot'] !== null ? (float) $item['priceHot'] : null,
         'description'  => $item['description'],
         'image'        => $item['image'],
+        'isAvailable'  => (bool) $item['isAvailable'],
         'tags'         => $tags,
         'flavors'      => $flavors,
         'flavorLabels' => $flavorLabels
