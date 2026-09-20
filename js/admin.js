@@ -102,8 +102,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const password = document.getElementById('adminPassword').value;
 
       if (isDemo) {
-        if (email.toLowerCase() === 'admin@becoffee.ph' && (password === 'AdminBeCoffee2026!' || password === 'admin123')) {
-          const adminUser = { id: 1, name: 'BeCoffee Administrator', email: 'admin@becoffee.ph', role: 'admin' };
+        const lowerEmail = email.toLowerCase();
+        if ((lowerEmail === 'admin' || lowerEmail === 'admin@becoffee.ph') && (password === 'AdminBeCoffee2026!' || password === 'admin123')) {
+          const adminUser = { id: 1, name: 'BeCoffee Administrator', email: 'admin', role: 'admin' };
           localStorage.setItem('becoffee_demo_session', JSON.stringify(adminUser));
           showStudio();
           return;

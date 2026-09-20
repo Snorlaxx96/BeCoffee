@@ -28,24 +28,27 @@
   function getDemoUsers() {
     try {
       const stored = JSON.parse(localStorage.getItem(DEMO_USERS_KEY) || '[]');
-      const hasAdmin = stored.some(u => (u.email || '').toLowerCase() === 'admin@becoffee.ph');
-      if (!hasAdmin) {
-        stored.push({
-          id: 1,
-          name: 'BeCoffee Administrator',
-          email: 'admin@becoffee.ph',
-          phone: '+63 917 555 2026',
-          role: 'admin',
-          password: 'AdminBeCoffee2026!'
-        });
-        localStorage.setItem(DEMO_USERS_KEY, JSON.stringify(stored));
+      const adminIndex = stored.findIndex(u => u.role === 'admin' || (u.email || '').toLowerCase() === 'admin' || (u.email || '').toLowerCase() === 'admin@becoffee.ph');
+      const adminUser = {
+        id: 1,
+        name: 'BeCoffee Administrator',
+        email: 'admin',
+        phone: '+63 917 555 2026',
+        role: 'admin',
+        password: 'AdminBeCoffee2026!'
+      };
+      if (adminIndex === -1) {
+        stored.push(adminUser);
+      } else {
+        stored[adminIndex] = adminUser;
       }
+      localStorage.setItem(DEMO_USERS_KEY, JSON.stringify(stored));
       return stored;
     } catch (e) {
       return [{
         id: 1,
         name: 'BeCoffee Administrator',
-        email: 'admin@becoffee.ph',
+        email: 'admin',
         phone: '+63 917 555 2026',
         role: 'admin',
         password: 'AdminBeCoffee2026!'
@@ -99,7 +102,12 @@
       }
 
       const users = getDemoUsers();
-      const user = users.find(u => (u.email || '').toLowerCase() === email);
+      const user = users.find(u => {
+        const uEmail = (u.email || '').toLowerCase();
+        if (uEmail === email) return true;
+        if ((email === 'admin' || email === 'admin@becoffee.ph') && (u.role === 'admin' || uEmail === 'admin' || uEmail === 'admin@becoffee.ph')) return true;
+        return false;
+      });
 
       let isValid = false;
       if (user) {

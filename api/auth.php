@@ -106,8 +106,13 @@ if ($method === 'POST' && $action === 'login') {
         jsonResponse(['success' => false, 'error' => 'Please enter both your email and password.'], 422);
     }
 
-    $stmt = $db->prepare("SELECT id, name, email, phone, role, password_hash FROM users WHERE email = ?");
-    $stmt->execute([$email]);
+    if ($email === 'admin' || $email === 'admin@becoffee.ph') {
+        $stmt = $db->prepare("SELECT id, name, email, phone, role, password_hash FROM users WHERE email = 'admin' OR email = 'admin@becoffee.ph' OR role = 'admin' ORDER BY id ASC LIMIT 1");
+        $stmt->execute();
+    } else {
+        $stmt = $db->prepare("SELECT id, name, email, phone, role, password_hash FROM users WHERE email = ? LIMIT 1");
+        $stmt->execute([$email]);
+    }
     $user = $stmt->fetch();
 
     $isValid = false;
