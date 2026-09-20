@@ -1575,10 +1575,12 @@ document.addEventListener('DOMContentLoaded', () => {
   function openAuthModal(defaultTab = 'signin') {
     switchAuthTab(defaultTab);
     if (authModalOverlay) authModalOverlay.classList.add('active');
+    document.body.classList.add('modal-open');
   }
 
   function closeAuthModal() {
     if (authModalOverlay) authModalOverlay.classList.remove('active');
+    document.body.classList.remove('modal-open');
     setAuthAlert('');
     if (signInForm) signInForm.reset();
     if (registerForm) registerForm.reset();
