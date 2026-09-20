@@ -61,6 +61,21 @@
       box-shadow: 0 20px 40px rgba(0,0,0,0.5);
     }
   </style>
+  <script>
+    // Security Guard (OWASP A01: Broken Access Control & Phase 0 URL Protection)
+    // Denies direct public access; unauthenticated users are bounced to homepage
+    (function() {
+      try {
+        var rawSession = localStorage.getItem('becoffee_demo_session');
+        var session = rawSession ? JSON.parse(rawSession) : null;
+        if (!session || session.role !== 'admin') {
+          window.location.replace('index.html');
+        }
+      } catch (err) {
+        window.location.replace('index.html');
+      }
+    })();
+  </script>
 </head>
 <body>
   <!-- Admin Header Navigation -->
@@ -74,38 +89,13 @@
     </a>
     <div style="display: flex; align-items: center; gap: 1rem;">
       <a href="index.html" class="btn btn-secondary btn-sm">← Back to Café</a>
-      <button type="button" class="btn btn-sm btn-outline" id="adminLogoutBtn" style="display: none;">Sign Out</button>
+      <button type="button" class="btn btn-sm btn-outline" id="adminLogoutBtn">Sign Out</button>
     </div>
   </header>
 
   <main class="admin-container">
-    <!-- View 1: Protected Admin Sign-in Screen -->
-    <div class="admin-login-card" id="adminAuthSection">
-      <div style="text-align: center; margin-bottom: 1.5rem;">
-        <div class="logo-symbol" style="margin: 0 auto 1rem; width: 48px; height: 48px; font-size: 1.5rem;">⚙️</div>
-        <h2 style="font-family: var(--font-serif); color: #FFF; font-size: 1.6rem; margin-bottom: 0.35rem;">Staff & Roaster Portal</h2>
-        <p style="color: var(--color-text-secondary); font-size: 0.88rem; margin-bottom: 0;">Sign in with your verified administrative credentials.</p>
-      </div>
-
-      <div id="adminLoginAlert" style="display: none; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-size: 0.85rem; margin-bottom: 1.25rem;"></div>
-
-      <form id="adminLoginForm">
-        <div class="form-group" style="margin-bottom: 1.25rem;">
-          <label for="adminEmail" class="form-label" style="color: #EBD7C7;">Admin Email or Username</label>
-          <input type="text" id="adminEmail" class="form-input" value="admin" required autocomplete="username">
-        </div>
-        <div class="form-group" style="margin-bottom: 1.5rem;">
-          <label for="adminPassword" class="form-label" style="color: #EBD7C7;">Master Password</label>
-          <input type="password" id="adminPassword" class="form-input" value="AdminBeCoffee2026!" required autocomplete="current-password">
-        </div>
-        <button type="submit" class="btn btn-crema" id="adminSubmitBtn" style="width: 100%;">
-          Authenticate & Enter Studio
-        </button>
-      </form>
-    </div>
-
-    <!-- View 2: Decoupled Menu Catalog Studio -->
-    <div class="admin-panel-card" id="adminStudioSection" style="display: none;">
+    <!-- Authenticated Menu Catalog Studio -->
+    <div class="admin-panel-card" id="adminStudioSection">
       <div class="cms-header">
         <div class="cms-header-title-wrap">
           <div class="cms-badge-symbol" aria-hidden="true">

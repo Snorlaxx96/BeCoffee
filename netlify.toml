@@ -3,13 +3,13 @@
 
 [[redirects]]
   from = "/admin"
-  to = "/admin.html"
-  status = 200
+  to = "/"
+  status = 302
 
 [[redirects]]
   from = "/admin/"
-  to = "/admin.html"
-  status = 200
+  to = "/"
+  status = 302
 
 [[headers]]
   for = "/*"

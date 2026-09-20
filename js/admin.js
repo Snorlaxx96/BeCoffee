@@ -82,67 +82,26 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function showAuth() {
-    if (adminAuthSection) adminAuthSection.style.display = 'block';
-    if (adminStudioSection) adminStudioSection.style.display = 'none';
-    if (adminLogoutBtn) adminLogoutBtn.style.display = 'none';
+    localStorage.removeItem('becoffee_demo_session');
+    window.location.replace('index.html');
   }
 
   function showStudio() {
-    if (adminAuthSection) adminAuthSection.style.display = 'none';
     if (adminStudioSection) adminStudioSection.style.display = 'block';
     if (adminLogoutBtn) adminLogoutBtn.style.display = 'inline-block';
     loadAdminCatalog();
   }
 
-  // --- 2. Admin Login Form Submission ---
-  if (adminLoginForm) {
-    adminLoginForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const email = document.getElementById('adminEmail').value.trim();
-      const password = document.getElementById('adminPassword').value;
-
-      if (isDemo) {
-        const lowerEmail = email.toLowerCase();
-        if ((lowerEmail === 'admin' || lowerEmail === 'admin@becoffee.ph') && (password === 'AdminBeCoffee2026!' || password === 'admin123')) {
-          const adminUser = { id: 1, name: 'BeCoffee Administrator', email: 'admin', role: 'admin' };
-          localStorage.setItem('becoffee_demo_session', JSON.stringify(adminUser));
-          showStudio();
-          return;
-        }
-      }
-
-      try {
-        const res = await fetch(getApiUrl('api/auth.php?action=login'), {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
-          body: JSON.stringify({ email, password })
-        });
-        const data = await res.json();
-        if (res.ok && data.success) {
-          if (data.user.role !== 'admin') {
-            showAlert('Access denied. This account does not possess administrator privileges.');
-            return;
-          }
-          showStudio();
-        } else {
-          showAlert(data.error || 'Authentication failed. Please verify credentials.');
-        }
-      } catch (err) {
-        showAlert('Network error connecting to authentication server.');
-      }
-    });
-  }
-
-  // --- 3. Logout ---
+  // --- 2. Logout Action ---
   if (adminLogoutBtn) {
     adminLogoutBtn.addEventListener('click', async () => {
-      if (isDemo) {
-        localStorage.removeItem('becoffee_demo_session');
-      } else {
-        await fetch(getApiUrl('api/auth.php?action=logout'), { method: 'POST', credentials: 'include' });
-      }
-      showAuth();
+      try {
+        if (!isDemo) {
+          await fetch(getApiUrl('api/auth.php?action=logout'), { method: 'POST', credentials: 'include' });
+        }
+      } catch (e) {}
+      localStorage.removeItem('becoffee_demo_session');
+      window.location.replace('index.html');
     });
   }
 

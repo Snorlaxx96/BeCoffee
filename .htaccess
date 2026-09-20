@@ -1,0 +1,16 @@
+# BeCoffee Apache Server Security Configuration
+Options -Indexes
+ServerSignature Off
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Prevent direct /admin browsing - redirect unauthenticated attempts to home
+    RewriteRule ^admin/?$ index.html [R=302,L]
+
+    # Block access to hidden dotfiles and configuration directories
+    RewriteRule (^|/)\.(?!well-known) - [F]
+
+    # Block public access to sensitive data, database dumps, logs, and docs
+    RewriteRule \.(sql|sqlite|db|log|bak|old|conf|md)$ - [F]
+</IfModule>
