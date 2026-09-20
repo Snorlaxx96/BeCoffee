@@ -13,7 +13,7 @@
   <meta http-equiv="Expires" content="0">
   
   <!-- Stylesheet (cache-busted) -->
-  <link rel="stylesheet" href="css/style.css?v=11.0">
+  <link rel="stylesheet" href="css/style.css?v=12.0">
 
   <!-- Critical Inlined Mobile Auth Sheet Guard (guarantees zero-cache lag) -->
   <style>
@@ -34,12 +34,37 @@
       transform: translateY(100%) !important;
     }
     @media (max-width: 768px) {
-      .auth-modal-box {
-        max-height: 94dvh !important;
-        max-height: 94vh !important;
-        padding: 1.15rem 1.25rem calc(3rem + env(safe-area-inset-bottom, 24px)) !important;
+      #authModalOverlay,
+      #accountSettingsModalOverlay,
+      #privacyModalOverlay {
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 1.5rem 1rem !important;
+      }
+      #authModalOverlay .auth-modal-box,
+      #accountSettingsModalOverlay .modal-box,
+      #privacyModalOverlay .modal-box {
+        border-radius: 24px !important;
+        transform: scale(0.96) !important;
+        max-height: min(86dvh, 680px) !important;
+        max-height: min(86vh, 680px) !important;
+        width: 100% !important;
+        max-width: 440px !important;
+        margin: auto !important;
+        padding: 1.5rem 1.25rem 2rem !important;
         overflow-y: auto !important;
         -webkit-overflow-scrolling: touch !important;
+        box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.45) !important;
+      }
+      #authModalOverlay.active .auth-modal-box,
+      #accountSettingsModalOverlay.active .modal-box,
+      #privacyModalOverlay.active .modal-box {
+        transform: scale(1) !important;
+      }
+      #authModalOverlay .modal-sheet-handle,
+      #accountSettingsModalOverlay .modal-sheet-handle,
+      #privacyModalOverlay .modal-sheet-handle {
+        display: none !important;
       }
       .auth-modal-box .auth-header {
         margin-bottom: 0.85rem !important;
@@ -1353,7 +1378,7 @@
   </aside>
 
   <!-- Application JavaScript & Catalog Data -->
-  <script src="js/menu_data.js?v=11.0"></script>
-  <script src="js/app.js?v=11.0"></script>
+  <script src="js/menu_data.js?v=12.0"></script>
+  <script src="js/app.js?v=12.0"></script>
 </body>
 </html>

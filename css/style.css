@@ -2434,57 +2434,88 @@ nav {
     -webkit-overflow-scrolling: touch;
   }
 
+  #authModalOverlay,
+  #accountSettingsModalOverlay,
+  #privacyModalOverlay {
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem 1rem;
+  }
+
   .auth-modal-box {
-    max-height: 92dvh;
-    max-height: 92vh;
-    padding: 1.15rem 1.25rem calc(2.25rem + env(safe-area-inset-bottom, 24px));
+    border-radius: 24px;
+    transform: scale(0.96);
+    max-height: min(86dvh, 680px);
+    max-height: min(86vh, 680px);
+    width: 100%;
+    max-width: 440px;
+    margin: auto;
+    padding: 1.5rem 1.25rem 2rem;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.45);
+  }
+
+  #authModalOverlay.active .auth-modal-box,
+  #accountSettingsModalOverlay.active .modal-box,
+  #privacyModalOverlay.active .modal-box {
+    transform: scale(1);
+  }
+
+  #authModalOverlay .modal-sheet-handle,
+  #accountSettingsModalOverlay .modal-sheet-handle,
+  #privacyModalOverlay .modal-sheet-handle {
+    display: none;
   }
 
   .auth-modal-box .auth-header {
-    margin-bottom: 1rem;
+    margin-bottom: 0.85rem;
   }
 
   .auth-modal-box .auth-logo-symbol {
-    width: 38px;
-    height: 38px;
-    font-size: 1.1rem;
-    margin: 0 auto 0.4rem;
+    width: 36px;
+    height: 36px;
+    font-size: 1.05rem;
+    margin: 0 auto 0.35rem;
   }
 
   .auth-modal-box .modal-heading {
-    font-size: 1.35rem;
-    margin-bottom: 0.25rem;
+    font-size: 1.28rem;
+    margin-bottom: 0.2rem;
   }
 
   .auth-modal-box .modal-sub {
-    font-size: 0.82rem;
-    line-height: 1.4;
+    font-size: 0.8rem;
+    line-height: 1.35;
   }
 
   .auth-modal-box .auth-tabs {
-    margin-bottom: 1rem;
+    margin-bottom: 0.85rem;
     padding: 0.2rem;
   }
 
   .auth-modal-box .auth-tab-btn {
-    padding: 0.5rem;
-    font-size: 0.85rem;
+    padding: 0.45rem;
+    font-size: 0.82rem;
   }
 
   .auth-modal-box .form-group {
-    margin-bottom: 0.85rem;
+    margin-bottom: 0.75rem;
   }
 
   .auth-modal-box .auth-form .btn-crema {
     min-height: 48px;
     font-size: 0.95rem;
     margin-top: 0.75rem;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.75rem;
     width: 100%;
   }
 
   .modal-overlay.active .modal-box {
     transform: translateY(0);
+  }
+  #authModalOverlay.active .auth-modal-box {
+    transform: scale(1);
   }
 
   .modal-sheet-handle {
