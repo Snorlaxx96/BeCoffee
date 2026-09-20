@@ -1,0 +1,11 @@
+node_modules/**
+node_modules/
+.agents/**
+.agents/
+.git/**
+.git/
+scratch/**
+scratch/
+database/**
+.env*
+*.log

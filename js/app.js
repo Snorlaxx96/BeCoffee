@@ -362,15 +362,14 @@
       return handleDemoRequest(urlString, init);
     }
 
-    // Attempt real backend first (e.g. local XAMPP or live PHP host)
+    // Attempt real backend first (e.g. local XAMPP)
     try {
       const res = await originalFetch.apply(this, arguments);
       const cType = (res.headers.get('content-type') || '').toLowerCase();
-      // If server returns static PHP source, HTML error, or 503 database offline status
-      if (cType.includes('application/x-php') || (!res.ok && (cType.includes('text/html') || res.status === 503))) {
-        console.warn('Backend database offline or static host. Switching to Demo Mode for:', urlString);
+      // If server returns static PHP source or HTML error page on static host
+      if (cType.includes('application/x-php') || (!res.ok && cType.includes('text/html'))) {
+        console.warn('Backend unavailable or static host detected. Switching to Demo Mode for:', urlString);
         window.BECOFFEE_DEMO_ACTIVE = true;
-        try { localStorage.setItem('becoffee_demo_active', 'true'); } catch (e) {}
         renderDemoBadge();
         return handleDemoRequest(urlString, init);
       }
@@ -378,7 +377,6 @@
     } catch (err) {
       console.warn('Network error reaching backend. Switching to Demo Mode for:', urlString);
       window.BECOFFEE_DEMO_ACTIVE = true;
-      try { localStorage.setItem('becoffee_demo_active', 'true'); } catch (e) {}
       renderDemoBadge();
       return handleDemoRequest(urlString, init);
     }
