@@ -768,10 +768,19 @@ nav {
   background: var(--color-roast-dark);
 }
 
-.hero-main-card img {
+.hero-main-card picture {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.hero-main-card img,
+.hero-main-card picture img {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center center;
   transition: transform var(--trans-smooth);
 }
 
@@ -1487,10 +1496,19 @@ nav {
   transform: translateY(1.5rem);
 }
 
-.mosaic-item img {
+.mosaic-item picture {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.mosaic-item img,
+.mosaic-item picture img {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center center;
   transition: transform var(--trans-smooth);
 }
 
