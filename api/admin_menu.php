@@ -162,7 +162,7 @@ if ($method === 'POST' && $action === 'save_item') {
     $origin       = trim($input['origin'] ?? 'House Roast Blend');
     $elevation    = trim($input['elevation'] ?? ($priceHot ? 'Hot / Iced' : 'Iced Only'));
     $description  = trim($input['description'] ?? '');
-    $image        = trim($input['image'] ?? 'images/menu/hc-classic.jpg');
+    $image        = trim($input['image'] ?? 'images/menu/hc-classic.webp');
     $isBestseller = !empty($input['is_bestseller']) ? 1 : 0;
     $isAvailable  = isset($input['is_available']) ? ((bool) $input['is_available'] ? 1 : 0) : 1;
 
