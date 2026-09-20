@@ -1476,13 +1476,14 @@ document.addEventListener('DOMContentLoaded', () => {
         mobileAccountSettingsItem.classList.add('is-auth');
       }
 
-      const mobileAuthLoggedIn = document.getElementById('mobileAuthLoggedIn');
-      const mobileAuthGuest = document.getElementById('mobileAuthGuest');
+      const mobileNavAuth = document.getElementById('mobileNavAuth');
       const mobileAuthName = document.getElementById('mobileAuthName');
       const mobileAuthAvatar = document.getElementById('mobileAuthAvatar');
 
-      if (mobileAuthLoggedIn) mobileAuthLoggedIn.style.display = 'block';
-      if (mobileAuthGuest) mobileAuthGuest.style.display = 'none';
+      if (mobileNavAuth) {
+        mobileNavAuth.classList.add('is-active');
+        mobileNavAuth.style.display = 'block';
+      }
       if (mobileAuthName) mobileAuthName.textContent = state.currentUser.name;
       if (mobileAuthAvatar) {
         const parts = state.currentUser.name.trim().split(/\s+/);
@@ -1504,10 +1505,10 @@ document.addEventListener('DOMContentLoaded', () => {
       if (authOpenBtn) authOpenBtn.style.display = 'inline-flex';
       if (userProfilePill) userProfilePill.style.display = 'none';
 
-      const mobileAuthLoggedIn = document.getElementById('mobileAuthLoggedIn');
-      const mobileAuthGuest = document.getElementById('mobileAuthGuest');
-      if (mobileAuthLoggedIn) mobileAuthLoggedIn.style.display = 'none';
-      if (mobileAuthGuest) mobileAuthGuest.style.display = 'block';
+      if (mobileNavAuth) {
+        mobileNavAuth.classList.remove('is-active');
+        mobileNavAuth.style.display = 'none';
+      }
 
       if (mobileAccountSettingsItem) {
         mobileAccountSettingsItem.classList.remove('is-auth');
