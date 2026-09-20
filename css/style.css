@@ -2319,6 +2319,7 @@ nav {
   }
 }
 
+@media (max-width: 1024px) {
   .nav-actions .open-reserve-trigger,
   .nav-actions .admin-cms-btn {
     display: none !important;
