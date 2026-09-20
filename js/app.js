@@ -1025,6 +1025,11 @@ document.addEventListener('DOMContentLoaded', () => {
       cartBadge.textContent = totalCount;
       cartBadge.style.display = totalCount > 0 ? 'flex' : 'none';
     }
+    const mobileBarCartBadge = document.getElementById('mobileBarCartBadge');
+    if (mobileBarCartBadge) {
+      mobileBarCartBadge.textContent = totalCount;
+      mobileBarCartBadge.style.display = totalCount > 0 ? 'flex' : 'none';
+    }
 
     if (!cartItemsContainer) return;
 
@@ -1125,6 +1130,14 @@ document.addEventListener('DOMContentLoaded', () => {
       if (state.cart.length === 0) {
         showToast('Your pickup cart is ready. Select any drink below to customize and order!');
       }
+    });
+  }
+
+  // Sticky Mobile Action Bar Cart Button
+  const mobileBarCartBtn = document.getElementById('mobileBarCartBtn');
+  if (mobileBarCartBtn && cartDrawerOverlay) {
+    mobileBarCartBtn.addEventListener('click', () => {
+      cartDrawerOverlay.classList.add('active');
     });
   }
 
@@ -1339,7 +1352,8 @@ document.addEventListener('DOMContentLoaded', () => {
     putik: {
       name: 'Zamboanga Flagship Sanctuary',
       badge: 'Zamboanga City Flagship & Slow Bar',
-      address: 'RCDAO Village, Putik, Zamboanga City, 7000 Zamboanga Peninsula',
+      address: 'RCDAO Village, MCLL Highway, Putik, Zamboanga City, 7000 Zamboanga Peninsula',
+      landmark: 'Along MCLL Highway, beside RCDAO Village entrance (250m before Putik Barangay Hall, across Caltex Station)',
       hours: 'Mon – Sun: 7:00 AM – 10:00 PM PHT',
       phones: [
         { label: '+63 62 991 2633', tel: '+63629912633' },
@@ -1347,12 +1361,14 @@ document.addEventListener('DOMContentLoaded', () => {
       ],
       features: 'High-speed 500Mbps Fiber, Outdoor Garden Seating, Slow Bar & Siphon, Pour-over Flights',
       image: 'images/locations/putik_flagship.webp',
-      directionsUrl: 'https://maps.app.goo.gl/RHdya1FR7aJFRbDx5'
+      directionsUrl: 'https://maps.app.goo.gl/RHdya1FR7aJFRbDx5',
+      mapEmbedUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15840.40788647008!2d122.0950!3d6.9380!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x325041f0b0946b07%3A0x6a2c91834167e4ea!2sPutik%2C%20Zamboanga%2C%20Zamboanga%20del%20Sur!5e0!3m2!1sen!2sph!4v1700000000000!5m2!1sen!2sph'
     },
     baliwasan: {
       name: 'Baliwasan Roastery & Slow Bar',
       badge: 'Zamboanga Peninsula Roastery & Brew Lab',
-      address: 'San Jose Street, Baliwasan Grande, San Jose Gusu, Zamboanga City, 7000',
+      address: 'San Jose Gusu & Baliwasan Chico Road, Zamboanga City, 7000',
+      landmark: 'Near Western Mindanao State University (WMSU) & Baliwasan Seaside, 5 mins from Zamboanga International Airport',
       hours: 'Wed – Sun: 8:00 AM – 8:00 PM PHT (Closed Mon & Tue)',
       phones: [
         { label: '+63 62 991 8888', tel: '+63629918888' },
@@ -1360,20 +1376,8 @@ document.addEventListener('DOMContentLoaded', () => {
       ],
       features: 'Direct Cupping Pavilion, Alfresco Seating, Artisan Roast Flights, High-Speed Fiber',
       image: 'images/locations/baliwasan_roastery.webp',
-      directionsUrl: 'https://maps.app.goo.gl/yeavai9XSWvr7YhN8'
-    },
-    benguet: {
-      name: 'Baliwasan Roastery & Slow Bar',
-      badge: 'Zamboanga Peninsula Roastery & Brew Lab',
-      address: 'San Jose Street, Baliwasan Grande, San Jose Gusu, Zamboanga City, 7000',
-      hours: 'Wed – Sun: 8:00 AM – 8:00 PM PHT (Closed Mon & Tue)',
-      phones: [
-        { label: '+63 62 991 8888', tel: '+63629918888' },
-        { label: '+63 919 888 2333', tel: '+639198882333' }
-      ],
-      features: 'Direct Cupping Pavilion, Alfresco Seating, Artisan Roast Flights, High-Speed Fiber',
-      image: 'images/locations/baliwasan_roastery.webp',
-      directionsUrl: 'https://maps.app.goo.gl/yeavai9XSWvr7YhN8'
+      directionsUrl: 'https://maps.app.goo.gl/yeavai9XSWvr7YhN8',
+      mapEmbedUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15840.852445831962!2d122.0620!3d6.9180!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x325041a7d18bc305%3A0x4eb266395b7e9bf9!2sBaliwasan%2C%20Zamboanga%2C%20Zamboanga%20del%20Sur!5e0!3m2!1sen!2sph!4v1700000000000!5m2!1sen!2sph'
     }
   };
 
@@ -1389,6 +1393,10 @@ document.addEventListener('DOMContentLoaded', () => {
       if (locCardTitle) locCardTitle.textContent = data.name;
       if (locCardBadge) locCardBadge.textContent = data.badge;
       if (locAddressText) locAddressText.textContent = data.address;
+      const locLandmarkText = document.getElementById('locLandmarkText');
+      if (locLandmarkText && data.landmark) {
+        locLandmarkText.innerHTML = '<strong>Landmark:</strong> ' + data.landmark;
+      }
       if (locHoursText) locHoursText.textContent = data.hours;
       if (locPhoneWrap && data.phones) {
         locPhoneWrap.innerHTML = data.phones.map(p => 
@@ -1400,6 +1408,14 @@ document.addEventListener('DOMContentLoaded', () => {
       if (locFeaturesText) locFeaturesText.textContent = data.features;
       if (locDirectionsBtn && data.directionsUrl) {
         locDirectionsBtn.href = data.directionsUrl;
+      }
+      const locMapIframe = document.getElementById('locMapIframe');
+      if (locMapIframe && data.mapEmbedUrl) {
+        locMapIframe.src = data.mapEmbedUrl;
+      }
+      const mapOpenFullBtn = document.getElementById('mapOpenFullBtn');
+      if (mapOpenFullBtn && data.directionsUrl) {
+        mapOpenFullBtn.href = data.directionsUrl;
       }
       if (locImage) {
         locImage.src = data.image;
