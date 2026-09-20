@@ -388,6 +388,12 @@ button:disabled {
     white-space: normal;
     flex-wrap: wrap;
   }
+  .banner-close-btn {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+  }
 }
 
 /* --- Navigation Header --- */
@@ -1691,8 +1697,10 @@ nav {
 }
 
 .close-drawer-btn {
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -1779,8 +1787,10 @@ nav {
 }
 
 .qty-btn {
-  width: 26px;
-  height: 26px;
+  width: 30px;
+  height: 30px;
+  min-width: 30px;
+  min-height: 30px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1788,6 +1798,14 @@ nav {
   border-radius: 50%;
   background: #fff;
   box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  position: relative;
+  touch-action: manipulation;
+}
+
+.qty-btn::after {
+  content: '';
+  position: absolute;
+  inset: -8px;
 }
 
 .qty-val {
@@ -1798,7 +1816,7 @@ nav {
 }
 
 .cart-drawer-footer {
-  padding: 1.5rem 1.75rem;
+  padding: 1.25rem 1.5rem calc(1.5rem + env(safe-area-inset-bottom, 20px));
   border-top: 1px solid var(--border-light);
   background: var(--color-bg-subtle);
 }
@@ -2578,8 +2596,7 @@ nav {
     position: sticky;
     bottom: 0;
     margin-top: 0;
-    padding: 1rem 0;
-    padding-bottom: max(1.25rem, env(safe-area-inset-bottom, 16px));
+    padding: 1rem 0 calc(1.5rem + env(safe-area-inset-bottom, 20px));
     background: var(--color-bg-card);
     border-top: 1px solid var(--border-light);
     box-shadow: 0 -4px 16px rgba(21, 17, 14, 0.05);
@@ -2608,8 +2625,7 @@ nav {
 
 @media (max-width: 576px) {
   .modal-box {
-    padding: 1.25rem 1rem;
-    padding-bottom: max(1.5rem, env(safe-area-inset-bottom, 20px));
+    padding: 1.25rem 1rem calc(2rem + env(safe-area-inset-bottom, 24px));
   }
 
   .order-modal-box {
@@ -3413,7 +3429,7 @@ nav {
 
 .cms-search-input {
   padding-left: 2.85rem !important;
-  font-size: 0.88rem !important;
+  font-size: 1rem !important;
   height: 46px !important;
   background: #231B16 !important;
   color: #FFFFFF !important;
@@ -3977,6 +3993,23 @@ body:has(.cart-drawer-overlay.active) .demo-mode-badge {
 
   body {
     padding-bottom: calc(68px + env(safe-area-inset-bottom));
+  }
+}
+
+/* Global Mobile Touch & iOS Safari Zoom Prevention */
+@media (max-width: 768px) {
+  input,
+  select,
+  textarea,
+  .form-input,
+  .form-select,
+  .cms-search-input {
+    font-size: 16px !important;
+  }
+
+  /* Ensure smooth mobile touch interactions */
+  button, a, input, select, textarea {
+    -webkit-tap-highlight-color: rgba(223, 155, 100, 0.2);
   }
 }
 
