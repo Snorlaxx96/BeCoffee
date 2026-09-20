@@ -157,38 +157,53 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     adminItemsContainer.innerHTML = `
-      <table class="cms-table" style="width: 100%; border-collapse: collapse;">
+      <table class="cms-table">
         <thead>
-          <tr style="border-bottom: 1px solid rgba(255,255,255,0.1); text-align: left; color: #DF9B64; font-size: 0.82rem;">
-            <th style="padding: 0.75rem 1rem;">Product</th>
-            <th style="padding: 0.75rem 1rem;">Category</th>
-            <th style="padding: 0.75rem 1rem;">Base Price</th>
-            <th style="padding: 0.75rem 1rem;">Availability</th>
-            <th style="padding: 0.75rem 1rem; text-align: right;">Actions</th>
+          <tr>
+            <th style="min-width: 220px;">Product Details</th>
+            <th>Category</th>
+            <th>Base Price</th>
+            <th>Availability</th>
+            <th style="text-align: right;">Actions</th>
           </tr>
         </thead>
         <tbody>
           ${filtered.map(item => {
             const isAvail = item.is_available !== false && item.isAvailable !== false;
+            const isBestseller = item.is_bestseller || item.isBestseller;
             return `
-              <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
-                <td style="padding: 0.75rem 1rem; display: flex; align-items: center; gap: 0.85rem;">
-                  <img src="${item.image_url || item.image}" alt="${item.name}" style="width: 42px; height: 42px; border-radius: 8px; object-fit: cover; background: #222;" onerror="this.src='images/menu/hc-classic.webp'">
-                  <div>
-                    <div style="font-weight: 600; color: #FFF;">${item.name}</div>
-                    <div style="font-size: 0.76rem; color: var(--color-text-secondary);">${item.origin || item.elevation || ''}</div>
+              <tr>
+                <td>
+                  <div class="cms-table-prod-cell">
+                    <img src="${item.image_url || item.image}" alt="${item.name}" class="cms-table-thumb" onerror="this.src='images/menu/hc-classic.webp'">
+                    <div class="cms-table-prod-info">
+                      <div class="cms-table-prod-name">
+                        <span>${item.name}</span>
+                        ${isBestseller ? '<span class="cms-table-bestseller-tag">Bestseller</span>' : ''}
+                      </div>
+                      <div class="cms-table-prod-origin">${item.origin || item.elevation || 'Philippine Origin Blend'}</div>
+                    </div>
                   </div>
                 </td>
-                <td style="padding: 0.75rem 1rem; font-size: 0.84rem; text-transform: capitalize;">${item.category || item.category_name || 'House Coffee'}</td>
-                <td style="padding: 0.75rem 1rem; font-weight: 600; color: #DF9B64;">${formatPHP(item.price || item.priceIcedM)}</td>
-                <td style="padding: 0.75rem 1rem;">
-                  <button type="button" class="btn btn-sm ${isAvail ? 'btn-secondary' : 'btn-outline'}" data-toggle-id="${item.id}" data-current="${isAvail}" style="font-size: 0.78rem; padding: 0.3rem 0.65rem;">
-                    ${isAvail ? '🟢 In Stock' : '🔴 Sold Out'}
+                <td>
+                  <span class="cms-table-cat-pill">${item.category || item.category_name || 'House Coffee'}</span>
+                </td>
+                <td>
+                  <span class="cms-table-price-num">${formatPHP(item.price || item.priceIcedM)}</span>
+                </td>
+                <td>
+                  <button type="button" class="cms-avail-toggle-btn ${isAvail ? 'in-stock' : 'sold-out'}" data-toggle-id="${item.id}" data-current="${isAvail}" title="Click to toggle availability status">
+                    <span class="cms-status-indicator-dot" aria-hidden="true"></span>
+                    <span>${isAvail ? 'In Stock' : 'Sold Out'}</span>
                   </button>
                 </td>
-                <td style="padding: 0.75rem 1rem; text-align: right;">
-                  <button type="button" class="btn btn-sm btn-crema" data-edit-id="${item.id}" style="font-size: 0.78rem; padding: 0.3rem 0.65rem;">
-                    Edit
+                <td style="text-align: right;">
+                  <button type="button" class="cms-table-edit-btn" data-edit-id="${item.id}">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+                      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                    </svg>
+                    <span>Edit</span>
                   </button>
                 </td>
               </tr>
