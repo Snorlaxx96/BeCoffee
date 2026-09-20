@@ -103,6 +103,7 @@ tmp/
 temp/
 .temp/
 scratch/
+.firebase/
 
 # PHP & Composer Dependencies
 vendor/
