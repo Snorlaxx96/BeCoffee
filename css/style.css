@@ -479,6 +479,10 @@ nav {
   padding: 0;
 }
 
+.mobile-nav-auth {
+  display: none !important;
+}
+
 .nav-item {
   font-size: 0.92rem;
   font-weight: 500;
@@ -2374,6 +2378,111 @@ nav {
     font-size: 1.05rem;
     padding: 0.35rem 0;
     width: 100%;
+  }
+
+  /* Mobile Navigation Member Session & Sign Out */
+  .mobile-nav-auth {
+    display: block !important;
+    width: 100%;
+    margin-top: 0.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-light);
+  }
+
+  .mobile-auth-user-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+    padding: 0.65rem 0.85rem;
+    background: var(--color-bg-subtle);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-light);
+  }
+
+  .mobile-auth-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: var(--color-roast-obsidian);
+    color: #F5E9DF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-serif);
+    font-weight: 700;
+    font-size: 1.05rem;
+    border: 1px solid rgba(223, 155, 100, 0.35);
+    flex-shrink: 0;
+  }
+
+  .mobile-auth-info {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .mobile-auth-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-text-muted);
+    font-weight: 600;
+  }
+
+  .mobile-auth-name {
+    font-size: 0.95rem;
+    color: var(--color-roast-obsidian);
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .mobile-auth-btn-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    width: 100%;
+  }
+
+  .btn-mobile-nav-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    height: 44px;
+    min-height: 44px;
+    padding: 0.45rem 0.85rem;
+    border-radius: var(--radius-full);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--trans-fast);
+    font-family: var(--font-sans);
+  }
+
+  .btn-mobile-settings {
+    background: transparent;
+    color: var(--color-roast-obsidian);
+    border: 1px solid var(--border-medium);
+  }
+
+  .btn-mobile-settings:hover,
+  .btn-mobile-settings:active {
+    background: var(--color-bg-subtle);
+  }
+
+  .btn-mobile-signout {
+    background: rgba(239, 68, 68, 0.08);
+    color: #DC2626;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+  }
+
+  .btn-mobile-signout:hover,
+  .btn-mobile-signout:active {
+    background: #DC2626;
+    color: #FFFFFF;
   }
 
   .mobile-toggle {

@@ -1476,6 +1476,21 @@ document.addEventListener('DOMContentLoaded', () => {
         mobileAccountSettingsItem.classList.add('is-auth');
       }
 
+      const mobileAuthLoggedIn = document.getElementById('mobileAuthLoggedIn');
+      const mobileAuthGuest = document.getElementById('mobileAuthGuest');
+      const mobileAuthName = document.getElementById('mobileAuthName');
+      const mobileAuthAvatar = document.getElementById('mobileAuthAvatar');
+
+      if (mobileAuthLoggedIn) mobileAuthLoggedIn.style.display = 'block';
+      if (mobileAuthGuest) mobileAuthGuest.style.display = 'none';
+      if (mobileAuthName) mobileAuthName.textContent = state.currentUser.name;
+      if (mobileAuthAvatar) {
+        const parts = state.currentUser.name.trim().split(/\s+/);
+        mobileAuthAvatar.textContent = parts.length > 1
+          ? (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase()
+          : parts[0].charAt(0).toUpperCase();
+      }
+
       // Pre-fill reservation and order forms if inputs are empty
       const bookingName = document.getElementById('bookingName');
       const bookingPhone = document.getElementById('bookingPhone');
@@ -1488,6 +1503,12 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       if (authOpenBtn) authOpenBtn.style.display = 'inline-flex';
       if (userProfilePill) userProfilePill.style.display = 'none';
+
+      const mobileAuthLoggedIn = document.getElementById('mobileAuthLoggedIn');
+      const mobileAuthGuest = document.getElementById('mobileAuthGuest');
+      if (mobileAuthLoggedIn) mobileAuthLoggedIn.style.display = 'none';
+      if (mobileAuthGuest) mobileAuthGuest.style.display = 'block';
+
       if (mobileAccountSettingsItem) {
         mobileAccountSettingsItem.classList.remove('is-auth');
       }
@@ -1856,10 +1877,12 @@ document.addEventListener('DOMContentLoaded', () => {
       const res = await fetch(getApiUrl('api/auth.php?action=logout'), { method: 'POST', credentials: 'include' });
       const data = await res.json();
       state.currentUser = null;
+      try { localStorage.removeItem(DEMO_SESSION_KEY); } catch (e) {}
       updateAuthUI();
       showToast(data.message || 'Signed out successfully.');
     } catch (err) {
       state.currentUser = null;
+      try { localStorage.removeItem(DEMO_SESSION_KEY); } catch (e) {}
       updateAuthUI();
       showToast('Signed out.');
     }
@@ -1981,6 +2004,43 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
   if (closeAccountModalBtn) closeAccountModalBtn.addEventListener('click', closeAccountModal);
+
+  // Mobile Nav Auth & Sign Out Handlers
+  const mobileNavLogoutBtn = document.getElementById('mobileNavLogoutBtn');
+  const mobileNavSettingsBtn = document.getElementById('mobileNavSettingsBtn');
+  const mobileNavSignInBtn = document.getElementById('mobileNavSignInBtn');
+  const accountModalLogoutBtn = document.getElementById('accountModalLogoutBtn');
+
+  if (mobileNavLogoutBtn) {
+    mobileNavLogoutBtn.addEventListener('click', () => {
+      if (navLinks) navLinks.classList.remove('active');
+      if (mobileToggle) mobileToggle.classList.remove('active');
+      handleLogout();
+    });
+  }
+
+  if (mobileNavSettingsBtn) {
+    mobileNavSettingsBtn.addEventListener('click', () => {
+      if (navLinks) navLinks.classList.remove('active');
+      if (mobileToggle) mobileToggle.classList.remove('active');
+      openAccountModal();
+    });
+  }
+
+  if (mobileNavSignInBtn) {
+    mobileNavSignInBtn.addEventListener('click', () => {
+      if (navLinks) navLinks.classList.remove('active');
+      if (mobileToggle) mobileToggle.classList.remove('active');
+      openAuthModal('signin');
+    });
+  }
+
+  if (accountModalLogoutBtn) {
+    accountModalLogoutBtn.addEventListener('click', () => {
+      closeAccountModal();
+      handleLogout();
+    });
+  }
 
   if (tabProfileBtn) tabProfileBtn.addEventListener('click', () => switchAccountTab('profile'));
   if (tabPasswordBtn) tabPasswordBtn.addEventListener('click', () => switchAccountTab('password'));
