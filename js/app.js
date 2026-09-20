@@ -1995,7 +1995,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // Mobile Nav Auth & Sign Out Handlers
   const mobileNavLogoutBtn = document.getElementById('mobileNavLogoutBtn');
   const mobileNavSettingsBtn = document.getElementById('mobileNavSettingsBtn');
-  const accountModalLogoutBtn = document.getElementById('accountModalLogoutBtn');
 
   if (mobileNavLogoutBtn) {
     mobileNavLogoutBtn.addEventListener('click', () => {
@@ -2010,14 +2009,6 @@ document.addEventListener('DOMContentLoaded', () => {
       if (navLinks) navLinks.classList.remove('active');
       if (mobileToggle) mobileToggle.classList.remove('active');
       openAccountModal();
-    });
-  }
-
-
-  if (accountModalLogoutBtn) {
-    accountModalLogoutBtn.addEventListener('click', () => {
-      closeAccountModal();
-      handleLogout();
     });
   }
 
