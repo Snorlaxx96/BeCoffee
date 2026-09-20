@@ -1572,15 +1572,46 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  function hideFloatingMobileBars() {
+    const mobileBar = document.querySelector('.mobile-action-bar');
+    if (mobileBar) {
+      mobileBar.style.setProperty('display', 'none', 'important');
+      mobileBar.style.setProperty('visibility', 'hidden', 'important');
+    }
+    const demoBadge = document.getElementById('becoffeeDemoBadge');
+    if (demoBadge) {
+      demoBadge.style.setProperty('display', 'none', 'important');
+      demoBadge.style.setProperty('visibility', 'hidden', 'important');
+    }
+  }
+
+  function restoreFloatingMobileBars() {
+    const anyModal = document.querySelector('.modal-overlay.active, .cart-drawer-overlay.active');
+    if (!anyModal) {
+      const mobileBar = document.querySelector('.mobile-action-bar');
+      if (mobileBar) {
+        mobileBar.style.removeProperty('display');
+        mobileBar.style.removeProperty('visibility');
+      }
+      const demoBadge = document.getElementById('becoffeeDemoBadge');
+      if (demoBadge) {
+        demoBadge.style.removeProperty('display');
+        demoBadge.style.removeProperty('visibility');
+      }
+    }
+  }
+
   function openAuthModal(defaultTab = 'signin') {
     switchAuthTab(defaultTab);
     if (authModalOverlay) authModalOverlay.classList.add('active');
     document.body.classList.add('modal-open');
+    hideFloatingMobileBars();
   }
 
   function closeAuthModal() {
     if (authModalOverlay) authModalOverlay.classList.remove('active');
     document.body.classList.remove('modal-open');
+    restoreFloatingMobileBars();
     setAuthAlert('');
     if (signInForm) signInForm.reset();
     if (registerForm) registerForm.reset();

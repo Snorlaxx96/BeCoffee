@@ -12,8 +12,72 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   
-  <!-- Stylesheet -->
-  <link rel="stylesheet" href="css/style.css">
+  <!-- Stylesheet (cache-busted) -->
+  <link rel="stylesheet" href="css/style.css?v=11.0">
+
+  <!-- Critical Inlined Mobile Auth Sheet Guard (guarantees zero-cache lag) -->
+  <style>
+    .modal-overlay {
+      z-index: 99999 !important;
+    }
+    .modal-overlay.active {
+      display: flex !important;
+    }
+    body.modal-open .mobile-action-bar,
+    body.modal-open .demo-mode-badge,
+    body:has(.modal-overlay.active) .mobile-action-bar,
+    body:has(.modal-overlay.active) .demo-mode-badge {
+      display: none !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+      transform: translateY(100%) !important;
+    }
+    @media (max-width: 768px) {
+      .auth-modal-box {
+        max-height: 94dvh !important;
+        max-height: 94vh !important;
+        padding: 1.15rem 1.25rem calc(3rem + env(safe-area-inset-bottom, 24px)) !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+      }
+      .auth-modal-box .auth-header {
+        margin-bottom: 0.85rem !important;
+      }
+      .auth-modal-box .auth-logo-symbol {
+        width: 36px !important;
+        height: 36px !important;
+        font-size: 1.05rem !important;
+        margin: 0 auto 0.35rem !important;
+      }
+      .auth-modal-box .modal-heading {
+        font-size: 1.28rem !important;
+        margin-bottom: 0.2rem !important;
+      }
+      .auth-modal-box .modal-sub {
+        font-size: 0.8rem !important;
+        line-height: 1.35 !important;
+      }
+      .auth-modal-box .auth-tabs {
+        margin-bottom: 0.85rem !important;
+        padding: 0.2rem !important;
+      }
+      .auth-modal-box .auth-tab-btn {
+        padding: 0.45rem !important;
+        font-size: 0.82rem !important;
+      }
+      .auth-modal-box .form-group {
+        margin-bottom: 0.75rem !important;
+      }
+      .auth-modal-box .auth-form .btn-crema {
+        min-height: 48px !important;
+        font-size: 0.95rem !important;
+        margin-top: 0.75rem !important;
+        margin-bottom: 0.75rem !important;
+        width: 100% !important;
+      }
+    }
+  </style>
 </head>
 <body>
 
@@ -971,7 +1035,7 @@
   </div>
 
   <!-- User Authentication Modal (Sign In / Register) -->
-  <div class="modal-overlay" id="authModalOverlay" aria-modal="true" role="dialog" aria-label="Account Login or Registration">
+  <div class="modal-overlay" id="authModalOverlay" aria-modal="true" role="dialog" aria-label="Account Login or Registration" style="z-index: 99999 !important;">
     <div class="modal-box auth-modal-box">
       <div class="modal-sheet-handle" aria-hidden="true"></div>
       <button type="button" class="modal-close-btn" id="closeAuthModalBtn" aria-label="Close Account Window">
@@ -1289,7 +1353,7 @@
   </aside>
 
   <!-- Application JavaScript & Catalog Data -->
-  <script src="js/menu_data.js?v=7.0"></script>
-  <script src="js/app.js?v=7.0"></script>
+  <script src="js/menu_data.js?v=11.0"></script>
+  <script src="js/app.js?v=11.0"></script>
 </body>
 </html>
