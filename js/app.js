@@ -478,7 +478,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const authModalOverlay = document.getElementById('authModalOverlay');
   const closeAuthModalBtn = document.getElementById('closeAuthModalBtn');
   const authOpenBtn = document.getElementById('authOpenBtn');
-  const mobileAuthTrigger = document.getElementById('mobileAuthTrigger');
   const userProfilePill = document.getElementById('userProfilePill');
   const userNameDisplay = document.getElementById('userNameDisplay');
   const userAvatarBadge = document.getElementById('userAvatarBadge');
@@ -1466,11 +1465,6 @@ document.addEventListener('DOMContentLoaded', () => {
           : parts[0].charAt(0).toUpperCase();
       }
       
-      if (mobileAuthTrigger) {
-        mobileAuthTrigger.textContent = `Sign Out (${firstName})`;
-        mobileAuthTrigger.classList.remove('btn-secondary');
-        mobileAuthTrigger.classList.add('btn-outline');
-      }
 
       if (mobileAccountSettingsItem) {
         mobileAccountSettingsItem.classList.add('is-auth');
@@ -1515,11 +1509,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       if (checkoutModeLabel) {
         checkoutModeLabel.textContent = 'No account required';
-      }
-      if (mobileAuthTrigger) {
-        mobileAuthTrigger.textContent = 'Member Sign In';
-        mobileAuthTrigger.classList.remove('btn-outline');
-        mobileAuthTrigger.classList.add('btn-secondary');
       }
     }
 
@@ -1644,15 +1633,6 @@ document.addEventListener('DOMContentLoaded', () => {
     authOpenBtn.addEventListener('click', () => openAuthModal('signin'));
   }
 
-  if (mobileAuthTrigger) {
-    mobileAuthTrigger.addEventListener('click', () => {
-      if (state.currentUser) {
-        handleLogout();
-      } else {
-        openAuthModal('signin');
-      }
-    });
-  }
 
   if (closeAuthModalBtn) {
     closeAuthModalBtn.addEventListener('click', closeAuthModal);
@@ -2009,7 +1989,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // Mobile Nav Auth & Sign Out Handlers
   const mobileNavLogoutBtn = document.getElementById('mobileNavLogoutBtn');
   const mobileNavSettingsBtn = document.getElementById('mobileNavSettingsBtn');
-  const mobileNavSignInBtn = document.getElementById('mobileNavSignInBtn');
   const accountModalLogoutBtn = document.getElementById('accountModalLogoutBtn');
 
   if (mobileNavLogoutBtn) {
@@ -2028,13 +2007,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  if (mobileNavSignInBtn) {
-    mobileNavSignInBtn.addEventListener('click', () => {
-      if (navLinks) navLinks.classList.remove('active');
-      if (mobileToggle) mobileToggle.classList.remove('active');
-      openAuthModal('signin');
-    });
-  }
 
   if (accountModalLogoutBtn) {
     accountModalLogoutBtn.addEventListener('click', () => {
