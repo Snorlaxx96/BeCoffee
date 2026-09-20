@@ -33,6 +33,9 @@ function loadEnv($path) {
 }
 
 loadEnv(dirname(__DIR__) . '/.env');
+if (file_exists(__DIR__ . '/db_config.php')) {
+    require_once __DIR__ . '/db_config.php';
+}
 
 // Helper to get environment variable with fallback
 function env($key, $default = null) {
