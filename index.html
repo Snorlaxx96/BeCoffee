@@ -13,7 +13,7 @@
   <meta http-equiv="Expires" content="0">
   
   <!-- Stylesheet (cache-busted) -->
-  <link rel="stylesheet" href="css/style.css?v=13.0">
+  <link rel="stylesheet" href="css/style.css?v=14.0">
 
   <!-- Critical Inlined Mobile Auth Sheet Guard (guarantees zero-cache lag) -->
   <style>
@@ -102,7 +102,33 @@
         width: 100% !important;
       }
     }
+    /* Absolute purge of mobile guest sign in button in all scenarios */
+    #mobileNavSignInBtn,
+    .mobile-auth-guest {
+      display: none !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+      height: 0 !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
   </style>
+  <script>
+    (function() {
+      function purgeLegacyMobileGuestBtn() {
+        var b = document.getElementById('mobileNavSignInBtn');
+        if (b && b.parentNode) b.parentNode.removeChild(b);
+        var g = document.getElementById('mobileAuthGuest');
+        if (g && g.parentNode) g.parentNode.removeChild(g);
+      }
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', purgeLegacyMobileGuestBtn);
+      } else {
+        purgeLegacyMobileGuestBtn();
+      }
+    })();
+  </script>
 </head>
 <body>
 
@@ -1409,7 +1435,7 @@
   </aside>
 
   <!-- Application JavaScript & Catalog Data -->
-  <script src="js/menu_data.js?v=13.0"></script>
-  <script src="js/app.js?v=13.0"></script>
+  <script src="js/menu_data.js?v=14.0"></script>
+  <script src="js/app.js?v=14.0"></script>
 </body>
 </html>

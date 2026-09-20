@@ -1452,6 +1452,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // --- 14. User Authentication & Account Management ---
   function updateAuthUI() {
+    // Permanently purge any legacy guest sign in buttons from DOM
+    const legacyGuestBtn = document.getElementById('mobileNavSignInBtn');
+    if (legacyGuestBtn && legacyGuestBtn.parentNode) legacyGuestBtn.parentNode.removeChild(legacyGuestBtn);
+    const legacyGuestWrap = document.getElementById('mobileAuthGuest');
+    if (legacyGuestWrap && legacyGuestWrap.parentNode) legacyGuestWrap.parentNode.removeChild(legacyGuestWrap);
+
     if (state.currentUser) {
       if (authOpenBtn) authOpenBtn.style.display = 'none';
       if (userProfilePill) userProfilePill.style.display = 'inline-flex';

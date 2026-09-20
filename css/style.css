@@ -2381,6 +2381,17 @@ nav {
   }
 
   /* Mobile Navigation Member Session & Sign Out (only shown when authenticated) */
+  #mobileNavSignInBtn,
+  .mobile-auth-guest {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
   .mobile-nav-auth {
     display: none;
     width: 100%;
