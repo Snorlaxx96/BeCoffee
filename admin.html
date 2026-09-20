@@ -256,8 +256,13 @@
         </div>
 
         <div class="form-group">
-          <label for="adminEditImage" class="form-label">Image URL / WebP Path</label>
+          <label for="adminEditImage" class="form-label">Product Image (WebP)</label>
           <input type="text" id="adminEditImage" class="form-input" placeholder="images/menu/hc-classic.webp" required>
+          <div style="margin-top: 0.5rem; display: flex; flex-direction: column; gap: 0.25rem;">
+            <label for="adminImageFileInput" style="font-size: 0.8rem; color: var(--color-crema-gold); font-weight: 500;">Or Upload Photo (Auto-compresses to WebP &lt;80KB):</label>
+            <input type="file" id="adminImageFileInput" accept="image/*" class="form-input" style="padding: 0.4rem; font-size: 0.8rem;">
+            <span id="adminCompressStatus" style="font-size: 0.75rem; color: #A09080;"></span>
+          </div>
         </div>
 
         <div class="form-group">

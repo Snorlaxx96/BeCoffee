@@ -513,16 +513,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const orderCustomerNotes = document.getElementById('orderCustomerNotes');
   const checkoutModeLabel = document.getElementById('checkoutModeLabel');
 
-  // Admin CMS Portal Links (Toggled when role === 'admin')
-  const adminCmsOpenBtn = document.getElementById('adminCmsOpenBtn');
-  const mobileAdminCmsItem = document.getElementById('mobileAdminCmsItem');
-
   // Location Outpost Tabs
   const locTabBtns = document.querySelectorAll('.loc-tab-btn');
   const locCardTitle = document.getElementById('locCardTitle');
   const locCardBadge = document.getElementById('locCardBadge');
   const locAddressText = document.getElementById('locAddressText');
   const locHoursText = document.getElementById('locHoursText');
+  const locPhoneWrap = document.getElementById('locPhoneWrap');
   const locPhoneText = document.getElementById('locPhoneText');
   const locFeaturesText = document.getElementById('locFeaturesText');
   const locImage = document.getElementById('locImage');
@@ -1034,7 +1031,8 @@ document.addEventListener('DOMContentLoaded', () => {
             <line x1="14" y1="1" x2="14" y2="4"></line>
           </svg>
           <p style="font-weight: 600; color: var(--color-roast-obsidian); margin-bottom: 0.25rem;">Your coffee order is empty</p>
-          <p style="font-size: 0.85rem;">Explore our single-origins, espresso drinks, or bakery offerings.</p>
+          <p style="font-size: 0.85rem; margin-bottom: 0.75rem;">Explore our single-origins, espresso drinks, or bakery offerings.</p>
+          <a href="#menu" class="btn btn-sm btn-crema" style="display: inline-flex;" onclick="document.getElementById('cartDrawerOverlay').classList.remove('active');">Explore Handcrafted Menu</a>
         </div>
       `;
       if (cartSubtotalEl) cartSubtotalEl.textContent = '₱0';
@@ -1107,6 +1105,17 @@ document.addEventListener('DOMContentLoaded', () => {
     cartDrawerOverlay.addEventListener('click', (e) => {
       if (e.target === cartDrawerOverlay) {
         cartDrawerOverlay.classList.remove('active');
+      }
+    });
+  }
+
+  // Hero CTA "Order for Pickup" Wire to Cart Drawer
+  const heroOrderPickupBtn = document.getElementById('heroOrderPickupBtn');
+  if (heroOrderPickupBtn && cartDrawerOverlay) {
+    heroOrderPickupBtn.addEventListener('click', () => {
+      cartDrawerOverlay.classList.add('active');
+      if (state.cart.length === 0) {
+        showToast('Your pickup cart is ready. Select any drink below to customize and order!');
       }
     });
   }
@@ -1324,9 +1333,12 @@ document.addEventListener('DOMContentLoaded', () => {
       badge: 'Zamboanga City Flagship & Slow Bar',
       address: 'RCDAO Village, Putik, Zamboanga City, 7000 Zamboanga Peninsula',
       hours: 'Mon – Sun: 7:00 AM – 10:00 PM PHT',
-      phone: '+63 62 991 2633 / +63 917 555 2333',
+      phones: [
+        { label: '+63 62 991 2633', tel: '+63629912633' },
+        { label: '+63 917 555 2333', tel: '+639175552333' }
+      ],
       features: 'High-speed 500Mbps Fiber, Outdoor Garden Seating, Slow Bar & Siphon, Pour-over Flights',
-      image: 'images/locations/putik_flagship.jpg',
+      image: 'images/locations/putik_flagship.webp',
       directionsUrl: 'https://maps.app.goo.gl/RHdya1FR7aJFRbDx5'
     },
     baliwasan: {
@@ -1334,9 +1346,12 @@ document.addEventListener('DOMContentLoaded', () => {
       badge: 'Zamboanga Peninsula Roastery & Brew Lab',
       address: 'San Jose Street, Baliwasan Grande, San Jose Gusu, Zamboanga City, 7000',
       hours: 'Wed – Sun: 8:00 AM – 8:00 PM PHT (Closed Mon & Tue)',
-      phone: '+63 62 991 8888 / +63 919 888 2333',
+      phones: [
+        { label: '+63 62 991 8888', tel: '+63629918888' },
+        { label: '+63 919 888 2333', tel: '+639198882333' }
+      ],
       features: 'Direct Cupping Pavilion, Alfresco Seating, Artisan Roast Flights, High-Speed Fiber',
-      image: 'images/locations/baliwasan_roastery.jpg',
+      image: 'images/locations/baliwasan_roastery.webp',
       directionsUrl: 'https://maps.app.goo.gl/yeavai9XSWvr7YhN8'
     },
     benguet: {
@@ -1344,9 +1359,12 @@ document.addEventListener('DOMContentLoaded', () => {
       badge: 'Zamboanga Peninsula Roastery & Brew Lab',
       address: 'San Jose Street, Baliwasan Grande, San Jose Gusu, Zamboanga City, 7000',
       hours: 'Wed – Sun: 8:00 AM – 8:00 PM PHT (Closed Mon & Tue)',
-      phone: '+63 62 991 8888 / +63 919 888 2333',
+      phones: [
+        { label: '+63 62 991 8888', tel: '+63629918888' },
+        { label: '+63 919 888 2333', tel: '+639198882333' }
+      ],
       features: 'Direct Cupping Pavilion, Alfresco Seating, Artisan Roast Flights, High-Speed Fiber',
-      image: 'images/locations/baliwasan_roastery.jpg',
+      image: 'images/locations/baliwasan_roastery.webp',
       directionsUrl: 'https://maps.app.goo.gl/yeavai9XSWvr7YhN8'
     }
   };
@@ -1364,7 +1382,13 @@ document.addEventListener('DOMContentLoaded', () => {
       if (locCardBadge) locCardBadge.textContent = data.badge;
       if (locAddressText) locAddressText.textContent = data.address;
       if (locHoursText) locHoursText.textContent = data.hours;
-      if (locPhoneText) locPhoneText.textContent = data.phone;
+      if (locPhoneWrap && data.phones) {
+        locPhoneWrap.innerHTML = data.phones.map(p => 
+          `<a href="tel:${p.tel}" class="phone-link">${p.label}</a>`
+        ).join(' <span class="phone-divider">/</span> ');
+      } else if (locPhoneText && data.phone) {
+        locPhoneText.textContent = data.phone;
+      }
       if (locFeaturesText) locFeaturesText.textContent = data.features;
       if (locDirectionsBtn && data.directionsUrl) {
         locDirectionsBtn.href = data.directionsUrl;
@@ -1424,14 +1448,6 @@ document.addEventListener('DOMContentLoaded', () => {
         mobileAuthTrigger.classList.add('btn-outline');
       }
 
-      // Admin CMS button visibility
-      const isAdmin = Boolean(state.currentUser && state.currentUser.role === 'admin');
-      if (adminCmsOpenBtn) adminCmsOpenBtn.style.display = isAdmin ? 'inline-flex' : 'none';
-      if (mobileAdminCmsItem) {
-        mobileAdminCmsItem.classList.toggle('is-admin', isAdmin);
-        mobileAdminCmsItem.style.display = isAdmin ? 'block' : 'none';
-      }
-
       if (mobileAccountSettingsItem) {
         mobileAccountSettingsItem.classList.add('is-auth');
       }
@@ -1448,11 +1464,6 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       if (authOpenBtn) authOpenBtn.style.display = 'inline-flex';
       if (userProfilePill) userProfilePill.style.display = 'none';
-      if (adminCmsOpenBtn) adminCmsOpenBtn.style.display = 'none';
-      if (mobileAdminCmsItem) {
-        mobileAdminCmsItem.classList.remove('is-admin');
-        mobileAdminCmsItem.style.display = 'none';
-      }
       if (mobileAccountSettingsItem) {
         mobileAccountSettingsItem.classList.remove('is-auth');
       }

@@ -316,6 +316,64 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('adminEditAvailable').checked = true;
       document.getElementById('adminEditImage').value = 'images/menu/hc-classic.webp';
     }
+    const adminImageFileInput = document.getElementById('adminImageFileInput');
+    const adminCompressStatus = document.getElementById('adminCompressStatus');
+    if (adminImageFileInput) adminImageFileInput.value = '';
+    if (adminCompressStatus) adminCompressStatus.textContent = '';
+  }
+
+  // Automatic Client-Side Photo Compression to WebP (<80KB)
+  const adminImageFileInput = document.getElementById('adminImageFileInput');
+  const adminCompressStatus = document.getElementById('adminCompressStatus');
+
+  if (adminImageFileInput) {
+    adminImageFileInput.addEventListener('change', (e) => {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+
+      if (adminCompressStatus) {
+        adminCompressStatus.textContent = `Optimizing ${file.name} (${(file.size / (1024 * 1024)).toFixed(1)} MB)...`;
+        adminCompressStatus.style.color = 'var(--color-crema-gold)';
+      }
+
+      const reader = new FileReader();
+      reader.onload = (evt) => {
+        const img = new Image();
+        img.onload = () => {
+          const maxDim = 800;
+          let w = img.width;
+          let h = img.height;
+          if (w > maxDim || h > maxDim) {
+            if (w > h) {
+              h = Math.round(h * (maxDim / w));
+              w = maxDim;
+            } else {
+              w = Math.round(w * (maxDim / h));
+              h = maxDim;
+            }
+          }
+
+          const canvas = document.createElement('canvas');
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, w, h);
+
+          const compressedData = canvas.toDataURL('image/webp', 0.82);
+          const sizeKb = Math.round((compressedData.length * 3 / 4) / 1024);
+
+          const imageInput = document.getElementById('adminEditImage');
+          if (imageInput) imageInput.value = compressedData;
+
+          if (adminCompressStatus) {
+            adminCompressStatus.textContent = `✓ Auto-compressed to WebP (${w}×${h}px · ~${sizeKb} KB)`;
+            adminCompressStatus.style.color = '#78A868';
+          }
+        };
+        img.src = evt.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
   }
 
   if (adminAddNewBtn) {

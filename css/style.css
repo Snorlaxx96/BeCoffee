@@ -94,6 +94,31 @@ body {
 img, svg, picture, video {
   display: block;
   max-width: 100%;
+  height: auto;
+}
+
+.phone-link-wrap {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.phone-link {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color var(--trans-fast);
+}
+
+.phone-link:hover,
+.phone-link:focus-visible {
+  color: var(--color-crema-gold);
+}
+
+.phone-divider {
+  opacity: 0.5;
+  user-select: none;
 }
 
 a {
