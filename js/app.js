@@ -1639,15 +1639,32 @@ document.addEventListener('DOMContentLoaded', () => {
           return;
         }
 
-        if (res.ok && data.success) {
+        if (res.ok && (data.success || data.authenticated)) {
           state.currentUser = data.user;
           setAuthAlert('Success! Welcome back.', 'success');
           showToast(`Welcome back, ${data.user.name}!`);
+
+          // Sync session to localStorage for seamless studio authorization
+          if (data.user) {
+            localStorage.setItem('becoffee_demo_session', JSON.stringify(data.user));
+          }
+
           try {
             updateAuthUI();
           } catch (uiErr) {
             console.warn('UI update notice after login:', uiErr);
           }
+
+          // Admin check: If administrator logs in, direct them straight to admin.html
+          if (data.user && data.user.role === 'admin') {
+            setAuthAlert('Administrator verified. Leading to Admin Studio...', 'success');
+            showToast('Administrator verified! Redirecting to Admin Studio...');
+            setTimeout(() => {
+              window.location.href = 'admin.html';
+            }, 600);
+            return;
+          }
+
           setTimeout(() => {
             closeAuthModal();
             if (state.pendingCheckout && state.cart.length > 0) {

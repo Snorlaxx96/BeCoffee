@@ -60,17 +60,18 @@ document.addEventListener('DOMContentLoaded', () => {
   // --- 1. Session Verification ---
   async function checkAdminSession() {
     try {
-      if (isDemo) {
-        const demoSession = JSON.parse(localStorage.getItem('becoffee_demo_session') || 'null');
-        if (demoSession && demoSession.role === 'admin') {
-          showStudio();
-          return;
-        }
+      // 1. Check local session storage (shared from index.html sign-in)
+      const localSession = JSON.parse(localStorage.getItem('becoffee_demo_session') || 'null');
+      if (localSession && localSession.role === 'admin') {
+        showStudio();
+        return;
       }
 
+      // 2. Query active server session
       const res = await fetch(getApiUrl('api/auth.php?action=me'), { credentials: 'include' });
       const data = await res.json();
-      if (res.ok && data.success && data.user && data.user.role === 'admin') {
+      if (res.ok && (data.success || data.authenticated) && data.user && data.user.role === 'admin') {
+        localStorage.setItem('becoffee_demo_session', JSON.stringify(data.user));
         showStudio();
       } else {
         showAuth();

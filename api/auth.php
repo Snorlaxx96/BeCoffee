@@ -16,6 +16,7 @@ $db = Database::getConnection();
 if ($method === 'GET' && $action === 'me') {
     if (empty($_SESSION['user_id'])) {
         jsonResponse([
+            'success'       => false,
             'authenticated' => false,
             'user'          => null
         ]);
@@ -28,12 +29,14 @@ if ($method === 'GET' && $action === 'me') {
     if (!$user) {
         unset($_SESSION['user_id']);
         jsonResponse([
+            'success'       => false,
             'authenticated' => false,
             'user'          => null
         ]);
     }
 
     jsonResponse([
+        'success'       => true,
         'authenticated' => true,
         'user'          => $user
     ]);
