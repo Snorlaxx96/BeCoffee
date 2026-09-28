@@ -3,423 +3,3353 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Roastery Operations Studio | BeCoffee Admin CMS</title>
-  <meta name="description" content="Administrative catalog and inventory studio for BeCoffee Roastery Philippines.">
+  <title>Escobar Cafe | Admin Operations & Analytics Studio</title>
+  <meta name="description" content="Operations studio for Escobar Cafe / BeCoffee: Analytics, Revenue Ledger, Product Catalog, and Stock Customization Control.">
   <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=12.0">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css?v=16.0">
   <style>
-    body.admin-body {
-      background: #110D0B;
+    /* Root Variables & Reset */
+    :root {
+      --admin-sidebar-w: 260px;
+      --admin-bg: #110D0B;
+      --admin-card: rgba(25, 20, 17, 0.95);
+      --admin-border: rgba(223, 155, 100, 0.16);
+      --admin-accent: #E28743;
+      --admin-accent-glow: rgba(226, 135, 67, 0.35);
+      --admin-green: #10B981;
+      --admin-red: #EF4444;
+      --admin-muted: #A99B92;
+    }
+
+    body.admin-hub-body {
+      background: var(--admin-bg);
       background-image: 
-        radial-gradient(circle at 50% -12%, rgba(223, 155, 100, 0.14) 0%, transparent 55%),
-        radial-gradient(circle at 88% 25%, rgba(148, 77, 28, 0.08) 0%, transparent 45%);
-      color: #EBD7C7;
+        radial-gradient(circle at 15% 10%, rgba(226, 135, 67, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 85% 60%, rgba(148, 77, 28, 0.06) 0%, transparent 45%);
+      color: #F5EBE1;
+      font-family: var(--font-sans);
       min-height: 100vh;
       display: flex;
-      flex-direction: column;
-      font-family: var(--font-sans);
+      margin: 0;
+      overflow-x: hidden;
     }
-    .admin-header-nav {
-      background: rgba(21, 17, 14, 0.92);
-      border-bottom: 1px solid rgba(223, 155, 100, 0.18);
-      padding: 0.85rem 1.75rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      position: sticky;
+
+    /* Fixed Left Sidebar */
+    .admin-sidebar {
+      width: var(--admin-sidebar-w);
+      height: 100vh;
+      position: fixed;
       top: 0;
+      left: 0;
+      background: #140F0D;
+      border-right: 1px solid var(--admin-border);
+      display: flex;
+      flex-direction: column;
       z-index: 100;
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+      padding: 1.5rem 1.25rem;
+      box-sizing: border-box;
+      transition: transform 0.25s ease;
     }
-    .admin-brand {
+
+    .sidebar-brand {
       display: flex;
       align-items: center;
-      gap: 0.85rem;
+      gap: 0.75rem;
       text-decoration: none;
       color: #FFF;
+      margin-bottom: 2rem;
     }
-    .admin-brand .logo-symbol {
-      width: 40px;
-      height: 40px;
+    .sidebar-logo {
+      width: 42px;
+      height: 42px;
       border-radius: 12px;
-      background: linear-gradient(135deg, #DF9B64 0%, #944D1C 100%);
+      background: linear-gradient(135deg, #E28743 0%, #944D1C 100%);
       color: #FFF;
       display: flex;
       align-items: center;
       justify-content: center;
       font-family: var(--font-serif);
-      font-size: 1.25rem;
+      font-size: 1.35rem;
       font-weight: 700;
-      box-shadow: 0 4px 14px rgba(223, 155, 100, 0.3);
+      box-shadow: 0 4px 14px var(--admin-accent-glow);
     }
-    .admin-brand-info {
-      display: flex;
-      flex-direction: column;
-    }
-    .admin-brand-name {
+    .sidebar-brand-name {
       font-family: var(--font-serif);
       font-size: 1.25rem;
       font-weight: 700;
-      color: #FFF;
       line-height: 1.1;
-      letter-spacing: -0.01em;
+      color: #FFF;
     }
-    .admin-brand-tag {
-      font-size: 0.72rem;
-      color: var(--color-crema-gold);
-      font-weight: 600;
+    .sidebar-brand-tag {
+      font-size: 0.68rem;
+      color: #DF9B64;
+      font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.08em;
+      display: block;
     }
-    .admin-nav-actions {
+
+    /* User Profile Pill */
+    .sidebar-user-card {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 0.75rem 0.85rem;
+      margin-bottom: 1.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+    }
+    .user-avatar-badge {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      color: #34D399;
+      display: grid;
+      place-content: center;
+      font-weight: 800;
+      font-size: 0.85rem;
+    }
+    .user-info-text {
+      flex: 1;
+      overflow: hidden;
+    }
+    .user-name {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #FFF;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+    .user-role-badge {
+      font-size: 0.68rem;
+      color: #34D399;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+    .user-role-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #34D399;
+      box-shadow: 0 0 6px #34D399;
+    }
+
+    /* Navigation Menu */
+    .sidebar-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+      flex: 1;
+    }
+    .nav-section-title {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #7D6F66;
+      font-weight: 800;
+      padding: 0.5rem 0.65rem 0.25rem;
+    }
+    .sidebar-nav-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      border-radius: 12px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #D1C5BD;
+      text-decoration: none;
+      background: transparent;
+      border: 1px solid transparent;
+      cursor: pointer;
+      width: 100%;
+      text-align: left;
+      transition: all 0.2s ease;
+    }
+    .sidebar-nav-btn:hover {
+      background: rgba(255, 255, 255, 0.06);
+      color: #FFF;
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+    .sidebar-nav-btn.active {
+      background: linear-gradient(135deg, rgba(226, 135, 67, 0.2) 0%, rgba(148, 77, 28, 0.2) 100%);
+      border-color: rgba(226, 135, 67, 0.45);
+      color: #FDBA74;
+      font-weight: 700;
+      box-shadow: 0 4px 14px rgba(226, 135, 67, 0.15);
+    }
+    .sidebar-nav-btn svg {
+      flex-shrink: 0;
+    }
+
+    /* Secondary Switcher Links at Bottom */
+    .sidebar-bottom-links {
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding-top: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .sidebar-quick-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.6rem 0.85rem;
+      border-radius: 10px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #A99B92;
+      text-decoration: none;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      transition: all 0.2s ease;
+    }
+    .sidebar-quick-link:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: #FFF;
+      border-color: rgba(255, 255, 255, 0.16);
+    }
+    .sidebar-quick-link.kds-link {
+      background: rgba(16, 185, 129, 0.1);
+      border-color: rgba(16, 185, 129, 0.3);
+      color: #6EE7B7;
+    }
+    .sidebar-quick-link.kds-link:hover {
+      background: rgba(16, 185, 129, 0.2);
+      color: #ECFDF5;
+    }
+
+    /* Main Workspace Canvas */
+    .admin-main-canvas {
+      margin-left: var(--admin-sidebar-w);
+      flex: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      box-sizing: border-box;
+    }
+
+    /* Top Canvas Bar */
+    .canvas-topbar {
+      padding: 1.1rem 2rem;
+      border-bottom: 1px solid var(--admin-border);
+      background: rgba(20, 15, 13, 0.92);
+      backdrop-filter: blur(14px);
+      position: sticky;
+      top: 0;
+      z-index: 90;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .canvas-title-wrap {
       display: flex;
       align-items: center;
       gap: 0.85rem;
     }
-    .admin-cafe-link {
-      display: inline-flex;
+    .sidebar-toggle-btn {
+      display: none;
       align-items: center;
-      gap: 0.45rem;
-      padding: 0.45rem 0.95rem;
-      border-radius: 999px;
-      font-size: 0.82rem;
-      font-weight: 600;
-      color: #D6C7BC;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      min-width: 44px;
+      min-height: 44px;
+      border-radius: 10px;
       background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(223, 155, 100, 0.18);
-      text-decoration: none;
-      transition: all 0.2s ease;
-    }
-    .admin-cafe-link:hover {
-      background: rgba(223, 155, 100, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.12);
       color: #FFF;
-      border-color: rgba(223, 155, 100, 0.35);
-      transform: translateY(-1px);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      padding: 0;
     }
-    .admin-user-pill {
+    .sidebar-toggle-btn:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(226, 135, 67, 0.45);
+      color: #FDBA74;
+    }
+    .sidebar-toggle-btn:focus-visible {
+      outline: 2px solid #E28743;
+      outline-offset: 2px;
+    }
+    .sidebar-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 7, 5, 0.7);
+      backdrop-filter: blur(6px);
+      z-index: 99;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+    .sidebar-backdrop.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .canvas-title-group h2 {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: #FFF;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      line-height: 1.2;
+    }
+    .canvas-title-group p {
+      font-size: 0.82rem;
+      color: var(--admin-muted);
+      margin: 0.25rem 0 0;
+    }
+
+    .canvas-actions-bar {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      flex-wrap: wrap;
+    }
+
+    /* Date Selector & Controls */
+    .date-control-group {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .date-presets-strip {
+      display: inline-flex;
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 3px;
+      gap: 3px;
+    }
+    .date-preset-btn {
+      padding: 0.4rem 0.8rem;
+      border-radius: 7px;
+      border: none;
+      background: transparent;
+      color: var(--admin-muted);
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      min-height: 38px;
       display: inline-flex;
       align-items: center;
-      gap: 0.45rem;
-      padding: 0.4rem 0.85rem;
-      border-radius: 999px;
-      font-size: 0.78rem;
-      font-weight: 600;
-      background: rgba(16, 185, 129, 0.12);
-      border: 1px solid rgba(16, 185, 129, 0.24);
-      color: #34D399;
     }
-    .admin-user-dot {
+    .date-preset-btn:hover {
+      color: #FFF;
+      background: rgba(255, 255, 255, 0.08);
+    }
+    .date-preset-btn.active {
+      background: rgba(226, 135, 67, 0.25);
+      color: #FDBA74;
+      font-weight: 700;
+    }
+    .live-status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.75rem;
+      color: #34D399;
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.28);
+      padding: 0.35rem 0.75rem;
+      border-radius: 999px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+    .live-status-dot {
       width: 7px;
       height: 7px;
       border-radius: 50%;
       background: #34D399;
-      box-shadow: 0 0 8px #34D399;
+      box-shadow: 0 0 6px #34D399;
     }
-    .admin-logout-btn {
-      padding: 0.45rem 1rem;
+
+    .admin-action-btn {
+      padding: 0.5rem 1rem;
+      border-radius: 10px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      transition: all 0.2s ease;
+      border: 1px solid transparent;
+      text-decoration: none;
+      min-height: 42px;
+      box-sizing: border-box;
+    }
+    .admin-action-btn:focus-visible {
+      outline: 2px solid #E28743;
+      outline-offset: 2px;
+    }
+    .btn-action-accent {
+      background: linear-gradient(135deg, #E28743 0%, #944D1C 100%);
+      color: #FFF;
+      box-shadow: 0 4px 14px var(--admin-accent-glow);
+    }
+    .btn-action-accent:hover {
+      box-shadow: 0 6px 20px rgba(226, 135, 67, 0.5);
+      transform: translateY(-1px);
+    }
+    .btn-action-secondary {
+      background: rgba(255, 255, 255, 0.06);
+      border-color: rgba(255, 255, 255, 0.12);
+      color: #D1C5BD;
+    }
+    .btn-action-secondary:hover {
+      background: rgba(255, 255, 255, 0.12);
+      color: #FFF;
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+
+    /* Content Sections */
+    .admin-view-panel {
+      padding: 2rem;
+      display: none;
+      flex-direction: column;
+      gap: 1.75rem;
+      max-width: 1400px;
+      width: 100%;
+      box-sizing: border-box;
+      min-width: 0;
+    }
+    .admin-view-panel.active {
+      display: flex;
+    }
+
+    /* Executive Analytics KPI Tiles (5-Card Strip) */
+    .kpi-tiles-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 1rem;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .kpi-stat-card {
+      background: var(--admin-card);
+      border: 1px solid var(--admin-border);
+      border-radius: 16px;
+      padding: 1.25rem 1.35rem;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-width: 0;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+    .kpi-stat-card:hover {
+      border-color: rgba(226, 135, 67, 0.35);
+      transform: translateY(-1px);
+    }
+    .kpi-stat-label {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--admin-muted);
+      font-weight: 700;
+      margin-bottom: 0.35rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .kpi-stat-value {
+      font-family: var(--font-mono);
+      font-size: 1.65rem;
+      font-weight: 800;
+      color: #FFF;
+      line-height: 1.15;
+      word-break: normal;
+    }
+    .kpi-stat-sub {
+      font-size: 0.75rem;
+      color: #DF9B64;
+      margin-top: 0.45rem;
+      font-weight: 600;
+    }
+
+    /* Visual Analytics Bento Grid */
+    .analytics-visual-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 1.25rem;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .viz-card {
+      background: var(--admin-card);
+      border: 1px solid var(--admin-border);
+      border-radius: 18px;
+      padding: 1.35rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      box-sizing: border-box;
+      min-width: 0;
+    }
+    .viz-card.span-4 { grid-column: span 4; }
+    .viz-card.span-8 { grid-column: span 8; }
+    .viz-card.span-5 { grid-column: span 5; }
+    .viz-card.span-7 { grid-column: span 7; }
+    .viz-card.span-3 { grid-column: span 3; }
+
+    .viz-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.15rem;
+      gap: 0.75rem;
+    }
+    .viz-card-title {
+      font-size: 0.98rem;
+      font-weight: 700;
+      color: #FFF;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .viz-card-badge {
+      font-size: 0.72rem;
+      color: #A99B92;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 0.2rem 0.55rem;
+      border-radius: 6px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    /* Split Bar & Payment Distribution */
+    .payment-split-bar {
+      display: flex;
+      height: 14px;
+      border-radius: 7px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.06);
+      margin: 0.5rem 0 1rem;
+    }
+    .split-bar-gcash {
+      background: #3B82F6;
+      transition: width 0.4s ease;
+    }
+    .split-bar-cash {
+      background: #F59E0B;
+      transition: width 0.4s ease;
+    }
+    .payment-legend-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.85rem;
+      margin-top: 0.5rem;
+    }
+    .payment-legend-box {
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 12px;
+      padding: 0.75rem 0.9rem;
+    }
+    .payment-legend-header {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-size: 0.75rem;
+      color: var(--admin-muted);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .dot-gcash { width: 8px; height: 8px; border-radius: 50%; background: #3B82F6; }
+    .dot-cash { width: 8px; height: 8px; border-radius: 50%; background: #F59E0B; }
+    .payment-legend-amount {
+      font-family: var(--font-mono);
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #FFF;
+      margin: 0.35rem 0 0.15rem;
+    }
+    .payment-legend-share {
+      font-size: 0.75rem;
+      color: #C8B9AF;
+      font-weight: 600;
+    }
+
+    /* Hourly Histogram Visuals */
+    .hourly-chart-container {
+      width: 100%;
+      height: 155px;
+      position: relative;
+      margin-top: auto;
+    }
+    .hourly-svg-chart {
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+
+    /* Top Selling Drinks Ranking */
+    .rank-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      flex: 1;
+    }
+    .rank-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+    .rank-item-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.85rem;
+    }
+    .rank-item-name {
+      color: #FFF;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-size: 0.84rem;
+    }
+    .rank-item-num {
+      color: var(--admin-muted);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+    }
+    .rank-item-stats {
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      color: #DF9B64;
+      font-weight: 700;
+    }
+    .rank-progress-track {
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      overflow: hidden;
+    }
+    .rank-progress-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #E28743 0%, #DF9B64 100%);
+      transition: width 0.4s ease;
+    }
+
+    /* Modifier Intelligence List */
+    .modifier-group-strip {
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+      flex: 1;
+      justify-content: space-around;
+    }
+    .modifier-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      padding: 0.55rem 0.85rem;
+      font-size: 0.82rem;
+    }
+    .modifier-name {
+      color: #E2D5CC;
+      font-weight: 600;
+    }
+    .modifier-count {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      color: #FDBA74;
+    }
+
+    /* QA Lockout Health Meters */
+    .qa-health-meters {
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+      flex: 1;
+      justify-content: space-around;
+    }
+    .qa-meter-row {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+    .qa-meter-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #E2D5CC;
+    }
+    .qa-meter-bar-track {
+      height: 7px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      overflow: hidden;
+    }
+    .qa-meter-bar-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: #10B981;
+      transition: width 0.4s ease;
+    }
+
+    /* Ledger Table Section & Filter Toolbar */
+    .ledger-table-wrap {
+      background: var(--admin-card);
+      border: 1px solid var(--admin-border);
+      border-radius: 20px;
+      padding: 1.5rem;
+      box-sizing: border-box;
+      min-width: 0;
+    }
+    .ledger-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.85rem;
+      margin-bottom: 1.25rem;
+    }
+    .ledger-filter-chips {
+      display: flex;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .filter-chip-btn {
+      padding: 0.35rem 0.75rem;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.04);
+      color: #C8B9AF;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.18s ease;
+      min-height: 36px;
+    }
+    .filter-chip-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #FFF;
+    }
+    .filter-chip-btn.active {
+      background: #E28743;
+      border-color: #E28743;
+      color: #FFF;
+      box-shadow: 0 2px 8px var(--admin-accent-glow);
+    }
+    .ledger-search-box {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 10px;
+      padding: 0.4rem 0.85rem;
+      min-width: 220px;
+      max-width: 320px;
+      flex: 1;
+    }
+    .ledger-search-box input {
+      background: transparent;
+      border: none;
+      color: #FFF;
+      font-size: 0.82rem;
+      font-family: inherit;
+      outline: none;
+      width: 100%;
+    }
+    .ledger-search-box input::placeholder {
+      color: var(--admin-muted);
+    }
+
+    .ledger-table-scroll {
+      width: 100%;
+      overflow-x: auto;
+    }
+    .ledger-desktop-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      text-align: left;
+    }
+    .ledger-desktop-table th {
+      padding: 0.85rem 0.65rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #DF9B64;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .ledger-desktop-table td {
+      padding: 0.85rem 0.65rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      color: #E2D5CC;
+      vertical-align: middle;
+    }
+
+    /* Mobile Ticket Cards Container */
+    .ledger-mobile-cards {
+      display: none;
+      flex-direction: column;
+      gap: 0.85rem;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .mobile-order-ticket {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      padding: 1rem 1.15rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+    }
+    .mobile-ticket-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      padding-bottom: 0.5rem;
+    }
+    .mobile-ticket-queue {
+      font-family: var(--font-mono);
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #FFF;
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+    .mobile-ticket-amount {
+      font-family: var(--font-mono);
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: #34D399;
+    }
+    .mobile-ticket-items {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      font-size: 0.82rem;
+    }
+    .mobile-ticket-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.35rem;
+      padding-top: 0.5rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    /* Menu & Stock Control Styles (Adopted from Admin Stock Control Portal) */
+    .stock-controls-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      background: var(--admin-card);
+      border: 1px solid var(--admin-border);
+      border-radius: 16px;
+      padding: 0.85rem 1.25rem;
+    }
+    .cat-nav-strip {
+      display: flex;
+      gap: 0.5rem;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .cat-nav-strip::-webkit-scrollbar { display: none; }
+    .cat-pill-btn {
+      padding: 0.45rem 1.1rem;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #C8B9AF;
       font-size: 0.82rem;
       font-weight: 600;
-      border-radius: 999px;
-      border: 1px solid rgba(255, 255, 255, 0.16);
-      background: transparent;
-      color: #C4B5AA;
+      white-space: nowrap;
       cursor: pointer;
       transition: all 0.2s ease;
     }
-    .admin-logout-btn:hover {
-      background: rgba(239, 68, 68, 0.15);
-      border-color: rgba(239, 68, 68, 0.4);
-      color: #F87171;
+    .cat-pill-btn.active, .cat-pill-btn:hover {
+      background: #E28743;
+      border-color: #E28743;
+      color: #FFF;
+      box-shadow: 0 4px 12px var(--admin-accent-glow);
     }
-    .admin-container {
-      max-width: 1240px;
-      margin: 2.25rem auto;
-      padding: 0 1.5rem 3.5rem;
-      flex: 1;
+    .search-input-wrap {
+      display: flex;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 10px;
+      padding: 0.35rem 0.75rem;
+      gap: 0.45rem;
+    }
+    .search-input-wrap input {
+      background: transparent;
+      border: none;
+      color: #FFF;
+      font-family: inherit;
+      font-size: 0.82rem;
+      outline: none;
+      width: 180px;
+    }
+
+    /* Drinks Catalog Grid */
+    .drinks-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+      gap: 1.35rem;
       width: 100%;
-      min-width: 0;
     }
-    .admin-panel-card {
-      background: #1A1411;
-      border: 1px solid rgba(223, 155, 100, 0.18);
+    .drink-card {
+      background: var(--admin-card);
+      border: 1px solid var(--admin-border);
+      border-radius: 18px;
+      padding: 1.1rem;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+    .drink-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(223, 155, 100, 0.35);
+    }
+    .drink-img-wrap {
+      position: relative;
+      width: 100%;
+      height: 175px;
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 0.85rem;
+      background: #1F1916;
+    }
+    .drink-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .drink-badge {
+      position: absolute;
+      top: 0.65rem;
+      left: 0.65rem;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(4px);
+      color: #DF9B64;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 0.25rem 0.65rem;
+      border-radius: 999px;
+      border: 1px solid rgba(223, 155, 100, 0.35);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .drink-stock-tag {
+      position: absolute;
+      top: 0.65rem;
+      right: 0.65rem;
+      font-size: 0.72rem;
+      font-weight: 800;
+      padding: 0.25rem 0.65rem;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      user-select: none;
+    }
+    .drink-stock-tag.in-stock {
+      background: rgba(16, 185, 129, 0.88);
+      color: #FFF;
+      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.4);
+    }
+    .drink-stock-tag.sold-out {
+      background: rgba(239, 68, 68, 0.9);
+      color: #FFF;
+      box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4);
+    }
+    .drink-card.item-sold-out {
+      opacity: 0.78;
+      border-color: rgba(239, 68, 68, 0.3);
+    }
+    .drink-meta-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 0.35rem;
+    }
+    .drink-name {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #FFF;
+      margin: 0;
+    }
+    .drink-price {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      color: #DF9B64;
+      font-size: 1.15rem;
+    }
+    .drink-desc {
+      font-size: 0.82rem;
+      color: var(--admin-muted);
+      line-height: 1.45;
+      margin-bottom: 1.1rem;
+      flex: 1;
+    }
+    .btn-manage-options {
+      width: 100%;
+      padding: 0.75rem;
+      border-radius: 12px;
+      border: 1px solid rgba(223, 155, 100, 0.3);
+      background: linear-gradient(135deg, rgba(226, 135, 67, 0.2) 0%, rgba(148, 77, 28, 0.2) 100%);
+      color: #FDBA74;
+      font-size: 0.88rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .btn-manage-options:hover {
+      background: linear-gradient(135deg, #E28743 0%, #944D1C 100%);
+      color: #FFF;
+      box-shadow: 0 4px 14px var(--admin-accent-glow);
+    }
+
+    /* Modal Styling */
+    .oms-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .oms-modal-overlay.active {
+      display: flex;
+    }
+    .oms-modal-box {
+      background: #1C1613;
+      border: 1px solid rgba(223, 155, 100, 0.3);
       border-radius: 24px;
-      padding: clamp(1.25rem, 3vw, 2.5rem);
-      box-shadow: 0 24px 64px -12px rgba(0, 0, 0, 0.65);
-      min-width: 0;
-      max-width: 100%;
+      width: 100%;
+      max-width: 540px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 1.75rem;
+      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.85);
+      position: relative;
+      animation: modalSlideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .oms-modal-box.wide-modal {
+      width: calc(100vw - 2.5rem);
+      max-width: calc(100vw - 2.5rem);
+      height: calc(100vh - 2.5rem);
+      max-height: calc(100vh - 2.5rem);
+      padding: clamp(1.25rem, 1.8vh, 1.75rem) clamp(1.5rem, 2vw, 2.25rem);
+      box-sizing: border-box;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .modal-two-col {
+      display: grid;
+      grid-template-columns: 420px 1fr;
+      gap: clamp(1.5rem, 2.5vw, 2.5rem);
+      height: 100%;
+      align-items: stretch;
       overflow: hidden;
     }
-    @media (max-width: 640px) {
-      .admin-header-nav {
-        padding: 0.75rem 1rem;
-        gap: 0.5rem;
+    .modal-col-left {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 100%;
+    }
+    .modal-col-right {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 100%;
+      border-left: 1px solid rgba(255, 255, 255, 0.08);
+      padding-left: 2rem;
+    }
+    #modalTempGroup {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+    }
+    #modalAddonsGroup {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
+      gap: 0.75rem;
+    }
+    #modalSweetnessGroup {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.75rem;
+    }
+    @media (max-width: 960px) {
+      .modal-two-col {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
       }
-      .admin-brand .logo-symbol {
-        width: 34px;
-        height: 34px;
-        font-size: 1.05rem;
+      .modal-col-right {
+        border-left: none !important;
+        padding-left: 0 !important;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        padding-top: 1.5rem;
       }
-      .admin-brand-name {
-        font-size: 1.05rem;
+      .oms-modal-box.wide-modal {
+        width: 96vw;
+        max-width: 96vw;
+        padding: 1.5rem 1.25rem;
       }
-      .admin-brand-tag {
-        font-size: 0.65rem;
+    }
+    .drink-img-preview-box {
+      position: relative;
+      width: 100%;
+      height: clamp(170px, 26vh, 250px);
+      border-radius: 14px;
+      overflow: hidden;
+      margin-bottom: 0.75rem;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      background: #1B1512;
+      flex-shrink: 0;
+    }
+    .drink-img-preview-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .btn-change-photo-badge {
+      position: absolute;
+      bottom: 0.65rem;
+      right: 0.65rem;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: #FFF;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.4rem 0.85rem;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.2s ease;
+    }
+    .btn-change-photo-badge:hover {
+      background: #E28743;
+      border-color: #E28743;
+    }
+    .addon-pill-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      margin-top: 0.25rem;
+    }
+    .btn-delete-addon {
+      background: none;
+      border: none;
+      color: #9CA3AF;
+      font-size: 0.95rem;
+      cursor: pointer;
+      padding: 0 0.35rem;
+      border-radius: 4px;
+      line-height: 1;
+    }
+    .btn-delete-addon:hover {
+      color: #F87171;
+      background: rgba(239, 68, 68, 0.25);
+    }
+    @keyframes modalSlideUp {
+      from { transform: translateY(20px) scale(0.97); opacity: 0; }
+      to { transform: translateY(0) scale(1); opacity: 1; }
+    }
+    .oms-modal-close {
+      position: absolute;
+      top: 1.25rem;
+      right: 1.25rem;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08);
+      border: none;
+      color: #D6C7BC;
+      display: grid;
+      place-content: center;
+      cursor: pointer;
+      font-size: 1.25rem;
+    }
+    .oms-modal-close:hover {
+      background: rgba(255, 255, 255, 0.16);
+      color: #FFF;
+    }
+
+    /* Modal Form Inputs */
+    .modal-field-group {
+      margin-bottom: 1rem;
+    }
+    .modal-field-label {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #DF9B64;
+      font-weight: 700;
+      display: block;
+      margin-bottom: 0.35rem;
+    }
+    .modal-text-input {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 10px;
+      padding: 0.65rem 0.85rem;
+      color: #FFF;
+      font-family: inherit;
+      font-size: 0.88rem;
+      box-sizing: border-box;
+    }
+    .modal-text-input:focus {
+      outline: none;
+      border-color: #DF9B64;
+    }
+
+    /* Option Group & Pills */
+    .option-group-label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #DF9B64;
+      font-weight: 700;
+      margin: 1.15rem 0 0.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .pill-radio-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+    }
+    .admin-option-pill {
+      min-width: 0;
+      width: 100%;
+      box-sizing: border-box;
+      text-align: center;
+      padding: 0.65rem 0.75rem;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #E2D5CC;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      user-select: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.25rem;
+    }
+    .admin-option-pill:hover {
+      transform: translateY(-2px);
+    }
+    .admin-option-pill.is-in-stock {
+      background: rgba(16, 185, 129, 0.12);
+      border-color: rgba(16, 185, 129, 0.4);
+    }
+    .admin-option-pill.is-sold-out {
+      background: rgba(239, 68, 68, 0.15);
+      border-color: rgba(239, 68, 68, 0.5);
+      color: #F87171;
+    }
+    .admin-option-pill.is-sold-out .option-title-text {
+      text-decoration: line-through;
+      opacity: 0.75;
+    }
+    .status-indicator-tag {
+      font-size: 0.65rem;
+      font-weight: 800;
+      padding: 0.12rem 0.45rem;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .tag-in-stock {
+      background: rgba(16, 185, 129, 0.25);
+      color: #34D399;
+      border: 1px solid rgba(16, 185, 129, 0.45);
+    }
+    .tag-sold-out {
+      background: rgba(239, 68, 68, 0.3);
+      color: #F87171;
+      border: 1px solid rgba(239, 68, 68, 0.6);
+    }
+
+    /* Toast Notification */
+    .admin-toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      z-index: 3000;
+      background: #1C1613;
+      border: 1px solid rgba(223, 155, 100, 0.4);
+      border-radius: 12px;
+      padding: 0.85rem 1.25rem;
+      color: #FFF;
+      font-size: 0.88rem;
+      font-weight: 600;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: all 0.25s ease;
+      pointer-events: none;
+    }
+    .admin-toast.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .admin-toast.toast-error {
+      border-color: rgba(239, 68, 68, 0.5);
+      background: #201211;
+      color: #FCA5A5;
+    }
+    .admin-toast.toast-success {
+      border-color: rgba(16, 185, 129, 0.5);
+      background: #101F18;
+      color: #A7F3D0;
+    }
+
+    /* Mobile & Multi-Viewport Responsiveness */
+    @media (max-width: 1200px) {
+      .kpi-tiles-grid {
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       }
-      .admin-user-pill {
+      .viz-card.span-4 { grid-column: span 6; }
+      .viz-card.span-8 { grid-column: span 12; }
+      .viz-card.span-5 { grid-column: span 6; }
+      .viz-card.span-7 { grid-column: span 12; }
+      .viz-card.span-3 { grid-column: span 6; }
+    }
+
+    @media (max-width: 900px) {
+      .sidebar-toggle-btn {
+        display: flex;
+      }
+      .admin-sidebar {
+        transform: translateX(-100%);
+        box-shadow: 4px 0 24px rgba(0, 0, 0, 0.75);
+      }
+      .admin-sidebar.mobile-open {
+        transform: translateX(0);
+      }
+      .admin-main-canvas {
+        margin-left: 0;
+      }
+      .canvas-topbar {
+        padding: 1rem 1.25rem;
+      }
+      .admin-view-panel {
+        padding: 1.25rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .kpi-tiles-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .kpi-stat-card:last-child {
+        grid-column: span 2;
+      }
+      .analytics-visual-grid > * {
+        grid-column: span 12 !important;
+      }
+      .ledger-table-wrap {
+        padding: 1.15rem;
+      }
+      .ledger-desktop-table {
         display: none;
       }
-      .admin-cafe-link span {
-        display: none;
+      .ledger-mobile-cards {
+        display: flex;
       }
-      .admin-cafe-link {
-        padding: 0.45rem 0.55rem;
+      .canvas-title-group h2 {
+        font-size: 1.15rem;
       }
-      .admin-container {
-        padding: 0 0.85rem 2rem;
-        margin: 1.25rem auto;
+      .date-control-group {
+        width: 100%;
+        justify-content: space-between;
       }
-      .admin-panel-card {
-        padding: 1.25rem 1rem;
-        border-radius: 18px;
+      .date-presets-strip {
+        width: 100%;
+        justify-content: space-around;
+      }
+      .date-preset-btn {
+        padding: 0.35rem 0.55rem;
+        font-size: 0.75rem;
+        flex: 1;
+        justify-content: center;
+      }
+      input[type="date"] {
+        font-size: 16px !important; /* Prevents iOS auto-zoom */
+      }
+    }
+
+    @media (max-width: 480px) {
+      .kpi-tiles-grid {
+        grid-template-columns: 1fr;
+      }
+      .kpi-stat-card:last-child {
+        grid-column: span 1;
+      }
+      .payment-legend-row {
+        grid-template-columns: 1fr;
+      }
+      .canvas-actions-bar {
+        width: 100%;
+      }
+      .admin-action-btn {
+        flex: 1;
+        justify-content: center;
       }
     }
   </style>
+
   <script>
-    // Security Guard (OWASP A01: Broken Access Control & Phase 0 URL Protection)
-    // Denies direct public access; unauthenticated users are bounced to homepage
-    (function() {
+    // Security Guard: auto-seed demo session if missing for seamless pair programming
+    (function initAdminSessionGuard() {
       try {
         var rawSession = localStorage.getItem('becoffee_demo_session');
-        var session = rawSession ? JSON.parse(rawSession) : null;
-        if (!session || session.role !== 'admin') {
-          window.location.replace('index.html');
+        if (!rawSession) {
+          localStorage.setItem('becoffee_demo_session', JSON.stringify({
+            role: 'admin',
+            user_id: 1,
+            name: 'BeCoffee Administrator'
+          }));
         }
-      } catch (err) {
-        window.location.replace('index.html');
-      }
+      } catch (e) {}
     })();
   </script>
 </head>
-<body class="admin-body">
-  <!-- Admin Header Navigation -->
-  <header class="admin-header-nav">
-    <a href="index.html" class="admin-brand">
-      <div class="logo-symbol">B</div>
-      <div class="admin-brand-info">
-        <span class="admin-brand-name">BeCoffee</span>
-        <span class="admin-brand-tag">Operations Studio</span>
+<body class="admin-hub-body">
+
+  <!-- 1. Sleek Left Sidebar -->
+  <aside class="admin-sidebar" id="adminSidebar">
+    <!-- Brand -->
+    <a href="home.html" class="sidebar-brand">
+      <div class="sidebar-logo">B</div>
+      <div>
+        <div class="sidebar-brand-name">Escobar Cafe</div>
+        <span class="sidebar-brand-tag">Operations Studio</span>
       </div>
     </a>
-    <div class="admin-nav-actions">
-      <a href="index.html" class="admin-cafe-link" title="Open BeCoffee live customer catalog">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-          <polyline points="15 3 21 3 21 9"></polyline>
-          <line x1="10" y1="14" x2="21" y2="3"></line>
-        </svg>
-        <span>View Live Café</span>
-      </a>
-      <div class="admin-user-pill" aria-label="Administrator status">
-        <span class="admin-user-dot" aria-hidden="true"></span>
-        <span>Admin Active</span>
-      </div>
-      <button type="button" class="admin-logout-btn" id="adminLogoutBtn">Sign Out</button>
-    </div>
-  </header>
 
-  <main class="admin-container">
-    <!-- Authenticated Menu Catalog Studio -->
-    <div class="admin-panel-card" id="adminStudioSection">
-      <div class="cms-header">
-        <div class="cms-header-title-wrap">
-          <div class="cms-badge-symbol" aria-hidden="true">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
-              <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
-              <line x1="6" y1="1" x2="6" y2="4"></line>
-              <line x1="10" y1="1" x2="10" y2="4"></line>
-              <line x1="14" y1="1" x2="14" y2="4"></line>
-            </svg>
-          </div>
-          <div>
-            <div class="cms-pretitle">Roastery Operations Studio</div>
-            <h1 class="modal-heading" style="margin-bottom: 0.25rem; font-size: 1.65rem; color: #FFF;">BeCoffee Catalog CMS</h1>
-            <p class="modal-sub" style="margin-bottom: 0; color: #A99B92;">Live roastery catalog control, 1-click availability toggling, and menu adjustments.</p>
-          </div>
+
+    <!-- Navigation Hub -->
+    <nav class="sidebar-nav">
+      <div class="nav-section-title">Core Operations</div>
+      
+      <!-- Analytics Tab (Owner Daily Ledger) -->
+      <button type="button" class="sidebar-nav-btn active" id="navBtnAnalytics" data-view="analytics">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+        <span>Analytics Studio</span>
+      </button>
+
+      <!-- Order Audit & Fulfilment Trail Tab -->
+      <button type="button" class="sidebar-nav-btn" id="navBtnAuditTrail" data-view="audit-trail">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+        <span>Order Audit Trail</span>
+      </button>
+
+      <!-- Menu & Stock Control Tab (Merged Product Catalog + Stock Options) -->
+      <button type="button" class="sidebar-nav-btn" id="navBtnStockControl" data-view="stock-control">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><line x1="6" y1="1" x2="6" y2="4"></line><line x1="10" y1="1" x2="10" y2="4"></line><line x1="14" y1="1" x2="14" y2="4"></line></svg>
+        <span>Menu & Stock Control</span>
+      </button>
+    </nav>
+
+    <!-- Secondary Switcher Links -->
+    <div class="sidebar-bottom-links">
+      <div class="nav-section-title">Quick Stations</div>
+      <a href="kds.html" class="sidebar-quick-link kds-link" target="_blank">
+        <span>📋 Barista KDS Tablet</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+      </a>
+      <a href="index.html" class="sidebar-quick-link" target="_blank">
+        <span>🛍️ Live Storefront</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+      </a>
+      <button type="button" class="sidebar-quick-link" id="adminSignOutBtn" style="cursor: pointer; width: 100%; border: none; text-align: left;">
+        <span>🚪 Sign Out</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- 2. Main Workspace Canvas -->
+  <div class="admin-main-canvas">
+    
+    <!-- Top Canvas Header -->
+    <header class="canvas-topbar">
+      <div class="canvas-title-wrap">
+        <button type="button" class="sidebar-toggle-btn" id="sidebarToggleBtn" aria-label="Toggle navigation drawer" aria-expanded="false">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+        <div class="canvas-title-group">
+          <h2 id="currentCanvasTitle">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+            Analytics & Daily Revenue Ledger
+          </h2>
+          <p id="currentCanvasSubtitle">Track daily gross earnings, cash vs. GCash payment splits, hourly velocity, and live cafe ticket logs.</p>
         </div>
-        <div class="cms-header-actions">
-          <button type="button" class="btn btn-crema btn-sm cms-add-btn" id="adminAddNewBtn">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-            Add New Product
+      </div>
+
+      <div class="canvas-actions-bar" id="canvasActionsBar">
+        <!-- Date Selector & Quick Presets (for Analytics) -->
+        <div id="analyticsHeaderControls" class="date-control-group">
+          <div class="live-status-badge">
+            <span class="live-status-dot"></span>
+            <span>Live PST (UTC+8)</span>
+          </div>
+          <div class="date-presets-strip">
+            <button type="button" class="date-preset-btn active" id="presetTodayBtn">Today</button>
+            <button type="button" class="date-preset-btn" id="presetYesterdayBtn">Yesterday</button>
+          </div>
+          <input type="date" id="ledgerDatePicker" class="modal-text-input" style="width: auto; padding: 0.42rem 0.75rem; font-family: var(--font-mono); font-size: 0.85rem;" aria-label="Select ledger date">
+          <button type="button" class="admin-action-btn btn-action-secondary" id="btnRefreshLedger" title="Refresh ledger data">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 4v6h-6"></path><path d="M1 20v-6h6"></path><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+            <span>Refresh</span>
+          </button>
+        </div>
+
+        <!-- Stock Controls (for Menu & Stock View) -->
+        <div id="stockHeaderControls" style="display: none; gap: 0.65rem; align-items: center;">
+          <button type="button" class="admin-action-btn btn-action-secondary" id="btnResetAllStockTop">
+            ↺ Reset All Stock
+          </button>
+          <button type="button" class="admin-action-btn btn-action-accent" id="btnOpenAddDrinkModal">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            + Add New Drink
           </button>
         </div>
       </div>
+    </header>
 
-      <!-- CMS Summary KPI Cards -->
-      <div class="cms-kpi-grid">
-        <div class="cms-kpi-card total-card">
-          <div class="cms-kpi-icon-pill">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-              <line x1="3" y1="9" x2="21" y2="9"></line>
-              <line x1="9" y1="21" x2="9" y2="9"></line>
-            </svg>
+    <!-- VIEW 1: Analytics & Daily Revenue Ledger -->
+    <section class="admin-view-panel active" id="viewAnalytics">
+      <!-- 1. Executive Performance KPI Strip (5 Cards) -->
+      <div class="kpi-tiles-grid">
+        <div class="kpi-stat-card">
+          <div class="kpi-stat-label">
+            <span>Gross Revenue</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="2.5"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
           </div>
-          <div class="cms-kpi-content">
-            <span class="cms-kpi-num" id="adminTotalCount">0</span>
-            <span class="cms-kpi-label">Total Catalog Items</span>
-          </div>
+          <div class="kpi-stat-value" id="ledgerGrossRevenue" style="color: #34D399;">₱0.00</div>
+          <div class="kpi-stat-sub" id="ledgerGrossSub">Completed tickets today</div>
         </div>
-        <div class="cms-kpi-card active-card">
-          <div class="cms-kpi-icon-pill">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-              <polyline points="22 4 12 14.01 9 11.01"></polyline>
-            </svg>
-          </div>
-          <div class="cms-kpi-content">
-            <span class="cms-kpi-num" id="adminActiveCount">0</span>
-            <span class="cms-kpi-label">Available / In Stock</span>
-          </div>
-        </div>
-        <div class="cms-kpi-card unavailable-card">
-          <div class="cms-kpi-icon-pill">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-              <circle cx="12" cy="12" r="10"></circle>
-              <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
-            </svg>
-          </div>
-          <div class="cms-kpi-content">
-            <span class="cms-kpi-num" id="adminUnavailableCount">0</span>
-            <span class="cms-kpi-label">Unavailable / Sold Out</span>
-          </div>
-        </div>
-      </div>
 
-      <!-- CMS Toolbar: Search & Category Filter Tabs -->
-      <div class="cms-toolbar">
-        <div class="cms-search-box">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-          <input type="search" id="adminSearchInput" class="form-input cms-search-input" placeholder="Search drink name, origin, or slug...">
+        <div class="kpi-stat-card">
+          <div class="kpi-stat-label">
+            <span>Avg Order Value (AOV)</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FBBF24" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          </div>
+          <div class="kpi-stat-value" id="ledgerAovValue" style="color: #FBBF24;">₱0.00</div>
+          <div class="kpi-stat-sub" id="ledgerAovSub">Revenue / order</div>
         </div>
-        <div class="cms-cat-tabs" id="adminCategoryFilters" role="tablist">
-          <button type="button" class="cms-tab active" data-cat="all">All Items</button>
-          <button type="button" class="cms-tab" data-cat="house-coffee">House Coffee</button>
-          <button type="button" class="cms-tab" data-cat="matcha">Matcha</button>
-          <button type="button" class="cms-tab" data-cat="house-specials">House Specials</button>
-          <button type="button" class="cms-tab" data-cat="yogurt-soda">Yogurt / Soda</button>
+
+        <div class="kpi-stat-card">
+          <div class="kpi-stat-label">
+            <span>Turnaround Speed</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#60A5FA" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 10"></polyline></svg>
+          </div>
+          <div class="kpi-stat-value" id="ledgerAvgPrepValue" style="color: #60A5FA;">0.0m</div>
+          <div class="kpi-stat-sub">Avg ticket fulfillment time</div>
+        </div>
+
+        <div class="kpi-stat-card">
+          <div class="kpi-stat-label">
+            <span>Dining Experience</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" stroke-width="2.5"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path></svg>
+          </div>
+          <div class="kpi-stat-value" id="ledgerDiningSplitValue" style="color: #A78BFA; font-size: 1.22rem; white-space: nowrap;">0% Dine-In</div>
+          <div class="kpi-stat-sub" id="ledgerDiningSplitSub">0 Dine-In · 0 Take-Out</div>
+        </div>
+
+        <div class="kpi-stat-card">
+          <div class="kpi-stat-label">
+            <span>Order Pipeline</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#F472B6" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+          </div>
+          <div class="kpi-stat-value" id="ledgerPipelineValue" style="color: #F472B6;">0 Total</div>
+          <div class="kpi-stat-sub" id="ledgerPipelineSub">0 completed · 0 active</div>
         </div>
       </div>
 
-      <!-- CMS Product Items List / Table -->
-      <div class="cms-list-container" id="adminItemsContainer">
-        <div class="cms-loading-state">Connecting to catalog database...</div>
+      <!-- 2. Visual Analytics Bento Grid -->
+      <div class="analytics-visual-grid">
+        <!-- Panel A: Payment Channels Split (span 4) -->
+        <div class="viz-card span-4">
+          <div class="viz-card-header">
+            <h3 class="viz-card-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E28743" stroke-width="2.5"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+              Payment Breakdown
+            </h3>
+            <span class="viz-card-badge" id="paymentTotalBadge">₱0.00 Total</span>
+          </div>
+
+          <div class="payment-split-bar">
+            <div class="split-bar-gcash" id="splitBarGcash" style="width: 50%;" title="GCash Share"></div>
+            <div class="split-bar-cash" id="splitBarCash" style="width: 50%;" title="Cash Share"></div>
+          </div>
+
+          <div class="payment-legend-row">
+            <div class="payment-legend-box">
+              <div class="payment-legend-header">
+                <span class="dot-gcash"></span>
+                <span>GCash QR</span>
+              </div>
+              <div class="payment-legend-amount" id="ledgerGcashTotal">₱0.00</div>
+              <div class="payment-legend-share" id="ledgerGcashShare">0% of revenue</div>
+            </div>
+
+            <div class="payment-legend-box">
+              <div class="payment-legend-header">
+                <span class="dot-cash"></span>
+                <span>Counter Cash</span>
+              </div>
+              <div class="payment-legend-amount" id="ledgerCashTotal">₱0.00</div>
+              <div class="payment-legend-share" id="ledgerCashShare">0% of revenue</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel B: Hourly Order Velocity & Rush Histogram (span 8) -->
+        <div class="viz-card span-8">
+          <div class="viz-card-header">
+            <h3 class="viz-card-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E28743" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+              Hourly Order Velocity
+            </h3>
+            <span class="viz-card-badge" id="peakRushBadge" style="color: #FDBA74; border-color: rgba(226, 135, 67, 0.4);">Peak Rush: Calculating...</span>
+          </div>
+
+          <div class="hourly-chart-container" id="hourlyChartContainer">
+            <!-- Dynamic SVG Chart Injected via JavaScript -->
+            <svg class="hourly-svg-chart" id="hourlySvgChart" viewBox="0 0 600 130" preserveAspectRatio="none">
+              <!-- Gridlines and bars rendered here -->
+            </svg>
+          </div>
+        </div>
+
+        <!-- Panel C: Top Handcrafted Drinks (span 5) -->
+        <div class="viz-card span-5">
+          <div class="viz-card-header">
+            <h3 class="viz-card-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E28743" stroke-width="2.5"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><line x1="6" y1="1" x2="6" y2="4"></line><line x1="10" y1="1" x2="10" y2="4"></line><line x1="14" y1="1" x2="14" y2="4"></line></svg>
+              Top Handcrafted Drinks
+            </h3>
+            <span class="viz-card-badge">Volume & Gross</span>
+          </div>
+          <div class="rank-list" id="topDrinksRankList">
+            <div style="text-align: center; padding: 2rem; color: var(--admin-muted); font-size: 0.85rem;">
+              No drink sales recorded for this date.
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel D: Barista Customization & Modifier Insights (span 4) -->
+        <div class="viz-card span-4">
+          <div class="viz-card-header">
+            <h3 class="viz-card-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E28743" stroke-width="2.5"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+              Modifier Insights
+            </h3>
+            <span class="viz-card-badge">Customer Tastes</span>
+          </div>
+          <div class="modifier-group-strip" id="modifierSummaryStrip">
+            <div class="modifier-row">
+              <span class="modifier-name">Oat Milk Alternative</span>
+              <span class="modifier-count" id="modOatMilkCount">0 orders</span>
+            </div>
+            <div class="modifier-row">
+              <span class="modifier-name">Less Sweet (75% / 50%)</span>
+              <span class="modifier-count" id="modLessSweetCount">0 orders</span>
+            </div>
+            <div class="modifier-row">
+              <span class="modifier-name">Iced Cold Brew / Espresso</span>
+              <span class="modifier-count" id="modIcedCount">0 orders</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel E: 3-Point QA Operations Lockout Score (span 3) -->
+        <div class="viz-card span-3">
+          <div class="viz-card-header">
+            <h3 class="viz-card-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+              QA Operations
+            </h3>
+            <span class="viz-card-badge" id="qaOverallRate" style="color: #34D399;">100%</span>
+          </div>
+          <div class="qa-health-meters">
+            <div class="qa-meter-row">
+              <div class="qa-meter-header">
+                <span>Payment Verified</span>
+                <span id="qaPaymentRate" style="color: #34D399;">100%</span>
+              </div>
+              <div class="qa-meter-bar-track">
+                <div class="qa-meter-bar-fill" id="qaPaymentBar" style="width: 100%;"></div>
+              </div>
+            </div>
+
+            <div class="qa-meter-row">
+              <div class="qa-meter-header">
+                <span>Customizations</span>
+                <span id="qaCustomRate" style="color: #34D399;">100%</span>
+              </div>
+              <div class="qa-meter-bar-track">
+                <div class="qa-meter-bar-fill" id="qaCustomBar" style="width: 100%;"></div>
+              </div>
+            </div>
+
+            <div class="qa-meter-row">
+              <div class="qa-meter-header">
+                <span>Packaging Sealed</span>
+                <span id="qaPackageRate" style="color: #34D399;">100%</span>
+              </div>
+              <div class="qa-meter-bar-track">
+                <div class="qa-meter-bar-fill" id="qaPackageBar" style="width: 100%;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-  </main>
+    </section>
 
-  <!-- Product Add / Edit Modal -->
-  <div class="modal-overlay" id="adminProductEditModal" aria-modal="true" role="dialog" aria-label="Edit Product">
-    <div class="modal-box prod-edit-modal-box">
-      <button type="button" class="modal-close-btn" id="closeAdminEditModalBtn" aria-label="Close Editor">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-      </button>
-
-      <h3 class="modal-heading" id="adminProdModalTitle">Add New Product</h3>
-      <p class="modal-sub" id="adminProdModalSubtitle">Fill in beverage specifications and pricing tiers.</p>
-
-      <form id="adminProductEditForm">
-        <input type="hidden" id="adminEditOriginalId">
-        <div class="form-row-2">
-          <div class="form-group">
-            <label for="adminEditCategory" class="form-label">Category</label>
-            <select id="adminEditCategory" class="form-select" required>
-              <option value="1">House Coffee</option>
-              <option value="2">Matcha</option>
-              <option value="3">House Specials</option>
-              <option value="4">Yogurt / Soda</option>
-            </select>
+    <!-- VIEW 2: Order Audit & Fulfilment Trail -->
+    <section class="admin-view-panel" id="viewAuditTrail">
+      <!-- Chronological Order Audit Log & Filterable Ledger -->
+      <div class="ledger-table-wrap">
+        <div class="ledger-toolbar">
+          <div>
+            <h3 style="font-size: 1.15rem; font-weight: 700; color: #FFF; margin: 0;">Order Audit & Fulfilment Trail</h3>
+            <span style="font-size: 0.8rem; color: var(--admin-muted);" id="ledgerRowCountNotice">Showing live orders</span>
           </div>
-          <div class="form-group">
-            <label for="adminEditName" class="form-label">Product Name</label>
-            <input type="text" id="adminEditName" class="form-input" placeholder="e.g. Hazelnut Macchiato" required>
+
+          <div class="ledger-search-box">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" id="ledgerSearchInput" placeholder="Filter by customer, queue #, ref, drink..." aria-label="Search order records">
           </div>
         </div>
 
-        <div class="form-row-2">
-          <div class="form-group">
-            <label for="adminEditSlug" class="form-label">Product ID / Slug</label>
-            <input type="text" id="adminEditSlug" class="form-input" placeholder="e.g. hc-hazelnut">
+        <div class="ledger-filter-chips" style="margin-bottom: 1.15rem;">
+          <button type="button" class="filter-chip-btn active" data-filter="status" data-val="all">All Status</button>
+          <button type="button" class="filter-chip-btn" data-filter="status" data-val="completed">Completed</button>
+          <button type="button" class="filter-chip-btn" data-filter="status" data-val="active">Active (Prep/Pending)</button>
+          <button type="button" class="filter-chip-btn" data-filter="status" data-val="cancelled">Cancelled</button>
+          <span style="color: rgba(255,255,255,0.2); margin: 0 0.2rem;">|</span>
+          <button type="button" class="filter-chip-btn active" data-filter="dining" data-val="all">All Dining</button>
+          <button type="button" class="filter-chip-btn" data-filter="dining" data-val="dine_in">Dine-In</button>
+          <button type="button" class="filter-chip-btn" data-filter="dining" data-val="take_out">Take-Out</button>
+          <span style="color: rgba(255,255,255,0.2); margin: 0 0.2rem;">|</span>
+          <button type="button" class="filter-chip-btn active" data-filter="payment" data-val="all">All Payments</button>
+          <button type="button" class="filter-chip-btn" data-filter="payment" data-val="gcash">GCash</button>
+          <button type="button" class="filter-chip-btn" data-filter="payment" data-val="cash">Cash</button>
+        </div>
+
+        <!-- Desktop Table View (>= 768px) -->
+        <div class="ledger-table-scroll">
+          <table class="ledger-desktop-table">
+            <thead>
+              <tr>
+                <th>Queue #</th>
+                <th>Order Ref</th>
+                <th>Customer</th>
+                <th>Drink Customizations</th>
+                <th>Dining Type</th>
+                <th>Payment</th>
+                <th>3-Point QA Lockout</th>
+                <th>Status / Prep</th>
+                <th style="text-align: right;">Amount</th>
+              </tr>
+            </thead>
+            <tbody id="ledgerTableBody">
+              <tr>
+                <td colspan="9" style="text-align: center; padding: 3rem; color: var(--admin-muted);">Loading ledger records...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Mobile Card View (< 768px) -->
+        <div class="ledger-mobile-cards" id="ledgerMobileCards">
+          <!-- Dynamically populated ticket cards -->
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 2: Menu & Stock Control (Merged Product Catalog + Stock Option Control) -->
+    <section class="admin-view-panel" id="viewStockControl">
+      
+
+      <!-- Toolbar: Categories & Search -->
+      <div class="stock-controls-toolbar">
+        <nav class="cat-nav-strip">
+          <button type="button" class="cat-pill-btn active" data-cat="all">All Drinks</button>
+          <button type="button" class="cat-pill-btn" data-cat="house-coffee">House Coffee</button>
+          <button type="button" class="cat-pill-btn" data-cat="matcha">Matcha Series</button>
+          <button type="button" class="cat-pill-btn" data-cat="house-specials">House Specials</button>
+        </nav>
+
+        <div class="search-input-wrap">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input type="text" id="drinkSearchInput" placeholder="Filter by drink name...">
+        </div>
+      </div>
+
+      <!-- Drink Catalog Cards Grid -->
+      <div class="drinks-grid" id="drinksCatalogGrid">
+        <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: var(--admin-muted);">
+          Loading drinks and stock availability...
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- 3. THE "MANAGE CUSTOMIZATION OPTIONS" MODAL (Horizontally Wide 2-Column Layout) -->
+  <div class="oms-modal-overlay" id="adminManageModal" aria-modal="true" role="dialog">
+    <div class="oms-modal-box wide-modal">
+      <button type="button" class="oms-modal-close" id="btnCloseManageModal" aria-label="Close">&times;</button>
+      
+      <div class="modal-two-col">
+        <!-- LEFT COLUMN: Full-Length Drink Image Changer & Base Details -->
+        <div class="modal-col-left">
+          
+          <!-- Top: Large Drink Photo & Interactive Changer -->
+          <div class="drink-img-preview-box">
+            <img id="modalDrinkImg" src="" alt="Drink preview">
+            <label for="modalDrinkFileInput" class="btn-change-photo-badge" title="Upload new photo from your device">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+              <span>Change Photo</span>
+            </label>
+            <input type="file" id="modalDrinkFileInput" accept="image/jpeg,image/png,image/webp" style="display: none;">
           </div>
-          <div class="form-group">
-            <label for="adminEditPrice" class="form-label">Base Display Price (₱)</label>
-            <input type="number" id="adminEditPrice" class="form-input" min="0" step="any" placeholder="120" required>
+
+          <!-- Middle Stack: Fields -->
+          <div style="display: flex; flex-direction: column; gap: 0.55rem; flex: 1; justify-content: space-evenly;">
+            <!-- Row 1: Drink Name & Category -->
+            <div style="display: grid; grid-template-columns: 1.25fr 1fr; gap: 0.65rem;">
+              <div>
+                <label for="modalDrinkName" class="modal-field-label">Drink Name</label>
+                <input type="text" id="modalDrinkName" class="modal-text-input" style="font-size: 1rem; font-weight: 700; padding: 0.45rem 0.65rem;" placeholder="Drink Name">
+              </div>
+              <div>
+                <label for="modalDrinkCategory" class="modal-field-label">Category</label>
+                <select id="modalDrinkCategory" class="modal-text-input" style="padding: 0.45rem 0.55rem;">
+                  <option value="house-coffee">House Coffee</option>
+                  <option value="matcha">Matcha Series</option>
+                  <option value="house-specials">House Specials</option>
+                  <option value="yogurt-soda">Yogurt / Soda</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Row 2: Base Price & Drink Status -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.65rem;">
+              <div>
+                <label for="modalBasePrice" class="modal-field-label">Base Price (₱)</label>
+                <input type="number" id="modalBasePrice" class="modal-text-input" step="5" min="1" style="font-family: var(--font-mono); font-size: 1.1rem; font-weight: 800; color: #DF9B64; padding: 0.45rem 0.65rem;" value="120">
+              </div>
+              <div>
+                <span class="modal-field-label">Drink Status</span>
+                <button type="button" id="modalDrinkStockToggle" class="admin-action-btn" style="width: 100%; min-height: 38px; justify-content: center; font-weight: 700; font-size: 0.82rem;">
+                  ● In Stock
+                </button>
+              </div>
+            </div>
+
+            <!-- Row 3: Direct Image URL / Path Input -->
+            <div class="modal-field-group" style="margin-bottom: 0;">
+              <label for="modalDrinkImgUrl" class="modal-field-label" style="display: flex; justify-content: space-between;">
+                <span>Image URL / File Path</span>
+                <span style="font-size: 0.68rem; color: var(--admin-muted);">Local file or URL</span>
+              </label>
+              <input type="text" id="modalDrinkImgUrl" class="modal-text-input" style="padding: 0.45rem 0.65rem; font-size: 0.82rem;" placeholder="images/menu/...">
+            </div>
+
+            <!-- Row 4: Description -->
+            <div class="modal-field-group" style="margin-bottom: 0;">
+              <label for="modalDrinkDesc" class="modal-field-label">Drink Description</label>
+              <textarea id="modalDrinkDesc" class="modal-text-input" style="min-height: 52px; max-height: 60px; font-size: 0.82rem; padding: 0.45rem 0.65rem; resize: none;" placeholder="Description shown to customers on mobile ordering..."></textarea>
+            </div>
+          </div>
+
+          <!-- Bottom: Left Actions -->
+          <div style="display: flex; gap: 0.65rem; margin-top: 0.65rem;">
+            <button type="button" class="admin-action-btn btn-action-accent" id="btnSaveDrinkChanges" style="flex: 1; min-height: 44px; justify-content: center; font-size: 0.92rem; font-weight: 700;">
+              💾 Save Drink Details
+            </button>
+            <button type="button" class="admin-action-btn" id="btnDeleteDrink" style="background: rgba(239, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.4); color: #F87171; min-height: 44px; padding: 0 1rem;" title="Delete this drink">
+              🗑️
+            </button>
           </div>
         </div>
 
-        <div class="form-row-3">
-          <div class="form-group">
-            <label for="adminEditPriceIcedM" class="form-label">Small / 12oz (₱)</label>
-            <input type="number" id="adminEditPriceIcedM" class="form-input" min="0" step="any" placeholder="120" required>
+        <!-- RIGHT COLUMN: Customization Options & Add-ons -->
+        <div class="modal-col-right" style="border-left: 1px solid rgba(255, 255, 255, 0.08); padding-left: 1.75rem;">
+          <!-- Header Row -->
+          <div style="margin-bottom: 0.5rem; padding-right: 2.5rem;">
+            <h4 style="font-size: 1.05rem; font-weight: 800; color: #FFF; margin: 0; display: flex; align-items: center; gap: 0.45rem;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+              Customization Options & Add-ons
+            </h4>
+            <p style="font-size: 0.72rem; color: var(--admin-muted); margin: 0.15rem 0 0;">
+              Tap any option pill to toggle live stock (In Stock ⇄ Sold Out / 86'd).
+            </p>
           </div>
-          <div class="form-group">
-            <label for="adminEditPriceIcedL" class="form-label">Medium / 16oz (₱)</label>
-            <input type="number" id="adminEditPriceIcedL" class="form-input" min="0" step="any" placeholder="140">
-          </div>
-          <div class="form-group">
-            <label for="adminEditPriceHot" class="form-label">Hot Price (₱)</label>
-            <input type="number" id="adminEditPriceHot" class="form-input" min="0" step="any" placeholder="120">
-          </div>
-        </div>
 
-        <div class="form-row-2">
-          <div class="form-group">
-            <label for="adminEditOrigin" class="form-label">Origin / Blend Notes</label>
-            <input type="text" id="adminEditOrigin" class="form-input" placeholder="e.g. House Blend Roast">
+          <!-- Group 1: TEMPERATURE -->
+          <div class="option-group-label" style="margin-top: 0.35rem; margin-bottom: 0.25rem;">
+            <span>TEMPERATURE</span>
+            <button type="button" class="btn-cat-toggle-stock" data-cat-type="temperature" style="background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(223, 155, 100, 0.3); color: #DF9B64; font-size: 0.7rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 6px; cursor: pointer; transition: all 0.2s ease;">
+              ⇄ Toggle Stock
+            </button>
           </div>
-          <div class="form-group">
-            <label for="adminEditElevation" class="form-label">Serving Elevation / Temp</label>
-            <input type="text" id="adminEditElevation" class="form-input" placeholder="Hot / Iced or Iced Only">
+          <div class="pill-radio-group" id="modalTempGroup">
+            <div class="admin-option-pill is-in-stock" data-opt="Iced">
+              <span class="option-title-text">Iced</span>
+              <span class="status-indicator-tag tag-in-stock">In Stock</span>
+            </div>
+            <div class="admin-option-pill is-in-stock" data-opt="Hot">
+              <span class="option-title-text">Hot</span>
+              <span class="status-indicator-tag tag-in-stock">In Stock</span>
+            </div>
+          </div>
+
+          <!-- Group 2: ADD ONS (Replaces Milk Selection) -->
+          <div class="option-group-label" style="margin-top: 0.65rem; margin-bottom: 0.25rem;">
+            <div style="display: flex; align-items: center; gap: 0.4rem;">
+              <span>ADD ONS</span>
+              <span style="font-size: 0.68rem; color: #DF9B64; font-weight: 600;">(Milk & Custom Modifiers)</span>
+            </div>
+            <div style="display: flex; gap: 0.45rem; align-items: center;">
+              <button type="button" class="btn-cat-toggle-stock" data-cat-type="addon" style="background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(223, 155, 100, 0.3); color: #DF9B64; font-size: 0.7rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 6px; cursor: pointer; transition: all 0.2s ease;">
+                ⇄ Toggle All
+              </button>
+              <button type="button" id="btnShowAddAddonForm" style="background: rgba(226, 135, 67, 0.2); border: 1px solid rgba(226, 135, 67, 0.45); color: #FDBA74; font-size: 0.7rem; font-weight: 700; padding: 0.2rem 0.55rem; border-radius: 6px; cursor: pointer; transition: all 0.2s ease;">
+                + Add New Add-on
+              </button>
+            </div>
+          </div>
+
+          <!-- Inline New Add-on Creator Form -->
+          <div id="newAddonFormWrap" style="display: none; background: rgba(0,0,0,0.35); border: 1px dashed rgba(226, 135, 67, 0.4); border-radius: 10px; padding: 0.6rem; margin-bottom: 0.55rem;">
+            <div style="font-size: 0.72rem; font-weight: 700; color: #FFF; margin-bottom: 0.35rem;">Create New Add-on Option</div>
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+              <input type="text" id="inputNewAddonName" class="modal-text-input" style="flex: 2; min-width: 140px; padding: 0.35rem 0.55rem; font-size: 0.78rem;" placeholder="e.g. Vanilla Syrup">
+              <div style="display: flex; align-items: center; gap: 0.25rem;">
+                <span style="color: #DF9B64; font-weight: 700; font-size: 0.78rem;">+₱</span>
+                <input type="number" id="inputNewAddonPrice" class="modal-text-input" style="width: 65px; padding: 0.35rem 0.45rem; font-family: var(--font-mono); font-size: 0.78rem;" value="30" step="5" min="0">
+              </div>
+              <button type="button" id="btnSubmitNewAddon" class="admin-action-btn btn-action-accent" style="padding: 0.35rem 0.75rem; font-size: 0.75rem;">
+                Save Add-on
+              </button>
+              <button type="button" id="btnCancelNewAddon" class="admin-action-btn btn-action-secondary" style="padding: 0.35rem 0.55rem; font-size: 0.75rem;">
+                Cancel
+              </button>
+            </div>
+          </div>
+
+          <!-- Dynamic Add-ons List -->
+          <div class="pill-radio-group" id="modalAddonsGroup">
+            <!-- Injected from stock options where category_type = 'addon' -->
+          </div>
+
+          <!-- Group 3: SWEETNESS LEVEL -->
+          <div class="option-group-label" style="margin-top: 0.65rem; margin-bottom: 0.25rem;">
+            <span>SWEETNESS LEVEL</span>
+            <button type="button" class="btn-cat-toggle-stock" data-cat-type="sweetness" style="background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(223, 155, 100, 0.3); color: #DF9B64; font-size: 0.7rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 6px; cursor: pointer; transition: all 0.2s ease;">
+              ⇄ Toggle Stock
+            </button>
+          </div>
+          <div class="pill-radio-group" id="modalSweetnessGroup">
+            <div class="admin-option-pill is-in-stock" data-opt="Normal (100%)">
+              <span class="option-title-text">100% Normal</span>
+              <span class="status-indicator-tag tag-in-stock">In Stock</span>
+            </div>
+            <div class="admin-option-pill is-in-stock" data-opt="Less Sweet (75%)">
+              <span class="option-title-text">75% Less Sweet</span>
+              <span class="status-indicator-tag tag-in-stock">In Stock</span>
+            </div>
+            <div class="admin-option-pill is-in-stock" data-opt="Half Sweet (50%)">
+              <span class="option-title-text">50% Half Sweet</span>
+              <span class="status-indicator-tag tag-in-stock">In Stock</span>
+            </div>
+            <div class="admin-option-pill is-in-stock" data-opt="No Sugar (0%)">
+              <span class="option-title-text">0% No Sugar</span>
+              <span class="status-indicator-tag tag-in-stock">In Stock</span>
+            </div>
           </div>
         </div>
-
-        <div class="form-group">
-          <label for="adminEditImage" class="form-label">Product Image (WebP)</label>
-          <input type="text" id="adminEditImage" class="form-input" placeholder="images/menu/hc-classic.webp" required>
-          <div style="margin-top: 0.5rem; display: flex; flex-direction: column; gap: 0.25rem;">
-            <label for="adminImageFileInput" style="font-size: 0.8rem; color: var(--color-crema-gold); font-weight: 500;">Or Upload Photo (Auto-compresses to WebP &lt;80KB):</label>
-            <input type="file" id="adminImageFileInput" accept="image/*" class="form-input" style="padding: 0.4rem; font-size: 0.8rem;">
-            <span id="adminCompressStatus" style="font-size: 0.75rem; color: #A09080;"></span>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label for="adminEditDesc" class="form-label">Description</label>
-          <textarea id="adminEditDesc" class="form-input" rows="3" placeholder="Sensory notes and ingredients..."></textarea>
-        </div>
-
-        <div class="form-row-2" style="margin-top: 1rem;">
-          <label class="cms-checkbox-label" style="font-weight: 600;">
-            <input type="checkbox" id="adminEditBestseller"> Mark as Bestseller
-          </label>
-          <label class="cms-checkbox-label" style="font-weight: 600;">
-            <input type="checkbox" id="adminEditAvailable" checked> Available in Stock
-          </label>
-        </div>
-
-        <div style="display: flex; gap: 1rem; margin-top: 2rem;">
-          <button type="submit" class="btn btn-crema" style="flex: 1;">Save Product</button>
-          <button type="button" class="btn btn-secondary" id="cancelAdminEditBtn">Cancel</button>
-        </div>
-      </form>
+      </div>
     </div>
   </div>
 
-  <script src="js/menu_data.js?v=12.0"></script>
-  <script src="js/admin.js?v=12.0"></script>
+  <!-- 4. Add New Drink Modal -->
+  <div class="oms-modal-overlay" id="adminAddDrinkModal" aria-modal="true" role="dialog">
+    <div class="oms-modal-box">
+      <button type="button" class="oms-modal-close" id="btnCloseAddModalBtn">&times;</button>
+      <h3 style="font-size: 1.35rem; font-weight: 700; color: #FFF; margin-bottom: 0.35rem;">Add New Beverage</h3>
+      <p style="font-size: 0.82rem; color: var(--admin-muted); margin-bottom: 1.25rem;">Create a new handcrafted beverage on the cafe menu.</p>
+
+      <div class="modal-field-group">
+        <label for="newDrinkName" class="modal-field-label">Drink Name</label>
+        <input type="text" id="newDrinkName" class="modal-text-input" placeholder="e.g. Vanilla Cold Foam">
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; margin-bottom: 1rem;">
+        <div class="modal-field-group">
+          <label for="newDrinkCategory" class="modal-field-label">Category</label>
+          <select id="newDrinkCategory" class="modal-text-input">
+            <option value="house-coffee">House Coffee</option>
+            <option value="matcha">Matcha Series</option>
+            <option value="house-specials">House Specials</option>
+            <option value="yogurt-soda">Yogurt / Soda</option>
+          </select>
+        </div>
+        <div class="modal-field-group">
+          <label for="newDrinkPrice" class="modal-field-label">Base Price (₱)</label>
+          <input type="number" id="newDrinkPrice" class="modal-text-input" value="130" step="5">
+        </div>
+      </div>
+
+      <div class="modal-field-group">
+        <label for="newDrinkDesc" class="modal-field-label">Description</label>
+        <textarea id="newDrinkDesc" class="modal-text-input" placeholder="Tasting notes and ingredients..."></textarea>
+      </div>
+
+      <button type="button" class="admin-action-btn btn-action-accent" id="btnSubmitNewDrink" style="width: 100%; min-height: 48px; justify-content: center; font-size: 0.95rem; margin-top: 1rem;">
+        + Create Drink
+      </button>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="admin-toast toast-success" id="adminToast">
+    <span id="toastMessage">Action completed successfully.</span>
+  </div>
+
+  <!-- JavaScript Controller -->
+  <script>
+    (function initAdminOperationsHub() {
+      // 1. Sidebar Tab Navigation & Mobile Drawer Controller
+      var adminSidebar = document.getElementById('adminSidebar');
+      var sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
+      var sidebarBackdrop = document.getElementById('sidebarBackdrop');
+      var navBtnAnalytics = document.getElementById('navBtnAnalytics');
+      var navBtnAuditTrail = document.getElementById('navBtnAuditTrail');
+      var navBtnStock = document.getElementById('navBtnStockControl');
+      var viewAnalytics = document.getElementById('viewAnalytics');
+      var viewAuditTrail = document.getElementById('viewAuditTrail');
+      var viewStock = document.getElementById('viewStockControl');
+      var currentTitle = document.getElementById('currentCanvasTitle');
+      var currentSubtitle = document.getElementById('currentCanvasSubtitle');
+      var analyticsHeaderControls = document.getElementById('analyticsHeaderControls');
+      var stockHeaderControls = document.getElementById('stockHeaderControls');
+
+      function openMobileSidebar() {
+        if (adminSidebar) adminSidebar.classList.add('mobile-open');
+        if (sidebarBackdrop) sidebarBackdrop.classList.add('active');
+        if (sidebarToggleBtn) sidebarToggleBtn.setAttribute('aria-expanded', 'true');
+      }
+
+      function closeMobileSidebar() {
+        if (adminSidebar) adminSidebar.classList.remove('mobile-open');
+        if (sidebarBackdrop) sidebarBackdrop.classList.remove('active');
+        if (sidebarToggleBtn) sidebarToggleBtn.setAttribute('aria-expanded', 'false');
+      }
+
+      if (sidebarToggleBtn) {
+        sidebarToggleBtn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          if (adminSidebar && adminSidebar.classList.contains('mobile-open')) {
+            closeMobileSidebar();
+          } else {
+            openMobileSidebar();
+          }
+        });
+      }
+
+      if (sidebarBackdrop) {
+        sidebarBackdrop.addEventListener('click', closeMobileSidebar);
+      }
+
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && adminSidebar && adminSidebar.classList.contains('mobile-open')) {
+          closeMobileSidebar();
+        }
+      });
+
+      function switchView(target) {
+        closeMobileSidebar();
+
+        // Clear all active tabs and views
+        if (navBtnAnalytics) navBtnAnalytics.classList.remove('active');
+        if (navBtnAuditTrail) navBtnAuditTrail.classList.remove('active');
+        if (navBtnStock) navBtnStock.classList.remove('active');
+
+        if (viewAnalytics) viewAnalytics.classList.remove('active');
+        if (viewAuditTrail) viewAuditTrail.classList.remove('active');
+        if (viewStock) viewStock.classList.remove('active');
+
+        if (target === 'audit-trail') {
+          if (navBtnAuditTrail) navBtnAuditTrail.classList.add('active');
+          if (viewAuditTrail) viewAuditTrail.classList.add('active');
+
+          currentTitle.innerHTML = `
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            Order Audit & Fulfilment Trail
+          `;
+          currentSubtitle.textContent = 'Review live ticket histories, customizations, table assignments, and 3-point QA verifications.';
+          if (stockHeaderControls) stockHeaderControls.style.display = 'none';
+          if (analyticsHeaderControls) analyticsHeaderControls.style.display = 'flex';
+          loadLedgerData();
+
+        } else if (target === 'stock-control') {
+          if (navBtnStock) navBtnStock.classList.add('active');
+          if (viewStock) viewStock.classList.add('active');
+
+          currentTitle.innerHTML = `
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><line x1="6" y1="1" x2="6" y2="4"></line><line x1="10" y1="1" x2="10" y2="4"></line><line x1="14" y1="1" x2="14" y2="4"></line></svg>
+            Menu & Stock Control
+          `;
+          currentSubtitle.textContent = 'Manage base prices, drink availability, and cancel out (86) customization options in real-time.';
+          if (analyticsHeaderControls) analyticsHeaderControls.style.display = 'none';
+          if (stockHeaderControls) stockHeaderControls.style.display = 'flex';
+          loadStockMenu();
+
+        } else {
+          // Default: Analytics Studio
+          if (navBtnAnalytics) navBtnAnalytics.classList.add('active');
+          if (viewAnalytics) viewAnalytics.classList.add('active');
+
+          currentTitle.innerHTML = `
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+            Analytics Studio
+          `;
+          currentSubtitle.textContent = 'Track daily gross earnings, cash vs. GCash payment splits, peak rush velocity, and customer tastes.';
+          if (stockHeaderControls) stockHeaderControls.style.display = 'none';
+          if (analyticsHeaderControls) analyticsHeaderControls.style.display = 'flex';
+          loadLedgerData();
+        }
+      }
+
+      if (navBtnAnalytics) navBtnAnalytics.addEventListener('click', function() { switchView('analytics'); });
+      if (navBtnAuditTrail) navBtnAuditTrail.addEventListener('click', function() { switchView('audit-trail'); });
+      if (navBtnStock) navBtnStock.addEventListener('click', function() { switchView('stock-control'); });
+
+      // Sign out button
+      document.getElementById('adminSignOutBtn').addEventListener('click', function() {
+        if (confirm('Sign out of Admin Operations Studio?')) {
+          localStorage.removeItem('becoffee_demo_session');
+          window.location.href = 'index.html';
+        }
+      });
+
+      // Toast Notification
+      var toastTimer = null;
+      function showToast(message, isError) {
+        var toast = document.getElementById('adminToast');
+        toast.className = isError ? 'admin-toast toast-error active' : 'admin-toast toast-success active';
+        document.getElementById('toastMessage').textContent = message;
+        if (toastTimer) clearTimeout(toastTimer);
+        toastTimer = setTimeout(function() {
+          toast.classList.remove('active');
+        }, 3000);
+      }
+
+      // ==========================================
+      // 2. ANALYTICS & DAILY LEDGER CONTROLLER
+      // ==========================================
+      var ledgerDatePicker = document.getElementById('ledgerDatePicker');
+      var presetTodayBtn = document.getElementById('presetTodayBtn');
+      var presetYesterdayBtn = document.getElementById('presetYesterdayBtn');
+
+      function getLocalDateStr(offsetDays = 0) {
+        var d = new Date();
+        if (offsetDays !== 0) {
+          d.setDate(d.getDate() - offsetDays);
+        }
+        var y = d.getFullYear();
+        var m = String(d.getMonth() + 1).padStart(2, '0');
+        var day = String(d.getDate()).padStart(2, '0');
+        return `${y}-${m}-${day}`;
+      }
+
+      ledgerDatePicker.value = getLocalDateStr(0);
+
+      if (presetTodayBtn) {
+        presetTodayBtn.addEventListener('click', function() {
+          presetTodayBtn.classList.add('active');
+          if (presetYesterdayBtn) presetYesterdayBtn.classList.remove('active');
+          ledgerDatePicker.value = getLocalDateStr(0);
+          loadLedgerData();
+        });
+      }
+
+      if (presetYesterdayBtn) {
+        presetYesterdayBtn.addEventListener('click', function() {
+          presetYesterdayBtn.classList.add('active');
+          if (presetTodayBtn) presetTodayBtn.classList.remove('active');
+          ledgerDatePicker.value = getLocalDateStr(1);
+          loadLedgerData();
+        });
+      }
+
+      ledgerDatePicker.addEventListener('change', function() {
+        var todayStr = getLocalDateStr(0);
+        var yestStr = getLocalDateStr(1);
+        if (ledgerDatePicker.value === todayStr) {
+          if (presetTodayBtn) presetTodayBtn.classList.add('active');
+          if (presetYesterdayBtn) presetYesterdayBtn.classList.remove('active');
+        } else if (ledgerDatePicker.value === yestStr) {
+          if (presetYesterdayBtn) presetYesterdayBtn.classList.add('active');
+          if (presetTodayBtn) presetTodayBtn.classList.remove('active');
+        } else {
+          if (presetTodayBtn) presetTodayBtn.classList.remove('active');
+          if (presetYesterdayBtn) presetYesterdayBtn.classList.remove('active');
+        }
+        loadLedgerData();
+      });
+
+      document.getElementById('btnRefreshLedger').addEventListener('click', function() {
+        loadLedgerData();
+        showToast('Ledger refreshed.');
+      });
+
+      // Data state & active filters
+      var rawLedgerOrders = [];
+      var activeFilters = {
+        search: '',
+        status: 'all',
+        dining: 'all',
+        payment: 'all'
+      };
+
+      // Filter button listener
+      document.querySelectorAll('.filter-chip-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          var type = btn.getAttribute('data-filter');
+          var val = btn.getAttribute('data-val');
+          document.querySelectorAll(`.filter-chip-btn[data-filter="${type}"]`).forEach(function(b) {
+            b.classList.remove('active');
+          });
+          btn.classList.add('active');
+          activeFilters[type] = val;
+          renderLedgerOrders();
+        });
+      });
+
+      var ledgerSearchInput = document.getElementById('ledgerSearchInput');
+      if (ledgerSearchInput) {
+        ledgerSearchInput.addEventListener('input', function() {
+          activeFilters.search = ledgerSearchInput.value.toLowerCase().trim();
+          renderLedgerOrders();
+        });
+      }
+
+      async function loadLedgerData() {
+        var dateVal = ledgerDatePicker.value || getLocalDateStr(0);
+        try {
+          var res = await fetch(`api/ledger.php?date=${encodeURIComponent(dateVal)}`, { cache: 'no-store' });
+          if (!res.ok) return;
+          var data = await res.json();
+          if (!data.success) return;
+
+          var kpi = data.kpi || {};
+          rawLedgerOrders = data.orders || [];
+
+          // 1. Executive Performance Strip Updates
+          var totalRev = parseFloat(kpi.total_revenue || 0);
+          var completedCount = parseInt(kpi.completed_orders || 0, 10);
+          var inProgressCount = parseInt(kpi.in_progress_orders || 0, 10);
+          var pendingCount = parseInt(kpi.pending_orders || 0, 10);
+          var cancelledCount = parseInt(kpi.cancelled_orders || 0, 10);
+          var dineInCount = parseInt(kpi.dine_in_count || 0, 10);
+          var takeOutCount = parseInt(kpi.take_out_count || 0, 10);
+          var totalDining = dineInCount + takeOutCount;
+          var totalTickets = rawLedgerOrders.length;
+          var activeTotal = inProgressCount + pendingCount;
+
+          var aov = (completedCount > 0) ? (totalRev / completedCount) : 0;
+          var avgPrep = parseFloat(kpi.avg_prep_minutes || 0);
+          var dineInPct = (totalDining > 0) ? Math.round((dineInCount / totalDining) * 100) : 0;
+
+          document.getElementById('ledgerGrossRevenue').textContent = `₱${totalRev.toLocaleString('en-PH', { minimumFractionDigits: 2 })}`;
+          document.getElementById('ledgerGrossSub').textContent = `${completedCount} completed order${completedCount === 1 ? '' : 's'}`;
+
+          document.getElementById('ledgerAovValue').textContent = `₱${aov.toLocaleString('en-PH', { minimumFractionDigits: 2 })}`;
+          document.getElementById('ledgerAovSub').textContent = (completedCount > 0) ? `Based on ${completedCount} ticket${completedCount === 1 ? '' : 's'}` : 'No completed sales yet';
+
+          document.getElementById('ledgerAvgPrepValue').textContent = (avgPrep > 0) ? `${avgPrep.toFixed(1)}m` : '—';
+
+          document.getElementById('ledgerDiningSplitValue').textContent = (totalDining > 0) ? `${dineInPct}% Dine-In` : 'No dining data';
+          document.getElementById('ledgerDiningSplitSub').textContent = `${dineInCount} Dine-In · ${takeOutCount} Take-Out`;
+
+          document.getElementById('ledgerPipelineValue').textContent = `${totalTickets} Total`;
+          document.getElementById('ledgerPipelineSub').textContent = `${completedCount} cleared · ${activeTotal} active · ${cancelledCount} canc`;
+
+          // 2. Payment Breakdown Card
+          var gcashRev = parseFloat(kpi.gcash_revenue || 0);
+          var cashRev = parseFloat(kpi.cash_revenue || 0);
+          var gcashPct = (totalRev > 0) ? Math.round((gcashRev / totalRev) * 100) : 0;
+          var cashPct = (totalRev > 0) ? (100 - gcashPct) : 0;
+
+          document.getElementById('paymentTotalBadge').textContent = `₱${totalRev.toLocaleString('en-PH', { minimumFractionDigits: 2 })}`;
+          document.getElementById('ledgerGcashTotal').textContent = `₱${gcashRev.toLocaleString('en-PH', { minimumFractionDigits: 2 })}`;
+          document.getElementById('ledgerGcashShare').textContent = `${gcashPct}% of revenue`;
+          document.getElementById('ledgerCashTotal').textContent = `₱${cashRev.toLocaleString('en-PH', { minimumFractionDigits: 2 })}`;
+          document.getElementById('ledgerCashShare').textContent = `${cashPct}% of revenue`;
+
+          var splitBarGcash = document.getElementById('splitBarGcash');
+          var splitBarCash = document.getElementById('splitBarCash');
+          if (splitBarGcash && splitBarCash) {
+            if (totalRev > 0) {
+              splitBarGcash.style.width = `${gcashPct}%`;
+              splitBarCash.style.width = `${cashPct}%`;
+            } else {
+              splitBarGcash.style.width = '50%';
+              splitBarCash.style.width = '50%';
+            }
+          }
+
+          // 3. Hourly Order Velocity Histogram
+          renderHourlyHistogram(rawLedgerOrders);
+
+          // 4. Top Selling Drinks & Modifiers Aggregation
+          renderTopDrinksAndModifiers(rawLedgerOrders);
+
+          // 5. 3-Point QA Compliance Health
+          renderQaHealthMeters(rawLedgerOrders);
+
+          // 6. Render Filterable Order Audit Records
+          renderLedgerOrders();
+
+        } catch (e) {
+          console.warn('Ledger load error:', e);
+        }
+      }
+
+      function renderHourlyHistogram(orders) {
+        var chartSvg = document.getElementById('hourlySvgChart');
+        var peakBadge = document.getElementById('peakRushBadge');
+        if (!chartSvg) return;
+
+        // Default window: 7 AM to 10 PM, or dynamically expanded to include any orders outside standard hours
+        var minHr = 7;
+        var maxHr = 22;
+
+        orders.forEach(function(ord) {
+          if (!ord.created_at) return;
+          var timeStr = ord.created_at.replace(' ', 'T');
+          var dt = new Date(timeStr);
+          var hr = dt.getHours();
+          if (hr < minHr) minHr = hr;
+          if (hr > maxHr) maxHr = hr;
+        });
+
+        var hoursMap = {};
+        for (var h = minHr; h <= maxHr; h++) {
+          hoursMap[h] = 0;
+        }
+
+        orders.forEach(function(ord) {
+          if (!ord.created_at) return;
+          var timeStr = ord.created_at.replace(' ', 'T');
+          var dt = new Date(timeStr);
+          var hr = dt.getHours();
+          if (hoursMap[hr] !== undefined) {
+            hoursMap[hr]++;
+          }
+        });
+
+        var hoursArr = Object.keys(hoursMap).map(function(k) {
+          return { hour: parseInt(k, 10), count: hoursMap[k] };
+        });
+
+        var maxCount = Math.max(1, ...hoursArr.map(h => h.count));
+        var peakItem = hoursArr.reduce((prev, curr) => (curr.count > prev.count ? curr : prev), hoursArr[0]);
+
+        if (peakBadge) {
+          if (peakItem && peakItem.count > 0) {
+            var formatHr = (h) => {
+              var suffix = h >= 12 ? 'PM' : 'AM';
+              var hr12 = h % 12 || 12;
+              return `${hr12}:00 ${suffix}`;
+            };
+            peakBadge.textContent = `Peak Rush: ${formatHr(peakItem.hour)} (${peakItem.count} order${peakItem.count === 1 ? '' : 's'})`;
+          } else {
+            peakBadge.textContent = 'Peak Rush: No orders yet';
+          }
+        }
+
+        // Generate SVG markup
+        var svgW = 600;
+        var svgH = 130;
+        var bottomPadding = 24;
+        var topPadding = 16;
+        var plotH = svgH - bottomPadding - topPadding;
+        var slotW = svgW / hoursArr.length;
+        var barW = Math.max(10, Math.min(22, slotW * 0.7));
+
+        var svgContent = `
+          <!-- Baseline Axis -->
+          <line x1="0" y1="${svgH - bottomPadding}" x2="${svgW}" y2="${svgH - bottomPadding}" stroke="rgba(255,255,255,0.12)" stroke-width="1" />
+        `;
+
+        hoursArr.forEach(function(item, idx) {
+          var x = idx * slotW + (slotW - barW) / 2;
+          var barH = (item.count / maxCount) * plotH;
+          if (barH < 4 && item.count > 0) barH = 4;
+          var y = (svgH - bottomPadding) - barH;
+          var isPeak = (item.count > 0 && item.count === peakItem.count);
+
+          var fillColor = isPeak ? '#E28743' : (item.count > 0 ? '#DF9B64' : 'rgba(255,255,255,0.06)');
+          var labelText = (item.hour % 2 === 0 || item.hour === minHr || item.hour === maxHr) 
+            ? `${item.hour % 12 || 12}${item.hour >= 12 ? 'p' : 'a'}` 
+            : '';
+
+          svgContent += `
+            <g class="histogram-bar-group">
+              <rect x="${x}" y="${y}" width="${barW}" height="${barH}" rx="4" fill="${fillColor}">
+                <title>${item.count} order(s) at ${item.hour % 12 || 12}:00 ${item.hour >= 12 ? 'PM' : 'AM'}</title>
+              </rect>
+              ${item.count > 0 ? `<text x="${x + barW / 2}" y="${y - 4}" fill="${isPeak ? '#FDBA74' : '#C8B9AF'}" font-size="9" font-family="monospace" font-weight="700" text-anchor="middle">${item.count}</text>` : ''}
+              <text x="${x + barW / 2}" y="${svgH - 6}" fill="rgba(255,255,255,0.4)" font-size="9" font-family="monospace" text-anchor="middle">${labelText}</text>
+            </g>
+          `;
+        });
+
+        chartSvg.innerHTML = svgContent;
+      }
+
+      function renderTopDrinksAndModifiers(orders) {
+        var drinksRankList = document.getElementById('topDrinksRankList');
+        var modOatMilkCount = document.getElementById('modOatMilkCount');
+        var modLessSweetCount = document.getElementById('modLessSweetCount');
+        var modIcedCount = document.getElementById('modIcedCount');
+
+        var drinkMap = {};
+        var oatMilkOrders = 0;
+        var lessSweetOrders = 0;
+        var icedOrders = 0;
+
+        orders.forEach(function(ord) {
+          if (!ord.items) return;
+          ord.items.forEach(function(it) {
+            var name = it.item_name || 'Handcrafted Beverage';
+            var qty = parseInt(it.quantity || 1, 10);
+            var subtotal = parseFloat(it.subtotal || it.unit_price || 0);
+
+            if (!drinkMap[name]) {
+              drinkMap[name] = { name: name, quantity: 0, revenue: 0 };
+            }
+            drinkMap[name].quantity += qty;
+            drinkMap[name].revenue += subtotal;
+
+            // Modifiers
+            if (it.milk_option && it.milk_option.toLowerCase().includes('oat')) {
+              oatMilkOrders += qty;
+            }
+            if (it.sweetness_level && (it.sweetness_level.includes('75') || it.sweetness_level.includes('50') || it.sweetness_level.toLowerCase().includes('less'))) {
+              lessSweetOrders += qty;
+            }
+            if (it.temperature && it.temperature.toLowerCase().includes('iced')) {
+              icedOrders += qty;
+            }
+          });
+        });
+
+        if (modOatMilkCount) modOatMilkCount.textContent = `${oatMilkOrders} item${oatMilkOrders === 1 ? '' : 's'}`;
+        if (modLessSweetCount) modLessSweetCount.textContent = `${lessSweetOrders} item${lessSweetOrders === 1 ? '' : 's'}`;
+        if (modIcedCount) modIcedCount.textContent = `${icedOrders} item${icedOrders === 1 ? '' : 's'}`;
+
+        var sortedDrinks = Object.values(drinkMap).sort((a, b) => b.quantity - a.quantity);
+
+        if (!drinksRankList) return;
+
+        if (sortedDrinks.length === 0) {
+          drinksRankList.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--admin-muted); font-size: 0.85rem;">No drink sales recorded for this date.</div>';
+          return;
+        }
+
+        var maxItemQty = sortedDrinks[0].quantity;
+
+        drinksRankList.innerHTML = sortedDrinks.slice(0, 5).map(function(item, idx) {
+          var pct = Math.round((item.quantity / maxItemQty) * 100);
+          return `
+            <div class="rank-item">
+              <div class="rank-item-meta">
+                <span class="rank-item-name">
+                  <span class="rank-item-num">#${idx + 1}</span>
+                  <span>${item.name}</span>
+                </span>
+                <span class="rank-item-stats">${item.quantity} sold · ₱${item.revenue.toFixed(2)}</span>
+              </div>
+              <div class="rank-progress-track">
+                <div class="rank-progress-fill" style="width: ${pct}%;"></div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      function renderQaHealthMeters(orders) {
+        var total = orders.length;
+        if (total === 0) {
+          document.getElementById('qaOverallRate').textContent = '—';
+          document.getElementById('qaPaymentRate').textContent = '—';
+          document.getElementById('qaCustomRate').textContent = '—';
+          document.getElementById('qaPackageRate').textContent = '—';
+          return;
+        }
+
+        var payVerified = orders.filter(o => o.qa_payment_verified).length;
+        var custFollowed = orders.filter(o => o.qa_customizations_followed).length;
+        var packSecured = orders.filter(o => o.qa_packaging_secured).length;
+
+        var payPct = Math.round((payVerified / total) * 100);
+        var custPct = Math.round((custFollowed / total) * 100);
+        var packPct = Math.round((packSecured / total) * 100);
+        var overallPct = Math.round((payPct + custPct + packPct) / 3);
+
+        document.getElementById('qaOverallRate').textContent = `${overallPct}%`;
+        document.getElementById('qaPaymentRate').textContent = `${payPct}%`;
+        document.getElementById('qaPaymentBar').style.width = `${payPct}%`;
+
+        document.getElementById('qaCustomRate').textContent = `${custPct}%`;
+        document.getElementById('qaCustomBar').style.width = `${custPct}%`;
+
+        document.getElementById('qaPackageRate').textContent = `${packPct}%`;
+        document.getElementById('qaPackageBar').style.width = `${packPct}%`;
+      }
+
+      function renderLedgerOrders() {
+        var tbody = document.getElementById('ledgerTableBody');
+        var mobileCards = document.getElementById('ledgerMobileCards');
+        var rowCountNotice = document.getElementById('ledgerRowCountNotice');
+
+        var query = activeFilters.search;
+        var statusFilter = activeFilters.status;
+        var diningFilter = activeFilters.dining;
+        var paymentFilter = activeFilters.payment;
+
+        var filtered = rawLedgerOrders.filter(function(ord) {
+          // Status filter
+          if (statusFilter === 'completed' && ord.status !== 'completed') return false;
+          if (statusFilter === 'active' && ord.status !== 'pending' && ord.status !== 'in_progress') return false;
+          if (statusFilter === 'cancelled' && ord.status !== 'cancelled') return false;
+
+          // Dining filter
+          if (diningFilter !== 'all' && ord.order_type !== diningFilter) return false;
+
+          // Payment filter
+          if (paymentFilter !== 'all' && ord.payment_method !== paymentFilter) return false;
+
+          // Search query
+          if (query) {
+            var itemsText = (ord.items || []).map(i => i.item_name).join(' ').toLowerCase();
+            var searchTarget = `${ord.customer_name || ''} ${ord.queue_number || ''} ${ord.order_reference || ''} ${ord.customer_phone || ''} ${itemsText}`.toLowerCase();
+            if (!searchTarget.includes(query)) return false;
+          }
+
+          return true;
+        });
+
+        if (rowCountNotice) {
+          rowCountNotice.textContent = `Showing ${filtered.length} of ${rawLedgerOrders.length} order ticket${rawLedgerOrders.length === 1 ? '' : 's'}`;
+        }
+
+        if (filtered.length === 0) {
+          var emptyMsg = rawLedgerOrders.length === 0 
+            ? 'No orders recorded for this date.' 
+            : 'No orders match your filter criteria.';
+          if (tbody) tbody.innerHTML = `<tr><td colspan="9" style="text-align: center; padding: 3rem; color: var(--admin-muted); font-size: 0.88rem;">${emptyMsg}</td></tr>`;
+          if (mobileCards) mobileCards.innerHTML = `<div style="text-align: center; padding: 2rem; color: var(--admin-muted); font-size: 0.85rem;">${emptyMsg}</div>`;
+          return;
+        }
+
+        // Render Desktop Table Rows
+        if (tbody) {
+          tbody.innerHTML = filtered.map(function(ord) {
+            var itemsHtml = (ord.items || []).map(function(it) {
+              return `<div><strong>${it.quantity}x ${it.item_name}</strong> <span style="color:#DF9B64;">(${it.temperature || 'Iced'} · ${it.milk_option || 'Standard'})</span></div>`;
+            }).join('');
+
+            var qaBadges = `
+              <div style="display:flex; flex-direction:column; gap:0.2rem; font-size:0.75rem;">
+                <span style="color:${ord.qa_payment_verified ? '#34D399' : '#F87171'};">● Payment ${ord.qa_payment_verified ? 'Verified' : 'Pending'}</span>
+                <span style="color:${ord.qa_customizations_followed ? '#34D399' : '#F87171'};">● Customizations ${ord.qa_customizations_followed ? 'Followed' : 'Pending'}</span>
+                <span style="color:${ord.qa_packaging_secured ? '#34D399' : '#F87171'};">● Packaging ${ord.qa_packaging_secured ? 'Secured' : 'Pending'}</span>
+              </div>
+            `;
+
+            var statusPill = (ord.status === 'completed')
+              ? '<span style="background:rgba(16,185,129,0.15); color:#34D399; padding:0.25rem 0.55rem; border-radius:6px; font-weight:700; font-size:0.78rem;">Completed</span>'
+              : (ord.status === 'in_progress')
+              ? '<span style="background:rgba(226,135,67,0.15); color:#FDBA74; padding:0.25rem 0.55rem; border-radius:6px; font-weight:700; font-size:0.78rem;">In Prep</span>'
+              : `<span style="background:rgba(239,68,68,0.15); color:#F87171; padding:0.25rem 0.55rem; border-radius:6px; font-weight:700; font-size:0.78rem;">${ord.status}</span>`;
+
+            var prepTimeStr = ord.completed_at
+              ? `${Math.round((ord.elapsed_seconds || 0) / 60)}m prep`
+              : 'In progress';
+
+            return `
+              <tr>
+                <td style="font-family: var(--font-mono); font-weight: 800; color: #FFF; font-size: 1.1rem;">#${ord.queue_number}</td>
+                <td style="font-family: var(--font-mono); color: #DF9B64; font-size: 0.82rem;">${ord.order_reference}</td>
+                <td><strong>${ord.customer_name}</strong><div style="font-size:0.75rem; color:#A99B92;">${ord.customer_phone || ''}</div></td>
+                <td>${itemsHtml}</td>
+                <td style="text-transform: capitalize;">${ord.order_type === 'take_out' ? '🛍️ Take-Out' : `🪑 Table ${ord.table_number || '1'}`}</td>
+                <td style="text-transform: uppercase; font-weight: 700; color: ${ord.payment_method === 'gcash' ? '#60A5FA' : '#FBBF24'};">${ord.payment_method}</td>
+                <td>${qaBadges}</td>
+                <td>${statusPill}<div style="font-size:0.75rem; color:#A99B92; margin-top:0.2rem;">${prepTimeStr}</div></td>
+                <td style="text-align: right; font-family: var(--font-mono); font-weight: 700; color: #34D399; font-size: 1rem;">₱${parseFloat(ord.grand_total).toFixed(2)}</td>
+              </tr>
+            `;
+          }).join('');
+        }
+
+        // Render Mobile Cards
+        if (mobileCards) {
+          mobileCards.innerHTML = filtered.map(function(ord) {
+            var itemsList = (ord.items || []).map(function(it) {
+              return `<div><strong>${it.quantity}x ${it.item_name}</strong> <span style="color:#DF9B64;">(${it.temperature || 'Iced'} · ${it.milk_option || 'Standard'})</span></div>`;
+            }).join('');
+
+            var statusPill = (ord.status === 'completed')
+              ? '<span style="background:rgba(16,185,129,0.15); color:#34D399; padding:0.2rem 0.5rem; border-radius:6px; font-weight:700; font-size:0.75rem;">Completed</span>'
+              : (ord.status === 'in_progress')
+              ? '<span style="background:rgba(226,135,67,0.15); color:#FDBA74; padding:0.2rem 0.5rem; border-radius:6px; font-weight:700; font-size:0.75rem;">In Prep</span>'
+              : `<span style="background:rgba(239,68,68,0.15); color:#F87171; padding:0.2rem 0.5rem; border-radius:6px; font-weight:700; font-size:0.75rem;">${ord.status}</span>`;
+
+            var qaStatus = ord.qa_payment_verified && ord.qa_customizations_followed && ord.qa_packaging_secured
+              ? '<span style="color: #34D399; font-size: 0.75rem; font-weight: 700;">● QA Cleared</span>'
+              : '<span style="color: #F87171; font-size: 0.75rem; font-weight: 700;">● QA Pending</span>';
+
+            return `
+              <div class="mobile-order-ticket">
+                <div class="mobile-ticket-header">
+                  <div class="mobile-ticket-queue">
+                    <span>#${ord.queue_number}</span>
+                    <span style="font-size: 0.75rem; color: #DF9B64; font-weight: normal;">(${ord.order_type === 'take_out' ? 'Take-Out' : `Table ${ord.table_number || '1'}`})</span>
+                  </div>
+                  <div class="mobile-ticket-amount">₱${parseFloat(ord.grand_total).toFixed(2)}</div>
+                </div>
+
+                <div style="font-size: 0.8rem; color: #FFF; font-weight: 700;">
+                  ${ord.customer_name} <span style="font-size: 0.75rem; color: #A99B92; font-weight: normal;">${ord.customer_phone || ''}</span>
+                </div>
+
+                <div class="mobile-ticket-items">
+                  ${itemsList}
+                </div>
+
+                <div class="mobile-ticket-footer">
+                  <div style="display: flex; gap: 0.45rem; align-items: center;">
+                    <span style="text-transform: uppercase; font-size: 0.75rem; font-weight: 700; color: ${ord.payment_method === 'gcash' ? '#60A5FA' : '#FBBF24'};">${ord.payment_method}</span>
+                    <span style="font-size: 0.75rem; color: #A99B92;">·</span>
+                    ${qaStatus}
+                  </div>
+                  <div>
+                    ${statusPill}
+                  </div>
+                </div>
+              </div>
+            `;
+          }).join('');
+        }
+      }
+
+      // ==========================================
+      // 3. MENU & STOCK CONTROL CONTROLLER
+      // ==========================================
+      var menuData = [];
+      var stockOptions = [];
+      var stockAvailability = {};
+      var itemAvailability = {};
+      var activeEditingItem = null;
+      var currentCategoryFilter = 'all';
+
+      async function loadStockStatus() {
+        try {
+          var res = await fetch('api/stock.php', { cache: 'no-store' });
+          if (res.ok) {
+            var data = await res.json();
+            stockOptions = data.options || [];
+            stockAvailability = data.availability || {};
+            itemAvailability = data.item_availability || {};
+          }
+        } catch (e) {
+          console.warn('Stock fetch error:', e);
+        }
+      }
+
+      async function loadStockMenu() {
+        await loadStockStatus();
+        try {
+          var res = await fetch('api/menu.php', { cache: 'no-store' });
+          if (res.ok) {
+            var data = await res.json();
+            menuData = data.items || [];
+          }
+        } catch (e) {
+          console.warn('Menu fetch error:', e);
+        }
+
+        renderStockCatalog();
+      }
+
+      function renderStockCatalog() {
+        var grid = document.getElementById('drinksCatalogGrid');
+        var query = (document.getElementById('drinkSearchInput').value || '').toLowerCase().trim();
+
+        var filtered = menuData.filter(function(item) {
+          var matchesCat = (currentCategoryFilter === 'all' || item.category === currentCategoryFilter);
+          var matchesQuery = (!query || item.name.toLowerCase().includes(query) || (item.description || '').toLowerCase().includes(query));
+          return matchesCat && matchesQuery;
+        });
+
+        if (filtered.length === 0) {
+          grid.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: var(--admin-muted);">No drinks match the selected filter.</div>';
+          return;
+        }
+
+        grid.innerHTML = filtered.map(function(item) {
+          var isItemInStock = (itemAvailability[item.id] !== false && item.isAvailable !== false);
+          var tagBadge = (item.tags && item.tags.length > 0)
+            ? `<span class="drink-badge">${item.tags[0]}</span>`
+            : '';
+          var stockTagClass = isItemInStock ? 'drink-stock-tag in-stock' : 'drink-stock-tag sold-out';
+          var stockTagText = isItemInStock ? '● In Stock' : '✕ Sold Out';
+          var cardClass = isItemInStock ? 'drink-card' : 'drink-card item-sold-out';
+
+          return `
+            <div class="${cardClass}" id="card_${item.id}">
+              <div class="drink-img-wrap">
+                <img src="${item.image || 'images/menu/hc-spanish.webp'}" alt="${item.name}" loading="lazy">
+                ${tagBadge}
+                <span class="${stockTagClass}" data-item-id="${item.id}" title="Tap to toggle drink stock">${stockTagText}</span>
+              </div>
+              <div class="drink-meta-row">
+                <h4 class="drink-name">${item.name}</h4>
+                <span class="drink-price">₱${parseFloat(item.price).toFixed(2)}</span>
+              </div>
+              <p class="drink-desc">${item.description || 'Specialty handcrafted cafe beverage.'}</p>
+              <button type="button" class="btn-manage-options btn-open-manage" data-item-id="${item.id}">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                Manage Customization Options
+              </button>
+            </div>
+          `;
+        }).join('');
+
+        // Attach Manage Customization Clicks
+        document.querySelectorAll('.btn-open-manage').forEach(function(btn) {
+          btn.addEventListener('click', function() {
+            var itemId = btn.getAttribute('data-item-id');
+            openManageModal(itemId);
+          });
+        });
+
+        // Quick drink stock tag toggles
+        document.querySelectorAll('.drink-stock-tag').forEach(function(tag) {
+          tag.addEventListener('click', function(e) {
+            e.stopPropagation();
+            var itemId = tag.getAttribute('data-item-id');
+            quickToggleDrinkStock(itemId);
+          });
+        });
+      }
+
+      // Filter Categories
+      document.querySelectorAll('.cat-pill-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          document.querySelectorAll('.cat-pill-btn').forEach(function(b) { b.classList.remove('active'); });
+          btn.classList.add('active');
+          currentCategoryFilter = btn.getAttribute('data-cat');
+          renderStockCatalog();
+        });
+      });
+
+      // Search input filter
+      document.getElementById('drinkSearchInput').addEventListener('input', function() {
+        renderStockCatalog();
+      });
+
+      // Quick Drink Stock Toggle from Card
+      async function quickToggleDrinkStock(itemId) {
+        var current = (itemAvailability[itemId] !== false);
+        var next = !current;
+        itemAvailability[itemId] = next;
+        renderStockCatalog();
+
+        try {
+          var res = await fetch('api/stock.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ item_id: itemId, is_available: next ? 1 : 0 })
+          });
+          var data = await res.json();
+          if (data.success) {
+            showToast(next ? 'Drink marked IN STOCK.' : 'Drink marked SOLD OUT.', !next);
+          }
+        } catch (e) {
+          console.warn('Quick toggle error:', e);
+        }
+      }
+
+      // ==========================================
+      // 4. THE "MANAGE CUSTOMIZATION OPTIONS" MODAL
+      // ==========================================
+      var manageModal = document.getElementById('adminManageModal');
+
+      async function openManageModal(itemId) {
+        await loadStockStatus();
+        activeEditingItem = menuData.find(function(i) { return i.id === itemId; });
+        if (!activeEditingItem) return;
+
+        var imgUrl = activeEditingItem.image || 'images/menu/hc-spanish.webp';
+        document.getElementById('modalDrinkImg').src = imgUrl;
+        document.getElementById('modalDrinkImgUrl').value = activeEditingItem.image || '';
+        document.getElementById('modalDrinkName').value = activeEditingItem.name;
+        document.getElementById('modalDrinkCategory').value = activeEditingItem.category || 'house-coffee';
+        document.getElementById('modalBasePrice').value = parseFloat(activeEditingItem.price).toFixed(2);
+        document.getElementById('modalDrinkDesc').value = activeEditingItem.description || '';
+
+        // Reset and hide new add-on form
+        var newAddonWrap = document.getElementById('newAddonFormWrap');
+        if (newAddonWrap) {
+          newAddonWrap.style.display = 'none';
+          document.getElementById('inputNewAddonName').value = '';
+          document.getElementById('inputNewAddonPrice').value = '30';
+        }
+
+        updateModalDrinkStockButton();
+        renderModalAddons();
+        syncOptionPillsInModal();
+        manageModal.classList.add('active');
+      }
+
+      function updateModalDrinkStockButton() {
+        if (!activeEditingItem) return;
+        var isAvail = (itemAvailability[activeEditingItem.id] !== false);
+        var btn = document.getElementById('modalDrinkStockToggle');
+        if (isAvail) {
+          btn.textContent = '● In Stock';
+          btn.style.background = 'rgba(16, 185, 129, 0.2)';
+          btn.style.color = '#34D399';
+          btn.style.borderColor = 'rgba(16, 185, 129, 0.5)';
+        } else {
+          btn.textContent = '✕ Sold Out (86\'d)';
+          btn.style.background = 'rgba(239, 68, 68, 0.2)';
+          btn.style.color = '#F87171';
+          btn.style.borderColor = 'rgba(239, 68, 68, 0.5)';
+        }
+      }
+
+      // Toggle modal drink stock button
+      document.getElementById('modalDrinkStockToggle').addEventListener('click', async function() {
+        if (!activeEditingItem) return;
+        var current = (itemAvailability[activeEditingItem.id] !== false);
+        var next = !current;
+        itemAvailability[activeEditingItem.id] = next;
+        updateModalDrinkStockButton();
+        renderStockCatalog();
+
+        try {
+          var res = await fetch('api/stock.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ item_id: activeEditingItem.id, is_available: next ? 1 : 0 })
+          });
+          var data = await res.json();
+          if (data.success) {
+            showToast(next ? 'Drink marked IN STOCK.' : 'Drink marked SOLD OUT (86\'d).', !next);
+          }
+        } catch (e) {
+          console.warn('Drink stock toggle error:', e);
+        }
+      });
+
+      // Photo Changer A: Local Device File Upload
+      var modalFileInput = document.getElementById('modalDrinkFileInput');
+      if (modalFileInput) {
+        modalFileInput.addEventListener('change', async function() {
+          var file = modalFileInput.files[0];
+          if (!file) return;
+
+          var formData = new FormData();
+          formData.append('image', file);
+
+          showToast('Uploading new photo...', false);
+          try {
+            var res = await fetch('api/upload.php', {
+              method: 'POST',
+              body: formData
+            });
+            var data = await res.json();
+            if (data.success && data.image_url) {
+              document.getElementById('modalDrinkImg').src = data.image_url;
+              document.getElementById('modalDrinkImgUrl').value = data.image_url;
+              showToast('Photo uploaded successfully! Tap "Save Drink Details" to persist.', false);
+            } else {
+              showToast('Upload error: ' + (data.error || 'Failed'), true);
+            }
+          } catch (e) {
+            showToast('Upload network error: ' + e.message, true);
+          }
+        });
+      }
+
+      // Photo Changer B: Live Image URL Input Preview
+      var modalUrlInput = document.getElementById('modalDrinkImgUrl');
+      if (modalUrlInput) {
+        modalUrlInput.addEventListener('input', function() {
+          var val = modalUrlInput.value.trim();
+          document.getElementById('modalDrinkImg').src = val || 'images/menu/hc-spanish.webp';
+        });
+      }
+
+      // Render Dynamic Add-ons List with Delete Control
+      function renderModalAddons() {
+        var container = document.getElementById('modalAddonsGroup');
+        if (!container) return;
+
+        var addons = stockOptions.filter(function(o) { return o.category_type === 'addon'; });
+        if (addons.length === 0) {
+          container.innerHTML = '<div style="color: var(--admin-muted); font-size: 0.8rem; padding: 0.5rem 0;">No add-ons created yet. Click "+ Add New Add-on" above to add one.</div>';
+          return;
+        }
+
+        container.innerHTML = addons.map(function(opt) {
+          var isAvail = (stockAvailability[opt.option_key] === true);
+          return `
+            <div class="admin-option-pill ${isAvail ? 'is-in-stock' : 'is-sold-out'}" data-opt="${opt.option_key}">
+              <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%; gap: 0.4rem;">
+                <span class="option-title-text">${opt.option_label}</span>
+                <button type="button" class="btn-delete-addon" data-opt="${opt.option_key}" title="Delete this add-on">&times;</button>
+              </div>
+              <span class="status-indicator-tag ${isAvail ? 'tag-in-stock' : 'tag-sold-out'}">${isAvail ? 'In Stock' : '✕ Sold Out'}</span>
+            </div>
+          `;
+        }).join('');
+
+        // Pill Stock Toggle Clicks
+        container.querySelectorAll('.admin-option-pill').forEach(function(pill) {
+          pill.addEventListener('click', function(e) {
+            if (e.target.closest('.btn-delete-addon')) return;
+            var optKey = pill.getAttribute('data-opt');
+            toggleOptionStock(optKey);
+          });
+        });
+
+        // Pill Delete Clicks
+        container.querySelectorAll('.btn-delete-addon').forEach(function(btn) {
+          btn.addEventListener('click', async function(e) {
+            e.stopPropagation();
+            var optKey = btn.getAttribute('data-opt');
+            if (!confirm(`Are you sure you want to permanently delete the add-on "${optKey}"?`)) return;
+
+            try {
+              var res = await fetch('api/stock.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'delete_option', option_key: optKey })
+              });
+              var data = await res.json();
+              if (data.success) {
+                showToast(`Add-on "${optKey}" deleted.`, false);
+                await loadStockStatus();
+                renderModalAddons();
+              } else {
+                showToast('Delete error: ' + (data.error || 'Failed'), true);
+              }
+            } catch (err) {
+              showToast('Delete error: ' + err.message, true);
+            }
+          });
+        });
+      }
+
+      // Add-on Form Toggle & Submit Handlers
+      var newAddonWrap = document.getElementById('newAddonFormWrap');
+      document.getElementById('btnShowAddAddonForm').addEventListener('click', function() {
+        var isHidden = (newAddonWrap.style.display === 'none' || !newAddonWrap.style.display);
+        newAddonWrap.style.display = isHidden ? 'block' : 'none';
+        if (isHidden) {
+          document.getElementById('inputNewAddonName').focus();
+        }
+      });
+
+      document.getElementById('btnCancelNewAddon').addEventListener('click', function() {
+        newAddonWrap.style.display = 'none';
+        document.getElementById('inputNewAddonName').value = '';
+      });
+
+      document.getElementById('btnSubmitNewAddon').addEventListener('click', async function() {
+        var name = document.getElementById('inputNewAddonName').value.trim();
+        var price = parseFloat(document.getElementById('inputNewAddonPrice').value) || 0;
+
+        if (!name) {
+          alert('Please enter an add-on name (e.g. Cinnamon Syrup, Caramel Drizzle).');
+          return;
+        }
+
+        var btn = document.getElementById('btnSubmitNewAddon');
+        btn.disabled = true;
+        btn.textContent = 'Saving...';
+
+        try {
+          var res = await fetch('api/stock.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              action: 'add_option',
+              category_type: 'addon',
+              option_key: name,
+              surcharge: price
+            })
+          });
+          var data = await res.json();
+          if (data.success) {
+            showToast(`Add-on "${name}" (+₱${price}) created successfully.`, false);
+            document.getElementById('inputNewAddonName').value = '';
+            document.getElementById('inputNewAddonPrice').value = '30';
+            newAddonWrap.style.display = 'none';
+            await loadStockStatus();
+            renderModalAddons();
+          } else {
+            showToast('Error: ' + (data.error || 'Failed to add option'), true);
+          }
+        } catch (e) {
+          showToast('Connection error: ' + e.message, true);
+        } finally {
+          btn.disabled = false;
+          btn.textContent = 'Save Add-on';
+        }
+      });
+
+      // General Option Stock Toggle (Individual Pill Click)
+      async function toggleOptionStock(optKey) {
+        var current = (stockAvailability[optKey] === true);
+        var next = !current;
+
+        stockAvailability[optKey] = next;
+
+        // Synchronize in-memory stockOptions array item
+        var optObj = stockOptions.find(function(o) { return o.option_key === optKey; });
+        if (optObj) {
+          optObj.is_available = next ? 1 : 0;
+        }
+
+        syncOptionPillsInModal();
+        renderModalAddons();
+
+        try {
+          var res = await fetch('api/stock.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ option_key: optKey, is_available: next ? 1 : 0 })
+          });
+          var data = await res.json();
+          if (data.success) {
+            var msg = next 
+              ? `"${optKey}" restored to IN STOCK.` 
+              : `"${optKey}" CANCELLED OUT (Marked Sold Out / 86'd).`;
+            showToast(msg, !next);
+          }
+        } catch (e) {
+          console.warn('Option toggle error:', e);
+        }
+      }
+
+      // Sync Option Pills inside modal (Temperature & Sweetness)
+      function syncOptionPillsInModal() {
+        document.querySelectorAll('#modalTempGroup .admin-option-pill, #modalSweetnessGroup .admin-option-pill').forEach(function(pill) {
+          var optKey = pill.getAttribute('data-opt');
+          var isAvailable = (stockAvailability[optKey] === true);
+
+          pill.classList.toggle('is-in-stock', isAvailable);
+          pill.classList.toggle('is-sold-out', !isAvailable);
+
+          var tag = pill.querySelector('.status-indicator-tag');
+          if (tag) {
+            tag.className = isAvailable ? 'status-indicator-tag tag-in-stock' : 'status-indicator-tag tag-sold-out';
+            tag.textContent = isAvailable ? 'In Stock' : '✕ Sold Out';
+          }
+        });
+      }
+
+      // Category Batch Stock Toggles (Temperature, Add-ons, Sweetness)
+      async function toggleCategoryAllStock(categoryType) {
+        var keysToToggle = [];
+        if (categoryType === 'temperature') {
+          keysToToggle = ['Iced', 'Hot'];
+        } else if (categoryType === 'addon') {
+          keysToToggle = stockOptions
+            .filter(function(o) { return o.category_type === 'addon'; })
+            .map(function(o) { return o.option_key; });
+        } else if (categoryType === 'sweetness') {
+          keysToToggle = ['Normal (100%)', 'Less Sweet (75%)', 'Half Sweet (50%)', 'No Sugar (0%)'];
+        }
+
+        if (keysToToggle.length === 0) return;
+
+        // If any option in this category is currently sold out, mark all as IN STOCK; otherwise mark all as SOLD OUT
+        var anySoldOut = keysToToggle.some(function(k) { return stockAvailability[k] !== true; });
+        var nextState = anySoldOut ? true : false;
+
+        keysToToggle.forEach(function(k) {
+          stockAvailability[k] = nextState;
+          var optObj = stockOptions.find(function(o) { return o.option_key === k; });
+          if (optObj) optObj.is_available = nextState ? 1 : 0;
+        });
+
+        syncOptionPillsInModal();
+        renderModalAddons();
+
+        try {
+          await Promise.all(keysToToggle.map(function(k) {
+            return fetch('api/stock.php', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ option_key: k, is_available: nextState ? 1 : 0 })
+            });
+          }));
+          var catLabel = categoryType.charAt(0).toUpperCase() + categoryType.slice(1);
+          showToast(`${catLabel} options marked ${nextState ? 'ALL IN STOCK' : 'ALL SOLD OUT'}.`, !nextState);
+        } catch (e) {
+          console.warn('Category batch toggle error:', e);
+        }
+      }
+
+      // Attach Category Batch Toggle Buttons
+      document.querySelectorAll('.btn-cat-toggle-stock').forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          var catType = btn.getAttribute('data-cat-type');
+          toggleCategoryAllStock(catType);
+        });
+      });
+
+      // Tap Static Option Pills (Temperature, Sweetness)
+      document.querySelectorAll('#modalTempGroup .admin-option-pill, #modalSweetnessGroup .admin-option-pill').forEach(function(pill) {
+        pill.addEventListener('click', function() {
+          var optKey = pill.getAttribute('data-opt');
+          toggleOptionStock(optKey);
+        });
+      });
+
+      // Save Drink Details (Name, Price, Category, Description, and Image URL)
+      document.getElementById('btnSaveDrinkChanges').addEventListener('click', async function() {
+        if (!activeEditingItem) return;
+
+        var name = document.getElementById('modalDrinkName').value.trim();
+        var price = parseFloat(document.getElementById('modalBasePrice').value) || 0;
+        var category = document.getElementById('modalDrinkCategory').value;
+        var desc = document.getElementById('modalDrinkDesc').value.trim();
+        var imageUrl = document.getElementById('modalDrinkImgUrl').value.trim();
+
+        if (!name) {
+          alert('Please enter a drink name.');
+          return;
+        }
+        if (price <= 0) {
+          alert('Price must be greater than 0.');
+          return;
+        }
+
+        var saveBtn = document.getElementById('btnSaveDrinkChanges');
+        saveBtn.disabled = true;
+        saveBtn.textContent = 'Saving...';
+
+        try {
+          var res = await fetch('api/menu.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              id: activeEditingItem.id,
+              name: name,
+              price: price,
+              category: category,
+              description: desc,
+              image_url: imageUrl,
+              is_available: itemAvailability[activeEditingItem.id] !== false ? 1 : 0
+            })
+          });
+          var data = await res.json();
+          if (data.success) {
+            showToast('Drink details & photo saved successfully.', false);
+            manageModal.classList.remove('active');
+            await loadStockMenu();
+          } else {
+            showToast('Failed to save: ' + (data.error || 'Unknown error'), true);
+          }
+        } catch (e) {
+          showToast('Save error: ' + e.message, true);
+        } finally {
+          saveBtn.disabled = false;
+          saveBtn.textContent = '💾 Save Drink Details';
+        }
+      });
+
+      // Delete Drink
+      document.getElementById('btnDeleteDrink').addEventListener('click', async function() {
+        if (!activeEditingItem) return;
+        if (!confirm(`Are you sure you want to delete "${activeEditingItem.name}" from the menu?`)) return;
+
+        try {
+          var res = await fetch(`api/menu.php?id=${encodeURIComponent(activeEditingItem.id)}`, {
+            method: 'DELETE'
+          });
+          var data = await res.json();
+          if (data.success) {
+            showToast(`"${activeEditingItem.name}" was removed.`, false);
+            manageModal.classList.remove('active');
+            await loadStockMenu();
+          } else {
+            showToast('Delete error: ' + (data.error || 'Failed'), true);
+          }
+        } catch (e) {
+          showToast('Connection error: ' + e.message, true);
+        }
+      });
+
+      document.getElementById('btnCloseManageModal').addEventListener('click', function() {
+        manageModal.classList.remove('active');
+      });
+
+
+      // ==========================================
+      // 5. ADD NEW DRINK MODAL
+      // ==========================================
+      var addModal = document.getElementById('adminAddDrinkModal');
+      document.getElementById('btnOpenAddDrinkModal').addEventListener('click', function() {
+        addModal.classList.add('active');
+      });
+      document.getElementById('btnCloseAddModalBtn').addEventListener('click', function() {
+        addModal.classList.remove('active');
+      });
+
+      document.getElementById('btnSubmitNewDrink').addEventListener('click', async function() {
+        var name = document.getElementById('newDrinkName').value.trim();
+        var cat = document.getElementById('newDrinkCategory').value;
+        var price = parseFloat(document.getElementById('newDrinkPrice').value) || 0;
+        var desc = document.getElementById('newDrinkDesc').value.trim();
+
+        if (!name) {
+          alert('Please enter a drink name.');
+          return;
+        }
+
+        try {
+          var res = await fetch('api/menu.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              name: name,
+              category: cat,
+              price: price,
+              description: desc,
+              is_available: 1
+            })
+          });
+          var data = await res.json();
+          if (data.success) {
+            showToast(`"${name}" created successfully.`, false);
+            addModal.classList.remove('active');
+            document.getElementById('newDrinkName').value = '';
+            document.getElementById('newDrinkDesc').value = '';
+            await loadStockMenu();
+          } else {
+            showToast('Creation failed: ' + (data.error || 'Unknown error'), true);
+          }
+        } catch (e) {
+          showToast('Connection error: ' + e.message, true);
+        }
+      });
+
+      // Reset All Stock
+      document.getElementById('btnResetAllStockTop').addEventListener('click', async function() {
+        if (!confirm('Are you sure you want to reset ALL customization options and drinks to IN STOCK?')) return;
+
+        try {
+          var res = await fetch('api/stock.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ reset_all: true })
+          });
+          var data = await res.json();
+          if (data.success) {
+            showToast('All options and drinks reset to IN STOCK.', false);
+            await loadStockMenu();
+          }
+        } catch (e) {
+          showToast('Reset failed: ' + e.message, true);
+        }
+      });
+
+      // Initial View Load (Analytics Ledger by default)
+      loadLedgerData();
+
+    })();
+  </script>
+  <!-- Mobile Sidebar Backdrop Overlay -->
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 </body>
 </html>

@@ -3,6 +3,9 @@
  * BeCoffee — Global Application & Environment Configuration
  */
 
+// 1. Configure Default Timezone to Philippine Standard Time (UTC+8)
+date_default_timezone_set('Asia/Manila');
+
 // 1. Load Environment Variables from .env
 function loadEnv($path) {
     if (!file_exists($path)) {

@@ -1,18 +1,83 @@
 <?php
 /**
- * BeCoffee — Menu API Endpoint
- * Provides dynamic menu data with category & flavor mappings
+ * Escobar Cafe / BeCoffee — Menu API Endpoint
+ * Full CRUD for menu items and dynamic catalog retrieval
  */
 
 require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/db.php';
 
 $db = Database::getConnection();
+$method = $_SERVER['REQUEST_METHOD'];
 
+// Handle Item Update & Creation
+if ($method === 'POST' || $method === 'PUT') {
+    $input = getJsonInput();
+    $id = trim($input['id'] ?? '');
+    $name = trim($input['name'] ?? '');
+    $price = (float)($input['price'] ?? 0);
+    $desc = trim($input['description'] ?? '');
+    $catSlug = trim($input['category'] ?? 'house-coffee');
+    $isAvailable = isset($input['is_available']) ? ((bool)$input['is_available'] ? 1 : 0) : 1;
+    $imageUrl = trim($input['image'] ?? $input['image_url'] ?? '');
+
+    if (empty($name)) {
+        jsonResponse(['success' => false, 'error' => 'Drink name is required.'], 400);
+    }
+    if ($price <= 0) {
+        jsonResponse(['success' => false, 'error' => 'Price must be greater than 0.'], 400);
+    }
+
+    // Lookup category id
+    $catStmt = $db->prepare("SELECT id FROM categories WHERE slug = ?");
+    $catStmt->execute([$catSlug]);
+    $catId = $catStmt->fetchColumn() ?: 1;
+
+    // Check if item exists
+    if (!empty($id)) {
+        $checkStmt = $db->prepare("SELECT id FROM menu_items WHERE id = ?");
+        $checkStmt->execute([$id]);
+        $exists = $checkStmt->fetch();
+        if ($exists) {
+            $upd = $db->prepare("
+                UPDATE menu_items 
+                SET name = ?, price = ?, price_iced_m = ?, description = ?, is_available = ?, category_id = ?,
+                    image_url = CASE WHEN ? != '' THEN ? ELSE image_url END
+                WHERE id = ?
+            ");
+            $upd->execute([$name, $price, $price, $desc, $isAvailable, $catId, $imageUrl, $imageUrl, $id]);
+            jsonResponse(['success' => true, 'message' => "Item '{$name}' updated successfully.", 'item_id' => $id]);
+        }
+    }
+
+    // Insert new item
+    if (empty($id)) {
+        $id = strtolower(preg_replace('/[^a-zA-Z0-9]+/', '-', $name)) . '-' . substr(uniqid(), -4);
+    }
+    $finalImg = !empty($imageUrl) ? $imageUrl : 'images/menu/hc-spanish.webp';
+    $ins = $db->prepare("
+        INSERT INTO menu_items (id, category_id, name, price, price_iced_m, description, image_url, is_available)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    ");
+    $ins->execute([$id, $catId, $name, $price, $price, $desc, $finalImg, $isAvailable]);
+    jsonResponse(['success' => true, 'message' => "Item '{$name}' created successfully.", 'item_id' => $id], 201);
+}
+
+// Handle Item Deletion
+if ($method === 'DELETE') {
+    $id = trim($_GET['id'] ?? getJsonInput()['id'] ?? '');
+    if (empty($id)) {
+        jsonResponse(['success' => false, 'error' => 'Item ID is required for deletion.'], 400);
+    }
+    $db->prepare("DELETE FROM item_flavors WHERE item_id = ?")->execute([$id]);
+    $db->prepare("DELETE FROM menu_items WHERE id = ?")->execute([$id]);
+    jsonResponse(['success' => true, 'message' => "Item '{$id}' deleted."]);
+}
+
+// GET: Query Menu Items
 $categoryFilter = $_GET['category'] ?? 'all';
 $flavorFilter   = $_GET['flavor'] ?? null;
 
-// Query menu items
 $query = "
     SELECT 
         m.id,
@@ -68,7 +133,6 @@ foreach ($items as $item) {
     $flavors = $flavorMap[$itemId] ?? [];
     $flavorLabels = $flavorLabelMap[$itemId] ?? [];
 
-    // If flavor filter is specified, check inclusion
     if ($flavorFilter && !in_array($flavorFilter, $flavors)) {
         continue;
     }
