@@ -8,6 +8,8 @@ require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/db.php';
 
 $method = $_SERVER['REQUEST_METHOD'];
+requireRole(['admin', 'superadmin']);
+
 $db = Database::getConnection();
 
 if ($method === 'GET') {

@@ -88,9 +88,41 @@ if ($method === 'GET') {
     ]);
 }
 
-// --- 2. POST: Create New Cafe Order ---
+// --- 2. POST: Create New Cafe Order OR Update Dining Mode ---
 if ($method === 'POST') {
     $input = getJsonInput();
+    $action = $_GET['action'] ?? '';
+
+    // Sub-action: Update dining mode for an active ticket (e.g. customer accidentally chose take-out)
+    if ($action === 'update_dining') {
+        $ref = trim($input['reference'] ?? '');
+        $orderType = in_array($input['order_type'] ?? '', ['dine_in', 'take_out'], true) ? $input['order_type'] : 'dine_in';
+        $tableNumber = ($orderType === 'dine_in') ? trim($input['table_number'] ?? '1') : null;
+
+        if (empty($ref)) {
+            jsonResponse(['success' => false, 'error' => 'Order reference is required.'], 400);
+        }
+
+        $chk = $db->prepare("SELECT id, status FROM orders WHERE order_reference = ?");
+        $chk->execute([$ref]);
+        $existing = $chk->fetch();
+        if (!$existing) {
+            jsonResponse(['success' => false, 'error' => 'Order not found.'], 404);
+        }
+        if ($existing['status'] === 'completed' || $existing['status'] === 'cancelled') {
+            jsonResponse(['success' => false, 'error' => 'Order is already ' . $existing['status'] . ' and cannot be changed.'], 422);
+        }
+
+        $upd = $db->prepare("UPDATE orders SET order_type = ?, table_number = ? WHERE id = ?");
+        $upd->execute([$orderType, $tableNumber, $existing['id']]);
+
+        jsonResponse([
+            'success'      => true,
+            'message'      => 'Dining preference updated to ' . ($orderType === 'dine_in' ? 'Dine-in (Table #' . ($tableNumber ?: '1') . ')' : 'Take-out') . '.',
+            'order_type'   => $orderType,
+            'table_number' => $tableNumber
+        ]);
+    }
 
     $items = $input['items'] ?? [];
     if (empty($items) || !is_array($items)) {

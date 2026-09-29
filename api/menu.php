@@ -12,6 +12,7 @@ $method = $_SERVER['REQUEST_METHOD'];
 
 // Handle Item Update & Creation
 if ($method === 'POST' || $method === 'PUT') {
+    requireRole(['admin', 'superadmin']);
     $input = getJsonInput();
     $id = trim($input['id'] ?? '');
     $name = trim($input['name'] ?? '');
@@ -65,6 +66,7 @@ if ($method === 'POST' || $method === 'PUT') {
 
 // Handle Item Deletion
 if ($method === 'DELETE') {
+    requireRole(['admin', 'superadmin']);
     $id = trim($_GET['id'] ?? getJsonInput()['id'] ?? '');
     if (empty($id)) {
         jsonResponse(['success' => false, 'error' => 'Item ID is required for deletion.'], 400);

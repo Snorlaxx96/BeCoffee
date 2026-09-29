@@ -1,3 +1,19 @@
+<?php
+require_once __DIR__ . '/api/config.php';
+$currentUser = getAuthenticatedUser();
+if (!$currentUser) {
+    header('Location: index.php?error=unauthorized');
+    exit;
+}
+if ($currentUser['role'] === 'customer') {
+    header('Location: index.php?notice=customer_restricted');
+    exit;
+}
+if ($currentUser['role'] === 'staff') {
+    header('Location: kds.php?notice=staff_restricted');
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -500,15 +516,15 @@
 
     <!-- Navigation Hub -->
     <div class="admin-nav-actions">
-      <a href="kds.html" class="admin-nav-btn primary">
+      <a href="kds.php" class="admin-nav-btn primary">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
         Barista KDS Tablet
       </a>
-      <a href="admin.html" class="admin-nav-btn">
+      <a href="admin.php" class="admin-nav-btn">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
         Daily Ledger
       </a>
-      <a href="index.html" class="admin-nav-btn" target="_blank">
+      <a href="index.php" class="admin-nav-btn" target="_blank">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
         Live Customer View
       </a>
@@ -530,8 +546,9 @@
   <nav class="cat-nav-strip" aria-label="Menu categories">
     <button type="button" class="cat-pill-btn active" data-cat="all">All Drinks</button>
     <button type="button" class="cat-pill-btn" data-cat="house-coffee">House Coffee</button>
-    <button type="button" class="cat-pill-btn" data-cat="matcha">Matcha Series</button>
+    <button type="button" class="cat-pill-btn" data-cat="matcha">Matcha</button>
     <button type="button" class="cat-pill-btn" data-cat="house-specials">House Specials</button>
+    <button type="button" class="cat-pill-btn" data-cat="yogurt-soda">Yogurt / Soda</button>
   </nav>
 
   <!-- Main Catalog Grid -->

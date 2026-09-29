@@ -97,3 +97,95 @@ function getJsonInput() {
     $data = json_decode($raw, true);
     return is_array($data) ? $data : [];
 }
+
+// 4. RBAC Session & Authorization Helpers
+function getAuthenticatedUser(): ?array {
+    if (empty($_SESSION['user_id'])) {
+        return null;
+    }
+    static $cachedUser = null;
+    if ($cachedUser !== null && (int)$cachedUser['id'] === (int)$_SESSION['user_id']) {
+        return $cachedUser;
+    }
+
+    if (!class_exists('Database')) {
+        require_once __DIR__ . '/db.php';
+    }
+
+    $db = Database::getConnection();
+    $stmt = $db->prepare("SELECT id, name, email, phone, role FROM users WHERE id = ?");
+    $stmt->execute([$_SESSION['user_id']]);
+    $cachedUser = $stmt->fetch() ?: null;
+    return $cachedUser;
+}
+
+function requireAuth(): array {
+    $user = getAuthenticatedUser();
+    if (!$user) {
+        jsonResponse(['success' => false, 'error' => 'Authentication required.'], 401);
+    }
+    return $user;
+}
+
+function requireRole(array $allowedRoles): array {
+    $user = requireAuth();
+    if (!in_array($user['role'], $allowedRoles, true)) {
+        jsonResponse([
+            'success' => false,
+            'error'   => 'Forbidden. Insufficient permissions for role: ' . $user['role']
+        ], 403);
+    }
+    return $user;
+}
+
+function hasRole(string $role): bool {
+    $user = getAuthenticatedUser();
+    return $user !== null && $user['role'] === $role;
+}
+
+function getTargetViewForRole(string $role): string {
+    return match ($role) {
+        'superadmin' => 'admin.php?view=users',
+        'admin'      => 'admin.php',
+        'staff'      => 'kds.php',
+        'customer'   => 'index.php',
+        default      => 'index.php'
+    };
+}
+
+function logAuditEvent(string $action, string $details = '', ?int $userId = null, ?string $userEmail = null, ?string $role = null): void {
+    try {
+        if (!class_exists('Database')) {
+            require_once __DIR__ . '/db.php';
+        }
+        $db = Database::getConnection();
+
+        if ($userId === null) {
+            $currentUser = getAuthenticatedUser();
+            if ($currentUser) {
+                $userId = (int) $currentUser['id'];
+                $userEmail = $currentUser['email'] ?? null;
+                $role = $currentUser['role'] ?? 'system';
+            }
+        }
+
+        $ip = $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1';
+        $stmt = $db->prepare("
+            INSERT INTO system_audit_logs (user_id, user_email, role, action, details, ip_address)
+            VALUES (?, ?, ?, ?, ?, ?)
+        ");
+        $stmt->execute([
+            $userId,
+            $userEmail,
+            $role ?: 'system',
+            $action,
+            $details,
+            $ip
+        ]);
+    } catch (\Throwable $e) {
+        // Silently catch to not disrupt caller workflow
+    }
+}
+
+
+

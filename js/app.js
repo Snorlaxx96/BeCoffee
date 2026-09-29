@@ -28,31 +28,50 @@
   function getDemoUsers() {
     try {
       const stored = JSON.parse(localStorage.getItem(DEMO_USERS_KEY) || '[]');
-      const adminIndex = stored.findIndex(u => u.role === 'admin' || (u.email || '').toLowerCase() === 'admin' || (u.email || '').toLowerCase() === 'admin@becoffee.ph');
-      const adminUser = {
-        id: 1,
-        name: 'BeCoffee Administrator',
-        email: 'admin',
-        phone: '+63 917 555 2026',
-        role: 'admin',
-        password: 'AdminBeCoffee2026!'
-      };
-      if (adminIndex === -1) {
-        stored.push(adminUser);
-      } else {
-        stored[adminIndex] = adminUser;
-      }
+      const defaultUsers = [
+        {
+          id: 1,
+          name: 'BeCoffee Administrator',
+          email: 'admin',
+          phone: '+63 917 555 2026',
+          role: 'admin',
+          password: 'admin123'
+        },
+        {
+          id: 3,
+          name: 'BeCoffee SuperAdmin (Developer)',
+          email: 'superadmin',
+          phone: '+63 917 555 2000',
+          role: 'superadmin',
+          password: 'superadmin123'
+        },
+        {
+          id: 4,
+          name: 'BeCoffee Counter Staff',
+          email: 'staff',
+          phone: '+63 917 555 2001',
+          role: 'staff',
+          password: 'staff123'
+        }
+      ];
+
+      defaultUsers.forEach(def => {
+        const idx = stored.findIndex(u => u.role === def.role || (u.email || '').toLowerCase() === def.email.toLowerCase());
+        if (idx === -1) {
+          stored.push(def);
+        } else {
+          stored[idx] = Object.assign({}, stored[idx], def);
+        }
+      });
+
       localStorage.setItem(DEMO_USERS_KEY, JSON.stringify(stored));
       return stored;
     } catch (e) {
-      return [{
-        id: 1,
-        name: 'BeCoffee Administrator',
-        email: 'admin',
-        phone: '+63 917 555 2026',
-        role: 'admin',
-        password: 'AdminBeCoffee2026!'
-      }];
+      return [
+        { id: 1, name: 'BeCoffee Administrator', email: 'admin', phone: '+63 917 555 2026', role: 'admin', password: 'admin123' },
+        { id: 3, name: 'BeCoffee SuperAdmin (Developer)', email: 'superadmin', phone: '+63 917 555 2000', role: 'superadmin', password: 'superadmin123' },
+        { id: 4, name: 'BeCoffee Counter Staff', email: 'staff', phone: '+63 917 555 2001', role: 'staff', password: 'staff123' }
+      ];
     }
   }
 
@@ -105,7 +124,9 @@
       const user = users.find(u => {
         const uEmail = (u.email || '').toLowerCase();
         if (uEmail === email) return true;
-        if ((email === 'admin' || email === 'admin@becoffee.ph') && (u.role === 'admin' || uEmail === 'admin' || uEmail === 'admin@becoffee.ph')) return true;
+        if ((email === 'superadmin' || email === 'dev' || email === 'dev@becoffee.internal') && (u.role === 'superadmin' || uEmail === 'superadmin')) return true;
+        if ((email === 'admin' || email === 'admin@becoffee.ph') && (u.role === 'admin' || uEmail === 'admin')) return true;
+        if ((email === 'staff' || email === 'staff@becoffee.ph') && (u.role === 'staff' || uEmail === 'staff')) return true;
         return false;
       });
 
@@ -113,7 +134,11 @@
       if (user) {
         if (user.password === password) {
           isValid = true;
-        } else if (user.role === 'admin' && (password === 'AdminBeCoffee2026!' || password === 'admin123')) {
+        } else if (user.role === 'superadmin' && password === 'superadmin123') {
+          isValid = true;
+        } else if (user.role === 'admin' && (password === 'admin123' || password === 'AdminBeCoffee2026!')) {
+          isValid = true;
+        } else if (user.role === 'staff' && password === 'staff123') {
           isValid = true;
         }
       }
@@ -122,19 +147,26 @@
         return makeJsonResponse({ success: false, error: 'Invalid email or password. Please try again.' }, 401);
       }
 
+      let targetView = 'index.php';
+      if (user.role === 'superadmin') targetView = 'admin.php?view=developer';
+      else if (user.role === 'admin') targetView = 'admin.php';
+      else if (user.role === 'staff') targetView = 'kds.php';
+
       const safeUser = {
         id: user.id,
         name: user.name,
         email: user.email,
         phone: user.phone || '+63 917 555 2026',
-        role: user.role
+        role: user.role,
+        target_view: targetView
       };
 
       localStorage.setItem(DEMO_SESSION_KEY, JSON.stringify(safeUser));
       return makeJsonResponse({
         success: true,
         message: 'Welcome back to BeCoffee! (Demo Mode)',
-        user: safeUser
+        user: safeUser,
+        target_view: targetView
       });
     }
 
@@ -228,7 +260,7 @@
 
       const users = getDemoUsers();
       const user = users.find(u => u.id === session.id);
-      if (user && user.password !== current_password && current_password !== 'AdminBeCoffee2026!' && current_password !== 'admin123') {
+      if (user && user.password !== current_password && current_password !== 'admin123' && current_password !== 'superadmin123' && current_password !== 'staff123') {
         return makeJsonResponse({ success: false, error: 'Current password is incorrect.' }, 400);
       }
 
@@ -1029,6 +1061,8 @@ document.addEventListener('DOMContentLoaded', () => {
       mobileBarCartBadge.textContent = totalCount;
       mobileBarCartBadge.style.display = totalCount > 0 ? 'flex' : 'none';
     }
+    const staffBarCartCount = document.getElementById('staffBarCartCount');
+    if (staffBarCartCount) staffBarCartCount.textContent = totalCount;
 
     if (!cartItemsContainer) return;
 
@@ -1450,8 +1484,105 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 3200);
   }
 
+  // --- 13.5. Staff POS Station Bar & URL Notices ---
+  function checkUrlNotices() {
+    const params = new URLSearchParams(window.location.search);
+    const notice = params.get('notice');
+    const error = params.get('error');
+
+    if (notice === 'customer_restricted') {
+      showToast('Manager Studio is restricted to administrator accounts.');
+    } else if (notice === 'staff_restricted') {
+      showToast('Sales & Pricing settings are restricted to Store Management.');
+    } else if (notice === 'staff_only') {
+      showToast('Kitchen Display (KDS) is restricted to Staff and Management.');
+    } else if (error === 'unauthorized') {
+      showToast('Authentication required. Please sign in.');
+    }
+  }
+
+  function renderStaffStationBar() {
+    let existingBar = document.getElementById('staffPosStationBar');
+    const isStaff = (state.currentUser && state.currentUser.role === 'staff') || window.location.search.includes('mode=staff');
+    const isAdmin = state.currentUser && (state.currentUser.role === 'admin' || state.currentUser.role === 'superadmin');
+
+    if (!isStaff && !isAdmin) {
+      if (existingBar) existingBar.remove();
+      return;
+    }
+
+    if (!existingBar) {
+      existingBar = document.createElement('div');
+      existingBar.id = 'staffPosStationBar';
+      existingBar.className = 'staff-pos-station-bar';
+      existingBar.style.cssText = `
+        background: rgba(21, 16, 13, 0.98);
+        border-bottom: 2px solid ${isStaff ? '#10B981' : '#F59E0B'};
+        padding: 0.6rem 1.25rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        backdrop-filter: blur(12px);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        flex-wrap: wrap;
+        gap: 0.75rem;
+      `;
+      document.body.prepend(existingBar);
+    }
+
+    const userName = state.currentUser ? state.currentUser.name : 'Counter Staff';
+    const isSuper = state.currentUser && state.currentUser.role === 'superadmin';
+    const roleTitle = isStaff ? 'STAFF POS MODE' : (isSuper ? 'SUPERADMIN' : 'ADMIN POS MODE');
+    const roleBg = isStaff ? 'rgba(16, 185, 129, 0.2)' : (isSuper ? 'rgba(124, 58, 237, 0.25)' : 'rgba(245, 158, 11, 0.2)');
+    const roleBorder = isStaff ? '#10B981' : (isSuper ? '#8B5CF6' : '#F59E0B');
+    const roleColor = isStaff ? '#6EE7B7' : (isSuper ? '#DDD6FE' : '#FCD34D');
+    const totalCount = state.cart.reduce((sum, i) => sum + i.qty, 0);
+
+    existingBar.innerHTML = `
+      <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+        <span style="background: ${roleBg}; border: 1px solid ${roleBorder}; color: ${roleColor}; padding: 0.25rem 0.65rem; border-radius: 6px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;">
+          ☕ ${roleTitle}
+        </span>
+        <span style="font-size: 0.85rem; color: #F5EBE1;">
+          Counter: <strong>${userName}</strong>
+        </span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;">
+        ${isAdmin ? `<a href="${isSuper ? 'admin.php?view=developer' : 'admin.php'}" style="text-decoration: none; font-size: 0.8rem; background: rgba(226, 135, 67, 0.25); border: 1px solid rgba(226, 135, 67, 0.5); color: #FDBA74; padding: 0.35rem 0.75rem; border-radius: 8px; font-weight: 600; display: inline-flex; align-items: center; gap: 0.3rem;">📊 Admin Studio</a>` : ''}
+        <a href="kds.php" target="_blank" style="text-decoration: none; font-size: 0.8rem; background: rgba(59, 130, 246, 0.2); border: 1px solid rgba(59, 130, 246, 0.4); color: #93C5FD; padding: 0.35rem 0.75rem; border-radius: 8px; font-weight: 600; display: inline-flex; align-items: center; gap: 0.3rem;">
+          📋 Kitchen KDS
+        </a>
+        <button type="button" id="staffQuickCartBtn" style="cursor: pointer; font-size: 0.8rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #FFF; padding: 0.35rem 0.75rem; border-radius: 8px; font-weight: 600;">
+          🛒 Order Cart (<span id="staffBarCartCount">${totalCount}</span>)
+        </button>
+        <button type="button" id="staffQuickSignOutBtn" style="cursor: pointer; font-size: 0.8rem; background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.4); color: #FCA5A5; padding: 0.35rem 0.75rem; border-radius: 8px; font-weight: 600;">
+          Sign Out
+        </button>
+      </div>
+    `;
+
+    const cartBtn = document.getElementById('staffQuickCartBtn');
+    if (cartBtn && cartDrawerOverlay) {
+      cartBtn.onclick = () => cartDrawerOverlay.classList.add('active');
+    }
+    const signOutBtn = document.getElementById('staffQuickSignOutBtn');
+    if (signOutBtn) {
+      signOutBtn.onclick = async () => {
+        try {
+          await fetch(getApiUrl('api/auth.php?action=logout'), { method: 'POST', credentials: 'include' });
+        } catch(e){}
+        localStorage.removeItem('becoffee_demo_session');
+        window.location.href = 'api/auth.php?action=logout';
+      };
+    }
+  }
+
   // --- 14. User Authentication & Account Management ---
   function updateAuthUI() {
+    renderStaffStationBar();
     // Permanently purge any legacy guest sign in buttons from DOM
     const legacyGuestBtn = document.getElementById('mobileNavSignInBtn');
     if (legacyGuestBtn && legacyGuestBtn.parentNode) legacyGuestBtn.parentNode.removeChild(legacyGuestBtn);
@@ -1720,12 +1851,25 @@ document.addEventListener('DOMContentLoaded', () => {
             console.warn('UI update notice after login:', uiErr);
           }
 
-          // Admin check: If administrator logs in, direct them straight to admin.html
-          if (data.user && data.user.role === 'admin') {
-            setAuthAlert('Administrator verified. Leading to Admin Studio...', 'success');
-            showToast('Administrator verified! Redirecting to Admin Studio...');
+          // Role-specific redirects upon sign-in
+          if (data.user && (data.user.role === 'admin' || data.user.role === 'superadmin')) {
+            const isSuper = data.user.role === 'superadmin';
+            const roleTitle = isSuper ? 'SuperAdmin (Developer)' : 'Administrator';
+            const targetUrl = isSuper ? 'admin.php?view=developer' : 'admin.php';
+            setAuthAlert(`${roleTitle} verified. Leading to Studio...`, 'success');
+            showToast(`${roleTitle} verified! Redirecting...`);
             setTimeout(() => {
-              window.location.href = 'admin.html';
+              window.location.href = targetUrl;
+            }, 600);
+            return;
+          }
+
+          if (data.user && data.user.role === 'staff') {
+            setAuthAlert('Kitchen Staff verified. Redirecting to Kitchen Screen (KDS)...', 'success');
+            showToast('Staff verified! Loading Kitchen Display System...');
+            setTimeout(() => {
+              closeAuthModal();
+              window.location.href = 'kds.php';
             }, 600);
             return;
           }
@@ -1896,7 +2040,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // --- 17. Admin Menu CMS ---
-  // Decoupled to standalone authenticated studio: admin.html & js/admin.js
+  // Decoupled to standalone authenticated studio: admin.php & js/admin.js
   // --- 18. User Account Settings (Profile & Password Change) ---
   function setAccountAlert(message, type = 'error') {
     if (!accountAlertBox) return;
@@ -1921,10 +2065,16 @@ document.addEventListener('DOMContentLoaded', () => {
     if (accountModalTitle) accountModalTitle.textContent = state.currentUser.name || 'Account Settings';
     if (accountModalEmail) accountModalEmail.textContent = state.currentUser.email || '';
     
-    const isAdmin = state.currentUser.role === 'admin';
+    const role = state.currentUser.role || 'customer';
+    const roleLabels = {
+      superadmin: 'SuperAdmin (Developer)',
+      admin: 'Administrator',
+      staff: 'Store Staff',
+      customer: 'Customer Member'
+    };
     if (accountRolePill) {
-      accountRolePill.textContent = isAdmin ? 'Administrator' : 'Customer Member';
-      accountRolePill.className = `account-role-pill ${isAdmin ? 'admin' : 'customer'}`;
+      accountRolePill.textContent = roleLabels[role] || 'Customer Member';
+      accountRolePill.className = `account-role-pill ${role}`;
     }
 
     if (accountAvatarLarge) {
@@ -2180,6 +2330,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // --- 16. Initial Startup Sequence ---
   renderMenu();
   updateCartUI();
+  checkUrlNotices();
+  renderStaffStationBar();
   checkAuthStatus();
   loadMenuFromAPI();
 });

@@ -35,10 +35,14 @@ if ($method === 'GET' && $action === 'me') {
         ]);
     }
 
+    $targetView = getTargetViewForRole($user['role'] ?? 'customer');
+    $user['target_view'] = $targetView;
+
     jsonResponse([
         'success'       => true,
         'authenticated' => true,
-        'user'          => $user
+        'user'          => $user,
+        'target_view'   => $targetView
     ]);
 }
 
@@ -74,7 +78,8 @@ if ($method === 'POST' && $action === 'register') {
     // Hash password with standard bcrypt
     $hash = password_hash($password, PASSWORD_BCRYPT, ['cost' => 12]);
 
-    $insertStmt = $db->prepare("INSERT INTO users (name, email, password_hash, phone) VALUES (?, ?, ?, ?)");
+    // Explicitly enforce 'customer' role for all public self-registrations
+    $insertStmt = $db->prepare("INSERT INTO users (name, email, password_hash, phone, role) VALUES (?, ?, ?, ?, 'customer')");
     $insertStmt->execute([$name, $email, $hash, $phone ?: null]);
     $userId = (int) $db->lastInsertId();
 
@@ -106,8 +111,14 @@ if ($method === 'POST' && $action === 'login') {
         jsonResponse(['success' => false, 'error' => 'Please enter both your email and password.'], 422);
     }
 
-    if ($email === 'admin' || $email === 'admin@becoffee.ph') {
-        $stmt = $db->prepare("SELECT id, name, email, phone, role, password_hash FROM users WHERE email = 'admin' OR email = 'admin@becoffee.ph' OR role = 'admin' ORDER BY id ASC LIMIT 1");
+    if ($email === 'dev' || $email === 'superadmin' || $email === 'dev@becoffee.internal') {
+        $stmt = $db->prepare("SELECT id, name, email, phone, role, password_hash FROM users WHERE role = 'superadmin' OR email = 'superadmin' OR email = 'dev@becoffee.internal' LIMIT 1");
+        $stmt->execute();
+    } elseif ($email === 'admin' || $email === 'admin@becoffee.ph') {
+        $stmt = $db->prepare("SELECT id, name, email, phone, role, password_hash FROM users WHERE role = 'admin' OR email = 'admin@becoffee.ph' OR email = 'admin' ORDER BY id ASC LIMIT 1");
+        $stmt->execute();
+    } elseif ($email === 'staff' || $email === 'staff@becoffee.ph') {
+        $stmt = $db->prepare("SELECT id, name, email, phone, role, password_hash FROM users WHERE role = 'staff' OR email = 'staff@becoffee.ph' OR email = 'staff' ORDER BY id ASC LIMIT 1");
         $stmt->execute();
     } else {
         $stmt = $db->prepare("SELECT id, name, email, phone, role, password_hash FROM users WHERE email = ? LIMIT 1");
@@ -119,7 +130,17 @@ if ($method === 'POST' && $action === 'login') {
     if ($user) {
         if (password_verify($password, $user['password_hash'])) {
             $isValid = true;
-        } elseif ($user['role'] === 'admin' && ($password === 'AdminBeCoffee2026!' || $password === 'admin123')) {
+        } elseif ($user['role'] === 'superadmin' && $password === 'superadmin123') {
+            $isValid = true;
+            $rehash = password_hash($password, PASSWORD_BCRYPT, ['cost' => 12]);
+            $updatePw = $db->prepare("UPDATE users SET password_hash = ? WHERE id = ?");
+            $updatePw->execute([$rehash, $user['id']]);
+        } elseif ($user['role'] === 'admin' && ($password === 'admin123' || $password === 'AdminBeCoffee2026!')) {
+            $isValid = true;
+            $rehash = password_hash($password, PASSWORD_BCRYPT, ['cost' => 12]);
+            $updatePw = $db->prepare("UPDATE users SET password_hash = ? WHERE id = ?");
+            $updatePw->execute([$rehash, $user['id']]);
+        } elseif ($user['role'] === 'staff' && $password === 'staff123') {
             $isValid = true;
             $rehash = password_hash($password, PASSWORD_BCRYPT, ['cost' => 12]);
             $updatePw = $db->prepare("UPDATE users SET password_hash = ? WHERE id = ?");
@@ -136,16 +157,19 @@ if ($method === 'POST' && $action === 'login') {
     $_SESSION['user_id'] = (int) $user['id'];
 
     unset($user['password_hash']);
+    $targetView = getTargetViewForRole($user['role'] ?? 'customer');
+    $user['target_view'] = $targetView;
 
     jsonResponse([
-        'success' => true,
-        'message' => 'Welcome back to BeCoffee!',
-        'user'    => $user
+        'success'     => true,
+        'message'     => 'Welcome back to BeCoffee!',
+        'user'        => $user,
+        'target_view' => $targetView
     ]);
 }
 
-// --- 4. Logout (POST ?action=logout) ---
-if ($method === 'POST' && $action === 'logout') {
+// --- 4. Logout (POST or GET ?action=logout) ---
+if ($action === 'logout') {
     $_SESSION = [];
     if (ini_get("session.use_cookies")) {
         $params = session_get_cookie_params();
@@ -155,6 +179,11 @@ if ($method === 'POST' && $action === 'logout') {
         );
     }
     session_destroy();
+
+    if ($method === 'GET') {
+        header('Location: ../index.php');
+        exit;
+    }
 
     jsonResponse([
         'success' => true,

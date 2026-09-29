@@ -56,8 +56,9 @@ if ($method === 'GET') {
 if ($method === 'POST' || $method === 'PATCH') {
     $input = json_decode(file_get_contents('php://input'), true) ?: $_POST;
 
-    // Action A: Add New Option / Add-on
+    // Action A: Add New Option / Add-on (Admin/Superadmin only)
     if (!empty($input['action']) && $input['action'] === 'add_option') {
+        requireRole(['admin', 'superadmin']);
         $catType = trim($input['category_type'] ?? 'addon');
         $name = trim($input['option_key'] ?? '');
         $surcharge = max(0, (float)($input['surcharge'] ?? 0));
@@ -88,8 +89,9 @@ if ($method === 'POST' || $method === 'PATCH') {
         exit;
     }
 
-    // Action B: Delete Option
+    // Action B: Delete Option (Admin/Superadmin only)
     if (!empty($input['action']) && $input['action'] === 'delete_option') {
+        requireRole(['admin', 'superadmin']);
         $name = trim($input['option_key'] ?? '');
         if (empty($name)) {
             http_response_code(400);
@@ -104,8 +106,9 @@ if ($method === 'POST' || $method === 'PATCH') {
         exit;
     }
 
-    // Action C: Toggle Customization Option Stock
+    // Action C: Toggle Customization Option Stock (Staff, Admin, Superadmin)
     if (!empty($input['option_key'])) {
+        requireRole(['staff', 'admin', 'superadmin']);
         $optionKey = trim($input['option_key']);
 
         $stmt = $db->prepare("SELECT id, is_available FROM option_availability WHERE option_key = ?");
@@ -134,8 +137,9 @@ if ($method === 'POST' || $method === 'PATCH') {
         exit;
     }
 
-    // Action D: Toggle Entire Drink Item
+    // Action D: Toggle Entire Drink Item (Staff, Admin, Superadmin)
     if (!empty($input['item_id'])) {
+        requireRole(['staff', 'admin', 'superadmin']);
         $itemId = trim($input['item_id']);
 
         $stmt = $db->prepare("SELECT id, is_available FROM menu_items WHERE id = ?");
@@ -164,8 +168,9 @@ if ($method === 'POST' || $method === 'PATCH') {
         exit;
     }
 
-    // Action E: Reset all to in-stock
+    // Action E: Reset all to in-stock (Admin, Superadmin only)
     if (!empty($input['reset_all'])) {
+        requireRole(['admin', 'superadmin']);
         $db->exec("UPDATE option_availability SET is_available = 1");
         $db->exec("UPDATE menu_items SET is_available = 1");
         echo json_encode(['success' => true, 'message' => 'All options and items set to In Stock.']);

@@ -1,3 +1,7 @@
+<?php
+require_once __DIR__ . '/api/config.php';
+$currentUser = getAuthenticatedUser();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -642,7 +646,7 @@
 
   <!-- Direct Order Header -->
   <header class="order-header">
-    <a href="index.html" class="order-brand-link">
+    <a href="index.php" class="order-brand-link">
       <div class="order-brand-logo">E</div>
       <div>
         <span class="order-brand-title">Escobar Cafe</span>
@@ -658,8 +662,8 @@
 
     <!-- Right Actions -->
     <div class="order-top-actions">
-      <a href="home.html" class="btn-story-link" title="Explore roastery background and story">Our Story</a>
-      <a href="kds.html" class="btn-story-link" style="color: #DF9B64; border-color: rgba(223, 155, 100, 0.3);">Staff KDS</a>
+      <a href="home.php" class="btn-story-link" title="Explore roastery background and story">Our Story</a>
+      <a href="kds.php" class="btn-story-link" style="color: #DF9B64; border-color: rgba(223, 155, 100, 0.3);">Staff KDS</a>
     </div>
   </header>
 
@@ -794,16 +798,22 @@
       <p style="font-size: 0.82rem; color: #A99B92; margin-bottom: 1.25rem;">Specify dining preference and payment method.</p>
 
       <!-- Order Type -->
-      <div class="option-group-label">Order Type</div>
-      <div class="pill-radio-group" id="orderTypeRadioGroup">
-        <div class="pill-radio-opt active" data-val="dine_in">🪑 Dine-in</div>
-        <div class="pill-radio-opt" data-val="take_out">🛍️ Take-out</div>
+      <div class="option-group-label" style="display: flex; justify-content: space-between; align-items: baseline;">
+        <span>Dining Preference</span>
+        <span style="font-size: 0.74rem; color: #A99B92; font-weight: normal;">Select once for this order</span>
+      </div>
+      <div class="pill-radio-group" id="orderTypeRadioGroup" style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.65rem;">
+        <div class="pill-radio-opt active" data-val="dine_in" style="justify-content: center; padding: 0.75rem 1rem; font-size: 0.92rem; font-weight: 700;">🪑 Dine In</div>
+        <div class="pill-radio-opt" data-val="take_out" style="justify-content: center; padding: 0.75rem 1rem; font-size: 0.92rem; font-weight: 700;">🛍️ Take Out</div>
       </div>
 
       <!-- Table Number (Shown if Dine-In) -->
-      <div id="tableNumberWrap" style="margin-top: 0.85rem;">
-        <label for="checkoutTableInput" style="display: block; font-size: 0.8rem; color: #DF9B64; font-weight: 600; margin-bottom: 0.35rem;">Table Number</label>
-        <input type="text" id="checkoutTableInput" class="notes-textarea" style="min-height: 44px; padding: 0.6rem 0.85rem;" placeholder="e.g. 4" value="4">
+      <div id="tableNumberWrap" style="margin-top: 0.85rem; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 0.75rem 0.85rem;">
+        <label for="checkoutTableInput" style="display: block; font-size: 0.78rem; color: #DF9B64; font-weight: 700; margin-bottom: 0.35rem;">Table Number</label>
+        <div style="display: flex; align-items: center; gap: 0.6rem;">
+          <input type="text" id="checkoutTableInput" class="notes-textarea" style="min-height: 40px; width: 90px; padding: 0.45rem 0.75rem; font-size: 1rem; font-weight: 700; color: #FFF; text-align: center;" placeholder="e.g. 4" value="4">
+          <span style="font-size: 0.76rem; color: #A99B92; line-height: 1.3;">Seated at a table? Enter the number on your wooden table stand.</span>
+        </div>
       </div>
 
       <!-- Payment Method -->
@@ -840,6 +850,16 @@
 
       <!-- Giant Queue Number -->
       <div class="ticket-giant-num" id="ticketQueueNum">#104</div>
+
+      <!-- Dining Mode Confirmation Pill & Fallback Switcher -->
+      <div id="ticketDiningWrap" style="display: flex; flex-direction: column; align-items: center; gap: 0.35rem; margin-bottom: 0.85rem;">
+        <span id="ticketDiningTag" style="display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.35rem 0.85rem; border-radius: 999px; font-size: 0.82rem; font-weight: 700; background: rgba(226, 135, 67, 0.18); color: #FDBA74; border: 1px solid rgba(226, 135, 67, 0.35);">
+          🪑 Dine In · Table #4
+        </span>
+        <button type="button" id="btnSwitchDiningPostOrder" style="background: none; border: none; color: #DF9B64; font-size: 0.76rem; text-decoration: underline; cursor: pointer; padding: 0.2rem 0.5rem; transition: opacity 0.15s ease;" title="Change dining mode if selected by mistake">
+          Accidentally chose Take Out? Switch to Dine In
+        </button>
+      </div>
 
       <!-- Live Elapsed Stopwatch (Fresh at 00:00) -->
       <div class="ticket-stopwatch-row">
@@ -880,13 +900,16 @@
   <!-- Application Logic -->
   <script>
     (function initDirectOrderPortal() {
-      // 1. URL Query Parameter Parsing (?table=4 or ?type=take_out)
+      // 1. URL Query Parameter & Session State Parsing (?table=4 or ?type=take_out)
       var urlParams = new URLSearchParams(window.location.search);
       var initialTable = urlParams.get('table');
       var initialType = urlParams.get('type');
 
-      var currentOrderType = (initialType === 'take_out') ? 'take_out' : 'dine_in';
-      var currentTableNumber = initialTable || '4';
+      var savedType = sessionStorage.getItem('becoffee_order_type');
+      var savedTable = sessionStorage.getItem('becoffee_table_num');
+
+      var currentOrderType = initialType ? (initialType === 'take_out' ? 'take_out' : 'dine_in') : (savedType || (initialTable ? 'dine_in' : 'dine_in'));
+      var currentTableNumber = initialTable || savedTable || '4';
 
       function updateContextBadge() {
         var pillIcon = document.getElementById('tableContextIcon');
@@ -898,13 +921,18 @@
           pillIcon.textContent = '🪑';
           pillText.textContent = `Table #${currentTableNumber}`;
         }
+        sessionStorage.setItem('becoffee_order_type', currentOrderType);
+        if (currentOrderType === 'dine_in') {
+          sessionStorage.setItem('becoffee_table_num', currentTableNumber);
+        }
       }
       updateContextBadge();
 
-      // Tap context badge to toggle
+      // Tap context badge to toggle passively
       document.getElementById('tableContextPill').addEventListener('click', function() {
         currentOrderType = (currentOrderType === 'dine_in') ? 'take_out' : 'dine_in';
         updateContextBadge();
+        updateCartUI();
       });
 
       // 2. Fetch Menu Items & Live Stock Availability
@@ -1299,6 +1327,18 @@
         });
       });
 
+      // Sync Table input changes
+      var checkoutTableInputEl = document.getElementById('checkoutTableInput');
+      if (checkoutTableInputEl) {
+        checkoutTableInputEl.addEventListener('input', function() {
+          var val = this.value.trim();
+          if (val) {
+            currentTableNumber = val;
+            updateContextBadge();
+          }
+        });
+      }
+
       // Checkout payment switcher
       var selectedPaymentMethod = 'cash';
       document.querySelectorAll('#paymentMethodRadioGroup .pill-radio-opt').forEach(function(p) {
@@ -1354,7 +1394,7 @@
             document.getElementById('checkoutModal').classList.remove('active');
 
             // Lock into Waiting Screen Starting Fresh at 00:00
-            launchLiveTicketScreen(data.order_reference, data.queue_number, payload.items);
+            launchLiveTicketScreen(data.order_reference, data.queue_number, payload.items, payload.order_type, payload.table_number);
           } else {
             console.error('Order placement error:', data.error);
             alert('Order placement error: ' + (data.error || 'Server rejected request.'));
@@ -1369,10 +1409,33 @@
       });
 
       // 7. Live Waiting Ticket Screen Logic
-      function launchLiveTicketScreen(orderRef, queueNum, items) {
+      function updateTicketDiningDisplay(type, table) {
+        var tag = document.getElementById('ticketDiningTag');
+        var btn = document.getElementById('btnSwitchDiningPostOrder');
+        if (!tag) return;
+
+        var isDine = (type === 'dine_in');
+        if (isDine) {
+          tag.innerHTML = `🪑 Dine In · Table #${table || '1'}`;
+          tag.style.background = 'rgba(226, 135, 67, 0.18)';
+          tag.style.color = '#FDBA74';
+          tag.style.borderColor = 'rgba(226, 135, 67, 0.35)';
+          if (btn) btn.textContent = 'Accidentally chose Dine In? Switch to Take Out';
+        } else {
+          tag.innerHTML = `🛍️ Take Out · Counter Pickup`;
+          tag.style.background = 'rgba(16, 185, 129, 0.18)';
+          tag.style.color = '#6EE7B7';
+          tag.style.borderColor = 'rgba(16, 185, 129, 0.35)';
+          if (btn) btn.textContent = 'Accidentally chose Take Out? Switch to Dine In';
+        }
+      }
+
+      function launchLiveTicketScreen(orderRef, queueNum, items, initialType, initialTable) {
         activeOrderRef = orderRef;
         sessionStorage.setItem('active_ticket_ref', orderRef);
         sessionStorage.setItem('active_ticket_queue', queueNum);
+
+        updateTicketDiningDisplay(initialType || currentOrderType, initialTable || currentTableNumber);
 
         // Reset and start stopwatch at 00:00
         stopwatchSeconds = 0;
@@ -1415,6 +1478,12 @@
           if (!data.success || !data.order) return;
 
           var ord = data.order;
+          updateTicketDiningDisplay(ord.order_type, ord.table_number);
+          if (ord.status === 'completed' || ord.status === 'cancelled') {
+            var switchBtn = document.getElementById('btnSwitchDiningPostOrder');
+            if (switchBtn) switchBtn.style.display = 'none';
+          }
+
           document.getElementById('ordersAheadDisplay').textContent = `${ord.orders_ahead} orders ahead of you`;
 
           // State 1: In Progress
@@ -1458,6 +1527,67 @@
         } catch (e) {
           console.warn('Polling error:', e);
         }
+      }
+
+      // 8. One-Click Dining Recovery Post-Order
+      var btnSwitchDining = document.getElementById('btnSwitchDiningPostOrder');
+      if (btnSwitchDining) {
+        btnSwitchDining.addEventListener('click', async function() {
+          if (!activeOrderRef) return;
+          var tag = document.getElementById('ticketDiningTag');
+          var isCurrentlyTakeout = tag && tag.textContent.includes('Take Out');
+
+          if (isCurrentlyTakeout) {
+            var tableInput = prompt('Enter your Table Number to switch to Dine In:', currentTableNumber || '1');
+            if (!tableInput || !tableInput.trim()) return;
+            tableInput = tableInput.trim();
+
+            try {
+              var res = await fetch('api/orders.php?action=update_dining', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  reference: activeOrderRef,
+                  order_type: 'dine_in',
+                  table_number: tableInput
+                })
+              });
+              var data = await res.json();
+              if (data.success) {
+                currentOrderType = 'dine_in';
+                currentTableNumber = tableInput;
+                updateContextBadge();
+                updateTicketDiningDisplay('dine_in', tableInput);
+              } else {
+                alert(data.error || 'Could not update dining mode.');
+              }
+            } catch(e) {
+              alert('Network error. Please inform counter staff.');
+            }
+          } else {
+            if (!confirm('Switch this order to Take Out (Counter Pickup)?')) return;
+            try {
+              var res = await fetch('api/orders.php?action=update_dining', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  reference: activeOrderRef,
+                  order_type: 'take_out'
+                })
+              });
+              var data = await res.json();
+              if (data.success) {
+                currentOrderType = 'take_out';
+                updateContextBadge();
+                updateTicketDiningDisplay('take_out', null);
+              } else {
+                alert(data.error || 'Could not update dining mode.');
+              }
+            } catch(e) {
+              alert('Network error. Please inform counter staff.');
+            }
+          }
+        });
       }
 
       // Dismiss Pickup Screen

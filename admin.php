@@ -1,3 +1,19 @@
+<?php
+require_once __DIR__ . '/api/config.php';
+$currentUser = getAuthenticatedUser();
+if (!$currentUser) {
+    header('Location: index.php?error=unauthorized');
+    exit;
+}
+if ($currentUser['role'] === 'customer') {
+    header('Location: index.php?notice=customer_restricted');
+    exit;
+}
+if ($currentUser['role'] === 'staff') {
+    header('Location: kds.php?notice=staff_restricted');
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -37,195 +53,255 @@
       overflow-x: hidden;
     }
 
-    /* Fixed Left Sidebar */
+    /* Ergonomic Fixed Left Sidebar (Anti-Overfitting & Token Calibrated) */
     .admin-sidebar {
       width: var(--admin-sidebar-w);
       height: 100vh;
+      height: 100dvh;
       position: fixed;
       top: 0;
       left: 0;
       background: #140F0D;
-      border-right: 1px solid var(--admin-border);
+      border-right: 1px solid rgba(223, 155, 100, 0.12);
       display: flex;
       flex-direction: column;
       z-index: 100;
-      padding: 1.5rem 1.25rem;
+      padding: 1.15rem 0.9rem 0.9rem;
       box-sizing: border-box;
-      transition: transform 0.25s ease;
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      overflow: hidden;
     }
 
     .sidebar-brand {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: 0.65rem;
       text-decoration: none;
-      color: #FFF;
-      margin-bottom: 2rem;
+      color: #FAF7F2;
+      margin-bottom: 0.85rem;
+      padding: 0.2rem 0.35rem 0.5rem;
+      flex-shrink: 0;
     }
     .sidebar-logo {
-      width: 42px;
-      height: 42px;
-      border-radius: 12px;
-      background: linear-gradient(135deg, #E28743 0%, #944D1C 100%);
-      color: #FFF;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: #E28743;
+      color: #140F0D;
       display: flex;
       align-items: center;
       justify-content: center;
       font-family: var(--font-serif);
-      font-size: 1.35rem;
-      font-weight: 700;
-      box-shadow: 0 4px 14px var(--admin-accent-glow);
+      font-size: 1.2rem;
+      font-weight: 800;
+      flex-shrink: 0;
     }
     .sidebar-brand-name {
       font-family: var(--font-serif);
-      font-size: 1.25rem;
+      font-size: 1.12rem;
       font-weight: 700;
-      line-height: 1.1;
-      color: #FFF;
+      line-height: 1.15;
+      color: #FAF7F2;
     }
     .sidebar-brand-tag {
-      font-size: 0.68rem;
+      font-size: 0.65rem;
       color: #DF9B64;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.08em;
-      display: block;
+      letter-spacing: 0.06em;
+      display: inline-block;
+      margin-top: 0.15rem;
+      transition: all 0.2s ease;
     }
-
-    /* User Profile Pill */
-    .sidebar-user-card {
-      background: rgba(255, 255, 255, 0.04);
+    .sidebar-brand-tag.role-superadmin {
+      color: #FDBA74;
+      background: rgba(226, 135, 67, 0.16);
+      border: 1px solid rgba(226, 135, 67, 0.35);
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+    }
+    .sidebar-brand-tag.role-admin {
+      color: #A99B92;
+      background: rgba(255, 255, 255, 0.05);
       border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 12px;
-      padding: 0.75rem 0.85rem;
-      margin-bottom: 1.75rem;
-      display: flex;
-      align-items: center;
-      gap: 0.65rem;
-    }
-    .user-avatar-badge {
-      width: 32px;
-      height: 32px;
-      border-radius: 8px;
-      background: rgba(16, 185, 129, 0.15);
-      border: 1px solid rgba(16, 185, 129, 0.35);
-      color: #34D399;
-      display: grid;
-      place-content: center;
-      font-weight: 800;
-      font-size: 0.85rem;
-    }
-    .user-info-text {
-      flex: 1;
-      overflow: hidden;
-    }
-    .user-name {
-      font-size: 0.85rem;
-      font-weight: 700;
-      color: #FFF;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      overflow: hidden;
-    }
-    .user-role-badge {
-      font-size: 0.68rem;
-      color: #34D399;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 0.3rem;
-    }
-    .user-role-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: #34D399;
-      box-shadow: 0 0 6px #34D399;
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
     }
 
-    /* Navigation Menu */
+    /* Navigation Menu (Scrollable Flex Chamber) */
     .sidebar-nav {
       display: flex;
       flex-direction: column;
-      gap: 0.45rem;
+      gap: 0.25rem;
       flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding-right: 0.2rem;
+      margin-right: -0.2rem;
     }
+    .sidebar-nav::-webkit-scrollbar {
+      width: 4px;
+    }
+    .sidebar-nav::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .sidebar-nav::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.12);
+      border-radius: 4px;
+    }
+    .sidebar-nav::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.22);
+    }
+
     .nav-section-title {
-      font-size: 0.7rem;
+      font-size: 0.65rem;
       text-transform: uppercase;
       letter-spacing: 0.08em;
-      color: #7D6F66;
-      font-weight: 800;
-      padding: 0.5rem 0.65rem 0.25rem;
+      color: #8C7E77;
+      font-weight: 700;
+      padding: 0.45rem 0.5rem 0.2rem;
     }
+    .nav-section-title.superadmin-only-nav {
+      display: none;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      margin-top: 0.65rem;
+      padding-top: 0.6rem;
+      color: #A99B92;
+    }
+
     .sidebar-nav-btn {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
-      padding: 0.75rem 1rem;
-      border-radius: 12px;
-      font-size: 0.88rem;
-      font-weight: 600;
-      color: #D1C5BD;
+      gap: 0.65rem;
+      padding: 0.55rem 0.75rem;
+      border-radius: 8px;
+      font-size: 0.83rem;
+      font-weight: 500;
+      color: #C5BAAF;
       text-decoration: none;
       background: transparent;
       border: 1px solid transparent;
+      border-left: 3px solid transparent;
       cursor: pointer;
       width: 100%;
       text-align: left;
-      transition: all 0.2s ease;
+      transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+      box-sizing: border-box;
     }
     .sidebar-nav-btn:hover {
-      background: rgba(255, 255, 255, 0.06);
-      color: #FFF;
-      border-color: rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.05);
+      color: #FAF7F2;
     }
     .sidebar-nav-btn.active {
-      background: linear-gradient(135deg, rgba(226, 135, 67, 0.2) 0%, rgba(148, 77, 28, 0.2) 100%);
-      border-color: rgba(226, 135, 67, 0.45);
-      color: #FDBA74;
-      font-weight: 700;
-      box-shadow: 0 4px 14px rgba(226, 135, 67, 0.15);
+      background: rgba(226, 135, 67, 0.12);
+      border-color: transparent;
+      border-left: 3px solid var(--admin-accent);
+      color: #FAF7F2;
+      font-weight: 600;
+      box-shadow: none;
     }
     .sidebar-nav-btn svg {
       flex-shrink: 0;
+      opacity: 0.85;
+    }
+    .sidebar-nav-btn.active svg {
+      color: var(--admin-accent);
+      opacity: 1;
     }
 
-    /* Secondary Switcher Links at Bottom */
+    /* Secondary Switcher Links at Bottom (Zero Emojis, Clean SVG) */
     .sidebar-bottom-links {
       border-top: 1px solid rgba(255, 255, 255, 0.08);
-      padding-top: 1rem;
+      padding-top: 0.65rem;
+      margin-top: 0.45rem;
       display: flex;
       flex-direction: column;
-      gap: 0.4rem;
+      gap: 0.3rem;
+      flex-shrink: 0;
     }
     .sidebar-quick-link {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0.6rem 0.85rem;
-      border-radius: 10px;
-      font-size: 0.8rem;
-      font-weight: 600;
+      padding: 0.5rem 0.75rem;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      font-weight: 500;
       color: #A99B92;
       text-decoration: none;
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      transition: all 0.2s ease;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+      cursor: pointer;
+      box-sizing: border-box;
+      width: 100%;
     }
     .sidebar-quick-link:hover {
+      background: rgba(255, 255, 255, 0.06);
+      color: #FAF7F2;
+      border-color: rgba(255, 255, 255, 0.12);
+    }
+    .sidebar-quick-link.active {
+      background: rgba(226, 135, 67, 0.16);
+      border-color: rgba(226, 135, 67, 0.45);
+      color: #FAF7F2;
+      font-weight: 600;
+    }
+    .sidebar-quick-link.active .quick-link-label svg {
+      color: var(--admin-accent);
+    }
+    .quick-link-badge {
+      font-size: 0.62rem;
+      letter-spacing: 0.06em;
+      font-weight: 700;
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
       background: rgba(255, 255, 255, 0.08);
-      color: #FFF;
-      border-color: rgba(255, 255, 255, 0.16);
+      color: #D1C5BD;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      flex-shrink: 0;
+      text-transform: uppercase;
     }
-    .sidebar-quick-link.kds-link {
-      background: rgba(16, 185, 129, 0.1);
-      border-color: rgba(16, 185, 129, 0.3);
-      color: #6EE7B7;
+    .sidebar-quick-link.active .quick-link-badge {
+      background: rgba(226, 135, 67, 0.3);
+      color: #FDBA74;
+      border-color: rgba(226, 135, 67, 0.5);
     }
-    .sidebar-quick-link.kds-link:hover {
-      background: rgba(16, 185, 129, 0.2);
-      color: #ECFDF5;
+    .sidebar-quick-link .quick-link-label {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      min-width: 0;
+    }
+    .sidebar-quick-link .quick-link-label svg {
+      flex-shrink: 0;
+      color: #C5BAAF;
+    }
+    .sidebar-quick-link:hover .quick-link-label svg {
+      color: #FAF7F2;
+    }
+    .sidebar-quick-link .quick-link-arrow {
+      opacity: 0.4;
+      flex-shrink: 0;
+      transition: opacity 0.15s ease, transform 0.15s ease;
+    }
+    .sidebar-quick-link:hover .quick-link-arrow {
+      opacity: 0.9;
+      transform: translate(1px, -1px);
+    }
+    .sidebar-quick-link.signout-link {
+      color: #E0948F;
+      background: rgba(239, 68, 68, 0.05);
+      border-color: rgba(239, 68, 68, 0.12);
+    }
+    .sidebar-quick-link.signout-link .quick-link-label svg {
+      color: #EF4444;
+    }
+    .sidebar-quick-link.signout-link:hover {
+      background: rgba(239, 68, 68, 0.12);
+      color: #FCA5A5;
+      border-color: rgba(239, 68, 68, 0.25);
     }
 
     /* Main Workspace Canvas */
@@ -359,26 +435,6 @@
       color: #FDBA74;
       font-weight: 700;
     }
-    .live-status-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      font-size: 0.75rem;
-      color: #34D399;
-      background: rgba(16, 185, 129, 0.12);
-      border: 1px solid rgba(16, 185, 129, 0.28);
-      padding: 0.35rem 0.75rem;
-      border-radius: 999px;
-      font-weight: 700;
-      letter-spacing: 0.02em;
-    }
-    .live-status-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: #34D399;
-      box-shadow: 0 0 6px #34D399;
-    }
 
     .admin-action-btn {
       padding: 0.5rem 1rem;
@@ -432,6 +488,39 @@
     }
     .admin-view-panel.active {
       display: flex;
+    }
+
+    /* Embedded Full-Canvas App Panels (POS, KDS, Storefront) */
+    .admin-view-panel.embedded-app-panel {
+      padding: 1rem 1.5rem 1.5rem;
+      max-width: none;
+      width: 100%;
+      height: calc(100vh - 84px);
+      box-sizing: border-box;
+      display: none;
+      flex-direction: column;
+    }
+    .admin-view-panel.embedded-app-panel.active {
+      display: flex;
+    }
+    .embedded-iframe-container {
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      min-height: 0;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid var(--admin-border);
+      background: #0F0C0A;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      position: relative;
+    }
+    .embedded-iframe-container iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+      background: #0F0C0A;
     }
 
     /* Executive Analytics KPI Tiles (5-Card Strip) */
@@ -969,7 +1058,7 @@
       font-size: 0.7rem;
       font-weight: 700;
       padding: 0.25rem 0.65rem;
-      border-radius: 999px;
+      border-radius: 6px;
       border: 1px solid rgba(223, 155, 100, 0.35);
       text-transform: uppercase;
       letter-spacing: 0.05em;
@@ -981,7 +1070,7 @@
       font-size: 0.72rem;
       font-weight: 800;
       padding: 0.25rem 0.65rem;
-      border-radius: 999px;
+      border-radius: 6px;
       text-transform: uppercase;
       letter-spacing: 0.05em;
       cursor: pointer;
@@ -1460,18 +1549,42 @@
   </style>
 
   <script>
-    // Security Guard: auto-seed demo session if missing for seamless pair programming
-    (function initAdminSessionGuard() {
+    (async function initAdminAuthGuard() {
       try {
-        var rawSession = localStorage.getItem('becoffee_demo_session');
-        if (!rawSession) {
-          localStorage.setItem('becoffee_demo_session', JSON.stringify({
-            role: 'admin',
-            user_id: 1,
-            name: 'BeCoffee Administrator'
-          }));
+        var res = await fetch('api/auth.php?action=me', { credentials: 'include' });
+        if (!res.ok) {
+          window.location.replace('index.php?error=unauthorized');
+          return;
         }
-      } catch (e) {}
+        var data = await res.json();
+        if (!data.authenticated || !data.user) {
+          window.location.replace('index.php?error=unauthorized');
+          return;
+        }
+        if (data.user.role === 'customer') {
+          window.location.replace('index.php?notice=customer_restricted');
+          return;
+        }
+        if (data.user.role === 'staff') {
+          window.location.replace('kds.php?notice=staff_restricted');
+          return;
+        }
+        // Save authenticated session for studio
+        window.__CURRENT_USER__ = data.user;
+        localStorage.setItem('becoffee_demo_session', JSON.stringify(data.user));
+
+        if (typeof window.renderRoleSpecificElements === 'function') {
+          window.renderRoleSpecificElements();
+        } else {
+          document.addEventListener('DOMContentLoaded', function() {
+            if (typeof window.renderRoleSpecificElements === 'function') {
+              window.renderRoleSpecificElements();
+            }
+          });
+        }
+      } catch (e) {
+        console.warn('Admin guard check deferred:', e);
+      }
     })();
   </script>
 </head>
@@ -1480,54 +1593,101 @@
   <!-- 1. Sleek Left Sidebar -->
   <aside class="admin-sidebar" id="adminSidebar">
     <!-- Brand -->
-    <a href="home.html" class="sidebar-brand">
+    <a href="home.php" class="sidebar-brand">
       <div class="sidebar-logo">B</div>
       <div>
         <div class="sidebar-brand-name">Escobar Cafe</div>
-        <span class="sidebar-brand-tag">Operations Studio</span>
+        <span class="sidebar-brand-tag">Cafe Admin</span>
       </div>
     </a>
 
-
     <!-- Navigation Hub -->
     <nav class="sidebar-nav">
-      <div class="nav-section-title">Core Operations</div>
+      <div class="nav-section-title">Main Menu</div>
       
-      <!-- Analytics Tab (Owner Daily Ledger) -->
+      <!-- Analytics Tab (Sales & Reports) -->
       <button type="button" class="sidebar-nav-btn active" id="navBtnAnalytics" data-view="analytics">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
-        <span>Analytics Studio</span>
+        <span>Sales & Reports</span>
       </button>
 
-      <!-- Order Audit & Fulfilment Trail Tab -->
+      <!-- Customer Orders Tab -->
       <button type="button" class="sidebar-nav-btn" id="navBtnAuditTrail" data-view="audit-trail">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-        <span>Order Audit Trail</span>
+        <span>Customer Orders</span>
       </button>
 
-      <!-- Menu & Stock Control Tab (Merged Product Catalog + Stock Options) -->
+      <!-- Menu & Stock Tab -->
       <button type="button" class="sidebar-nav-btn" id="navBtnStockControl" data-view="stock-control">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><line x1="6" y1="1" x2="6" y2="4"></line><line x1="10" y1="1" x2="10" y2="4"></line><line x1="14" y1="1" x2="14" y2="4"></line></svg>
-        <span>Menu & Stock Control</span>
+        <span>Menu & Stock</span>
+      </button>
+
+      <!-- SuperAdmin Section (Secret / Developer Only) -->
+      <div class="nav-section-title superadmin-only-nav" id="developerSectionTitle">
+        Developer Suite
+      </div>
+
+      <!-- 1. Users & Access -->
+      <button type="button" class="sidebar-nav-btn superadmin-only-nav" id="navBtnUsers" data-view="users">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+        <span>Users & Access</span>
+      </button>
+
+      <!-- 2. System Diagnostics -->
+      <button type="button" class="sidebar-nav-btn superadmin-only-nav" id="navBtnDiagnostics" data-view="diagnostics">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+        <span>System Diagnostics</span>
+      </button>
+
+      <!-- 3. Database & Migrations -->
+      <button type="button" class="sidebar-nav-btn superadmin-only-nav" id="navBtnDatabase" data-view="database">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg>
+        <span>Database & Schema</span>
+      </button>
+
+      <!-- 4. Security Audit Trail -->
+      <button type="button" class="sidebar-nav-btn superadmin-only-nav" id="navBtnAuditLogs" data-view="audit-logs">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+        <span>Audit & Security Logs</span>
       </button>
     </nav>
 
     <!-- Secondary Switcher Links -->
     <div class="sidebar-bottom-links">
-      <div class="nav-section-title">Quick Stations</div>
-      <a href="kds.html" class="sidebar-quick-link kds-link" target="_blank">
-        <span>📋 Barista KDS Tablet</span>
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-      </a>
-      <a href="index.html" class="sidebar-quick-link" target="_blank">
-        <span>🛍️ Live Storefront</span>
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-      </a>
-      <button type="button" class="sidebar-quick-link" id="adminSignOutBtn" style="cursor: pointer; width: 100%; border: none; text-align: left;">
-        <span>🚪 Sign Out</span>
+      <div class="nav-section-title">Quick Links</div>
+      <button type="button" class="sidebar-quick-link" id="quickLinkPos" data-view="pos">
+        <span class="quick-link-label">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 8h1a4 4 0 1 1 0 8h-1"></path><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"></path><line x1="6" y1="2" x2="6" y2="4"></line><line x1="10" y1="2" x2="10" y2="4"></line><line x1="14" y1="2" x2="14" y2="4"></line></svg>
+          <span>Dine In / Take Out Order</span>
+        </span>
+        <span class="quick-link-badge">LIVE</span>
+      </button>
+      <button type="button" class="sidebar-quick-link" id="quickLinkKds" data-view="kds">
+        <span class="quick-link-label">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="14" x="2" y="3" rx="2"></rect><line x1="8" x2="16" y1="21" y2="21"></line><line x1="12" x2="12" y1="17" y2="21"></line></svg>
+          <span>Kitchen Screen</span>
+        </span>
+        <span class="quick-link-badge">LIVE</span>
+      </button>
+      <button type="button" class="sidebar-quick-link" id="quickLinkStorefront" data-view="storefront">
+        <span class="quick-link-label">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path><line x1="3" x2="21" y1="6" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+          <span>Online Order</span>
+        </span>
+        <span class="quick-link-badge">PREVIEW</span>
+      </button>
+      <button type="button" class="sidebar-quick-link signout-link" id="adminSignOutBtn">
+        <span class="quick-link-label">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" x2="9" y1="12" y2="12"></line></svg>
+          <span>Sign Out</span>
+        </span>
       </button>
     </div>
   </aside>
+
+  <!-- Mobile Sidebar Backdrop Overlay -->
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 
   <!-- 2. Main Workspace Canvas -->
   <div class="admin-main-canvas">
@@ -1541,77 +1701,85 @@
         <div class="canvas-title-group">
           <h2 id="currentCanvasTitle">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
-            Analytics & Daily Revenue Ledger
+            Sales & Reports
           </h2>
-          <p id="currentCanvasSubtitle">Track daily gross earnings, cash vs. GCash payment splits, hourly velocity, and live cafe ticket logs.</p>
+          <p id="currentCanvasSubtitle">Check your daily sales, payment methods, busiest hours, and popular drinks.</p>
         </div>
       </div>
 
       <div class="canvas-actions-bar" id="canvasActionsBar">
         <!-- Date Selector & Quick Presets (for Analytics) -->
         <div id="analyticsHeaderControls" class="date-control-group">
-          <div class="live-status-badge">
-            <span class="live-status-dot"></span>
-            <span>Live PST (UTC+8)</span>
-          </div>
           <div class="date-presets-strip">
             <button type="button" class="date-preset-btn active" id="presetTodayBtn">Today</button>
             <button type="button" class="date-preset-btn" id="presetYesterdayBtn">Yesterday</button>
           </div>
           <input type="date" id="ledgerDatePicker" class="modal-text-input" style="width: auto; padding: 0.42rem 0.75rem; font-family: var(--font-mono); font-size: 0.85rem;" aria-label="Select ledger date">
-          <button type="button" class="admin-action-btn btn-action-secondary" id="btnRefreshLedger" title="Refresh ledger data">
+          <button type="button" class="admin-action-btn btn-action-secondary" id="btnRefreshLedger" title="Refresh data">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 4v6h-6"></path><path d="M1 20v-6h6"></path><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
-            <span>Refresh</span>
+            <span>Refresh Data</span>
           </button>
         </div>
 
         <!-- Stock Controls (for Menu & Stock View) -->
         <div id="stockHeaderControls" style="display: none; gap: 0.65rem; align-items: center;">
           <button type="button" class="admin-action-btn btn-action-secondary" id="btnResetAllStockTop">
-            ↺ Reset All Stock
+            ↺ Restock Everything
           </button>
           <button type="button" class="admin-action-btn btn-action-accent" id="btnOpenAddDrinkModal">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
             + Add New Drink
           </button>
         </div>
+
+        <!-- Embedded Quick Links Controls (for Counter POS, KDS, Storefront) -->
+        <div id="embeddedHeaderControls" style="display: none; gap: 0.65rem; align-items: center;">
+          <button type="button" class="admin-action-btn btn-action-secondary" id="btnTopReloadFrame" title="Reload active screen">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg>
+            <span>Reload</span>
+          </button>
+          <a href="#" target="_blank" rel="noopener" class="admin-action-btn btn-action-secondary" id="btnTopPopOutFrame" title="Open in new window">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            <span>Pop Out</span>
+          </a>
+        </div>
       </div>
     </header>
 
-    <!-- VIEW 1: Analytics & Daily Revenue Ledger -->
+    <!-- VIEW 1: Sales & Reports -->
     <section class="admin-view-panel active" id="viewAnalytics">
-      <!-- 1. Executive Performance KPI Strip (5 Cards) -->
+      <!-- 1. Performance Summary Cards (5 Cards) -->
       <div class="kpi-tiles-grid">
         <div class="kpi-stat-card">
           <div class="kpi-stat-label">
-            <span>Gross Revenue</span>
+            <span>Total Sales</span>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="2.5"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
           </div>
           <div class="kpi-stat-value" id="ledgerGrossRevenue" style="color: #34D399;">₱0.00</div>
-          <div class="kpi-stat-sub" id="ledgerGrossSub">Completed tickets today</div>
+          <div class="kpi-stat-sub" id="ledgerGrossSub">Money made from finished orders</div>
         </div>
 
         <div class="kpi-stat-card">
           <div class="kpi-stat-label">
-            <span>Avg Order Value (AOV)</span>
+            <span>Average Spend</span>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FBBF24" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
           </div>
           <div class="kpi-stat-value" id="ledgerAovValue" style="color: #FBBF24;">₱0.00</div>
-          <div class="kpi-stat-sub" id="ledgerAovSub">Revenue / order</div>
+          <div class="kpi-stat-sub" id="ledgerAovSub">Average money per customer</div>
         </div>
 
         <div class="kpi-stat-card">
           <div class="kpi-stat-label">
-            <span>Turnaround Speed</span>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#60A5FA" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 10"></polyline></svg>
+            <span>Average Prep Time</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#60A5FA" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 14 10"></polyline></svg>
           </div>
           <div class="kpi-stat-value" id="ledgerAvgPrepValue" style="color: #60A5FA;">0.0m</div>
-          <div class="kpi-stat-sub">Avg ticket fulfillment time</div>
+          <div class="kpi-stat-sub">Time to make and serve orders</div>
         </div>
 
         <div class="kpi-stat-card">
           <div class="kpi-stat-label">
-            <span>Dining Experience</span>
+            <span>Dine-In vs Take-Out</span>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" stroke-width="2.5"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path></svg>
           </div>
           <div class="kpi-stat-value" id="ledgerDiningSplitValue" style="color: #A78BFA; font-size: 1.22rem; white-space: nowrap;">0% Dine-In</div>
@@ -1620,22 +1788,22 @@
 
         <div class="kpi-stat-card">
           <div class="kpi-stat-label">
-            <span>Order Pipeline</span>
+            <span>Today's Orders</span>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#F472B6" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
           </div>
           <div class="kpi-stat-value" id="ledgerPipelineValue" style="color: #F472B6;">0 Total</div>
-          <div class="kpi-stat-sub" id="ledgerPipelineSub">0 completed · 0 active</div>
+          <div class="kpi-stat-sub" id="ledgerPipelineSub">0 finished · 0 being made</div>
         </div>
       </div>
 
       <!-- 2. Visual Analytics Bento Grid -->
       <div class="analytics-visual-grid">
-        <!-- Panel A: Payment Channels Split (span 4) -->
+        <!-- Panel A: How Customers Paid (span 4) -->
         <div class="viz-card span-4">
           <div class="viz-card-header">
             <h3 class="viz-card-title">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E28743" stroke-width="2.5"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
-              Payment Breakdown
+              How Customers Paid
             </h3>
             <span class="viz-card-badge" id="paymentTotalBadge">₱0.00 Total</span>
           </div>
@@ -1652,28 +1820,28 @@
                 <span>GCash QR</span>
               </div>
               <div class="payment-legend-amount" id="ledgerGcashTotal">₱0.00</div>
-              <div class="payment-legend-share" id="ledgerGcashShare">0% of revenue</div>
+              <div class="payment-legend-share" id="ledgerGcashShare">0% of total sales</div>
             </div>
 
             <div class="payment-legend-box">
               <div class="payment-legend-header">
                 <span class="dot-cash"></span>
-                <span>Counter Cash</span>
+                <span>Cash at Counter</span>
               </div>
               <div class="payment-legend-amount" id="ledgerCashTotal">₱0.00</div>
-              <div class="payment-legend-share" id="ledgerCashShare">0% of revenue</div>
+              <div class="payment-legend-share" id="ledgerCashShare">0% of total sales</div>
             </div>
           </div>
         </div>
 
-        <!-- Panel B: Hourly Order Velocity & Rush Histogram (span 8) -->
+        <!-- Panel B: Busiest Hours Today (span 8) -->
         <div class="viz-card span-8">
           <div class="viz-card-header">
             <h3 class="viz-card-title">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E28743" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
-              Hourly Order Velocity
+              Busiest Hours Today
             </h3>
-            <span class="viz-card-badge" id="peakRushBadge" style="color: #FDBA74; border-color: rgba(226, 135, 67, 0.4);">Peak Rush: Calculating...</span>
+            <span class="viz-card-badge" id="peakRushBadge" style="color: #FDBA74; border-color: rgba(226, 135, 67, 0.4);">Busiest Time: Calculating...</span>
           </div>
 
           <div class="hourly-chart-container" id="hourlyChartContainer">
@@ -1684,60 +1852,60 @@
           </div>
         </div>
 
-        <!-- Panel C: Top Handcrafted Drinks (span 5) -->
+        <!-- Panel C: Best Selling Drinks (span 5) -->
         <div class="viz-card span-5">
           <div class="viz-card-header">
             <h3 class="viz-card-title">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E28743" stroke-width="2.5"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><line x1="6" y1="1" x2="6" y2="4"></line><line x1="10" y1="1" x2="10" y2="4"></line><line x1="14" y1="1" x2="14" y2="4"></line></svg>
-              Top Handcrafted Drinks
+              Best Selling Drinks
             </h3>
-            <span class="viz-card-badge">Volume & Gross</span>
+            <span class="viz-card-badge">Most Ordered</span>
           </div>
           <div class="rank-list" id="topDrinksRankList">
             <div style="text-align: center; padding: 2rem; color: var(--admin-muted); font-size: 0.85rem;">
-              No drink sales recorded for this date.
+              No drinks sold today yet.
             </div>
           </div>
         </div>
 
-        <!-- Panel D: Barista Customization & Modifier Insights (span 4) -->
+        <!-- Panel D: Customer Preferences & Modifiers (span 4) -->
         <div class="viz-card span-4">
           <div class="viz-card-header">
             <h3 class="viz-card-title">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E28743" stroke-width="2.5"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-              Modifier Insights
+              Customer Preferences
             </h3>
-            <span class="viz-card-badge">Customer Tastes</span>
+            <span class="viz-card-badge">Popular Choices</span>
           </div>
           <div class="modifier-group-strip" id="modifierSummaryStrip">
             <div class="modifier-row">
-              <span class="modifier-name">Oat Milk Alternative</span>
+              <span class="modifier-name">Oat Milk Chosen</span>
               <span class="modifier-count" id="modOatMilkCount">0 orders</span>
             </div>
             <div class="modifier-row">
-              <span class="modifier-name">Less Sweet (75% / 50%)</span>
+              <span class="modifier-name">Less Sweet Chosen</span>
               <span class="modifier-count" id="modLessSweetCount">0 orders</span>
             </div>
             <div class="modifier-row">
-              <span class="modifier-name">Iced Cold Brew / Espresso</span>
+              <span class="modifier-name">Iced Drinks Chosen</span>
               <span class="modifier-count" id="modIcedCount">0 orders</span>
             </div>
           </div>
         </div>
 
-        <!-- Panel E: 3-Point QA Operations Lockout Score (span 3) -->
+        <!-- Panel E: Kitchen Checklist Score (span 3) -->
         <div class="viz-card span-3">
           <div class="viz-card-header">
             <h3 class="viz-card-title">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-              QA Operations
+              Kitchen Checklist Score
             </h3>
             <span class="viz-card-badge" id="qaOverallRate" style="color: #34D399;">100%</span>
           </div>
           <div class="qa-health-meters">
             <div class="qa-meter-row">
               <div class="qa-meter-header">
-                <span>Payment Verified</span>
+                <span>Payment Confirmed</span>
                 <span id="qaPaymentRate" style="color: #34D399;">100%</span>
               </div>
               <div class="qa-meter-bar-track">
@@ -1747,7 +1915,7 @@
 
             <div class="qa-meter-row">
               <div class="qa-meter-header">
-                <span>Customizations</span>
+                <span>Recipe Followed</span>
                 <span id="qaCustomRate" style="color: #34D399;">100%</span>
               </div>
               <div class="qa-meter-bar-track">
@@ -1757,7 +1925,7 @@
 
             <div class="qa-meter-row">
               <div class="qa-meter-header">
-                <span>Packaging Sealed</span>
+                <span>Cup & Bag Sealed</span>
                 <span id="qaPackageRate" style="color: #34D399;">100%</span>
               </div>
               <div class="qa-meter-bar-track">
@@ -1769,26 +1937,26 @@
       </div>
     </section>
 
-    <!-- VIEW 2: Order Audit & Fulfilment Trail -->
+    <!-- VIEW 2: Customer Orders -->
     <section class="admin-view-panel" id="viewAuditTrail">
-      <!-- Chronological Order Audit Log & Filterable Ledger -->
+      <!-- Chronological Customer Orders & Filterable Table -->
       <div class="ledger-table-wrap">
         <div class="ledger-toolbar">
           <div>
-            <h3 style="font-size: 1.15rem; font-weight: 700; color: #FFF; margin: 0;">Order Audit & Fulfilment Trail</h3>
-            <span style="font-size: 0.8rem; color: var(--admin-muted);" id="ledgerRowCountNotice">Showing live orders</span>
+            <h3 style="font-size: 1.15rem; font-weight: 700; color: #FFF; margin: 0;">All Orders Today</h3>
+            <span style="font-size: 0.8rem; color: var(--admin-muted);" id="ledgerRowCountNotice">Showing all orders</span>
           </div>
 
           <div class="ledger-search-box">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-            <input type="text" id="ledgerSearchInput" placeholder="Filter by customer, queue #, ref, drink..." aria-label="Search order records">
+            <input type="text" id="ledgerSearchInput" placeholder="Search by customer name, phone, order #, or drink..." aria-label="Search order records">
           </div>
         </div>
 
         <div class="ledger-filter-chips" style="margin-bottom: 1.15rem;">
-          <button type="button" class="filter-chip-btn active" data-filter="status" data-val="all">All Status</button>
-          <button type="button" class="filter-chip-btn" data-filter="status" data-val="completed">Completed</button>
-          <button type="button" class="filter-chip-btn" data-filter="status" data-val="active">Active (Prep/Pending)</button>
+          <button type="button" class="filter-chip-btn active" data-filter="status" data-val="all">All Orders</button>
+          <button type="button" class="filter-chip-btn" data-filter="status" data-val="completed">Finished</button>
+          <button type="button" class="filter-chip-btn" data-filter="status" data-val="active">Being Made / Waiting</button>
           <button type="button" class="filter-chip-btn" data-filter="status" data-val="cancelled">Cancelled</button>
           <span style="color: rgba(255,255,255,0.2); margin: 0 0.2rem;">|</span>
           <button type="button" class="filter-chip-btn active" data-filter="dining" data-val="all">All Dining</button>
@@ -1805,20 +1973,20 @@
           <table class="ledger-desktop-table">
             <thead>
               <tr>
-                <th>Queue #</th>
-                <th>Order Ref</th>
+                <th>Order #</th>
+                <th>Receipt ID</th>
                 <th>Customer</th>
-                <th>Drink Customizations</th>
-                <th>Dining Type</th>
+                <th>Drinks & Customizations</th>
+                <th>Dining</th>
                 <th>Payment</th>
-                <th>3-Point QA Lockout</th>
-                <th>Status / Prep</th>
-                <th style="text-align: right;">Amount</th>
+                <th>Kitchen Checks</th>
+                <th>Status & Prep Time</th>
+                <th style="text-align: right;">Total</th>
               </tr>
             </thead>
             <tbody id="ledgerTableBody">
               <tr>
-                <td colspan="9" style="text-align: center; padding: 3rem; color: var(--admin-muted);">Loading ledger records...</td>
+                <td colspan="9" style="text-align: center; padding: 3rem; color: var(--admin-muted);">Loading orders...</td>
               </tr>
             </tbody>
           </table>
@@ -1840,13 +2008,14 @@
         <nav class="cat-nav-strip">
           <button type="button" class="cat-pill-btn active" data-cat="all">All Drinks</button>
           <button type="button" class="cat-pill-btn" data-cat="house-coffee">House Coffee</button>
-          <button type="button" class="cat-pill-btn" data-cat="matcha">Matcha Series</button>
+          <button type="button" class="cat-pill-btn" data-cat="matcha">Matcha</button>
           <button type="button" class="cat-pill-btn" data-cat="house-specials">House Specials</button>
+          <button type="button" class="cat-pill-btn" data-cat="yogurt-soda">Yogurt / Soda</button>
         </nav>
 
         <div class="search-input-wrap">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-          <input type="text" id="drinkSearchInput" placeholder="Filter by drink name...">
+          <input type="text" id="drinkSearchInput" placeholder="Search drinks by name...">
         </div>
       </div>
 
@@ -1858,9 +2027,272 @@
       </div>
     </section>
 
+    <!-- VIEW 3: Users & Access (SuperAdmin Only) -->
+    <section class="admin-view-panel" id="viewUsers">
+      <div style="background: rgba(26, 20, 16, 0.95); border: 1px solid var(--admin-border); border-radius: 16px; padding: 1.5rem; margin-bottom: 2rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
+          <div>
+            <h3 style="font-size: 1.35rem; font-weight: 700; color: #FFF; margin: 0 0 0.25rem 0;">Users & Access Management</h3>
+            <p style="font-size: 0.85rem; color: var(--admin-muted); margin: 0;">Manage authenticated accounts, modify roles, reset credentials, and oversee permissions.</p>
+          </div>
+          <button type="button" class="admin-action-btn btn-action-accent" id="btnOpenCreateUserModal" style="background: var(--admin-accent); color: #FFF;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            + Create Account
+          </button>
+        </div>
+
+        <!-- Role Summary Badges -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 0.75rem; margin-bottom: 1.5rem;">
+          <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); padding: 0.75rem 1rem; border-radius: 10px;">
+            <div style="font-size: 0.72rem; color: var(--admin-muted); text-transform: uppercase; letter-spacing: 0.05em;">SuperAdmins</div>
+            <div id="statSuperadminCount" style="font-size: 1.4rem; font-weight: 700; color: #C4B5FD;">0</div>
+          </div>
+          <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); padding: 0.75rem 1rem; border-radius: 10px;">
+            <div style="font-size: 0.72rem; color: var(--admin-muted); text-transform: uppercase; letter-spacing: 0.05em;">Admins</div>
+            <div id="statAdminCount" style="font-size: 1.4rem; font-weight: 700; color: #F59E0B;">0</div>
+          </div>
+          <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); padding: 0.75rem 1rem; border-radius: 10px;">
+            <div style="font-size: 0.72rem; color: var(--admin-muted); text-transform: uppercase; letter-spacing: 0.05em;">Staff (Counter/KDS)</div>
+            <div id="statStaffCount" style="font-size: 1.4rem; font-weight: 700; color: #10B981;">0</div>
+          </div>
+          <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); padding: 0.75rem 1rem; border-radius: 10px;">
+            <div style="font-size: 0.72rem; color: var(--admin-muted); text-transform: uppercase; letter-spacing: 0.05em;">Customers</div>
+            <div id="statCustomerCount" style="font-size: 1.4rem; font-weight: 700; color: #60A5FA;">0</div>
+          </div>
+        </div>
+
+        <!-- Filter and Search Bar -->
+        <div style="display: flex; gap: 0.75rem; margin-bottom: 1rem; flex-wrap: wrap; align-items: center;">
+          <input type="text" id="userSearchInput" class="modal-text-input" placeholder="🔍 Search by name or email..." style="max-width: 280px; padding: 0.45rem 0.85rem; font-size: 0.85rem;">
+          <select id="userRoleFilterSelect" class="modal-text-input" style="max-width: 180px; padding: 0.45rem 0.85rem; font-size: 0.85rem;">
+            <option value="">All Roles</option>
+            <option value="superadmin">SuperAdmin</option>
+            <option value="admin">Admin</option>
+            <option value="staff">Staff</option>
+            <option value="customer">Customer</option>
+          </select>
+          <button type="button" class="admin-action-btn btn-action-secondary" id="btnRefreshUsers" style="padding: 0.45rem 0.85rem; font-size: 0.82rem;">
+            ↻ Refresh
+          </button>
+        </div>
+
+        <!-- Users Table -->
+        <div style="overflow-x: auto; background: rgba(14, 11, 9, 0.75); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px;">
+          <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.85rem;">
+            <thead>
+              <tr style="border-bottom: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.02);">
+                <th style="padding: 0.85rem 1rem; color: var(--admin-muted); font-weight: 600;">ID</th>
+                <th style="padding: 0.85rem 1rem; color: var(--admin-muted); font-weight: 600;">Name</th>
+                <th style="padding: 0.85rem 1rem; color: var(--admin-muted); font-weight: 600;">Email / Login</th>
+                <th style="padding: 0.85rem 1rem; color: var(--admin-muted); font-weight: 600;">Role</th>
+                <th style="padding: 0.85rem 1rem; color: var(--admin-muted); font-weight: 600; text-align: right;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="usersTableBody">
+              <tr>
+                <td colspan="5" style="text-align: center; padding: 2rem; color: var(--admin-muted);">Loading system users...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 4: System Diagnostics (SuperAdmin Only) -->
+    <section class="admin-view-panel" id="viewDiagnostics">
+      <div style="background: rgba(26, 20, 16, 0.95); border: 1px solid var(--admin-border); border-radius: 16px; padding: 1.5rem; margin-bottom: 2rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
+          <div>
+            <h3 style="font-size: 1.35rem; font-weight: 700; color: #FFF; margin: 0 0 0.25rem 0;">System Diagnostics</h3>
+            <p style="font-size: 0.85rem; color: var(--admin-muted); margin: 0;">Monitor PHP runtime, database throughput, server memory consumption, and table health.</p>
+          </div>
+          <div style="display: flex; gap: 0.65rem;">
+            <button type="button" class="admin-action-btn btn-action-secondary" id="btnPurgeCache" style="border-color: rgba(245, 158, 11, 0.4); color: #FBBF24;">
+              ⚡ Purge Cache
+            </button>
+            <button type="button" class="admin-action-btn btn-action-secondary" id="btnRefreshDiagnostics">
+              ↻ Refresh Health
+            </button>
+          </div>
+        </div>
+
+        <!-- 4 Health Cards -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 1.75rem;">
+          <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); padding: 1.1rem; border-radius: 12px;">
+            <div style="font-size: 0.72rem; color: var(--admin-muted); text-transform: uppercase;">PHP Runtime</div>
+            <div id="diagPhpVersion" style="font-size: 1.25rem; font-weight: 700; color: #60A5FA; margin: 0.25rem 0;">Loading...</div>
+            <div id="diagMemory" style="font-size: 0.75rem; color: var(--admin-muted);">Memory Peak: --</div>
+          </div>
+          <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); padding: 1.1rem; border-radius: 12px;">
+            <div style="font-size: 0.72rem; color: var(--admin-muted); text-transform: uppercase;">MySQL Database</div>
+            <div id="diagMysqlVersion" style="font-size: 1.25rem; font-weight: 700; color: #34D399; margin: 0.25rem 0;">Loading...</div>
+            <div id="diagDbSize" style="font-size: 0.75rem; color: var(--admin-muted);">Storage: --</div>
+          </div>
+          <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); padding: 1.1rem; border-radius: 12px;">
+            <div style="font-size: 0.72rem; color: var(--admin-muted); text-transform: uppercase;">Server Environment</div>
+            <div id="diagServerOs" style="font-size: 1.05rem; font-weight: 700; color: #F59E0B; margin: 0.25rem 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Loading...</div>
+            <div id="diagServerTime" style="font-size: 0.75rem; color: var(--admin-muted);">Server Time: --</div>
+          </div>
+          <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); padding: 1.1rem; border-radius: 12px;">
+            <div style="font-size: 0.72rem; color: var(--admin-muted); text-transform: uppercase;">Acceleration & State</div>
+            <div id="diagOpcache" style="font-size: 1.25rem; font-weight: 700; color: #C4B5FD; margin: 0.25rem 0;">Loading...</div>
+            <div id="diagMaxExec" style="font-size: 0.75rem; color: var(--admin-muted);">Max Exec Time: --</div>
+          </div>
+        </div>
+
+        <!-- Table Statistics -->
+        <h4 style="font-size: 1rem; font-weight: 700; color: #FFF; margin: 0 0 0.85rem 0;">Database Table Metrics</h4>
+        <div style="overflow-x: auto; background: rgba(14, 11, 9, 0.75); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px;">
+          <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.85rem;">
+            <thead>
+              <tr style="border-bottom: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.02);">
+                <th style="padding: 0.75rem 1rem; color: var(--admin-muted); font-weight: 600;">Table Name</th>
+                <th style="padding: 0.75rem 1rem; color: var(--admin-muted); font-weight: 600;">Purpose</th>
+                <th style="padding: 0.75rem 1rem; color: var(--admin-muted); font-weight: 600;">Row Count</th>
+                <th style="padding: 0.75rem 1rem; color: var(--admin-muted); font-weight: 600;">Data Size</th>
+                <th style="padding: 0.75rem 1rem; color: var(--admin-muted); font-weight: 600;">Status</th>
+              </tr>
+            </thead>
+            <tbody id="tableStatsBody">
+              <tr>
+                <td colspan="5" style="text-align: center; padding: 2rem; color: var(--admin-muted);">Loading table statistics...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 5: Database & Schema (SuperAdmin Only) -->
+    <section class="admin-view-panel" id="viewDatabase">
+      <div style="background: rgba(26, 20, 16, 0.95); border: 1px solid var(--admin-border); border-radius: 16px; padding: 1.5rem; margin-bottom: 2rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
+          <div>
+            <h3 style="font-size: 1.35rem; font-weight: 700; color: #FFF; margin: 0 0 0.25rem 0;">Database & Migrations</h3>
+            <p style="font-size: 0.85rem; color: var(--admin-muted); margin: 0;">Audit applied schema migrations, database structure, and export full SQL backups.</p>
+          </div>
+          <a href="api/system.php?action=export_backup" class="admin-action-btn btn-action-accent" id="btnDownloadBackup" style="background: var(--admin-accent); color: #FFF; text-decoration: none;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            Download SQL Backup (.sql)
+          </a>
+        </div>
+
+        <!-- Migrations Checklist Table -->
+        <h4 style="font-size: 1rem; font-weight: 700; color: #FFF; margin: 0 0 0.85rem 0;">Schema Migration Ledger</h4>
+        <div style="overflow-x: auto; background: rgba(14, 11, 9, 0.75); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px;">
+          <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.85rem;">
+            <thead>
+              <tr style="border-bottom: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.02);">
+                <th style="padding: 0.75rem 1rem; color: var(--admin-muted); font-weight: 600;">Migration File</th>
+                <th style="padding: 0.75rem 1rem; color: var(--admin-muted); font-weight: 600;">Title</th>
+                <th style="padding: 0.75rem 1rem; color: var(--admin-muted); font-weight: 600;">Applied Scope</th>
+                <th style="padding: 0.75rem 1rem; color: var(--admin-muted); font-weight: 600; text-align: right;">Status</th>
+              </tr>
+            </thead>
+            <tbody id="migrationsTableBody">
+              <tr>
+                <td colspan="4" style="text-align: center; padding: 2rem; color: var(--admin-muted);">Verifying schema migrations...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 6: Security Audit Trail (SuperAdmin Only) -->
+    <section class="admin-view-panel" id="viewAuditLogs">
+      <div style="background: rgba(26, 20, 16, 0.95); border: 1px solid var(--admin-border); border-radius: 16px; padding: 1.5rem; margin-bottom: 2rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
+          <div>
+            <h3 style="font-size: 1.35rem; font-weight: 700; color: #FFF; margin: 0 0 0.25rem 0;">Audit & Security Logs</h3>
+            <p style="font-size: 0.85rem; color: var(--admin-muted); margin: 0;">Trace administrative operations, privilege modifications, credential resets, and schema events.</p>
+          </div>
+          <button type="button" class="admin-action-btn btn-action-secondary" id="btnRefreshAuditLogs">
+            ↻ Refresh Logs
+          </button>
+        </div>
+
+        <!-- Audit Log Table -->
+        <div style="overflow-x: auto; background: rgba(14, 11, 9, 0.75); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px;">
+          <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.85rem;">
+            <thead>
+              <tr style="border-bottom: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.02);">
+                <th style="padding: 0.75rem 1rem; color: var(--admin-muted); font-weight: 600;">Timestamp</th>
+                <th style="padding: 0.75rem 1rem; color: var(--admin-muted); font-weight: 600;">Actor</th>
+                <th style="padding: 0.75rem 1rem; color: var(--admin-muted); font-weight: 600;">Action</th>
+                <th style="padding: 0.75rem 1rem; color: var(--admin-muted); font-weight: 600;">Details</th>
+                <th style="padding: 0.75rem 1rem; color: var(--admin-muted); font-weight: 600;">IP Address</th>
+              </tr>
+            </thead>
+            <tbody id="auditLogsTableBody">
+              <tr>
+                <td colspan="5" style="text-align: center; padding: 2rem; color: var(--admin-muted);">Loading audit logs...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8. Embedded Workspace: Dine In / Take Out Order -->
+    <section class="admin-view-panel embedded-app-panel" id="viewPos">
+      <div class="embedded-iframe-container">
+        <iframe id="iframePos" title="Dine In / Take Out Order" data-src="index.php?mode=staff"></iframe>
+      </div>
+    </section>
+
+    <!-- 9. Embedded Workspace: Kitchen Display System (KDS) -->
+    <section class="admin-view-panel embedded-app-panel" id="viewKds">
+      <div class="embedded-iframe-container">
+        <iframe id="iframeKds" title="Kitchen Screen KDS" data-src="kds.php"></iframe>
+      </div>
+    </section>
+
+    <!-- 10. Embedded Workspace: Online Order -->
+    <section class="admin-view-panel embedded-app-panel" id="viewStorefront">
+      <div class="embedded-iframe-container">
+        <iframe id="iframeStorefront" title="Online Order" data-src="index.php"></iframe>
+      </div>
+    </section>
+
   </div>
 
-  <!-- 3. THE "MANAGE CUSTOMIZATION OPTIONS" MODAL (Horizontally Wide 2-Column Layout) -->
+  <!-- CREATE USER MODAL -->
+  <div class="oms-modal-overlay" id="adminCreateUserModal" aria-modal="true" role="dialog">
+    <div class="oms-modal-box" style="max-width: 480px;">
+      <button type="button" class="oms-modal-close" id="btnCloseCreateUserModal" aria-label="Close">&times;</button>
+      <h3 style="margin: 0 0 0.5rem 0; font-size: 1.25rem;">Create New Account</h3>
+      <p style="font-size: 0.85rem; color: var(--admin-muted); margin-bottom: 1.25rem;">Create a staff, admin, or developer account with direct role assignment.</p>
+      
+      <div class="modal-field-group">
+        <label for="newUserName" class="modal-field-label">Full Name</label>
+        <input type="text" id="newUserName" class="modal-text-input" placeholder="e.g. Counter Staff Alice">
+      </div>
+      <div class="modal-field-group">
+        <label for="newUserEmail" class="modal-field-label">Email / Login</label>
+        <input type="email" id="newUserEmail" class="modal-text-input" placeholder="e.g. alice@becoffee.ph">
+      </div>
+      <div class="modal-field-group">
+        <label for="newUserPassword" class="modal-field-label">Password (Min 8 characters)</label>
+        <input type="password" id="newUserPassword" class="modal-text-input" placeholder="••••••••">
+      </div>
+      <div class="modal-field-group">
+        <label for="newUserRole" class="modal-field-label">Assigned Role</label>
+        <select id="newUserRole" class="modal-text-input">
+          <option value="staff" selected>Staff (Can take orders & run KDS only)</option>
+          <option value="admin">Admin (Can change prices & view sales reports)</option>
+          <option value="superadmin">SuperAdmin (Developer Secret - Full Access)</option>
+          <option value="customer">Customer (Diner/Storefront only)</option>
+        </select>
+      </div>
+
+      <button type="button" class="admin-action-btn btn-action-accent" id="btnSubmitNewUser" style="width: 100%; min-height: 44px; justify-content: center; margin-top: 1rem;">
+        Create Account
+      </button>
+    </div>
+  </div>
+
+  <!-- 3. THE "MANAGE DRINK OPTIONS" MODAL (Horizontally Wide 2-Column Layout) -->
   <div class="oms-modal-overlay" id="adminManageModal" aria-modal="true" role="dialog">
     <div class="oms-modal-box wide-modal">
       <button type="button" class="oms-modal-close" id="btnCloseManageModal" aria-label="Close">&times;</button>
@@ -1891,7 +2323,7 @@
                 <label for="modalDrinkCategory" class="modal-field-label">Category</label>
                 <select id="modalDrinkCategory" class="modal-text-input" style="padding: 0.45rem 0.55rem;">
                   <option value="house-coffee">House Coffee</option>
-                  <option value="matcha">Matcha Series</option>
+                  <option value="matcha">Matcha</option>
                   <option value="house-specials">House Specials</option>
                   <option value="yogurt-soda">Yogurt / Soda</option>
                 </select>
@@ -1939,22 +2371,22 @@
           </div>
         </div>
 
-        <!-- RIGHT COLUMN: Customization Options & Add-ons -->
+        <!-- RIGHT COLUMN: Customization Options & Extras -->
         <div class="modal-col-right" style="border-left: 1px solid rgba(255, 255, 255, 0.08); padding-left: 1.75rem;">
           <!-- Header Row -->
           <div style="margin-bottom: 0.5rem; padding-right: 2.5rem;">
             <h4 style="font-size: 1.05rem; font-weight: 800; color: #FFF; margin: 0; display: flex; align-items: center; gap: 0.45rem;">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-              Customization Options & Add-ons
+              Drink Options & Extras
             </h4>
             <p style="font-size: 0.72rem; color: var(--admin-muted); margin: 0.15rem 0 0;">
-              Tap any option pill to toggle live stock (In Stock ⇄ Sold Out / 86'd).
+              Tap any option to switch between In Stock and Sold Out.
             </p>
           </div>
 
           <!-- Group 1: TEMPERATURE -->
           <div class="option-group-label" style="margin-top: 0.35rem; margin-bottom: 0.25rem;">
-            <span>TEMPERATURE</span>
+            <span>Drink Temperature (Hot / Iced)</span>
             <button type="button" class="btn-cat-toggle-stock" data-cat-type="temperature" style="background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(223, 155, 100, 0.3); color: #DF9B64; font-size: 0.7rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 6px; cursor: pointer; transition: all 0.2s ease;">
               ⇄ Toggle Stock
             </button>
@@ -1970,25 +2402,25 @@
             </div>
           </div>
 
-          <!-- Group 2: ADD ONS (Replaces Milk Selection) -->
+          <!-- Group 2: MILK & EXTRAS -->
           <div class="option-group-label" style="margin-top: 0.65rem; margin-bottom: 0.25rem;">
             <div style="display: flex; align-items: center; gap: 0.4rem;">
-              <span>ADD ONS</span>
-              <span style="font-size: 0.68rem; color: #DF9B64; font-weight: 600;">(Milk & Custom Modifiers)</span>
+              <span>Milk & Extras</span>
+              <span style="font-size: 0.68rem; color: #DF9B64; font-weight: 600;">(Milk & Syrup choices)</span>
             </div>
             <div style="display: flex; gap: 0.45rem; align-items: center;">
               <button type="button" class="btn-cat-toggle-stock" data-cat-type="addon" style="background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(223, 155, 100, 0.3); color: #DF9B64; font-size: 0.7rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 6px; cursor: pointer; transition: all 0.2s ease;">
                 ⇄ Toggle All
               </button>
               <button type="button" id="btnShowAddAddonForm" style="background: rgba(226, 135, 67, 0.2); border: 1px solid rgba(226, 135, 67, 0.45); color: #FDBA74; font-size: 0.7rem; font-weight: 700; padding: 0.2rem 0.55rem; border-radius: 6px; cursor: pointer; transition: all 0.2s ease;">
-                + Add New Add-on
+                + Add New Extra
               </button>
             </div>
           </div>
 
           <!-- Inline New Add-on Creator Form -->
           <div id="newAddonFormWrap" style="display: none; background: rgba(0,0,0,0.35); border: 1px dashed rgba(226, 135, 67, 0.4); border-radius: 10px; padding: 0.6rem; margin-bottom: 0.55rem;">
-            <div style="font-size: 0.72rem; font-weight: 700; color: #FFF; margin-bottom: 0.35rem;">Create New Add-on Option</div>
+            <div style="font-size: 0.72rem; font-weight: 700; color: #FFF; margin-bottom: 0.35rem;">Create New Extra Option</div>
             <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
               <input type="text" id="inputNewAddonName" class="modal-text-input" style="flex: 2; min-width: 140px; padding: 0.35rem 0.55rem; font-size: 0.78rem;" placeholder="e.g. Vanilla Syrup">
               <div style="display: flex; align-items: center; gap: 0.25rem;">
@@ -1996,7 +2428,7 @@
                 <input type="number" id="inputNewAddonPrice" class="modal-text-input" style="width: 65px; padding: 0.35rem 0.45rem; font-family: var(--font-mono); font-size: 0.78rem;" value="30" step="5" min="0">
               </div>
               <button type="button" id="btnSubmitNewAddon" class="admin-action-btn btn-action-accent" style="padding: 0.35rem 0.75rem; font-size: 0.75rem;">
-                Save Add-on
+                Save Extra
               </button>
               <button type="button" id="btnCancelNewAddon" class="admin-action-btn btn-action-secondary" style="padding: 0.35rem 0.55rem; font-size: 0.75rem;">
                 Cancel
@@ -2011,7 +2443,7 @@
 
           <!-- Group 3: SWEETNESS LEVEL -->
           <div class="option-group-label" style="margin-top: 0.65rem; margin-bottom: 0.25rem;">
-            <span>SWEETNESS LEVEL</span>
+            <span>Sweetness Level</span>
             <button type="button" class="btn-cat-toggle-stock" data-cat-type="sweetness" style="background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(223, 155, 100, 0.3); color: #DF9B64; font-size: 0.7rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 6px; cursor: pointer; transition: all 0.2s ease;">
               ⇄ Toggle Stock
             </button>
@@ -2043,8 +2475,8 @@
   <div class="oms-modal-overlay" id="adminAddDrinkModal" aria-modal="true" role="dialog">
     <div class="oms-modal-box">
       <button type="button" class="oms-modal-close" id="btnCloseAddModalBtn">&times;</button>
-      <h3 style="font-size: 1.35rem; font-weight: 700; color: #FFF; margin-bottom: 0.35rem;">Add New Beverage</h3>
-      <p style="font-size: 0.82rem; color: var(--admin-muted); margin-bottom: 1.25rem;">Create a new handcrafted beverage on the cafe menu.</p>
+      <h3 style="font-size: 1.35rem; font-weight: 700; color: #FFF; margin-bottom: 0.35rem;">Add New Drink</h3>
+      <p style="font-size: 0.82rem; color: var(--admin-muted); margin-bottom: 1.25rem;">Add a new drink to your cafe menu.</p>
 
       <div class="modal-field-group">
         <label for="newDrinkName" class="modal-field-label">Drink Name</label>
@@ -2056,7 +2488,7 @@
           <label for="newDrinkCategory" class="modal-field-label">Category</label>
           <select id="newDrinkCategory" class="modal-text-input">
             <option value="house-coffee">House Coffee</option>
-            <option value="matcha">Matcha Series</option>
+            <option value="matcha">Matcha</option>
             <option value="house-specials">House Specials</option>
             <option value="yogurt-soda">Yogurt / Soda</option>
           </select>
@@ -2073,7 +2505,7 @@
       </div>
 
       <button type="button" class="admin-action-btn btn-action-accent" id="btnSubmitNewDrink" style="width: 100%; min-height: 48px; justify-content: center; font-size: 0.95rem; margin-top: 1rem;">
-        + Create Drink
+        + Save New Drink
       </button>
     </div>
   </div>
@@ -2090,16 +2522,42 @@
       var adminSidebar = document.getElementById('adminSidebar');
       var sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
       var sidebarBackdrop = document.getElementById('sidebarBackdrop');
+
       var navBtnAnalytics = document.getElementById('navBtnAnalytics');
       var navBtnAuditTrail = document.getElementById('navBtnAuditTrail');
       var navBtnStock = document.getElementById('navBtnStockControl');
+      var navBtnUsers = document.getElementById('navBtnUsers');
+      var navBtnDiagnostics = document.getElementById('navBtnDiagnostics');
+      var navBtnDatabase = document.getElementById('navBtnDatabase');
+      var navBtnAuditLogs = document.getElementById('navBtnAuditLogs');
+
+      var quickLinkPos = document.getElementById('quickLinkPos');
+      var quickLinkKds = document.getElementById('quickLinkKds');
+      var quickLinkStorefront = document.getElementById('quickLinkStorefront');
+
       var viewAnalytics = document.getElementById('viewAnalytics');
       var viewAuditTrail = document.getElementById('viewAuditTrail');
       var viewStock = document.getElementById('viewStockControl');
+      var viewUsers = document.getElementById('viewUsers');
+      var viewDiagnostics = document.getElementById('viewDiagnostics');
+      var viewDatabase = document.getElementById('viewDatabase');
+      var viewAuditLogs = document.getElementById('viewAuditLogs');
+
+      var viewPos = document.getElementById('viewPos');
+      var viewKds = document.getElementById('viewKds');
+      var viewStorefront = document.getElementById('viewStorefront');
+
+      var iframePos = document.getElementById('iframePos');
+      var iframeKds = document.getElementById('iframeKds');
+      var iframeStorefront = document.getElementById('iframeStorefront');
+
       var currentTitle = document.getElementById('currentCanvasTitle');
       var currentSubtitle = document.getElementById('currentCanvasSubtitle');
       var analyticsHeaderControls = document.getElementById('analyticsHeaderControls');
       var stockHeaderControls = document.getElementById('stockHeaderControls');
+      var embeddedHeaderControls = document.getElementById('embeddedHeaderControls');
+      var btnTopReloadFrame = document.getElementById('btnTopReloadFrame');
+      var btnTopPopOutFrame = document.getElementById('btnTopPopOutFrame');
 
       function openMobileSidebar() {
         if (adminSidebar) adminSidebar.classList.add('mobile-open');
@@ -2138,24 +2596,77 @@
         closeMobileSidebar();
 
         // Clear all active tabs and views
-        if (navBtnAnalytics) navBtnAnalytics.classList.remove('active');
-        if (navBtnAuditTrail) navBtnAuditTrail.classList.remove('active');
-        if (navBtnStock) navBtnStock.classList.remove('active');
+        var allNavBtns = [
+          navBtnAnalytics, navBtnAuditTrail, navBtnStock, navBtnUsers,
+          navBtnDiagnostics, navBtnDatabase, navBtnAuditLogs,
+          quickLinkPos, quickLinkKds, quickLinkStorefront
+        ];
+        var allViews = [
+          viewAnalytics, viewAuditTrail, viewStock, viewUsers,
+          viewDiagnostics, viewDatabase, viewAuditLogs,
+          viewPos, viewKds, viewStorefront
+        ];
 
-        if (viewAnalytics) viewAnalytics.classList.remove('active');
-        if (viewAuditTrail) viewAuditTrail.classList.remove('active');
-        if (viewStock) viewStock.classList.remove('active');
+        allNavBtns.forEach(function(btn) { if (btn) btn.classList.remove('active'); });
+        allViews.forEach(function(v) { if (v) v.classList.remove('active'); });
 
-        if (target === 'audit-trail') {
+        if (stockHeaderControls) stockHeaderControls.style.display = 'none';
+        if (analyticsHeaderControls) analyticsHeaderControls.style.display = 'none';
+        if (embeddedHeaderControls) embeddedHeaderControls.style.display = 'none';
+
+        if (target === 'users' || target === 'developer-hub') {
+          if (navBtnUsers) navBtnUsers.classList.add('active');
+          if (viewUsers) viewUsers.classList.add('active');
+
+          currentTitle.innerHTML = `
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            Users & Access Management
+          `;
+          currentSubtitle.textContent = 'Manage staff permissions, promote accounts, reset passwords, and oversee credentials.';
+          loadUsersData();
+
+        } else if (target === 'diagnostics') {
+          if (navBtnDiagnostics) navBtnDiagnostics.classList.add('active');
+          if (viewDiagnostics) viewDiagnostics.classList.add('active');
+
+          currentTitle.innerHTML = `
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+            System Diagnostics & Health
+          `;
+          currentSubtitle.textContent = 'Real-time PHP environment status, memory consumption, MySQL throughput, and table metrics.';
+          loadDiagnosticsData();
+
+        } else if (target === 'database') {
+          if (navBtnDatabase) navBtnDatabase.classList.add('active');
+          if (viewDatabase) viewDatabase.classList.add('active');
+
+          currentTitle.innerHTML = `
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg>
+            Database Schema & Migrations
+          `;
+          currentSubtitle.textContent = 'Verify schema migration versions (001–007), inspect table integrity, and export backups.';
+          loadMigrationsData();
+
+        } else if (target === 'audit-logs') {
+          if (navBtnAuditLogs) navBtnAuditLogs.classList.add('active');
+          if (viewAuditLogs) viewAuditLogs.classList.add('active');
+
+          currentTitle.innerHTML = `
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            Security & Audit Logs
+          `;
+          currentSubtitle.textContent = 'Chronological ledger of admin logins, privilege modifications, price edits, and schema events.';
+          loadAuditLogsData();
+
+        } else if (target === 'audit-trail') {
           if (navBtnAuditTrail) navBtnAuditTrail.classList.add('active');
           if (viewAuditTrail) viewAuditTrail.classList.add('active');
 
           currentTitle.innerHTML = `
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-            Order Audit & Fulfilment Trail
+            Customer Orders
           `;
-          currentSubtitle.textContent = 'Review live ticket histories, customizations, table assignments, and 3-point QA verifications.';
-          if (stockHeaderControls) stockHeaderControls.style.display = 'none';
+          currentSubtitle.textContent = 'View all customer orders, custom requests, and kitchen prep progress.';
           if (analyticsHeaderControls) analyticsHeaderControls.style.display = 'flex';
           loadLedgerData();
 
@@ -2165,38 +2676,172 @@
 
           currentTitle.innerHTML = `
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><line x1="6" y1="1" x2="6" y2="4"></line><line x1="10" y1="1" x2="10" y2="4"></line><line x1="14" y1="1" x2="14" y2="4"></line></svg>
-            Menu & Stock Control
+            Menu & Stock
           `;
-          currentSubtitle.textContent = 'Manage base prices, drink availability, and cancel out (86) customization options in real-time.';
-          if (analyticsHeaderControls) analyticsHeaderControls.style.display = 'none';
+          currentSubtitle.textContent = 'Update drink prices, stock availability, and turn ingredient options on or off.';
           if (stockHeaderControls) stockHeaderControls.style.display = 'flex';
           loadStockMenu();
 
+        } else if (target === 'pos') {
+          if (quickLinkPos) quickLinkPos.classList.add('active');
+          if (viewPos) viewPos.classList.add('active');
+          if (embeddedHeaderControls) embeddedHeaderControls.style.display = 'flex';
+          if (btnTopPopOutFrame) btnTopPopOutFrame.href = 'index.php?mode=staff';
+          if (iframePos && (!iframePos.getAttribute('src') || iframePos.getAttribute('src') === 'about:blank')) {
+            iframePos.setAttribute('src', iframePos.getAttribute('data-src') || 'index.php?mode=staff');
+          }
+
+          currentTitle.innerHTML = `
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 8h1a4 4 0 1 1 0 8h-1"></path><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"></path><line x1="6" y1="2" x2="6" y2="4"></line><line x1="10" y1="2" x2="10" y2="4"></line><line x1="14" y1="2" x2="14" y2="4"></line></svg>
+            Dine In / Take Out Order
+          `;
+          currentSubtitle.textContent = 'Live walk-in customer checkout, order intake, and cash/GCash cashier drawer.';
+
+        } else if (target === 'kds') {
+          if (quickLinkKds) quickLinkKds.classList.add('active');
+          if (viewKds) viewKds.classList.add('active');
+          if (embeddedHeaderControls) embeddedHeaderControls.style.display = 'flex';
+          if (btnTopPopOutFrame) btnTopPopOutFrame.href = 'kds.php';
+          if (iframeKds && (!iframeKds.getAttribute('src') || iframeKds.getAttribute('src') === 'about:blank')) {
+            iframeKds.setAttribute('src', iframeKds.getAttribute('data-src') || 'kds.php');
+          }
+
+          currentTitle.innerHTML = `
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect width="20" height="14" x="2" y="3" rx="2"></rect><line x1="8" x2="16" y1="21" y2="21"></line><line x1="12" x2="12" y1="17" y2="21"></line></svg>
+            Kitchen Display System (KDS)
+          `;
+          currentSubtitle.textContent = 'Real-time preparation queue and status updater for baristas and kitchen staff.';
+
+        } else if (target === 'storefront') {
+          if (quickLinkStorefront) quickLinkStorefront.classList.add('active');
+          if (viewStorefront) viewStorefront.classList.add('active');
+          if (embeddedHeaderControls) embeddedHeaderControls.style.display = 'flex';
+          if (btnTopPopOutFrame) btnTopPopOutFrame.href = 'index.php';
+          if (iframeStorefront && (!iframeStorefront.getAttribute('src') || iframeStorefront.getAttribute('src') === 'about:blank')) {
+            iframeStorefront.setAttribute('src', iframeStorefront.getAttribute('data-src') || 'index.php');
+          }
+
+          currentTitle.innerHTML = `
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path><line x1="3" x2="21" y1="6" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+            Online Order
+          `;
+          currentSubtitle.textContent = 'Live preview of customer drink customizer, menu catalog, and online ordering.';
+
         } else {
-          // Default: Analytics Studio
+          // Default: Sales & Reports
           if (navBtnAnalytics) navBtnAnalytics.classList.add('active');
           if (viewAnalytics) viewAnalytics.classList.add('active');
 
           currentTitle.innerHTML = `
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
-            Analytics Studio
+            Sales & Reports
           `;
-          currentSubtitle.textContent = 'Track daily gross earnings, cash vs. GCash payment splits, peak rush velocity, and customer tastes.';
-          if (stockHeaderControls) stockHeaderControls.style.display = 'none';
+          currentSubtitle.textContent = 'Check your daily sales, payment methods, busiest hours, and popular drinks.';
           if (analyticsHeaderControls) analyticsHeaderControls.style.display = 'flex';
           loadLedgerData();
         }
+
+        try {
+          if (window.history && window.history.replaceState) {
+            var newUrl = window.location.pathname + '?view=' + encodeURIComponent(target);
+            window.history.replaceState({ view: target }, '', newUrl);
+          }
+        } catch (e) {}
       }
 
       if (navBtnAnalytics) navBtnAnalytics.addEventListener('click', function() { switchView('analytics'); });
       if (navBtnAuditTrail) navBtnAuditTrail.addEventListener('click', function() { switchView('audit-trail'); });
       if (navBtnStock) navBtnStock.addEventListener('click', function() { switchView('stock-control'); });
+      if (navBtnUsers) navBtnUsers.addEventListener('click', function() { switchView('users'); });
+      if (navBtnDiagnostics) navBtnDiagnostics.addEventListener('click', function() { switchView('diagnostics'); });
+      if (navBtnDatabase) navBtnDatabase.addEventListener('click', function() { switchView('database'); });
+      if (navBtnAuditLogs) navBtnAuditLogs.addEventListener('click', function() { switchView('audit-logs'); });
 
-      // Sign out button
-      document.getElementById('adminSignOutBtn').addEventListener('click', function() {
-        if (confirm('Sign out of Admin Operations Studio?')) {
+      if (quickLinkPos) quickLinkPos.addEventListener('click', function() { switchView('pos'); });
+      if (quickLinkKds) quickLinkKds.addEventListener('click', function() { switchView('kds'); });
+      if (quickLinkStorefront) quickLinkStorefront.addEventListener('click', function() { switchView('storefront'); });
+
+      // Unified Topbar Frame Reload button
+      if (btnTopReloadFrame) {
+        btnTopReloadFrame.addEventListener('click', function() {
+          if (viewPos && viewPos.classList.contains('active') && iframePos) {
+            iframePos.src = iframePos.getAttribute('data-src') || 'index.php?mode=staff';
+          } else if (viewKds && viewKds.classList.contains('active') && iframeKds) {
+            iframeKds.src = iframeKds.getAttribute('data-src') || 'kds.php';
+          } else if (viewStorefront && viewStorefront.classList.contains('active') && iframeStorefront) {
+            iframeStorefront.src = iframeStorefront.getAttribute('data-src') || 'index.php';
+          }
+        });
+      }
+
+      window.switchView = switchView;
+
+      function renderRoleSpecificElements() {
+        var user = window.__CURRENT_USER__;
+        if (!user) {
+          try {
+            user = JSON.parse(localStorage.getItem('becoffee_demo_session') || '{}');
+          } catch(e){}
+        }
+        if (!user || !user.role) return;
+
+        var roleTag = document.querySelector('.sidebar-brand-tag');
+
+        if (user.role === 'superadmin') {
+          if (roleTag) {
+            roleTag.textContent = 'SuperAdmin / Dev';
+            roleTag.className = 'sidebar-brand-tag role-superadmin';
+            roleTag.removeAttribute('style');
+          }
+          document.querySelectorAll('.superadmin-only-nav').forEach(function(el) {
+            el.style.display = el.tagName === 'BUTTON' ? 'flex' : 'block';
+          });
+        } else {
+          if (roleTag) {
+            roleTag.textContent = 'Manager Admin';
+            roleTag.className = 'sidebar-brand-tag role-admin';
+            roleTag.removeAttribute('style');
+          }
+          document.querySelectorAll('.superadmin-only-nav').forEach(function(el) {
+            el.style.display = 'none';
+          });
+        }
+      }
+
+      window.renderRoleSpecificElements = renderRoleSpecificElements;
+      renderRoleSpecificElements();
+
+      // Read initial URL view parameter or default to role landing
+      var urlParams = new URLSearchParams(window.location.search);
+      var initialView = urlParams.get('view');
+      if (initialView) {
+        if (initialView === 'developer' || initialView === 'users') switchView('users');
+        else if (initialView === 'diagnostics') switchView('diagnostics');
+        else if (initialView === 'database') switchView('database');
+        else if (initialView === 'audit' || initialView === 'audit-logs') switchView('audit-logs');
+        else if (initialView === 'stock' || initialView === 'stock-control') switchView('stock-control');
+        else if (initialView === 'orders' || initialView === 'audit-trail') switchView('audit-trail');
+        else if (initialView === 'pos' || initialView === 'counter') switchView('pos');
+        else if (initialView === 'kds' || initialView === 'kitchen') switchView('kds');
+        else if (initialView === 'storefront' || initialView === 'store') switchView('storefront');
+      } else {
+        var u = window.__CURRENT_USER__;
+        if (!u) {
+          try { u = JSON.parse(localStorage.getItem('becoffee_demo_session') || '{}'); } catch(e){}
+        }
+        if (u && u.role === 'superadmin') {
+          switchView('users');
+        }
+      }
+
+      // Sign out button with server logout
+      document.getElementById('adminSignOutBtn').addEventListener('click', async function() {
+        if (confirm('Sign out of Cafe Management?')) {
+          try {
+            await fetch('api/auth.php?action=logout', { method: 'POST', credentials: 'include' });
+          } catch(e){}
           localStorage.removeItem('becoffee_demo_session');
-          window.location.href = 'index.html';
+          window.location.href = 'index.php';
         }
       });
 
@@ -2210,6 +2855,403 @@
         toastTimer = setTimeout(function() {
           toast.classList.remove('active');
         }, 3000);
+      }
+
+      // ==========================================
+      // DEVELOPER & USER MANAGEMENT (SuperAdmin)
+      // ==========================================
+      var allLoadedUsers = [];
+
+      function renderUsersTable(usersToRender) {
+        var tbody = document.getElementById('usersTableBody');
+        if (!tbody) return;
+        tbody.innerHTML = '';
+
+        if (!usersToRender || usersToRender.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 2rem; color: var(--admin-muted);">No matching users found.</td></tr>';
+          return;
+        }
+
+        usersToRender.forEach(function(u) {
+          var tr = document.createElement('tr');
+          tr.style.borderBottom = '1px solid rgba(255,255,255,0.06)';
+
+          var roleBadgeColor = {
+            superadmin: '#C4B5FD',
+            admin: '#F59E0B',
+            staff: '#10B981',
+            customer: '#60A5FA'
+          }[u.role] || '#9CA3AF';
+
+          tr.innerHTML = `
+            <td style="padding: 0.85rem 1rem; color: var(--admin-muted); font-family: monospace;">#${u.id}</td>
+            <td style="padding: 0.85rem 1rem; font-weight: 600; color: #FFF;">${u.name}</td>
+            <td style="padding: 0.85rem 1rem; color: #E5E7EB;">${u.email}</td>
+            <td style="padding: 0.85rem 1rem;">
+              <span style="display: inline-block; padding: 0.2rem 0.6rem; border-radius: 6px; font-size: 0.75rem; font-weight: 600; background: rgba(255,255,255,0.06); color: ${roleBadgeColor}; text-transform: uppercase;">
+                ${u.role}
+              </span>
+            </td>
+            <td style="padding: 0.85rem 1rem; text-align: right;">
+              <div style="display: inline-flex; align-items: center; gap: 0.5rem; justify-content: flex-end;">
+                <select class="user-role-select" data-user-id="${u.id}" style="background: rgba(30,24,20,0.9); border: 1px solid rgba(255,255,255,0.2); color: #FFF; padding: 0.3rem 0.5rem; border-radius: 6px; font-size: 0.8rem; cursor: pointer;">
+                  <option value="superadmin" ${u.role === 'superadmin' ? 'selected' : ''}>SuperAdmin</option>
+                  <option value="admin" ${u.role === 'admin' ? 'selected' : ''}>Admin</option>
+                  <option value="staff" ${u.role === 'staff' ? 'selected' : ''}>Staff</option>
+                  <option value="customer" ${u.role === 'customer' ? 'selected' : ''}>Customer</option>
+                </select>
+                <button type="button" class="btn-reset-pw" data-user-id="${u.id}" data-user-name="${u.name}" title="Reset Password" style="background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.4); color: #FBBF24; padding: 0.3rem 0.6rem; border-radius: 6px; font-size: 0.78rem; font-weight: 600; cursor: pointer;">
+                  🔑 Reset
+                </button>
+                <button type="button" class="btn-delete-user" data-user-id="${u.id}" data-user-name="${u.name}" title="Delete User" style="background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: #FCA5A5; padding: 0.3rem 0.6rem; border-radius: 6px; font-size: 0.78rem; font-weight: 600; cursor: pointer;">
+                  ✕
+                </button>
+              </div>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+
+        // Bind role change listeners
+        tbody.querySelectorAll('.user-role-select').forEach(function(sel) {
+          sel.addEventListener('change', async function() {
+            var uid = this.getAttribute('data-user-id');
+            var newRole = this.value;
+            if (!confirm(`Change role of user #${uid} to '${newRole}'?`)) {
+              loadUsersData();
+              return;
+            }
+            try {
+              var updateRes = await fetch('api/users.php?action=update_role', {
+                method: 'PATCH',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ user_id: parseInt(uid, 10), role: newRole })
+              });
+              var updateData = await updateRes.json();
+              if (updateData.success) {
+                showToast(updateData.message || 'User role updated.');
+                loadUsersData();
+              } else {
+                showToast(updateData.error || 'Failed to update role.', true);
+                loadUsersData();
+              }
+            } catch(e) {
+              showToast('Network error updating role.', true);
+            }
+          });
+        });
+
+        // Bind password reset listeners
+        tbody.querySelectorAll('.btn-reset-pw').forEach(function(btn) {
+          btn.addEventListener('click', async function() {
+            var uid = this.getAttribute('data-user-id');
+            var uname = this.getAttribute('data-user-name');
+            var newPass = prompt(`Enter new password for ${uname} (minimum 8 characters):`);
+            if (!newPass) return;
+            if (newPass.length < 8) {
+              alert('Password must be at least 8 characters long.');
+              return;
+            }
+            try {
+              var res = await fetch('api/users.php?action=reset_password', {
+                method: 'PATCH',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ user_id: parseInt(uid, 10), new_password: newPass })
+              });
+              var data = await res.json();
+              if (data.success) {
+                showToast(data.message || 'Password reset successfully.');
+              } else {
+                showToast(data.error || 'Failed to reset password.', true);
+              }
+            } catch(e) {
+              showToast('Network error resetting password.', true);
+            }
+          });
+        });
+
+        // Bind delete listeners
+        tbody.querySelectorAll('.btn-delete-user').forEach(function(btn) {
+          btn.addEventListener('click', async function() {
+            var uid = this.getAttribute('data-user-id');
+            var uname = this.getAttribute('data-user-name');
+            if (!confirm(`Are you sure you want to permanently delete account '${uname}' (#${uid})?`)) {
+              return;
+            }
+            try {
+              var res = await fetch(`api/users.php?id=${uid}`, {
+                method: 'DELETE',
+                credentials: 'include'
+              });
+              var data = await res.json();
+              if (data.success) {
+                showToast(data.message || 'User deleted.');
+                loadUsersData();
+              } else {
+                showToast(data.error || 'Failed to delete user.', true);
+              }
+            } catch(e) {
+              showToast('Network error deleting user.', true);
+            }
+          });
+        });
+      }
+
+      function filterAndRenderUsers() {
+        var query = (document.getElementById('userSearchInput')?.value || '').toLowerCase().trim();
+        var role = document.getElementById('userRoleFilterSelect')?.value || '';
+
+        var filtered = allLoadedUsers.filter(function(u) {
+          var matchQuery = !query || (u.name || '').toLowerCase().includes(query) || (u.email || '').toLowerCase().includes(query);
+          var matchRole = !role || u.role === role;
+          return matchQuery && matchRole;
+        });
+        renderUsersTable(filtered);
+      }
+
+      document.getElementById('userSearchInput')?.addEventListener('input', filterAndRenderUsers);
+      document.getElementById('userRoleFilterSelect')?.addEventListener('change', filterAndRenderUsers);
+      document.getElementById('btnRefreshUsers')?.addEventListener('click', loadUsersData);
+
+      async function loadUsersData() {
+        try {
+          var res = await fetch('api/users.php', { cache: 'no-store', credentials: 'include' });
+          if (!res.ok) {
+            if (res.status === 403) showToast('SuperAdmin permissions required.', true);
+            return;
+          }
+          var data = await res.json();
+          if (!data.success) return;
+
+          allLoadedUsers = data.users || [];
+          var counts = data.role_counts || {};
+          document.getElementById('statSuperadminCount').textContent = counts.superadmin || 0;
+          document.getElementById('statAdminCount').textContent = counts.admin || 0;
+          document.getElementById('statStaffCount').textContent = counts.staff || 0;
+          document.getElementById('statCustomerCount').textContent = counts.customer || 0;
+
+          filterAndRenderUsers();
+
+        } catch (err) {
+          console.warn('Error loading users:', err);
+        }
+      }
+
+      // ==========================================
+      // SYSTEM DIAGNOSTICS CONTROLLER (SuperAdmin)
+      // ==========================================
+      async function loadDiagnosticsData() {
+        try {
+          // 1. Diagnostics Overview
+          var diagRes = await fetch('api/system.php?action=diagnostics', { credentials: 'include' });
+          if (diagRes.ok) {
+            var diagData = await diagRes.json();
+            if (diagData.success && diagData.diagnostics) {
+              var d = diagData.diagnostics;
+              document.getElementById('diagPhpVersion').textContent = 'PHP ' + d.php_version;
+              document.getElementById('diagMemory').textContent = 'Used: ' + d.memory_used + ' / Peak: ' + d.memory_peak;
+              document.getElementById('diagMysqlVersion').textContent = d.mysql_version;
+              document.getElementById('diagDbSize').textContent = 'Database: ' + d.database_size;
+              document.getElementById('diagServerOs').textContent = d.server_os;
+              document.getElementById('diagServerTime').textContent = d.server_time;
+              document.getElementById('diagOpcache').textContent = d.opcache_enabled ? '● OPcache Active' : '○ OPcache Off';
+              document.getElementById('diagMaxExec').textContent = 'Max Exec: ' + d.max_execution_time + ' | Upload: ' + d.upload_max_filesize;
+            }
+          }
+
+          // 2. Table Metrics
+          var tblRes = await fetch('api/system.php?action=table_stats', { credentials: 'include' });
+          if (tblRes.ok) {
+            var tblData = await tblRes.json();
+            var tbody = document.getElementById('tableStatsBody');
+            if (tbody && tblData.success) {
+              tbody.innerHTML = '';
+              (tblData.table_stats || []).forEach(function(t) {
+                var tr = document.createElement('tr');
+                tr.style.borderBottom = '1px solid rgba(255,255,255,0.06)';
+                tr.innerHTML = `
+                  <td style="padding: 0.75rem 1rem; font-family: monospace; font-weight: 700; color: #FFF;">${t.table}</td>
+                  <td style="padding: 0.75rem 1rem; color: var(--admin-muted); font-size: 0.8rem;">${t.description}</td>
+                  <td style="padding: 0.75rem 1rem; font-weight: 700; color: #DF9B64; font-family: monospace;">${t.rows}</td>
+                  <td style="padding: 0.75rem 1rem; color: #E5E7EB; font-family: monospace;">${t.size}</td>
+                  <td style="padding: 0.75rem 1rem;">
+                    <span style="display: inline-block; padding: 0.2rem 0.55rem; border-radius: 6px; font-size: 0.72rem; font-weight: 700; background: rgba(16,185,129,0.15); color: #34D399;">
+                      ${t.status}
+                    </span>
+                  </td>
+                `;
+                tbody.appendChild(tr);
+              });
+            }
+          }
+        } catch(e) {
+          console.warn('Diagnostics fetch error:', e);
+        }
+      }
+
+      document.getElementById('btnRefreshDiagnostics')?.addEventListener('click', loadDiagnosticsData);
+      document.getElementById('btnPurgeCache')?.addEventListener('click', async function() {
+        try {
+          var res = await fetch('api/system.php?action=purge_cache', { method: 'POST', credentials: 'include' });
+          var data = await res.json();
+          if (data.success) {
+            showToast(data.message || 'Cache purged.');
+            loadDiagnosticsData();
+          } else {
+            showToast(data.error || 'Failed to purge cache.', true);
+          }
+        } catch(e) {
+          showToast('Network error purging cache.', true);
+        }
+      });
+
+      // ==========================================
+      // DATABASE MIGRATIONS CONTROLLER (SuperAdmin)
+      // ==========================================
+      async function loadMigrationsData() {
+        try {
+          var res = await fetch('api/system.php?action=migrations', { credentials: 'include' });
+          if (!res.ok) return;
+          var data = await res.json();
+          var tbody = document.getElementById('migrationsTableBody');
+          if (tbody && data.success) {
+            tbody.innerHTML = '';
+            (data.migrations || []).forEach(function(m) {
+              var tr = document.createElement('tr');
+              tr.style.borderBottom = '1px solid rgba(255,255,255,0.06)';
+              var isApplied = m.status === 'APPLIED';
+              var statusBadge = isApplied 
+                ? '<span style="display: inline-block; padding: 0.2rem 0.6rem; border-radius: 6px; font-size: 0.72rem; font-weight: 700; background: rgba(16,185,129,0.15); color: #34D399;">✔ APPLIED</span>'
+                : '<span style="display: inline-block; padding: 0.2rem 0.6rem; border-radius: 6px; font-size: 0.72rem; font-weight: 700; background: rgba(245,158,11,0.15); color: #FBBF24;">⏳ PENDING</span>';
+
+              tr.innerHTML = `
+                <td style="padding: 0.75rem 1rem; font-family: monospace; font-size: 0.8rem; color: #93C5FD;">${m.file}</td>
+                <td style="padding: 0.75rem 1rem; font-weight: 600; color: #FFF;">${m.title}</td>
+                <td style="padding: 0.75rem 1rem; color: var(--admin-muted); font-size: 0.8rem;">${m.note}</td>
+                <td style="padding: 0.75rem 1rem; text-align: right;">${statusBadge}</td>
+              `;
+              tbody.appendChild(tr);
+            });
+          }
+        } catch(e) {
+          console.warn('Migrations fetch error:', e);
+        }
+      }
+
+      // ==========================================
+      // SECURITY AUDIT LOGS CONTROLLER (SuperAdmin)
+      // ==========================================
+      async function loadAuditLogsData() {
+        try {
+          var res = await fetch('api/system.php?action=audit_logs&limit=50', { credentials: 'include' });
+          if (!res.ok) return;
+          var data = await res.json();
+          var tbody = document.getElementById('auditLogsTableBody');
+          if (tbody && data.success) {
+            tbody.innerHTML = '';
+            if (!data.logs || data.logs.length === 0) {
+              tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 2rem; color: var(--admin-muted);">No audit log events recorded yet.</td></tr>';
+              return;
+            }
+
+            data.logs.forEach(function(l) {
+              var tr = document.createElement('tr');
+              tr.style.borderBottom = '1px solid rgba(255,255,255,0.06)';
+
+              var roleColor = {
+                superadmin: '#C4B5FD',
+                admin: '#F59E0B',
+                staff: '#10B981',
+                customer: '#60A5FA',
+                system: '#9CA3AF'
+              }[l.role] || '#9CA3AF';
+
+              tr.innerHTML = `
+                <td style="padding: 0.75rem 1rem; color: var(--admin-muted); font-family: monospace; font-size: 0.78rem; white-space: nowrap;">${l.created_at}</td>
+                <td style="padding: 0.75rem 1rem; font-weight: 600; color: #FFF; font-size: 0.82rem;">
+                  <div>${l.user_email || 'System'}</div>
+                  <span style="font-size: 0.68rem; color: ${roleColor}; text-transform: uppercase; font-weight: 700;">${l.role}</span>
+                </td>
+                <td style="padding: 0.75rem 1rem;">
+                  <span style="display: inline-block; padding: 0.2rem 0.5rem; border-radius: 5px; font-family: monospace; font-size: 0.72rem; font-weight: 700; background: rgba(255,255,255,0.06); color: #FCA5A5;">
+                    ${l.action}
+                  </span>
+                </td>
+                <td style="padding: 0.75rem 1rem; color: #E5E7EB; font-size: 0.82rem;">${l.details || '—'}</td>
+                <td style="padding: 0.75rem 1rem; color: var(--admin-muted); font-family: monospace; font-size: 0.78rem;">${l.ip_address || '127.0.0.1'}</td>
+              `;
+              tbody.appendChild(tr);
+            });
+          }
+        } catch(e) {
+          console.warn('Audit logs fetch error:', e);
+        }
+      }
+
+      document.getElementById('btnRefreshAuditLogs')?.addEventListener('click', loadAuditLogsData);
+
+      // Create User Modal Handlers
+      var adminCreateUserModal = document.getElementById('adminCreateUserModal');
+      var btnOpenCreateUserModal = document.getElementById('btnOpenCreateUserModal');
+      var btnCloseCreateUserModal = document.getElementById('btnCloseCreateUserModal');
+      var btnSubmitNewUser = document.getElementById('btnSubmitNewUser');
+
+      if (btnOpenCreateUserModal && adminCreateUserModal) {
+        btnOpenCreateUserModal.addEventListener('click', function() {
+          adminCreateUserModal.classList.add('active');
+        });
+      }
+      if (btnCloseCreateUserModal && adminCreateUserModal) {
+        btnCloseCreateUserModal.addEventListener('click', function() {
+          adminCreateUserModal.classList.remove('active');
+        });
+      }
+      if (btnSubmitNewUser) {
+        btnSubmitNewUser.addEventListener('click', async function() {
+          var name = (document.getElementById('newUserName').value || '').trim();
+          var email = (document.getElementById('newUserEmail').value || '').trim();
+          var password = (document.getElementById('newUserPassword').value || '').trim();
+          var role = document.getElementById('newUserRole').value;
+
+          if (!name || !email || !password) {
+            alert('Please fill in all account fields.');
+            return;
+          }
+          if (password.length < 8) {
+            alert('Password must be at least 8 characters long.');
+            return;
+          }
+
+          btnSubmitNewUser.disabled = true;
+          btnSubmitNewUser.textContent = 'Creating...';
+
+          try {
+            var createRes = await fetch('api/users.php?action=create', {
+              method: 'POST',
+              credentials: 'include',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ name: name, email: email, password: password, role: role })
+            });
+            var createData = await createRes.json();
+            if (createData.success) {
+              showToast(createData.message || 'Account created successfully.');
+              adminCreateUserModal.classList.remove('active');
+              document.getElementById('newUserName').value = '';
+              document.getElementById('newUserEmail').value = '';
+              document.getElementById('newUserPassword').value = '';
+              loadUsersData();
+            } else {
+              alert(createData.error || 'Failed to create user.');
+            }
+          } catch(e) {
+            alert('Network error creating user.');
+          } finally {
+            btnSubmitNewUser.disabled = false;
+            btnSubmitNewUser.textContent = 'Create Account';
+          }
+        });
       }
 
       // ==========================================
@@ -2305,7 +3347,7 @@
       async function loadLedgerData() {
         var dateVal = ledgerDatePicker.value || getLocalDateStr(0);
         try {
-          var res = await fetch(`api/ledger.php?date=${encodeURIComponent(dateVal)}`, { cache: 'no-store' });
+          var res = await fetch(`api/ledger.php?date=${encodeURIComponent(dateVal)}`, { cache: 'no-store', credentials: 'include' });
           if (!res.ok) return;
           var data = await res.json();
           if (!data.success) return;
@@ -2330,18 +3372,18 @@
           var dineInPct = (totalDining > 0) ? Math.round((dineInCount / totalDining) * 100) : 0;
 
           document.getElementById('ledgerGrossRevenue').textContent = `₱${totalRev.toLocaleString('en-PH', { minimumFractionDigits: 2 })}`;
-          document.getElementById('ledgerGrossSub').textContent = `${completedCount} completed order${completedCount === 1 ? '' : 's'}`;
+          document.getElementById('ledgerGrossSub').textContent = `${completedCount} finished order${completedCount === 1 ? '' : 's'} today`;
 
           document.getElementById('ledgerAovValue').textContent = `₱${aov.toLocaleString('en-PH', { minimumFractionDigits: 2 })}`;
-          document.getElementById('ledgerAovSub').textContent = (completedCount > 0) ? `Based on ${completedCount} ticket${completedCount === 1 ? '' : 's'}` : 'No completed sales yet';
+          document.getElementById('ledgerAovSub').textContent = (completedCount > 0) ? `From ${completedCount} customer order${completedCount === 1 ? '' : 's'}` : 'No sales recorded yet';
 
           document.getElementById('ledgerAvgPrepValue').textContent = (avgPrep > 0) ? `${avgPrep.toFixed(1)}m` : '—';
 
-          document.getElementById('ledgerDiningSplitValue').textContent = (totalDining > 0) ? `${dineInPct}% Dine-In` : 'No dining data';
+          document.getElementById('ledgerDiningSplitValue').textContent = (totalDining > 0) ? `${dineInPct}% Dine-In` : 'No orders yet';
           document.getElementById('ledgerDiningSplitSub').textContent = `${dineInCount} Dine-In · ${takeOutCount} Take-Out`;
 
           document.getElementById('ledgerPipelineValue').textContent = `${totalTickets} Total`;
-          document.getElementById('ledgerPipelineSub').textContent = `${completedCount} cleared · ${activeTotal} active · ${cancelledCount} canc`;
+          document.getElementById('ledgerPipelineSub').textContent = `${completedCount} finished · ${activeTotal} being made · ${cancelledCount} cancelled`;
 
           // 2. Payment Breakdown Card
           var gcashRev = parseFloat(kpi.gcash_revenue || 0);
@@ -2351,9 +3393,9 @@
 
           document.getElementById('paymentTotalBadge').textContent = `₱${totalRev.toLocaleString('en-PH', { minimumFractionDigits: 2 })}`;
           document.getElementById('ledgerGcashTotal').textContent = `₱${gcashRev.toLocaleString('en-PH', { minimumFractionDigits: 2 })}`;
-          document.getElementById('ledgerGcashShare').textContent = `${gcashPct}% of revenue`;
+          document.getElementById('ledgerGcashShare').textContent = `${gcashPct}% of total sales`;
           document.getElementById('ledgerCashTotal').textContent = `₱${cashRev.toLocaleString('en-PH', { minimumFractionDigits: 2 })}`;
-          document.getElementById('ledgerCashShare').textContent = `${cashPct}% of revenue`;
+          document.getElementById('ledgerCashShare').textContent = `${cashPct}% of total sales`;
 
           var splitBarGcash = document.getElementById('splitBarGcash');
           var splitBarCash = document.getElementById('splitBarCash');
@@ -2431,9 +3473,9 @@
               var hr12 = h % 12 || 12;
               return `${hr12}:00 ${suffix}`;
             };
-            peakBadge.textContent = `Peak Rush: ${formatHr(peakItem.hour)} (${peakItem.count} order${peakItem.count === 1 ? '' : 's'})`;
+            peakBadge.textContent = `Busiest Time: ${formatHr(peakItem.hour)} (${peakItem.count} order${peakItem.count === 1 ? '' : 's'})`;
           } else {
-            peakBadge.textContent = 'Peak Rush: No orders yet';
+            peakBadge.textContent = 'Busiest Time: No orders yet';
           }
         }
 
@@ -2523,7 +3565,7 @@
         if (!drinksRankList) return;
 
         if (sortedDrinks.length === 0) {
-          drinksRankList.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--admin-muted); font-size: 0.85rem;">No drink sales recorded for this date.</div>';
+          drinksRankList.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--admin-muted); font-size: 0.85rem;">No drinks sold today yet.</div>';
           return;
         }
 
@@ -2538,7 +3580,7 @@
                   <span class="rank-item-num">#${idx + 1}</span>
                   <span>${item.name}</span>
                 </span>
-                <span class="rank-item-stats">${item.quantity} sold · ₱${item.revenue.toFixed(2)}</span>
+                <span class="rank-item-stats">${item.quantity} sold · ₱${item.revenue.toFixed(2)} made</span>
               </div>
               <div class="rank-progress-track">
                 <div class="rank-progress-fill" style="width: ${pct}%;"></div>
@@ -2611,13 +3653,13 @@
         });
 
         if (rowCountNotice) {
-          rowCountNotice.textContent = `Showing ${filtered.length} of ${rawLedgerOrders.length} order ticket${rawLedgerOrders.length === 1 ? '' : 's'}`;
+          rowCountNotice.textContent = `Showing ${filtered.length} of ${rawLedgerOrders.length} order${rawLedgerOrders.length === 1 ? '' : 's'}`;
         }
 
         if (filtered.length === 0) {
           var emptyMsg = rawLedgerOrders.length === 0 
             ? 'No orders recorded for this date.' 
-            : 'No orders match your filter criteria.';
+            : 'No orders match your search or filter.';
           if (tbody) tbody.innerHTML = `<tr><td colspan="9" style="text-align: center; padding: 3rem; color: var(--admin-muted); font-size: 0.88rem;">${emptyMsg}</td></tr>`;
           if (mobileCards) mobileCards.innerHTML = `<div style="text-align: center; padding: 2rem; color: var(--admin-muted); font-size: 0.85rem;">${emptyMsg}</div>`;
           return;
@@ -2632,21 +3674,23 @@
 
             var qaBadges = `
               <div style="display:flex; flex-direction:column; gap:0.2rem; font-size:0.75rem;">
-                <span style="color:${ord.qa_payment_verified ? '#34D399' : '#F87171'};">● Payment ${ord.qa_payment_verified ? 'Verified' : 'Pending'}</span>
-                <span style="color:${ord.qa_customizations_followed ? '#34D399' : '#F87171'};">● Customizations ${ord.qa_customizations_followed ? 'Followed' : 'Pending'}</span>
-                <span style="color:${ord.qa_packaging_secured ? '#34D399' : '#F87171'};">● Packaging ${ord.qa_packaging_secured ? 'Secured' : 'Pending'}</span>
+                <span style="color:${ord.qa_payment_verified ? '#34D399' : '#F87171'};">● Payment ${ord.qa_payment_verified ? 'Confirmed' : 'Pending'}</span>
+                <span style="color:${ord.qa_customizations_followed ? '#34D399' : '#F87171'};">● Recipe ${ord.qa_customizations_followed ? 'Followed' : 'Pending'}</span>
+                <span style="color:${ord.qa_packaging_secured ? '#34D399' : '#F87171'};">● Cup & Bag ${ord.qa_packaging_secured ? 'Sealed' : 'Pending'}</span>
               </div>
             `;
 
             var statusPill = (ord.status === 'completed')
-              ? '<span style="background:rgba(16,185,129,0.15); color:#34D399; padding:0.25rem 0.55rem; border-radius:6px; font-weight:700; font-size:0.78rem;">Completed</span>'
+              ? '<span style="background:rgba(16,185,129,0.15); color:#34D399; padding:0.25rem 0.55rem; border-radius:6px; font-weight:700; font-size:0.78rem;">Finished</span>'
               : (ord.status === 'in_progress')
-              ? '<span style="background:rgba(226,135,67,0.15); color:#FDBA74; padding:0.25rem 0.55rem; border-radius:6px; font-weight:700; font-size:0.78rem;">In Prep</span>'
-              : `<span style="background:rgba(239,68,68,0.15); color:#F87171; padding:0.25rem 0.55rem; border-radius:6px; font-weight:700; font-size:0.78rem;">${ord.status}</span>`;
+              ? '<span style="background:rgba(226,135,67,0.15); color:#FDBA74; padding:0.25rem 0.55rem; border-radius:6px; font-weight:700; font-size:0.78rem;">Being Made</span>'
+              : (ord.status === 'cancelled')
+              ? '<span style="background:rgba(239,68,68,0.15); color:#F87171; padding:0.25rem 0.55rem; border-radius:6px; font-weight:700; font-size:0.78rem;">Cancelled</span>'
+              : `<span style="background:rgba(96,165,250,0.15); color:#60A5FA; padding:0.25rem 0.55rem; border-radius:6px; font-weight:700; font-size:0.78rem;">Waiting</span>`;
 
             var prepTimeStr = ord.completed_at
-              ? `${Math.round((ord.elapsed_seconds || 0) / 60)}m prep`
-              : 'In progress';
+              ? `${Math.round((ord.elapsed_seconds || 0) / 60)}m prep time`
+              : (ord.status === 'cancelled' ? 'Cancelled' : 'Being prepared');
 
             return `
               <tr>
@@ -2672,14 +3716,16 @@
             }).join('');
 
             var statusPill = (ord.status === 'completed')
-              ? '<span style="background:rgba(16,185,129,0.15); color:#34D399; padding:0.2rem 0.5rem; border-radius:6px; font-weight:700; font-size:0.75rem;">Completed</span>'
+              ? '<span style="background:rgba(16,185,129,0.15); color:#34D399; padding:0.2rem 0.5rem; border-radius:6px; font-weight:700; font-size:0.75rem;">Finished</span>'
               : (ord.status === 'in_progress')
-              ? '<span style="background:rgba(226,135,67,0.15); color:#FDBA74; padding:0.2rem 0.5rem; border-radius:6px; font-weight:700; font-size:0.75rem;">In Prep</span>'
-              : `<span style="background:rgba(239,68,68,0.15); color:#F87171; padding:0.2rem 0.5rem; border-radius:6px; font-weight:700; font-size:0.75rem;">${ord.status}</span>`;
+              ? '<span style="background:rgba(226,135,67,0.15); color:#FDBA74; padding:0.2rem 0.5rem; border-radius:6px; font-weight:700; font-size:0.75rem;">Being Made</span>'
+              : (ord.status === 'cancelled')
+              ? '<span style="background:rgba(239,68,68,0.15); color:#F87171; padding:0.2rem 0.5rem; border-radius:6px; font-weight:700; font-size:0.75rem;">Cancelled</span>'
+              : `<span style="background:rgba(96,165,250,0.15); color:#60A5FA; padding:0.2rem 0.5rem; border-radius:6px; font-weight:700; font-size:0.75rem;">Waiting</span>`;
 
             var qaStatus = ord.qa_payment_verified && ord.qa_customizations_followed && ord.qa_packaging_secured
-              ? '<span style="color: #34D399; font-size: 0.75rem; font-weight: 700;">● QA Cleared</span>'
-              : '<span style="color: #F87171; font-size: 0.75rem; font-weight: 700;">● QA Pending</span>';
+              ? '<span style="color: #34D399; font-size: 0.75rem; font-weight: 700;">● Checks Done</span>'
+              : '<span style="color: #F87171; font-size: 0.75rem; font-weight: 700;">● Checks Incomplete</span>';
 
             return `
               <div class="mobile-order-ticket">
@@ -2783,7 +3829,7 @@
               <div class="drink-img-wrap">
                 <img src="${item.image || 'images/menu/hc-spanish.webp'}" alt="${item.name}" loading="lazy">
                 ${tagBadge}
-                <span class="${stockTagClass}" data-item-id="${item.id}" title="Tap to toggle drink stock">${stockTagText}</span>
+                <span class="${stockTagClass}" data-item-id="${item.id}" title="Click to toggle drink availability">${stockTagText}</span>
               </div>
               <div class="drink-meta-row">
                 <h4 class="drink-name">${item.name}</h4>
@@ -2792,7 +3838,7 @@
               <p class="drink-desc">${item.description || 'Specialty handcrafted cafe beverage.'}</p>
               <button type="button" class="btn-manage-options btn-open-manage" data-item-id="${item.id}">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
-                Manage Customization Options
+                Edit Drink & Options
               </button>
             </div>
           `;
@@ -2846,7 +3892,7 @@
           });
           var data = await res.json();
           if (data.success) {
-            showToast(next ? 'Drink marked IN STOCK.' : 'Drink marked SOLD OUT.', !next);
+            showToast(next ? 'Drink marked AVAILABLE.' : 'Drink marked SOLD OUT.', !next);
           }
         } catch (e) {
           console.warn('Quick toggle error:', e);
@@ -2854,7 +3900,7 @@
       }
 
       // ==========================================
-      // 4. THE "MANAGE CUSTOMIZATION OPTIONS" MODAL
+      // 4. THE "MANAGE DRINK OPTIONS" MODAL
       // ==========================================
       var manageModal = document.getElementById('adminManageModal');
 
@@ -2895,7 +3941,7 @@
           btn.style.color = '#34D399';
           btn.style.borderColor = 'rgba(16, 185, 129, 0.5)';
         } else {
-          btn.textContent = '✕ Sold Out (86\'d)';
+          btn.textContent = '✕ Sold Out';
           btn.style.background = 'rgba(239, 68, 68, 0.2)';
           btn.style.color = '#F87171';
           btn.style.borderColor = 'rgba(239, 68, 68, 0.5)';
@@ -2919,7 +3965,7 @@
           });
           var data = await res.json();
           if (data.success) {
-            showToast(next ? 'Drink marked IN STOCK.' : 'Drink marked SOLD OUT (86\'d).', !next);
+            showToast(next ? 'Drink marked AVAILABLE.' : 'Drink marked SOLD OUT.', !next);
           }
         } catch (e) {
           console.warn('Drink stock toggle error:', e);
@@ -2972,7 +4018,7 @@
 
         var addons = stockOptions.filter(function(o) { return o.category_type === 'addon'; });
         if (addons.length === 0) {
-          container.innerHTML = '<div style="color: var(--admin-muted); font-size: 0.8rem; padding: 0.5rem 0;">No add-ons created yet. Click "+ Add New Add-on" above to add one.</div>';
+          container.innerHTML = '<div style="color: var(--admin-muted); font-size: 0.8rem; padding: 0.5rem 0;">No extras created yet. Click "+ Add New Extra" above to add one.</div>';
           return;
         }
 
@@ -2982,7 +4028,7 @@
             <div class="admin-option-pill ${isAvail ? 'is-in-stock' : 'is-sold-out'}" data-opt="${opt.option_key}">
               <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%; gap: 0.4rem;">
                 <span class="option-title-text">${opt.option_label}</span>
-                <button type="button" class="btn-delete-addon" data-opt="${opt.option_key}" title="Delete this add-on">&times;</button>
+                <button type="button" class="btn-delete-addon" data-opt="${opt.option_key}" title="Delete this option">&times;</button>
               </div>
               <span class="status-indicator-tag ${isAvail ? 'tag-in-stock' : 'tag-sold-out'}">${isAvail ? 'In Stock' : '✕ Sold Out'}</span>
             </div>
@@ -3003,7 +4049,7 @@
           btn.addEventListener('click', async function(e) {
             e.stopPropagation();
             var optKey = btn.getAttribute('data-opt');
-            if (!confirm(`Are you sure you want to permanently delete the add-on "${optKey}"?`)) return;
+            if (!confirm(`Are you sure you want to permanently delete "${optKey}"?`)) return;
 
             try {
               var res = await fetch('api/stock.php', {
@@ -3013,7 +4059,7 @@
               });
               var data = await res.json();
               if (data.success) {
-                showToast(`Add-on "${optKey}" deleted.`, false);
+                showToast(`Option "${optKey}" deleted.`, false);
                 await loadStockStatus();
                 renderModalAddons();
               } else {
@@ -3046,7 +4092,7 @@
         var price = parseFloat(document.getElementById('inputNewAddonPrice').value) || 0;
 
         if (!name) {
-          alert('Please enter an add-on name (e.g. Cinnamon Syrup, Caramel Drizzle).');
+          alert('Please enter an option name (e.g. Cinnamon Syrup, Caramel Drizzle).');
           return;
         }
 
@@ -3067,7 +4113,7 @@
           });
           var data = await res.json();
           if (data.success) {
-            showToast(`Add-on "${name}" (+₱${price}) created successfully.`, false);
+            showToast(`Extra "${name}" (+₱${price}) created successfully.`, false);
             document.getElementById('inputNewAddonName').value = '';
             document.getElementById('inputNewAddonPrice').value = '30';
             newAddonWrap.style.display = 'none';
@@ -3080,7 +4126,7 @@
           showToast('Connection error: ' + e.message, true);
         } finally {
           btn.disabled = false;
-          btn.textContent = 'Save Add-on';
+          btn.textContent = 'Save Extra';
         }
       });
 
@@ -3109,8 +4155,8 @@
           var data = await res.json();
           if (data.success) {
             var msg = next 
-              ? `"${optKey}" restored to IN STOCK.` 
-              : `"${optKey}" CANCELLED OUT (Marked Sold Out / 86'd).`;
+              ? `"${optKey}" is now IN STOCK.` 
+              : `"${optKey}" marked as SOLD OUT.`;
             showToast(msg, !next);
           }
         } catch (e) {
@@ -3326,7 +4372,7 @@
 
       // Reset All Stock
       document.getElementById('btnResetAllStockTop').addEventListener('click', async function() {
-        if (!confirm('Are you sure you want to reset ALL customization options and drinks to IN STOCK?')) return;
+        if (!confirm('Are you sure you want to set ALL drinks and options back to IN STOCK?')) return;
 
         try {
           var res = await fetch('api/stock.php', {
@@ -3336,7 +4382,7 @@
           });
           var data = await res.json();
           if (data.success) {
-            showToast('All options and drinks reset to IN STOCK.', false);
+            showToast('All drinks and options set to IN STOCK.', false);
             await loadStockMenu();
           }
         } catch (e) {
@@ -3349,7 +4395,5 @@
 
     })();
   </script>
-  <!-- Mobile Sidebar Backdrop Overlay -->
-  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 </body>
 </html>

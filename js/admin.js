@@ -60,9 +60,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // --- 1. Session Verification ---
   async function checkAdminSession() {
     try {
-      // 1. Check local session storage (shared from index.html sign-in)
+      // 1. Check local session storage (shared from index.php sign-in)
       const localSession = JSON.parse(localStorage.getItem('becoffee_demo_session') || 'null');
-      if (localSession && localSession.role === 'admin') {
+      if (localSession && (localSession.role === 'admin' || localSession.role === 'superadmin')) {
         showStudio();
         return;
       }
@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // 2. Query active server session
       const res = await fetch(getApiUrl('api/auth.php?action=me'), { credentials: 'include' });
       const data = await res.json();
-      if (res.ok && (data.success || data.authenticated) && data.user && data.user.role === 'admin') {
+      if (res.ok && (data.success || data.authenticated) && data.user && (data.user.role === 'admin' || data.user.role === 'superadmin')) {
         localStorage.setItem('becoffee_demo_session', JSON.stringify(data.user));
         showStudio();
       } else {
@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function showAuth() {
     localStorage.removeItem('becoffee_demo_session');
-    window.location.replace('index.html');
+    window.location.replace('index.php');
   }
 
   function showStudio() {
@@ -101,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       } catch (e) {}
       localStorage.removeItem('becoffee_demo_session');
-      window.location.replace('index.html');
+      window.location.replace('index.php');
     });
   }
 

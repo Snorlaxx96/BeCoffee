@@ -1,3 +1,15 @@
+<?php
+require_once __DIR__ . '/api/config.php';
+$currentUser = getAuthenticatedUser();
+if (!$currentUser) {
+    header('Location: index.php?error=unauthorized');
+    exit;
+}
+if ($currentUser['role'] === 'customer') {
+    header('Location: index.php?notice=staff_only');
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -619,6 +631,63 @@
       box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
     }
   </style>
+
+  <script>
+    (async function initKdsAuthGuard() {
+      try {
+        var res = await fetch('api/auth.php?action=me', { credentials: 'include' });
+        if (!res.ok) {
+          window.location.replace('index.php?error=unauthorized');
+          return;
+        }
+        var data = await res.json();
+        if (!data.authenticated || !data.user) {
+          window.location.replace('index.php?error=unauthorized');
+          return;
+        }
+        // Customers are strictly blocked from Kitchen Display
+        if (data.user.role === 'customer') {
+          window.location.replace('index.php?notice=staff_only');
+          return;
+        }
+        // Allowed: staff, admin, superadmin
+        window.__KDS_USER__ = data.user;
+        
+        window.handleKdsSignOut = async function() {
+          try {
+            await fetch('api/auth.php?action=logout', { method: 'POST', credentials: 'include' });
+          } catch(e) {}
+          localStorage.removeItem('becoffee_demo_session');
+          window.location.href = 'api/auth.php?action=logout';
+        };
+
+        function setupKdsHeader() {
+          var staffPill = document.getElementById('kdsStaffPill');
+          if (staffPill) {
+            staffPill.innerHTML = `Staff: <strong>${data.user.name}</strong> <span style="font-size: 0.7rem; opacity: 0.7; text-transform: uppercase;">(${data.user.role})</span>`;
+          }
+          if (data.user.role === 'admin' || data.user.role === 'superadmin') {
+            var adminLink = document.getElementById('kdsAdminLink');
+            if (adminLink) adminLink.style.display = 'inline-flex';
+            var posLink = document.getElementById('kdsPosLink');
+            if (posLink) posLink.style.display = 'inline-flex';
+          }
+          var signoutBtn = document.getElementById('kdsSignOutBtn');
+          if (signoutBtn) {
+            signoutBtn.onclick = window.handleKdsSignOut;
+          }
+        }
+
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', setupKdsHeader);
+        } else {
+          setupKdsHeader();
+        }
+      } catch (e) {
+        console.warn('KDS auth guard check deferred:', e);
+      }
+    })();
+  </script>
 </head>
 <body>
 
@@ -633,15 +702,22 @@
     </div>
     <div class="kds-actions">
       <div class="kds-clock" id="kdsClock">00:00:00</div>
+      <div class="kds-clock" id="kdsStaffPill" style="font-size: 0.8rem; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); padding: 0.35rem 0.75rem; border-radius: 8px;">
+        Staff Station
+      </div>
       <button type="button" class="kds-btn sound-btn active" id="kdsSoundToggle" title="Toggle audio chime alert on new incoming tickets">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5z"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
         <span id="soundLabel">Chime: ON</span>
       </button>
-      <a href="admin_portal.html" class="kds-btn" style="background: rgba(226, 135, 67, 0.2); border-color: rgba(226, 135, 67, 0.4); color: #FDBA74;">
-        🛡️ Stock & Option Control
+      <a href="index.php?mode=staff" class="kds-btn" id="kdsPosLink" style="display: none; background: rgba(16, 185, 129, 0.2); border-color: rgba(16, 185, 129, 0.4); color: #6EE7B7; text-decoration: none;">
+        🛍️ Take Orders (Dine In / Take Out Order)
       </a>
-      <a href="admin.html" class="kds-btn">📊 Daily Ledger</a>
-      <a href="index.html" class="kds-btn" target="_blank">View Storefront</a>
+      <a href="admin.php" class="kds-btn" id="kdsAdminLink" style="display: none; text-decoration: none;">
+        📊 Admin Studio
+      </a>
+      <button type="button" class="kds-btn" id="kdsSignOutBtn" onclick="handleKdsSignOut()" style="cursor: pointer;">
+        🚪 Sign Out
+      </button>
     </div>
   </header>
 
@@ -770,8 +846,13 @@
       // Poll KDS Queue from /api/kds.php
       async function fetchKdsQueue() {
         try {
-          var res = await fetch('api/kds.php', { cache: 'no-store' });
-          if (!res.ok) return;
+          var res = await fetch('api/kds.php', { cache: 'no-store', credentials: 'include' });
+          if (!res.ok) {
+            if (res.status === 401 || res.status === 403) {
+              console.warn('KDS: Unauthorized. Staff session required.');
+            }
+            return;
+          }
           var data = await res.json();
           if (!data.success) return;
 
@@ -1010,6 +1091,7 @@
             try {
               var res = await fetch('api/kds.php?action=acknowledge', {
                 method: 'PATCH',
+                credentials: 'include',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ order_id: ord.id })
               });
@@ -1118,6 +1200,7 @@
 
               var res = await fetch('api/kds.php?action=complete', {
                 method: 'PATCH',
+                credentials: 'include',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                   order_id: ord.id,

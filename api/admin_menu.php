@@ -7,19 +7,10 @@
 require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/db.php';
 
-// Verify Admin Session
-if (empty($_SESSION['user_id'])) {
-    jsonResponse(['success' => false, 'error' => 'Authentication required.'], 401);
-}
+// Verify Admin or Superadmin Session
+$admin = requireRole(['admin', 'superadmin']);
 
 $db = Database::getConnection();
-$adminStmt = $db->prepare("SELECT id, name, email, role FROM users WHERE id = ?");
-$adminStmt->execute([$_SESSION['user_id']]);
-$admin = $adminStmt->fetch();
-
-if (!$admin || $admin['role'] !== 'admin') {
-    jsonResponse(['success' => false, 'error' => 'Forbidden. Administrator privileges required.'], 403);
-}
 
 $method = $_SERVER['REQUEST_METHOD'];
 $action = $_GET['action'] ?? '';
