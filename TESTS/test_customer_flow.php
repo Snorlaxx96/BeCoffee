@@ -107,13 +107,15 @@ TestFramework::registerSuite('Customer Online Takeout & Walk-in QR Flow', functi
     $staffStickersRes = $staffClient->get('qr_stickers.php');
     $t->assertEquals('Kitchen staff is blocked from qr_stickers.php (403 Forbidden)', 403, $staffStickersRes['status']);
 
-    // Admin Quick Links User Experience Previews
+    // Admin Quick Links & Operational Previews
     $adminPageRes = $adminClient->get('admin.php');
     $t->assertEquals('Admin can access admin.php (200 OK)', 200, $adminPageRes['status']);
-    $t->assert('Admin Quick Links contain previewPersonaBadge', strpos($adminPageRes['body'], 'previewPersonaBadge') !== false);
     $t->assert('Admin Quick Links contain previewDeviceStrip', strpos($adminPageRes['body'], 'previewDeviceStrip') !== false);
-    $t->assert('Admin Quick Links contain previewVariantSwitcher', strpos($adminPageRes['body'], 'previewVariantSwitcher') !== false);
-    $t->assert('Online order preview iframe targets takeout.php', strpos($adminPageRes['body'], 'data-src="takeout.php"') !== false);
+    $t->assert('Admin Quick Links contain Kitchen Screen link', strpos($adminPageRes['body'], 'id="quickLinkKds"') !== false);
+    $t->assert('Dine-In/Takeout customer quick link is removed', strpos($adminPageRes['body'], 'id="quickLinkPos"') === false);
+    $t->assert('Online order customer quick link is removed', strpos($adminPageRes['body'], 'id="quickLinkStorefront"') === false);
+    $t->assert('Kitchen Screen preview iframe targets kds.php', strpos($adminPageRes['body'], 'data-src="kds.php"') !== false);
+    $t->assert('Table QR Stickers preview iframe targets qr_stickers.php', strpos($adminPageRes['body'], 'data-src="qr_stickers.php"') !== false);
 
     // 8. Management Operational Settings RBAC (api/settings.php)
     $staffToggleRes = $staffClient->post('api/settings.php?action=toggle_qr', ['enabled' => false]);

@@ -17,7 +17,7 @@ if ($method === 'GET') {
     // Case A: Customer Live Order Ticket Polling (by Order Reference)
     if (!empty($ref)) {
         $stmt = $db->prepare("
-            SELECT id, queue_number, order_reference, order_type, table_number, payment_method, 
+            SELECT id, queue_number, order_reference, order_type, table_number, order_source, payment_method, 
                    payment_status, customer_name, customer_phone, customer_notes,
                    subtotal, eco_fee, grand_total, status, created_at, completed_at,
                    TIMESTAMPDIFF(SECOND, created_at, NOW()) AS elapsed_seconds
@@ -66,7 +66,7 @@ if ($method === 'GET') {
     }
 
     $stmt = $db->prepare("
-        SELECT id, queue_number, order_reference, order_type, table_number, payment_method, payment_status,
+        SELECT id, queue_number, order_reference, order_type, table_number, order_source, payment_method, payment_status,
                customer_name, customer_phone, subtotal, eco_fee, grand_total, status, created_at, completed_at
         FROM orders
         WHERE user_id = ?
@@ -135,6 +135,17 @@ if ($method === 'POST') {
     $orderType     = in_array($input['order_type'] ?? '', ['dine_in', 'take_out'], true) ? $input['order_type'] : 'dine_in';
     $tableNumber   = ($orderType === 'dine_in') ? trim($input['table_number'] ?? '1') : null;
     $paymentMethod = in_array($input['payment_method'] ?? '', ['cash', 'gcash'], true) ? $input['payment_method'] : 'cash';
+
+    $rawSource = strtolower(trim($input['order_source'] ?? ''));
+    if (in_array($rawSource, ['qr_link', 'registrar', 'online'], true)) {
+        $orderSource = $rawSource;
+    } elseif ($orderType === 'take_out' && empty($tableNumber)) {
+        $orderSource = 'online';
+    } elseif (!empty($tableNumber)) {
+        $orderSource = 'qr_link';
+    } else {
+        $orderSource = 'registrar';
+    }
 
     // Operational Guard: Check if Table QR Ordering is paused by management
     if ($orderType === 'dine_in' && getSystemSetting('table_qr_ordering_enabled', '1') !== '1') {
@@ -270,16 +281,17 @@ if ($method === 'POST') {
         // Insert Order Record
         $orderStmt = $db->prepare("
             INSERT INTO orders (
-                queue_number, order_reference, order_type, table_number, payment_method, payment_status,
+                queue_number, order_reference, order_type, table_number, order_source, payment_method, payment_status,
                 user_id, customer_name, customer_phone, customer_notes,
                 subtotal, eco_fee, grand_total, status, created_at
-            ) VALUES (?, ?, ?, ?, ?, 'unpaid', ?, ?, ?, ?, ?, ?, ?, 'pending', NOW())
+            ) VALUES (?, ?, ?, ?, ?, ?, 'unpaid', ?, ?, ?, ?, ?, ?, ?, 'pending', NOW())
         ");
         $orderStmt->execute([
             $queueNumber,
             $orderRef,
             $orderType,
             $tableNumber,
+            $orderSource,
             $paymentMethod,
             $userId,
             $customerName,
@@ -324,6 +336,7 @@ if ($method === 'POST') {
             'queue_number'    => $queueNumber,
             'order_type'      => $orderType,
             'table_number'    => $tableNumber,
+            'order_source'    => $orderSource,
             'payment_method'  => $paymentMethod,
             'subtotal'        => $subtotal,
             'eco_fee'         => $ecoFee,

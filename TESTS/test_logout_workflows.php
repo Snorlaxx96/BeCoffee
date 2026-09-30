@@ -37,10 +37,19 @@ TestFramework::registerSuite('Authentication & Logout Workflows', function(Suite
     $browserClient->loginAs('staff');
     $getLogout = $browserClient->get('api/auth.php?action=logout');
     $t->assertEquals('GET api/auth.php?action=logout returns 302 redirect', 302, $getLogout['status']);
-    $t->assert('Location header points to ../index.php', strpos($getLogout['location'], 'index.php') !== false);
+    $t->assert('Location header points to ../home.php', strpos($getLogout['location'], 'home.php') !== false);
+    $t->assert('Location header does NOT point to index.php', strpos($getLogout['location'], 'index.php') === false);
 
     $meBrowser = $browserClient->get('api/auth.php?action=me');
     $t->assertEquals('GET logout successfully destroyed session', false, $meBrowser['json']['authenticated'] ?? true);
+
+    // Admin direct GET logout redirection
+    $adminBrowser = new TestClient();
+    $adminBrowser->loginAs('admin');
+    $adminLogoutRes = $adminBrowser->get('api/auth.php?action=logout');
+    $t->assertEquals('Admin GET logout returns 302 redirect', 302, $adminLogoutRes['status']);
+    $t->assert('Admin logout redirects to home.php', strpos($adminLogoutRes['location'], 'home.php') !== false);
+    $t->assert('Admin logout does NOT redirect to index.php', strpos($adminLogoutRes['location'], 'index.php') === false);
 
     // 3. Admin Sign Out Workflow
     $admin = new TestClient();

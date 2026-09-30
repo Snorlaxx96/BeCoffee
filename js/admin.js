@@ -101,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       } catch (e) {}
       localStorage.removeItem('becoffee_demo_session');
-      window.location.replace('index.php');
+      window.location.replace('home.php');
     });
   }
 

@@ -215,19 +215,15 @@ if ($action === 'logout') {
             }
         }
 
-        // Online customer logging out redirects to home.php
-        if ($prevRole === 'customer') {
-            header('Location: ../home.php');
-            exit;
-        }
-
-        header('Location: ../index.php');
+        // All roles (Customer, Staff, Admin, Super Admin) default to home.php upon signing out
+        header('Location: ../home.php');
         exit;
     }
 
     jsonResponse([
-        'success' => true,
-        'message' => 'You have been signed out.'
+        'success'  => true,
+        'message'  => 'You have been signed out.',
+        'redirect' => 'home.php'
     ]);
 }
 

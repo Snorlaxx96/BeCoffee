@@ -1293,6 +1293,7 @@ $currentUser = getAuthenticatedUser();
             customer_phone: phone,
             order_type: 'take_out',
             table_number: null,
+            order_source: 'online',
             payment_method: payMethod,
             items: cart
           };

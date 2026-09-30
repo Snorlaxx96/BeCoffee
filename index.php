@@ -816,7 +816,7 @@ $currentUser = getAuthenticatedUser();
     <!-- Right Actions -->
     <div class="order-top-actions">
       <?php if (!empty($currentUser)): ?>
-        <a href="api/auth.php?action=logout&redirect=index.php" class="btn-story-link" style="color: #FCA5A5; border-color: rgba(239, 68, 68, 0.4); background: rgba(239, 68, 68, 0.1);" title="Sign out of account">🚪 Log Out</a>
+        <a href="api/auth.php?action=logout&redirect=home.php" class="btn-story-link" style="color: #FCA5A5; border-color: rgba(239, 68, 68, 0.4); background: rgba(239, 68, 68, 0.1);" title="Sign out of account">🚪 Log Out</a>
       <?php else: ?>
         <a href="home.php" class="btn-story-link" title="Explore roastery background and story">Our Story</a>
         <button type="button" class="btn-story-link btn-leave-link" id="btnLeaveSession" title="Leave table ordering and exit" style="background: none; cursor: pointer;">🚪 Leave</button>
@@ -1770,11 +1770,14 @@ $currentUser = getAuthenticatedUser();
         var phone = document.getElementById('checkoutPhoneInput').value.trim() || '+63 900 000 0000';
         var table = (currentOrderType === 'dine_in') ? (currentTableNumber || document.getElementById('checkoutTableInput').value.trim() || '1') : null;
 
+        var orderSource = isWalkin ? 'registrar' : (initialTable || isTableLocked || currentOrderType === 'dine_in' ? 'qr_link' : 'registrar');
+
         var payload = {
           customer_name: name,
           customer_phone: phone,
           order_type: currentOrderType,
           table_number: table,
+          order_source: orderSource,
           payment_method: selectedPaymentMethod,
           items: cart
         };

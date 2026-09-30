@@ -64,8 +64,72 @@ TestFramework::registerSuite('KDS Kitchen Workflow & QA Lockout', function(Suite
         $inProgIds = array_column($queueAfter['json']['in_progress'] ?? [], 'id');
         $t->assert('Completed ticket no longer in active kitchen queue', !in_array($orderId, $inProgIds));
 
+        // 8. "Recall" Button (Completed -> In Progress)
+        $recallRes = $staff->post('api/kds.php?action=recall', [
+            'order_id' => $orderId
+        ]);
+        $t->assertEquals('Recall button returns 200 OK', 200, $recallRes['status']);
+        $t->assertEquals('Recalled ticket status is in_progress', 'in_progress', $recallRes['json']['status'] ?? '');
+
+        // Verify ticket is back in active kitchen queue
+        $queueRecalled = $staff->get('api/kds.php');
+        $inProgIdsRecalled = array_column($queueRecalled['json']['in_progress'] ?? [], 'id');
+        $t->assert('Recalled ticket is back in active in_progress queue', in_array($orderId, $inProgIdsRecalled));
+
+        // 9. Single-Tap "Fast Bump" (Rush Mode: auto-certifies QA and completes in 1 tap)
+        $fastBumpRes = $staff->post('api/kds.php?action=complete', [
+            'order_id' => $orderId,
+            'fast_bump' => true
+        ]);
+        $t->assertEquals('Fast bump completes ticket without manual QA (200 OK)', 200, $fastBumpRes['status']);
+        $t->assertEquals('Fast bumped ticket status is completed', 'completed', $fastBumpRes['json']['status'] ?? '');
+
+        // 10. Single Order Cancellation ("Void Ticket") with Reason
+        // Recall first, then void with reason
+        $staff->post('api/kds.php?action=recall', ['order_id' => $orderId]);
+        $voidRes = $staff->post('api/kds.php?action=cancel', [
+            'order_id' => $orderId,
+            'reason' => 'Duplicate Cashier Ring'
+        ]);
+        $t->assertEquals('Void ticket returns 200 OK', 200, $voidRes['status']);
+        $t->assertEquals('Voided ticket status is cancelled', 'cancelled', $voidRes['json']['status'] ?? '');
+
+        // Verify void reason stored in database
+        $checkStmt = $db->prepare("SELECT customer_notes FROM orders WHERE id = ?");
+        $checkStmt->execute([$orderId]);
+        $notes = $checkStmt->fetchColumn();
+        $t->assert('Void reason stored in customer_notes', strpos($notes, '[VOID: Duplicate Cashier Ring]') !== false);
+
+        // 11. "History" View returns completed and voided tickets
+        $historyRes = $staff->get('api/kds.php?view=history');
+        $t->assertEquals('History view returns 200 OK', 200, $historyRes['status']);
+        $t->assert('History contains completed list', isset($historyRes['json']['completed']));
+        $t->assert('History contains cancelled list', isset($historyRes['json']['cancelled']));
+
+        // 12. "Clear All / Shift Reset" protected by Manager PIN
+        $wrongPinRes = $staff->post('api/kds.php?action=clear_all', [
+            'pin' => '9999' // invalid
+        ]);
+        $t->assertEquals('Invalid supervisor PIN rejected with 403', 403, $wrongPinRes['status']);
+
+        // Save existing active orders outside of this test to preserve them
+        $savedOrders = $db->query("SELECT id, status, customer_notes FROM orders WHERE id != {$orderId} AND status IN ('pending', 'in_progress')")->fetchAll(PDO::FETCH_ASSOC);
+
+        $correctPinRes = $staff->post('api/kds.php?action=clear_all', [
+            'pin' => '1234' // valid supervisor PIN
+        ]);
+        $t->assertEquals('Valid supervisor PIN clears queue with 200 OK', 200, $correctPinRes['status']);
+
     } finally {
-        // Automatic cleanup
+        // Restore pre-existing active orders that were in queue before clear_all was tested
+        if (!empty($savedOrders)) {
+            $restoreStmt = $db->prepare("UPDATE orders SET status = ?, customer_notes = ?, completed_at = NULL WHERE id = ?");
+            foreach ($savedOrders as $saved) {
+                $restoreStmt->execute([$saved['status'], $saved['customer_notes'], $saved['id']]);
+            }
+        }
+
+        // Automatic cleanup of mock ticket
         $db->prepare("DELETE FROM order_items WHERE order_id = ?")->execute([$orderId]);
         $db->prepare("DELETE FROM orders WHERE id = ?")->execute([$orderId]);
         $t->pass('Cleaned up mock KDS test ticket');

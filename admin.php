@@ -525,6 +525,50 @@ if ($currentUser['role'] === 'staff') {
       background: #0F0C0A;
     }
 
+    /* Live Full-Screen KDS Mode */
+    .admin-view-panel.embedded-app-panel.kds-live-panel {
+      padding: 0 !important;
+      height: 100vh !important;
+      max-height: 100vh !important;
+    }
+    .admin-view-panel.embedded-app-panel.kds-live-panel .embedded-iframe-container {
+      border-radius: 0 !important;
+      border: none !important;
+      box-shadow: none !important;
+      max-width: 100% !important;
+      height: 100% !important;
+    }
+    .kds-floating-nav-btn {
+      display: none;
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 999;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.6rem 1rem;
+      background: rgba(23, 18, 15, 0.95);
+      border: 1px solid rgba(223, 155, 100, 0.4);
+      border-radius: 9999px;
+      color: #FFF;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(10px);
+      transition: all 0.2s ease;
+    }
+    .kds-floating-nav-btn:hover {
+      background: rgba(226, 135, 67, 0.25);
+      border-color: #E28743;
+      transform: translateY(-1px);
+    }
+    @media (max-width: 1023px) {
+      .admin-view-panel.active.kds-live-panel .kds-floating-nav-btn {
+        display: inline-flex;
+      }
+    }
+
     /* Persona Preview Ribbon & Viewport Controls */
     .preview-persona-badge {
       display: none !important;
@@ -1711,26 +1755,12 @@ if ($currentUser['role'] === 'staff') {
     <!-- Secondary Switcher Links -->
     <div class="sidebar-bottom-links">
       <div class="nav-section-title">Quick Links</div>
-      <button type="button" class="sidebar-quick-link" id="quickLinkPos" data-view="pos">
-        <span class="quick-link-label">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 8h1a4 4 0 1 1 0 8h-1"></path><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"></path><line x1="6" y1="2" x2="6" y2="4"></line><line x1="10" y1="2" x2="10" y2="4"></line><line x1="14" y1="2" x2="14" y2="4"></line></svg>
-          <span>Dine In / Take Out Order</span>
-        </span>
-        <span class="quick-link-badge">PREVIEW</span>
-      </button>
       <button type="button" class="sidebar-quick-link" id="quickLinkKds" data-view="kds">
         <span class="quick-link-label">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="14" x="2" y="3" rx="2"></rect><line x1="8" x2="16" y1="21" y2="21"></line><line x1="12" x2="12" y1="17" y2="21"></line></svg>
           <span>Kitchen Screen</span>
         </span>
-        <span class="quick-link-badge">PREVIEW</span>
-      </button>
-      <button type="button" class="sidebar-quick-link" id="quickLinkStorefront" data-view="storefront">
-        <span class="quick-link-label">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path><line x1="3" x2="21" y1="6" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
-          <span>Online Order</span>
-        </span>
-        <span class="quick-link-badge">PREVIEW</span>
+        <span class="quick-link-badge">LIVE</span>
       </button>
       <button type="button" class="sidebar-quick-link signout-link" id="adminSignOutBtn">
         <span class="quick-link-label">
@@ -1748,7 +1778,7 @@ if ($currentUser['role'] === 'staff') {
   <div class="admin-main-canvas">
     
     <!-- Top Canvas Header -->
-    <header class="canvas-topbar">
+    <header class="canvas-topbar" id="adminCanvasHeader">
       <div class="canvas-title-wrap">
         <button type="button" class="sidebar-toggle-btn" id="sidebarToggleBtn" aria-label="Toggle navigation drawer" aria-expanded="false">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
@@ -1791,18 +1821,6 @@ if ($currentUser['role'] === 'staff') {
         <div id="embeddedHeaderControls" style="display: none; gap: 0.65rem; align-items: center; flex-wrap: wrap;">
           <!-- Persona Badge (Hidden from UI, retained for test compatibility) -->
           <span id="previewPersonaBadge" class="preview-persona-badge" style="display: none !important;" aria-hidden="true"></span>
-
-          <!-- Variant Switcher (Visible on Dine-in preview) -->
-          <div id="previewVariantSwitcher" class="preview-variant-strip" style="display: none;" role="group" aria-label="Preview ordering mode">
-            <button type="button" class="preview-variant-btn active" data-src="index.php?table=1" title="Preview Scanned Table #1 QR Experience">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="5" height="5" x="3" y="3" rx="1"/><rect width="5" height="5" x="16" y="3" rx="1"/><rect width="5" height="5" x="3" y="16" rx="1"/><path d="M21 16h-3a2 2 0 0 0-2 2v3"/><path d="M21 21v.01"/><path d="M12 7v3a2 2 0 0 1-2 2H7"/><path d="M14 12h.01"/><path d="M12 16v5"/><path d="M16 12h5"/></svg>
-              <span>Table #1 QR</span>
-            </button>
-            <button type="button" class="preview-variant-btn" data-src="index.php?mode=staff" title="Preview Counter Staff POS Cashier">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="14" x="3" y="4" rx="2"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
-              <span>Staff POS</span>
-            </button>
-          </div>
 
           <!-- Viewport Simulator Controls -->
           <div class="preview-device-strip" id="previewDeviceStrip" role="group" aria-label="Device viewport simulator">
@@ -2321,24 +2339,14 @@ if ($currentUser['role'] === 'staff') {
       </div>
     </section>
 
-    <!-- 8. Embedded Workspace: Dine In / Take Out Order Preview -->
-    <section class="admin-view-panel embedded-app-panel" id="viewPos">
+    <!-- 9. Embedded Workspace: Kitchen Display System (KDS) Live Screen -->
+    <section class="admin-view-panel embedded-app-panel kds-live-panel" id="viewKds">
+      <button type="button" class="kds-floating-nav-btn" id="kdsMobileNavToggle" aria-label="Open navigation menu">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        <span>Menu</span>
+      </button>
       <div class="embedded-iframe-container">
-        <iframe id="iframePos" title="Dine In / Take Out Order Preview" data-src="index.php?table=1"></iframe>
-      </div>
-    </section>
-
-    <!-- 9. Embedded Workspace: Kitchen Display System (KDS) Preview -->
-    <section class="admin-view-panel embedded-app-panel" id="viewKds">
-      <div class="embedded-iframe-container">
-        <iframe id="iframeKds" title="Kitchen Screen KDS Preview" data-src="kds.php"></iframe>
-      </div>
-    </section>
-
-    <!-- 10. Embedded Workspace: Online Order Preview -->
-    <section class="admin-view-panel embedded-app-panel" id="viewStorefront">
-      <div class="embedded-iframe-container">
-        <iframe id="iframeStorefront" title="Online Order Takeout Preview" data-src="takeout.php"></iframe>
+        <iframe id="iframeKds" title="Kitchen Screen KDS Live" data-src="kds.php"></iframe>
       </div>
     </section>
 
@@ -2348,7 +2356,6 @@ if ($currentUser['role'] === 'staff') {
         <iframe id="iframeQRStickers" title="Table QR Stickers Sheet & Ordering Control" data-src="qr_stickers.php"></iframe>
       </div>
     </section>
-
   </div>
 
   <!-- CREATE USER MODAL -->
@@ -2624,11 +2631,7 @@ if ($currentUser['role'] === 'staff') {
       var navBtnUsers = document.getElementById('navBtnUsers');
       var navBtnDiagnostics = document.getElementById('navBtnDiagnostics');
       var navBtnDatabase = document.getElementById('navBtnDatabase');
-      var navBtnAuditLogs = document.getElementById('navBtnAuditLogs');
-
-      var quickLinkPos = document.getElementById('quickLinkPos');
       var quickLinkKds = document.getElementById('quickLinkKds');
-      var quickLinkStorefront = document.getElementById('quickLinkStorefront');
 
       var viewAnalytics = document.getElementById('viewAnalytics');
       var viewAuditTrail = document.getElementById('viewAuditTrail');
@@ -2638,19 +2641,17 @@ if ($currentUser['role'] === 'staff') {
       var viewDatabase = document.getElementById('viewDatabase');
       var viewAuditLogs = document.getElementById('viewAuditLogs');
 
-      var viewPos = document.getElementById('viewPos');
       var viewKds = document.getElementById('viewKds');
-      var viewStorefront = document.getElementById('viewStorefront');
       var viewQRStickers = document.getElementById('viewQRStickers');
 
-      var iframePos = document.getElementById('iframePos');
       var iframeKds = document.getElementById('iframeKds');
-      var iframeStorefront = document.getElementById('iframeStorefront');
       var iframeQRStickers = document.getElementById('iframeQRStickers');
       var navBtnQRStickers = document.getElementById('navBtnQRStickers');
 
       var currentTitle = document.getElementById('currentCanvasTitle');
       var currentSubtitle = document.getElementById('currentCanvasSubtitle');
+      var adminCanvasHeader = document.getElementById('adminCanvasHeader');
+      var kdsMobileNavToggle = document.getElementById('kdsMobileNavToggle');
       var analyticsHeaderControls = document.getElementById('analyticsHeaderControls');
       var stockHeaderControls = document.getElementById('stockHeaderControls');
       var embeddedHeaderControls = document.getElementById('embeddedHeaderControls');
@@ -2680,6 +2681,13 @@ if ($currentUser['role'] === 'staff') {
         });
       }
 
+      if (kdsMobileNavToggle) {
+        kdsMobileNavToggle.addEventListener('click', function(e) {
+          e.stopPropagation();
+          openMobileSidebar();
+        });
+      }
+
       if (sidebarBackdrop) {
         sidebarBackdrop.addEventListener('click', closeMobileSidebar);
       }
@@ -2697,17 +2705,18 @@ if ($currentUser['role'] === 'staff') {
         var allNavBtns = [
           navBtnAnalytics, navBtnAuditTrail, navBtnStock, navBtnQRStickers, navBtnUsers,
           navBtnDiagnostics, navBtnDatabase, navBtnAuditLogs,
-          quickLinkPos, quickLinkKds, quickLinkStorefront
+          quickLinkKds
         ];
         var allViews = [
           viewAnalytics, viewAuditTrail, viewStock, viewQRStickers, viewUsers,
           viewDiagnostics, viewDatabase, viewAuditLogs,
-          viewPos, viewKds, viewStorefront
+          viewKds
         ];
 
         allNavBtns.forEach(function(btn) { if (btn) btn.classList.remove('active'); });
         allViews.forEach(function(v) { if (v) v.classList.remove('active'); });
 
+        if (adminCanvasHeader) adminCanvasHeader.style.display = '';
         if (stockHeaderControls) stockHeaderControls.style.display = 'none';
         if (analyticsHeaderControls) analyticsHeaderControls.style.display = 'none';
         if (embeddedHeaderControls) embeddedHeaderControls.style.display = 'none';
@@ -2780,75 +2789,22 @@ if ($currentUser['role'] === 'staff') {
           if (stockHeaderControls) stockHeaderControls.style.display = 'flex';
           loadStockMenu();
 
-        } else if (target === 'pos') {
-          if (quickLinkPos) quickLinkPos.classList.add('active');
-          if (viewPos) viewPos.classList.add('active');
-          if (embeddedHeaderControls) embeddedHeaderControls.style.display = 'flex';
-          var personaBadge = document.getElementById('previewPersonaBadge');
-          if (personaBadge) personaBadge.style.display = 'none';
-          var variantSwitcher = document.getElementById('previewVariantSwitcher');
-          if (variantSwitcher) variantSwitcher.style.display = 'inline-flex';
-
-          var activeVariant = variantSwitcher ? variantSwitcher.querySelector('.preview-variant-btn.active') : null;
-          var activeSrc = activeVariant ? activeVariant.getAttribute('data-src') : 'index.php?table=1';
-          if (btnTopPopOutFrame) btnTopPopOutFrame.href = activeSrc;
-          if (iframePos && (!iframePos.getAttribute('src') || iframePos.getAttribute('src') === 'about:blank')) {
-            iframePos.setAttribute('src', activeSrc);
-          }
-
-          currentTitle.innerHTML = `
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 8h1a4 4 0 1 1 0 8h-1"></path><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"></path><line x1="6" y1="2" x2="6" y2="4"></line><line x1="10" y1="2" x2="10" y2="4"></line><line x1="14" y1="2" x2="14" y2="4"></line></svg>
-            Dine In / Take Out Order Preview
-          `;
-          currentSubtitle.textContent = 'Simulate the in-store table QR guest experience with countdown timers, table auto-lock, and drink customizer.';
-
         } else if (target === 'kds') {
           if (quickLinkKds) quickLinkKds.classList.add('active');
           if (viewKds) viewKds.classList.add('active');
-          if (embeddedHeaderControls) embeddedHeaderControls.style.display = 'flex';
-          var personaBadge = document.getElementById('previewPersonaBadge');
-          if (personaBadge) personaBadge.style.display = 'none';
-          var variantSwitcher = document.getElementById('previewVariantSwitcher');
-          if (variantSwitcher) variantSwitcher.style.display = 'none';
+          if (adminCanvasHeader) adminCanvasHeader.style.display = 'none';
 
           if (btnTopPopOutFrame) btnTopPopOutFrame.href = 'kds.php';
           if (iframeKds && (!iframeKds.getAttribute('src') || iframeKds.getAttribute('src') === 'about:blank')) {
             iframeKds.setAttribute('src', iframeKds.getAttribute('data-src') || 'kds.php');
           }
 
-          currentTitle.innerHTML = `
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect width="20" height="14" x="2" y="3" rx="2"></rect><line x1="8" x2="16" y1="21" y2="21"></line><line x1="12" y1="2" x2="12" y2="17" y2="21"></line></svg>
-            Kitchen Screen KDS Preview
-          `;
-          currentSubtitle.textContent = 'Simulate the barista preparation station: live queue polling, stopwatch elapsed timers, drink specs, and double-check QA modal.';
-
-        } else if (target === 'storefront') {
-          if (quickLinkStorefront) quickLinkStorefront.classList.add('active');
-          if (viewStorefront) viewStorefront.classList.add('active');
-          if (embeddedHeaderControls) embeddedHeaderControls.style.display = 'flex';
-          var personaBadge = document.getElementById('previewPersonaBadge');
-          if (personaBadge) personaBadge.style.display = 'none';
-          var variantSwitcher = document.getElementById('previewVariantSwitcher');
-          if (variantSwitcher) variantSwitcher.style.display = 'none';
-
-          if (btnTopPopOutFrame) btnTopPopOutFrame.href = 'takeout.php';
-          if (iframeStorefront && (!iframeStorefront.getAttribute('src') || iframeStorefront.getAttribute('src') === 'about:blank')) {
-            iframeStorefront.setAttribute('src', iframeStorefront.getAttribute('data-src') || 'takeout.php');
-          }
-
-          currentTitle.innerHTML = `
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path><line x1="3" x2="21" y1="6" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
-            Online Order Preview
-          `;
-          currentSubtitle.textContent = 'Simulate the online customer takeout ordering experience and live pickup status.';
         } else if (target === 'qr-stickers') {
           if (navBtnQRStickers) navBtnQRStickers.classList.add('active');
           if (viewQRStickers) viewQRStickers.classList.add('active');
           if (embeddedHeaderControls) embeddedHeaderControls.style.display = 'flex';
           var personaBadge = document.getElementById('previewPersonaBadge');
           if (personaBadge) personaBadge.style.display = 'none';
-          var variantSwitcher = document.getElementById('previewVariantSwitcher');
-          if (variantSwitcher) variantSwitcher.style.display = 'none';
 
           if (btnTopPopOutFrame) btnTopPopOutFrame.href = 'qr_stickers.php';
           if (iframeQRStickers && (!iframeQRStickers.getAttribute('src') || iframeQRStickers.getAttribute('src') === 'about:blank')) {
@@ -2902,9 +2858,7 @@ if ($currentUser['role'] === 'staff') {
       if (navBtnAuditLogs) navBtnAuditLogs.addEventListener('click', function() { switchView('audit-logs'); });
       if (navBtnQRStickers) navBtnQRStickers.addEventListener('click', function() { switchView('qr-stickers'); });
 
-      if (quickLinkPos) quickLinkPos.addEventListener('click', function() { switchView('pos'); });
       if (quickLinkKds) quickLinkKds.addEventListener('click', function() { switchView('kds'); });
-      if (quickLinkStorefront) quickLinkStorefront.addEventListener('click', function() { switchView('storefront'); });
 
       // Viewport Simulator Switcher
       document.querySelectorAll('.preview-device-btn').forEach(function(btn) {
@@ -2920,28 +2874,11 @@ if ($currentUser['role'] === 'staff') {
         });
       });
 
-      // Dine-in Variant Switcher
-      document.querySelectorAll('#previewVariantSwitcher .preview-variant-btn').forEach(function(btn) {
-        btn.addEventListener('click', function() {
-          document.querySelectorAll('#previewVariantSwitcher .preview-variant-btn').forEach(function(b) { b.classList.remove('active'); });
-          btn.classList.add('active');
-          var src = btn.getAttribute('data-src');
-          if (iframePos) iframePos.src = src;
-          if (btnTopPopOutFrame) btnTopPopOutFrame.href = src;
-        });
-      });
-
       // Unified Topbar Frame Reload button
       if (btnTopReloadFrame) {
         btnTopReloadFrame.addEventListener('click', function() {
-          if (viewPos && viewPos.classList.contains('active') && iframePos) {
-            var activeVariant = document.querySelector('#previewVariantSwitcher .preview-variant-btn.active');
-            var src = activeVariant ? activeVariant.getAttribute('data-src') : 'index.php';
-            iframePos.src = src;
-          } else if (viewKds && viewKds.classList.contains('active') && iframeKds) {
+          if (viewKds && viewKds.classList.contains('active') && iframeKds) {
             iframeKds.src = 'kds.php';
-          } else if (viewStorefront && viewStorefront.classList.contains('active') && iframeStorefront) {
-            iframeStorefront.src = 'takeout.php';
           } else if (viewQRStickers && viewQRStickers.classList.contains('active') && iframeQRStickers) {
             iframeQRStickers.src = 'qr_stickers.php';
           }
@@ -2995,9 +2932,7 @@ if ($currentUser['role'] === 'staff') {
         else if (initialView === 'audit' || initialView === 'audit-logs') switchView('audit-logs');
         else if (initialView === 'stock' || initialView === 'stock-control') switchView('stock-control');
         else if (initialView === 'orders' || initialView === 'audit-trail') switchView('audit-trail');
-        else if (initialView === 'pos' || initialView === 'counter') switchView('pos');
         else if (initialView === 'kds' || initialView === 'kitchen') switchView('kds');
-        else if (initialView === 'storefront' || initialView === 'store') switchView('storefront');
         else if (initialView === 'qr-stickers' || initialView === 'stickers' || initialView === 'qr') switchView('qr-stickers');
       } else {
         var u = window.__CURRENT_USER__;
@@ -3021,7 +2956,7 @@ if ($currentUser['role'] === 'staff') {
             await fetch('api/auth.php?action=logout', { method: 'POST', credentials: 'include' });
           } catch(e){}
           localStorage.removeItem('becoffee_demo_session');
-          window.location.href = 'index.php';
+          window.location.href = 'home.php';
         }
       });
 
