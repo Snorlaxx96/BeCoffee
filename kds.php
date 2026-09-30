@@ -15,8 +15,8 @@ if ($currentUser['role'] === 'customer') {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Barista KDS Station | Escobar Cafe Operations</title>
-  <meta name="description" content="Staff Kitchen Display System and QA Lockout Terminal for Escobar Cafe / BeCoffee.">
+  <title>Barista KDS Station | BeCoffee Operations</title>
+  <meta name="description" content="Staff Kitchen Display System and QA Lockout Terminal for BeCoffee.">
   <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -695,9 +695,9 @@ if ($currentUser['role'] === 'customer') {
   <!-- KDS Header Bar -->
   <header class="kds-header">
     <div class="kds-brand">
-      <div class="kds-logo">E</div>
+      <div class="kds-logo">B</div>
       <div class="kds-title-group">
-        <h1>Escobar Cafe · Barista KDS</h1>
+        <h1>BeCoffee · Barista KDS</h1>
         <div class="kds-subtitle">Staff Kitchen Display & QA Terminal</div>
       </div>
     </div>
@@ -783,7 +783,7 @@ if ($currentUser['role'] === 'customer') {
   <script src="js/system-dialog.js"></script>
   <script>
     // =========================================================================
-    // Escobar Cafe KDS Engine & Hardware-Free Web Audio Chime
+    // BeCoffee KDS Engine & Hardware-Free Web Audio Chime
     // =========================================================================
     (function initKdsEngine() {
       var audioCtx = null;

@@ -1,6 +1,6 @@
 <?php
 /**
- * Escobar Cafe / BeCoffee — Kitchen Display System (KDS) Controller
+ * BeCoffee — Kitchen Display System (KDS) Controller
  * Serves the Staff Tablet board, manages order acknowledgments, and enforces the 3-point QA Lockout
  */
 

@@ -7,8 +7,8 @@ $currentUser = getAuthenticatedUser();
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Escobar Cafe | Direct Mobile Ordering & Digital Menu</title>
-  <meta name="description" content="Order handcrafted specialty coffee, pour-overs, and matcha directly from your table or dorm at Escobar Cafe / BeCoffee.">
+  <title>BeCoffee | Direct Mobile Ordering & Digital Menu</title>
+  <meta name="description" content="Order handcrafted specialty coffee, pour-overs, and matcha directly from your table or dorm at BeCoffee.">
   <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -800,9 +800,9 @@ $currentUser = getAuthenticatedUser();
   <!-- Direct Order Header -->
   <header class="order-header">
     <a href="index.php" class="order-brand-link">
-      <div class="order-brand-logo">E</div>
+      <div class="order-brand-logo">B</div>
       <div>
-        <span class="order-brand-title">Escobar Cafe</span>
+        <span class="order-brand-title">BeCoffee</span>
         <span class="order-brand-tag">Online Ordering Portal</span>
       </div>
     </a>
@@ -903,7 +903,7 @@ $currentUser = getAuthenticatedUser();
       </div>
 
       <!-- Temperature Choice -->
-      <div class="option-group-label">Temperature</div>
+      <div class="option-group-label">TEMPERATURE</div>
       <div class="pill-radio-group" id="tempRadioGroup">
         <div class="pill-radio-opt active" data-val="Iced">Iced</div>
         <div class="pill-radio-opt" data-val="Hot">Hot</div>
@@ -916,7 +916,7 @@ $currentUser = getAuthenticatedUser();
       </div>
 
       <!-- Sweetness Levels -->
-      <div class="option-group-label">Sweetness / Sugar Level</div>
+      <div class="option-group-label">SWEETNESS / SUGAR LEVEL</div>
       <div class="pill-radio-group" id="sweetnessRadioGroup">
         <div class="pill-radio-opt" data-val="Normal (100%)">100% Normal</div>
         <div class="pill-radio-opt active" data-val="Less Sweet (75%)">75% Less Sweet</div>
@@ -925,7 +925,7 @@ $currentUser = getAuthenticatedUser();
       </div>
 
       <!-- Special Notes -->
-      <div class="option-group-label">Special Notes / Instructions</div>
+      <div class="option-group-label">SPECIAL NOTES / INSTRUCTIONS</div>
       <textarea class="notes-textarea" id="customNotesInput" placeholder="e.g. Less sweet, extra ice, separate lid..."></textarea>
 
       <!-- Quantity & Submit -->
@@ -1029,7 +1029,7 @@ $currentUser = getAuthenticatedUser();
       </div>
 
       <div id="gcashNoticeWrap" style="display: none; background: rgba(59, 130, 246, 0.12); border: 1px solid rgba(59, 130, 246, 0.35); border-radius: 12px; padding: 0.85rem; margin-top: 0.75rem; font-size: 0.82rem; color: #93C5FD;">
-        <strong>GCash Instructions:</strong> Send payment to <strong>0917 555 2026 (Escobar Cafe)</strong> upon placing order. Show your reference number to cashier at counter.
+        <strong>GCash Instructions:</strong> Send payment to <strong>0917 555 2026 (BeCoffee)</strong> upon placing order. Show your reference number to cashier at counter.
       </div>
 
       <!-- Customer Details -->

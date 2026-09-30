@@ -1,6 +1,6 @@
 <?php
 /**
- * Escobar Cafe / BeCoffee — Menu API Endpoint
+ * BeCoffee — Menu API Endpoint
  * Full CRUD for menu items and dynamic catalog retrieval
  */
 

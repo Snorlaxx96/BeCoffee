@@ -1,6 +1,6 @@
 <?php
 /**
- * Escobar Cafe / BeCoffee — Menu Item Picture Upload Handler
+ * BeCoffee — Menu Item Picture Upload Handler
  * Accepts multipart image uploads, validates types, and saves to images/menu/
  */
 

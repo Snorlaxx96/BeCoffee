@@ -876,6 +876,18 @@ $currentUser = getAuthenticatedUser();
           <span id="cartGrandTotal">₱0</span>
         </div>
 
+        <!-- Estimated Time When Customer Gets The Order -->
+        <div class="cart-eta-banner" id="cartEtaCard">
+          <div class="cart-eta-left">
+            <span class="cart-eta-icon" aria-hidden="true">⏱️</span>
+            <div>
+              <div class="cart-eta-title">Estimated Pickup Time</div>
+              <div class="cart-eta-sub" id="cartEtaTarget">Ready in ~10–15 mins</div>
+            </div>
+          </div>
+          <div class="cart-eta-badge" id="cartEtaBadge">~10–15 mins</div>
+        </div>
+
         <!-- Frictionless Guest Checkout (No Forced Login Barrier) -->
         <div class="guest-checkout-box" id="guestCheckoutBox" style="margin-top: 0.85rem; padding: 0.85rem; background: rgba(255,255,255,0.04); border: 1px solid rgba(250,247,242,0.12); border-radius: var(--radius-md);">
           <div style="font-size: 0.82rem; font-weight: 600; color: #F4C194; margin-bottom: 0.5rem; display: flex; align-items: center; justify-content: space-between;">
@@ -891,9 +903,59 @@ $currentUser = getAuthenticatedUser();
               <label for="orderCustomerPhone" class="sr-only">Contact Mobile</label>
               <input type="tel" id="orderCustomerPhone" class="form-input" style="padding: 0.55rem 0.75rem;" placeholder="Mobile Number (+63 9...)" required>
             </div>
-            <div>
-              <label for="orderCustomerNotes" class="sr-only">Pickup Outpost</label>
-              <input type="text" id="orderCustomerNotes" class="form-input" style="padding: 0.55rem 0.75rem;" placeholder="Pickup Outpost (Putik Flagship / Baliwasan)">
+            <div class="outpost-select-group">
+              <label for="orderCustomerNotes" class="outpost-label">
+                <span>Pickup Outpost</span>
+                <span class="outpost-badge">Select Location</span>
+              </label>
+              <div class="outpost-select-wrapper">
+                <span class="outpost-select-icon" aria-hidden="true">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                    <circle cx="12" cy="10" r="3"></circle>
+                  </svg>
+                </span>
+                <select id="orderCustomerNotes" class="form-select outpost-select" required>
+                  <option value="Putik" selected>Putik</option>
+                  <option value="Baliwasan">Baliwasan</option>
+                </select>
+                <span class="outpost-select-arrow" aria-hidden="true">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                  </svg>
+                </span>
+              </div>
+            </div>
+            <div class="outpost-select-group" style="margin-top: 0.15rem;">
+              <label for="orderArrivalTime" class="outpost-label">
+                <span>Arrival Time</span>
+                <span class="outpost-badge">What time can you come?</span>
+              </label>
+              <div class="outpost-select-wrapper">
+                <span class="outpost-select-icon" aria-hidden="true">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                  </svg>
+                </span>
+                <select id="orderArrivalTime" class="form-select outpost-select" required>
+                  <option value="asap" selected>ASAP (As soon as ready)</option>
+                  <option value="15">In 15 minutes</option>
+                  <option value="30">In 30 minutes</option>
+                  <option value="45">In 45 minutes</option>
+                  <option value="60">In 1 hour</option>
+                  <option value="custom">Select specific time...</option>
+                </select>
+                <span class="outpost-select-arrow" aria-hidden="true">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                  </svg>
+                </span>
+              </div>
+              <div id="orderCustomTimeWrap" style="display: none; margin-top: 0.45rem;">
+                <input type="time" id="orderCustomTimeInput" class="form-input" style="padding: 0.5rem 0.75rem; font-size: 0.85rem;" min="07:00" max="21:45" step="900">
+                <span style="font-size: 0.72rem; color: #8C532B; margin-top: 0.2rem; display: block; font-weight: 500;">Cafe pickup hours: 7:00 AM – 10:00 PM</span>
+              </div>
             </div>
           </div>
         </div>
@@ -1000,113 +1062,93 @@ $currentUser = getAuthenticatedUser();
     </div>
   </div>
 
-  <!-- Order Customization Modal (Hot/Iced & Medium/Small Options) -->
-  <div class="modal-overlay" id="orderModalOverlay" aria-modal="true" role="dialog" aria-label="Customize Beverage Options">
-    <div class="modal-box order-modal-box">
-      <div class="modal-sheet-handle" aria-hidden="true"></div>
-      <button type="button" class="modal-close-btn" id="closeOrderModalBtn" aria-label="Close Customization Window">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-      </button>
+  <!-- Order Customization Modal (White Aesthetic Minimalist) -->
+  <div class="modal-overlay oms-modal-overlay" id="orderModalOverlay" aria-modal="true" role="dialog" aria-label="Customize Beverage Options">
+    <div class="modal-box order-modal-box oms-modal-box">
+      <button type="button" class="oms-modal-close" id="closeOrderModalBtn" aria-label="Close Customization Window">&times;</button>
 
-      <div class="order-modal-header">
-        <div class="order-modal-img-wrap">
-          <img id="orderModalImg" src="images/menu/hc-caramel-macchiato.webp" alt="Beverage preview" width="80" height="80">
-        </div>
-        <div class="order-modal-info">
-          <span class="section-tag" id="orderModalCategory">House Coffee</span>
-          <h3 class="modal-heading order-modal-title" id="orderModalTitle">Caramel Macchiato</h3>
-          <p class="order-modal-desc" id="orderModalDesc">Layered vanilla-infused milk crowned with rich espresso.</p>
+      <div class="order-modal-header-row">
+        <img id="orderModalImg" src="images/menu/hc-caramel-macchiato.webp" alt="Drink preview" class="order-modal-thumb">
+        <div class="order-modal-header-info">
+          <span class="order-modal-category-badge" id="orderModalCategory">COFFEE</span>
+          <h3 class="order-modal-title" id="orderModalTitle">Caramel Macchiato</h3>
+          <p class="order-modal-desc" id="orderModalDesc">Silky steamed milk poured over rich espresso, subtly sweet with notes of caramel.</p>
+          <p class="order-modal-base-price" id="orderModalBasePrice">₱120.00</p>
         </div>
       </div>
 
       <div class="order-modal-options">
-        <!-- 1. Temperature Selection (Hot / Iced) -->
-        <div class="option-section">
-          <div class="option-header">
-            <span class="option-title">Temperature</span>
-            <span class="option-badge" id="tempOptionBadge">Select 1</span>
+        <!-- Temperature Choice -->
+        <div class="option-header-row">
+          <span class="option-group-label">TEMPERATURE</span>
+          <span class="option-group-badge">Select 1</span>
+        </div>
+        <div class="pill-radio-group grid-2" id="tempOptionsGroup" role="radiogroup" aria-label="Beverage Temperature">
+          <div class="pill-radio-opt active" data-temp="Iced" role="radio" aria-checked="true" id="tempIcedBtn">
+            <div class="opt-main">
+              <span class="opt-icon">🧊</span>
+              <span class="opt-name">Iced</span>
+            </div>
+            <span class="opt-sub">Over cracked ice</span>
           </div>
-          <div class="option-chips-grid" id="tempOptionsGroup" role="radiogroup" aria-label="Beverage Temperature">
-            <button type="button" class="option-chip active" data-temp="Iced" role="radio" aria-checked="true" id="tempIcedBtn">
-              <span class="chip-icon">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <path d="m21 16-9 5-9-5V8l9-5 9 5v8Z"/>
-                  <path d="m3.27 7.96 8.73 4.88 8.73-4.88M12 22V13"/>
-                </svg>
-              </span>
-              <span class="chip-text">
-                <strong>Iced</strong>
-                <small>Over cracked ice</small>
-              </span>
-            </button>
-            <button type="button" class="option-chip" data-temp="Hot" role="radio" aria-checked="false" id="tempHotBtn">
-              <span class="chip-icon">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <path d="M10 2v2M14 2v2M18 9h1a3 3 0 0 1 3 3v1a3 3 0 0 1-3 3h-1M6 2v2M3 9h15a1 1 0 0 1 1 1v7a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4v-7a1 1 0 0 1 1-1Z"/>
-                  <line x1="2" y1="21" x2="20" y2="21"/>
-                </svg>
-              </span>
-              <span class="chip-text">
-                <strong>Hot</strong>
-                <small>Steamed & velvety</small>
-              </span>
-            </button>
+          <div class="pill-radio-opt" data-temp="Hot" role="radio" aria-checked="false" id="tempHotBtn">
+            <div class="opt-main">
+              <span class="opt-icon">☕</span>
+              <span class="opt-name">Hot</span>
+            </div>
+            <span class="opt-sub">Steamed &amp; velvety</span>
           </div>
         </div>
 
-        <!-- 2. Size Selection (Medium / Small) -->
-        <div class="option-section">
-          <div class="option-header">
-            <span class="option-title">Cup Size</span>
-            <span class="option-badge">Select 1</span>
+        <!-- Add-ons Selection -->
+        <div class="option-header-row">
+          <span class="option-group-label">ADD ONS</span>
+          <span class="option-group-badge">Select 1</span>
+        </div>
+        <div class="pill-radio-group grid-3" id="addonOptionsGroup" role="radiogroup" aria-label="Add-on Options">
+          <div class="pill-radio-opt active" data-val="Regular Milk" data-surcharge="0" role="radio" aria-checked="true">
+            <span class="opt-name">Regular Milk</span>
+            <span class="opt-price">+₱0</span>
           </div>
-          <div class="option-chips-grid" id="sizeOptionsGroup" role="radiogroup" aria-label="Beverage Size">
-            <button type="button" class="option-chip active" data-size="Medium" role="radio" aria-checked="true" id="sizeMediumBtn">
-              <span class="chip-icon">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <path d="M17 8h1a4 4 0 1 1 0 8h-1"/>
-                  <path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"/>
-                </svg>
-              </span>
-              <span class="chip-text">
-                <strong>Medium</strong>
-                <small>16 oz regular</small>
-              </span>
-              <span class="chip-price" id="sizeMediumPrice">₱120</span>
-            </button>
-            <button type="button" class="option-chip" data-size="Large" role="radio" aria-checked="false" id="sizeLargeBtn">
-              <span class="chip-icon">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <path d="M6 8h12l-1.5 13H7.5L6 8Z"/>
-                  <path d="M5 8h14V5H5v3Z"/>
-                  <line x1="12" y1="2" x2="12" y2="5"/>
-                </svg>
-              </span>
-              <span class="chip-text">
-                <strong>Large</strong>
-                <small>22 oz grande</small>
-              </span>
-              <span class="chip-price" id="sizeLargePrice">₱140</span>
-            </button>
+          <div class="pill-radio-opt" data-val="Oat Milk" data-surcharge="30" role="radio" aria-checked="false">
+            <span class="opt-name">Oat Milk</span>
+            <span class="opt-price">+₱30</span>
+          </div>
+          <div class="pill-radio-opt" data-val="Almond Milk" data-surcharge="30" role="radio" aria-checked="false">
+            <span class="opt-name">Almond Milk</span>
+            <span class="opt-price">+₱30</span>
           </div>
         </div>
 
-        <!-- 3. Quantity Selector -->
-        <div class="option-section option-qty-row">
-          <span class="option-title">Quantity</span>
-          <div class="modal-qty-ctrl">
-            <button type="button" class="modal-qty-btn" id="modalQtyMinus" aria-label="Decrease quantity">−</button>
-            <span class="modal-qty-val" id="modalQtyVal">1</span>
-            <button type="button" class="modal-qty-btn" id="modalQtyPlus" aria-label="Increase quantity">+</button>
-          </div>
+        <!-- Sweetness Levels -->
+        <div class="option-header-row">
+          <span class="option-group-label">SWEETNESS / SUGAR LEVEL</span>
+          <span class="option-group-badge">Select 1</span>
         </div>
+        <div class="pill-radio-group grid-4" id="sweetnessOptionsGroup" role="radiogroup" aria-label="Sweetness Level">
+          <div class="pill-radio-opt" data-val="Normal (100%)" role="radio" aria-checked="false">100% Normal</div>
+          <div class="pill-radio-opt active" data-val="Less Sweet (75%)" role="radio" aria-checked="true">75% Less Sweet</div>
+          <div class="pill-radio-opt" data-val="Half Sweet (50%)" role="radio" aria-checked="false">50% Half Sweet</div>
+          <div class="pill-radio-opt" data-val="No Sugar (0%)" role="radio" aria-checked="false">0% No Sugar</div>
+        </div>
+
+        <!-- Special Notes / Instructions -->
+        <div class="option-header-row">
+          <span class="option-group-label">SPECIAL NOTES / INSTRUCTIONS</span>
+          <span class="option-group-badge">Optional</span>
+        </div>
+        <textarea class="notes-textarea" id="orderModalNotesInput" placeholder="e.g. Less sweet, extra ice, separate lid..."></textarea>
       </div>
 
-      <!-- Footer CTA Button -->
+      <!-- Quantity & Submit -->
       <div class="order-modal-footer">
-        <button type="button" class="btn btn-crema order-confirm-btn" id="orderConfirmBtn">
-          <span>Add to Order</span>
-          <span id="orderConfirmTotal">· ₱120</span>
+        <div class="modal-qty-stepper">
+          <button type="button" id="modalQtyMinus" aria-label="Decrease quantity">−</button>
+          <span id="modalQtyVal">1</span>
+          <button type="button" id="modalQtyPlus" aria-label="Increase quantity">+</button>
+        </div>
+        <button type="button" class="btn-customize-add" id="orderConfirmBtn">
+          Add to Cart — <span id="orderConfirmTotal">₱120.00</span>
         </button>
       </div>
     </div>

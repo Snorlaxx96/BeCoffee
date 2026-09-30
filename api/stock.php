@@ -1,6 +1,6 @@
 <?php
 /**
- * Escobar Cafe / BeCoffee — Option & Item Stock Availability Controller (REST API)
+ * BeCoffee — Option & Item Stock Availability Controller (REST API)
  * Allows staff/admin to 86 / cancel out customization options and add new add-ons in real-time
  */
 
