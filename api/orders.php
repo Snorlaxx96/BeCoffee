@@ -136,6 +136,17 @@ if ($method === 'POST') {
     $tableNumber   = ($orderType === 'dine_in') ? trim($input['table_number'] ?? '1') : null;
     $paymentMethod = in_array($input['payment_method'] ?? '', ['cash', 'gcash'], true) ? $input['payment_method'] : 'cash';
 
+    // Operational Guard: Check if Table QR Ordering is paused by management
+    if ($orderType === 'dine_in' && getSystemSetting('table_qr_ordering_enabled', '1') !== '1') {
+        $currentUserRole = $_SESSION['role'] ?? '';
+        if (!in_array($currentUserRole, ['staff', 'admin', 'superadmin'], true)) {
+            jsonResponse([
+                'success' => false,
+                'error'   => 'Table QR ordering is temporarily paused by cafe management. Please place your order at the counter.'
+            ], 422);
+        }
+    }
+
     // Guest Checkout or Authenticated User Association
     $userId = $_SESSION['user_id'] ?? null;
     if ($userId) {

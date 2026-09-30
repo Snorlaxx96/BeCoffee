@@ -21,6 +21,7 @@ if ($currentUser['role'] === 'customer') {
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/system-dialog.css">
   <style>
     :root {
       --kds-bg: #0D0A08;
@@ -779,6 +780,7 @@ if ($currentUser['role'] === 'customer') {
 
   </main>
 
+  <script src="js/system-dialog.js"></script>
   <script>
     // =========================================================================
     // Escobar Cafe KDS Engine & Hardware-Free Web Audio Chime
@@ -1100,7 +1102,7 @@ if ($currentUser['role'] === 'customer') {
                 fetchKdsQueue();
               }
             } catch (e) {
-              alert('Error acknowledging ticket: ' + e.message);
+              await SystemDialog.alert('Error acknowledging ticket: ' + e.message, { title: 'Ticket Ack Error', type: 'danger' });
             }
           });
 
@@ -1214,11 +1216,11 @@ if ($currentUser['role'] === 'customer') {
                 clearWorkstation();
                 fetchKdsQueue();
               } else {
-                alert('QA Lockout Error: ' + result.error);
+                await SystemDialog.alert('QA Lockout Error: ' + result.error, { title: 'QA Check Required', type: 'warning' });
                 completeBtn.disabled = false;
               }
             } catch (err) {
-              alert('Error completing order: ' + err.message);
+              await SystemDialog.alert('Error completing order: ' + err.message, { title: 'Completion Error', type: 'danger' });
               completeBtn.disabled = false;
             }
           });

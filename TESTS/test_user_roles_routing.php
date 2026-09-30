@@ -73,7 +73,7 @@ TestFramework::registerSuite('User Roles & Routing Guards', function(SuiteReport
         ]);
     }
     $t->assert('Customer login succeeds', $res['status'] === 200);
-    $t->assertEquals('Customer target view is index.php', 'index.php', $res['json']['target_view'] ?? '');
+    $t->assertEquals('Customer target view is takeout.php', 'takeout.php', $res['json']['target_view'] ?? '');
 
     $res = $cust->get('admin.php');
     $t->assert('Customer accessing admin.php receives 302 redirect', $res['status'] === 302);

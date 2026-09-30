@@ -119,8 +119,104 @@ $currentUser = getAuthenticatedUser();
       background: rgba(255, 255, 255, 0.08);
       color: #FFF;
     }
+    .btn-leave-link {
+      color: #FCA5A5 !important;
+      border-color: rgba(239, 68, 68, 0.35) !important;
+      background: rgba(239, 68, 68, 0.08) !important;
+    }
+    .btn-leave-link:hover {
+      background: rgba(239, 68, 68, 0.2) !important;
+      border-color: rgba(239, 68, 68, 0.6) !important;
+      color: #FFF !important;
+    }
+    @media (max-width: 480px) {
+      .order-header {
+        padding: 0.55rem 0.65rem;
+        gap: 0.35rem;
+      }
+      .order-brand-tag {
+        display: none;
+      }
+      .order-brand-logo {
+        width: 32px;
+        height: 32px;
+        font-size: 1rem;
+      }
+      .order-brand-title {
+        font-size: 1rem;
+      }
+      .table-context-pill {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.72rem;
+      }
+      .order-top-actions {
+        gap: 0.3rem;
+      }
+      .btn-story-link {
+        padding: 0.3rem 0.5rem;
+        font-size: 0.72rem;
+      }
+    }
 
-    /* Sticky Category Nav */
+    /* Table Inactivity Expiration Modal */
+    .table-expired-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(17, 13, 11, 0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      z-index: 999999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+    .table-expired-card {
+      background: #1C1613;
+      border: 1px solid rgba(226, 135, 67, 0.4);
+      border-radius: 24px;
+      padding: 2.25rem 2rem;
+      max-width: 420px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.7);
+      animation: modalFadeIn 0.3s ease;
+    }
+    .expired-icon {
+      font-size: 2.8rem;
+      margin-bottom: 0.85rem;
+    }
+    .expired-title {
+      font-family: var(--font-serif);
+      font-size: 1.5rem;
+      color: #FFF;
+      margin-bottom: 0.6rem;
+    }
+    .expired-desc {
+      font-size: 0.9rem;
+      color: #D1C5BD;
+      line-height: 1.5;
+      margin-bottom: 1.5rem;
+    }
+    .btn-expired-leave {
+      width: 100%;
+      padding: 0.8rem 1.5rem;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #E28743 0%, #944D1C 100%);
+      color: #FFF;
+      border: none;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(226, 135, 67, 0.35);
+      transition: all 0.2s ease;
+    }
+    .btn-expired-leave:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(226, 135, 67, 0.5);
+    }
+
+    /* Sticky Category Nav with Prep Timer */
     .order-category-nav {
       position: sticky;
       top: 59px;
@@ -131,11 +227,22 @@ $currentUser = getAuthenticatedUser();
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .cat-pill-group {
+      display: flex;
+      align-items: center;
       gap: 0.5rem;
       overflow-x: auto;
       scrollbar-width: none;
+      -ms-overflow-style: none;
+      flex: 1;
+      min-width: 0;
+      padding: 2px 0;
     }
-    .order-category-nav::-webkit-scrollbar {
+    .cat-pill-group::-webkit-scrollbar {
       display: none;
     }
     .cat-pill-btn {
@@ -149,6 +256,7 @@ $currentUser = getAuthenticatedUser();
       cursor: pointer;
       white-space: nowrap;
       transition: all 0.2s ease;
+      flex-shrink: 0;
     }
     .cat-pill-btn.active,
     .cat-pill-btn:hover {
@@ -156,6 +264,51 @@ $currentUser = getAuthenticatedUser();
       color: #FFF;
       border-color: #E28743;
       box-shadow: 0 4px 14px rgba(226, 135, 67, 0.3);
+    }
+    .order-prep-timer {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-size: 0.8rem;
+      color: #DF9B64;
+      background: rgba(226, 135, 67, 0.1);
+      border: 1px solid rgba(226, 135, 67, 0.28);
+      padding: 0.35rem 0.8rem;
+      border-radius: 999px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      margin-left: auto;
+      font-variant-numeric: tabular-nums;
+      user-select: none;
+    }
+    .order-prep-timer .timer-icon {
+      color: #FDBA74;
+      flex-shrink: 0;
+    }
+    .order-prep-timer .timer-label-short {
+      display: none;
+    }
+    .order-prep-timer .timer-clock {
+      color: #FFF;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      font-family: var(--font-mono, monospace);
+    }
+    @media (max-width: 520px) {
+      .order-category-nav {
+        padding: 0.55rem 0.75rem;
+        gap: 0.5rem;
+      }
+      .order-prep-timer {
+        padding: 0.3rem 0.6rem;
+        font-size: 0.72rem;
+      }
+      .order-prep-timer .timer-label-full {
+        display: none;
+      }
+      .order-prep-timer .timer-label-short {
+        display: inline;
+      }
     }
 
     /* Drinks Grid */
@@ -662,19 +815,50 @@ $currentUser = getAuthenticatedUser();
 
     <!-- Right Actions -->
     <div class="order-top-actions">
-      <a href="home.php" class="btn-story-link" title="Explore roastery background and story">Our Story</a>
-      <a href="kds.php" class="btn-story-link" style="color: #DF9B64; border-color: rgba(223, 155, 100, 0.3);">Staff KDS</a>
+      <?php if (!empty($currentUser)): ?>
+        <a href="api/auth.php?action=logout&redirect=index.php" class="btn-story-link" style="color: #FCA5A5; border-color: rgba(239, 68, 68, 0.4); background: rgba(239, 68, 68, 0.1);" title="Sign out of account">🚪 Log Out</a>
+      <?php else: ?>
+        <a href="home.php" class="btn-story-link" title="Explore roastery background and story">Our Story</a>
+        <button type="button" class="btn-story-link btn-leave-link" id="btnLeaveSession" title="Leave table ordering and exit" style="background: none; cursor: pointer;">🚪 Leave</button>
+      <?php endif; ?>
+      <?php if (!empty($currentUser) && in_array($currentUser['role'], ['staff', 'admin', 'superadmin'])): ?>
+        <a href="kds.php" class="btn-story-link" style="color: #DF9B64; border-color: rgba(223, 155, 100, 0.3);">Staff KDS</a>
+      <?php endif; ?>
     </div>
   </header>
 
-  <!-- Sticky Category Navigation -->
+  <!-- Sticky Category Navigation with 10-Min Prep Timer -->
   <nav class="order-category-nav" id="orderCategoryNav" aria-label="Menu Categories">
-    <button type="button" class="cat-pill-btn active" data-cat="all">All Drinks</button>
-    <button type="button" class="cat-pill-btn" data-cat="house-coffee">House Coffee</button>
-    <button type="button" class="cat-pill-btn" data-cat="matcha">Matcha</button>
-    <button type="button" class="cat-pill-btn" data-cat="house-specials">House Specials</button>
-    <button type="button" class="cat-pill-btn" data-cat="yogurt-soda">Yogurt / Soda</button>
+    <div class="cat-pill-group" id="catPillGroup">
+      <button type="button" class="cat-pill-btn active" data-cat="all">All Drinks</button>
+      <button type="button" class="cat-pill-btn" data-cat="house-coffee">House Coffee</button>
+      <button type="button" class="cat-pill-btn" data-cat="matcha">Matcha</button>
+      <button type="button" class="cat-pill-btn" data-cat="house-specials">House Specials</button>
+      <button type="button" class="cat-pill-btn" data-cat="yogurt-soda">Yogurt / Soda</button>
+    </div>
+    <div class="order-prep-timer" id="orderPrepTimer" title="Remaining time to place your order" role="timer" aria-live="polite">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="timer-icon" aria-hidden="true">
+        <circle cx="12" cy="12" r="10"></circle>
+        <polyline points="12 6 12 12 16 14"></polyline>
+      </svg>
+      <span class="timer-label"><span class="timer-label-full">Time Left:</span><span class="timer-label-short">Time:</span></span>
+      <strong class="timer-clock" id="prepCountdownClock">10:00</strong>
+    </div>
   </nav>
+
+  <!-- Operational Notice: Table QR Ordering Paused -->
+  <div id="tableOrderingPausedBanner" style="display: none; background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.4); border-radius: 12px; padding: 0.85rem 1.25rem; margin: 1rem auto 1rem; max-width: 1200px; color: #FCA5A5; font-size: 0.88rem; align-items: center; justify-content: space-between; gap: 1rem; box-shadow: 0 4px 16px rgba(0,0,0,0.25);">
+    <div style="display: flex; align-items: center; gap: 0.75rem;">
+      <span style="font-size: 1.4rem;">⏸️</span>
+      <div>
+        <strong style="color: #FFF; display: block; font-size: 0.95rem;">Table QR Ordering Paused</strong>
+        <span>Direct table ordering is currently paused by cafe management. Please order at the cashier counter or switch to Take Out.</span>
+      </div>
+    </div>
+    <button type="button" id="btnSwitchTakeoutPaused" style="white-space: nowrap; background: #DF9B64; color: #110D0B; border: none; border-radius: 8px; font-weight: 700; padding: 0.45rem 0.9rem; font-size: 0.82rem; cursor: pointer;">
+      Switch to Take Out
+    </button>
+  </div>
 
   <!-- Main Order Catalog -->
   <main class="order-catalog-wrap">
@@ -758,6 +942,18 @@ $currentUser = getAuthenticatedUser();
     </div>
   </div>
 
+  <!-- Inactive Table Expiration Modal -->
+  <div class="table-expired-modal-overlay" id="tableExpiredModal" style="display: none;" role="alertdialog" aria-modal="true" aria-labelledby="expiredTitle" aria-describedby="expiredDesc">
+    <div class="table-expired-card">
+      <div class="expired-icon">🚪</div>
+      <h3 class="expired-title" id="expiredTitle">Session Expired</h3>
+      <p class="expired-desc" id="expiredDesc">
+        Your 10-minute table ordering window has expired due to inactivity. Exiting the web...
+      </p>
+      <button type="button" class="btn-expired-leave" id="btnExpiredLeaveNow">Exit Now</button>
+    </div>
+  </div>
+
   <!-- Cart Drawer Modal -->
   <div class="oms-modal-overlay" id="cartModal" aria-modal="true" role="dialog">
     <div class="oms-modal-box">
@@ -807,7 +1003,16 @@ $currentUser = getAuthenticatedUser();
         <div class="pill-radio-opt" data-val="take_out" style="justify-content: center; padding: 0.75rem 1rem; font-size: 0.92rem; font-weight: 700;">🛍️ Take Out</div>
       </div>
 
-      <!-- Table Number (Shown if Dine-In) -->
+      <!-- Locked Table Badge (Auto-assigned via Table QR Sticker ?table=N) -->
+      <div id="tableLockedBadge" style="display: none; margin-top: 0.85rem; background: rgba(223, 155, 100, 0.12); border: 1px solid rgba(223, 155, 100, 0.35); border-radius: 10px; padding: 0.75rem 0.85rem; align-items: center; gap: 0.75rem;">
+        <div style="font-size: 1.4rem;">🪑</div>
+        <div>
+          <div style="font-size: 0.9rem; font-weight: 700; color: #DF9B64;">Seated at Table <span id="tableLockedNumber">1</span></div>
+          <div style="font-size: 0.75rem; color: #A99B92;">Auto-detected from Table QR Sticker · Orders served directly to this table</div>
+        </div>
+      </div>
+
+      <!-- Table Number (Shown if Dine-In and not arriving from table-locked QR) -->
       <div id="tableNumberWrap" style="margin-top: 0.85rem; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 0.75rem 0.85rem;">
         <label for="checkoutTableInput" style="display: block; font-size: 0.78rem; color: #DF9B64; font-weight: 700; margin-bottom: 0.35rem;">Table Number</label>
         <div style="display: flex; align-items: center; gap: 0.6rem;">
@@ -898,18 +1103,47 @@ $currentUser = getAuthenticatedUser();
   </div>
 
   <!-- Application Logic -->
+  <script src="js/system-dialog.js"></script>
   <script>
     (function initDirectOrderPortal() {
       // 1. URL Query Parameter & Session State Parsing (?table=4 or ?type=take_out)
       var urlParams = new URLSearchParams(window.location.search);
       var initialTable = urlParams.get('table');
       var initialType = urlParams.get('type');
+      var isWalkin = urlParams.get('mode') === 'walkin';
 
       var savedType = sessionStorage.getItem('becoffee_order_type');
       var savedTable = sessionStorage.getItem('becoffee_table_num');
+      var diningChosen = sessionStorage.getItem('becoffee_dining_chosen');
 
-      var currentOrderType = initialType ? (initialType === 'take_out' ? 'take_out' : 'dine_in') : (savedType || (initialTable ? 'dine_in' : 'dine_in'));
-      var currentTableNumber = initialTable || savedTable || '4';
+      var currentOrderType = 'dine_in';
+      var currentTableNumber = initialTable || savedTable || '1';
+      var isTableLocked = Boolean(initialTable || sessionStorage.getItem('becoffee_table_locked') === 'true');
+      var isTableQREnabled = true;
+
+      // If a specific table QR was scanned (e.g. ?table=4), immediately lock to Dine-In Table #N without prompting
+      if (initialTable) {
+        currentOrderType = 'dine_in';
+        currentTableNumber = initialTable;
+        sessionStorage.setItem('becoffee_dining_chosen', 'true');
+        sessionStorage.setItem('becoffee_table_locked', 'true');
+        isTableLocked = true;
+      } else if (initialType) {
+        currentOrderType = (initialType === 'take_out') ? 'take_out' : 'dine_in';
+        sessionStorage.setItem('becoffee_dining_chosen', 'true');
+      } else if (savedType) {
+        currentOrderType = savedType;
+      }
+
+      function updatePausedBanner() {
+        var banner = document.getElementById('tableOrderingPausedBanner');
+        if (!banner) return;
+        if (!isTableQREnabled && currentOrderType === 'dine_in') {
+          banner.style.display = 'flex';
+        } else {
+          banner.style.display = 'none';
+        }
+      }
 
       function updateContextBadge() {
         var pillIcon = document.getElementById('tableContextIcon');
@@ -925,14 +1159,53 @@ $currentUser = getAuthenticatedUser();
         if (currentOrderType === 'dine_in') {
           sessionStorage.setItem('becoffee_table_num', currentTableNumber);
         }
+        updatePausedBanner();
       }
       updateContextBadge();
+
+      // Switch to take out from paused banner
+      var btnSwitchTakeout = document.getElementById('btnSwitchTakeoutPaused');
+      if (btnSwitchTakeout) {
+        btnSwitchTakeout.addEventListener('click', function() {
+          currentOrderType = 'take_out';
+          sessionStorage.setItem('becoffee_order_type', 'take_out');
+          sessionStorage.setItem('becoffee_dining_chosen', 'true');
+          updateContextBadge();
+          updateCartUI();
+          syncCheckoutTableDisplay();
+        });
+      }
+
+      // Sync Table Display in Checkout Modal
+      function syncCheckoutTableDisplay() {
+        var lockedBadge = document.getElementById('tableLockedBadge');
+        var manualWrap = document.getElementById('tableNumberWrap');
+        var lockedNum = document.getElementById('tableLockedNumber');
+        var checkoutInput = document.getElementById('checkoutTableInput');
+
+        if (lockedNum) lockedNum.textContent = currentTableNumber;
+        if (checkoutInput) checkoutInput.value = currentTableNumber;
+
+        if (currentOrderType === 'dine_in') {
+          if (isTableLocked) {
+            if (lockedBadge) lockedBadge.style.display = 'flex';
+            if (manualWrap) manualWrap.style.display = 'none';
+          } else {
+            if (lockedBadge) lockedBadge.style.display = 'none';
+            if (manualWrap) manualWrap.style.display = 'block';
+          }
+        } else {
+          if (lockedBadge) lockedBadge.style.display = 'none';
+          if (manualWrap) manualWrap.style.display = 'none';
+        }
+      }
 
       // Tap context badge to toggle passively
       document.getElementById('tableContextPill').addEventListener('click', function() {
         currentOrderType = (currentOrderType === 'dine_in') ? 'take_out' : 'dine_in';
         updateContextBadge();
         updateCartUI();
+        syncCheckoutTableDisplay();
       });
 
       // 2. Fetch Menu Items & Live Stock Availability
@@ -940,6 +1213,21 @@ $currentUser = getAuthenticatedUser();
       var stockOptions = [];
       var stockAvailability = {};
       var itemAvailability = {};
+
+      async function checkSystemSettings() {
+        try {
+          var res = await fetch('api/settings.php?action=status', { cache: 'no-store' });
+          if (res.ok) {
+            var data = await res.json();
+            if (data && data.settings) {
+              isTableQREnabled = (data.settings.table_qr_ordering_enabled !== false);
+            }
+          }
+        } catch (e) {
+          console.warn('System settings check warning:', e);
+        }
+        updatePausedBanner();
+      }
 
       async function loadStockAvailability() {
         try {
@@ -956,6 +1244,7 @@ $currentUser = getAuthenticatedUser();
       }
 
       async function loadMenu() {
+        await checkSystemSettings();
         await loadStockAvailability();
 
         try {
@@ -1034,6 +1323,120 @@ $currentUser = getAuthenticatedUser();
           renderCatalog(btn.getAttribute('data-cat'));
         });
       });
+
+      // Leave Ordering Session entirely (Closes tab/window or navigates to about:blank)
+      function leaveWebEntirely() {
+        try {
+          sessionStorage.clear();
+          localStorage.removeItem('becoffee_cart');
+        } catch(e) {}
+
+        // Attempt 1: Close window/tab
+        window.close();
+
+        // Attempt 2: If browser blocks window.close(), navigate to about:blank to exit website entirely
+        setTimeout(function() {
+          window.location.replace('about:blank');
+        }, 300);
+      }
+
+      var btnLeaveSession = document.getElementById('btnLeaveSession');
+      if (btnLeaveSession) {
+        btnLeaveSession.addEventListener('click', function(e) {
+          e.preventDefault();
+          leaveWebEntirely();
+        });
+      }
+
+      var btnExpiredLeaveNow = document.getElementById('btnExpiredLeaveNow');
+      if (btnExpiredLeaveNow) {
+        btnExpiredLeaveNow.addEventListener('click', function(e) {
+          e.preventDefault();
+          leaveWebEntirely();
+        });
+      }
+
+      // 10-Minute Table Ordering Session Countdown Timer & Inactivity Auto-Leave
+      (function initOrderPrepTimer() {
+        var clockEl = document.getElementById('prepCountdownClock');
+        var timerWrap = document.getElementById('orderPrepTimer');
+        if (!clockEl) return;
+
+        var STORAGE_KEY = 'becoffee_order_prep_end';
+        var TEN_MINUTES_MS = 10 * 60 * 1000;
+        var now = Date.now();
+        var rawEnd = sessionStorage.getItem(STORAGE_KEY);
+        var endTime = rawEnd ? parseInt(rawEnd, 10) : null;
+
+        var expiredHandled = false;
+
+        if (!endTime || isNaN(endTime)) {
+          endTime = now + TEN_MINUTES_MS;
+          sessionStorage.setItem(STORAGE_KEY, endTime.toString());
+        } else if (endTime <= now) {
+          if (!sessionStorage.getItem('active_ticket_ref')) {
+            expiredHandled = true;
+            triggerAutoLeave();
+            return;
+          }
+        }
+
+        function updateClock() {
+          // If an active order ticket has already been submitted, hide/stop the ordering limit timer
+          if (sessionStorage.getItem('active_ticket_ref')) {
+            if (timerWrap) timerWrap.style.display = 'none';
+            return;
+          }
+
+          var remainingMs = Math.max(0, endTime - Date.now());
+          var totalSec = Math.floor(remainingMs / 1000);
+          var mins = Math.floor(totalSec / 60);
+          var secs = totalSec % 60;
+          clockEl.textContent = (mins < 10 ? '0' : '') + mins + ':' + (secs < 10 ? '0' : '') + secs;
+
+          // Visual warning when under 2 minutes
+          if (totalSec <= 120 && totalSec > 0 && timerWrap) {
+            timerWrap.style.borderColor = 'rgba(239, 68, 68, 0.6)';
+            timerWrap.style.background = 'rgba(239, 68, 68, 0.15)';
+            clockEl.style.color = '#FCA5A5';
+          }
+
+          if (remainingMs <= 0 && !expiredHandled) {
+            expiredHandled = true;
+            triggerAutoLeave();
+          }
+        }
+
+        function triggerAutoLeave() {
+          try {
+            sessionStorage.removeItem('becoffee_order_type');
+            sessionStorage.removeItem('becoffee_table_num');
+            sessionStorage.removeItem('becoffee_table_locked');
+            sessionStorage.removeItem('becoffee_dining_chosen');
+            sessionStorage.removeItem('becoffee_cart');
+            sessionStorage.removeItem('active_ticket_ref');
+            sessionStorage.removeItem('active_ticket_queue');
+            sessionStorage.removeItem(STORAGE_KEY);
+          } catch(e) {}
+
+          var modal = document.getElementById('tableExpiredModal');
+          if (modal) {
+            modal.style.display = 'flex';
+            var leaveBtn = document.getElementById('btnExpiredLeaveNow');
+            if (leaveBtn) {
+              leaveBtn.onclick = function() { leaveWebEntirely(); };
+            }
+            setTimeout(function() {
+              leaveWebEntirely();
+            }, 2500);
+          } else {
+            leaveWebEntirely();
+          }
+        }
+
+        updateClock();
+        setInterval(updateClock, 1000);
+      })();
 
       // 3. Customization Modal Logic & Stock Lockouts
       var activeCustomItem = null;
@@ -1301,12 +1704,11 @@ $currentUser = getAuthenticatedUser();
       document.getElementById('btnProceedToCheckout').addEventListener('click', function() {
         document.getElementById('cartModal').classList.remove('active');
         
-        // Sync Order Type Buttons
+        // Sync Order Type Buttons & Table Display
         document.querySelectorAll('#orderTypeRadioGroup .pill-radio-opt').forEach(function(p) {
           p.classList.toggle('active', p.getAttribute('data-val') === currentOrderType);
         });
-        document.getElementById('tableNumberWrap').style.display = (currentOrderType === 'dine_in') ? 'block' : 'none';
-        document.getElementById('checkoutTableInput').value = currentTableNumber;
+        syncCheckoutTableDisplay();
 
         document.getElementById('checkoutModal').classList.add('active');
       });
@@ -1321,7 +1723,7 @@ $currentUser = getAuthenticatedUser();
           document.querySelectorAll('#orderTypeRadioGroup .pill-radio-opt').forEach(function(b) { b.classList.remove('active'); });
           p.classList.add('active');
           currentOrderType = p.getAttribute('data-val');
-          document.getElementById('tableNumberWrap').style.display = (currentOrderType === 'dine_in') ? 'block' : 'none';
+          syncCheckoutTableDisplay();
           updateContextBadge();
           updateCartUI();
         });
@@ -1359,9 +1761,14 @@ $currentUser = getAuthenticatedUser();
       document.getElementById('btnPlaceOrderFinal').addEventListener('click', async function() {
         if (cart.length === 0) return;
 
+        if (currentOrderType === 'dine_in' && !isTableQREnabled) {
+          await SystemDialog.alert('Table QR ordering is temporarily paused by cafe management. Please place your order at the counter or switch to Take Out.', { title: 'Ordering Paused', type: 'warning' });
+          return;
+        }
+
         var name = document.getElementById('checkoutNameInput').value.trim() || 'Guest Customer';
         var phone = document.getElementById('checkoutPhoneInput').value.trim() || '+63 900 000 0000';
-        var table = (currentOrderType === 'dine_in') ? document.getElementById('checkoutTableInput').value.trim() || '1' : null;
+        var table = (currentOrderType === 'dine_in') ? (currentTableNumber || document.getElementById('checkoutTableInput').value.trim() || '1') : null;
 
         var payload = {
           customer_name: name,
@@ -1397,11 +1804,11 @@ $currentUser = getAuthenticatedUser();
             launchLiveTicketScreen(data.order_reference, data.queue_number, payload.items, payload.order_type, payload.table_number);
           } else {
             console.error('Order placement error:', data.error);
-            alert('Order placement error: ' + (data.error || 'Server rejected request.'));
+            await SystemDialog.alert('Order placement error: ' + (data.error || 'Server rejected request.'), { title: 'Order Failed', type: 'danger' });
           }
         } catch (err) {
           console.error('Network connection error:', err);
-          alert('Network connection error: ' + err.message);
+          await SystemDialog.alert('Network connection error: ' + err.message, { title: 'Connection Error', type: 'danger' });
         } finally {
           submitBtn.disabled = false;
           submitBtn.innerHTML = originalBtnHtml;
@@ -1538,7 +1945,11 @@ $currentUser = getAuthenticatedUser();
           var isCurrentlyTakeout = tag && tag.textContent.includes('Take Out');
 
           if (isCurrentlyTakeout) {
-            var tableInput = prompt('Enter your Table Number to switch to Dine In:', currentTableNumber || '1');
+            var tableInput = await SystemDialog.prompt('Enter your Table Number to switch to Dine In:', currentTableNumber || '1', {
+              title: 'Switch to Dine In',
+              confirmText: 'Assign Table',
+              placeholder: 'Table number'
+            });
             if (!tableInput || !tableInput.trim()) return;
             tableInput = tableInput.trim();
 
@@ -1558,14 +1969,19 @@ $currentUser = getAuthenticatedUser();
                 currentTableNumber = tableInput;
                 updateContextBadge();
                 updateTicketDiningDisplay('dine_in', tableInput);
+                await SystemDialog.alert('Dining preference switched to Table #' + tableInput + '.', { title: 'Table Assigned', type: 'success' });
               } else {
-                alert(data.error || 'Could not update dining mode.');
+                await SystemDialog.alert(data.error || 'Could not update dining mode.', { title: 'Update Failed', type: 'danger' });
               }
             } catch(e) {
-              alert('Network error. Please inform counter staff.');
+              await SystemDialog.alert('Network error. Please inform counter staff.', { title: 'Network Error', type: 'danger' });
             }
           } else {
-            if (!confirm('Switch this order to Take Out (Counter Pickup)?')) return;
+            var confirmed = await SystemDialog.confirm('Switch this order to Take Out (Counter Pickup)?', {
+              title: 'Switch to Take Out',
+              confirmText: 'Switch to Take Out'
+            });
+            if (!confirmed) return;
             try {
               var res = await fetch('api/orders.php?action=update_dining', {
                 method: 'POST',
@@ -1580,11 +1996,12 @@ $currentUser = getAuthenticatedUser();
                 currentOrderType = 'take_out';
                 updateContextBadge();
                 updateTicketDiningDisplay('take_out', null);
+                await SystemDialog.alert('Dining preference switched to Take Out pickup.', { title: 'Mode Updated', type: 'success' });
               } else {
-                alert(data.error || 'Could not update dining mode.');
+                await SystemDialog.alert(data.error || 'Could not update dining mode.', { title: 'Update Failed', type: 'danger' });
               }
             } catch(e) {
-              alert('Network error. Please inform counter staff.');
+              await SystemDialog.alert('Network error. Please inform counter staff.', { title: 'Network Error', type: 'danger' });
             }
           }
         });
@@ -1597,6 +2014,23 @@ $currentUser = getAuthenticatedUser();
         document.getElementById('orderTicketScreen').classList.remove('active', 'is-ready');
         document.getElementById('ticketStatusCard').style.display = 'block';
       });
+
+      // Leave Ordering Session Button
+      var btnLeave = document.getElementById('btnLeaveSession');
+      if (btnLeave) {
+        btnLeave.addEventListener('click', function() {
+          try {
+            sessionStorage.removeItem('becoffee_order_type');
+            sessionStorage.removeItem('becoffee_table_num');
+            sessionStorage.removeItem('becoffee_table_locked');
+            sessionStorage.removeItem('becoffee_dining_chosen');
+            sessionStorage.removeItem('becoffee_cart');
+            sessionStorage.removeItem('active_ticket_ref');
+            sessionStorage.removeItem('active_ticket_queue');
+            sessionStorage.removeItem('becoffee_order_prep_end');
+          } catch (err) {}
+        });
+      }
 
       // Resume active ticket on page reload if present in sessionStorage
       var savedRef = sessionStorage.getItem('active_ticket_ref');

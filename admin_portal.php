@@ -667,6 +667,7 @@ if ($currentUser['role'] === 'staff') {
   </div>
 
   <!-- JavaScript Controller -->
+  <script src="js/system-dialog.js"></script>
   <script>
     (function initAdminStockPortal() {
       var menuData = [];
@@ -922,7 +923,12 @@ if ($currentUser['role'] === 'staff') {
 
       // Reset All to In-Stock
       document.getElementById('btnResetAllStock').addEventListener('click', async function() {
-        if (!confirm('Are you sure you want to reset ALL customization options and drinks to IN STOCK?')) return;
+        var confirmed = await SystemDialog.confirm('Are you sure you want to reset ALL customization options and drinks to IN STOCK?', {
+          title: 'Reset All Stock',
+          confirmText: 'Reset to In Stock',
+          isDestructive: true
+        });
+        if (!confirmed) return;
 
         try {
           var res = await fetch('api/stock.php', {

@@ -148,8 +148,8 @@ function getTargetViewForRole(string $role): string {
         'superadmin' => 'admin.php?view=users',
         'admin'      => 'admin.php',
         'staff'      => 'kds.php',
-        'customer'   => 'index.php',
-        default      => 'index.php'
+        'customer'   => 'takeout.php',
+        default      => 'takeout.php'
     };
 }
 
@@ -184,6 +184,39 @@ function logAuditEvent(string $action, string $details = '', ?int $userId = null
         ]);
     } catch (\Throwable $e) {
         // Silently catch to not disrupt caller workflow
+    }
+}
+
+// 6. System Settings Helpers
+function getSystemSetting(string $key, string $default = ''): string {
+    if (!class_exists('Database')) {
+        require_once __DIR__ . '/db.php';
+    }
+    try {
+        $db = Database::getConnection();
+        $stmt = $db->prepare("SELECT setting_value FROM system_settings WHERE setting_key = ? LIMIT 1");
+        $stmt->execute([$key]);
+        $val = $stmt->fetchColumn();
+        return $val !== false ? (string)$val : $default;
+    } catch (\Throwable $e) {
+        return $default;
+    }
+}
+
+function setSystemSetting(string $key, string $value): bool {
+    if (!class_exists('Database')) {
+        require_once __DIR__ . '/db.php';
+    }
+    try {
+        $db = Database::getConnection();
+        $stmt = $db->prepare("
+            INSERT INTO system_settings (setting_key, setting_value) 
+            VALUES (?, ?) 
+            ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value)
+        ");
+        return $stmt->execute([$key, $value]);
+    } catch (\Throwable $e) {
+        return false;
     }
 }
 

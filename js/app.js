@@ -1874,6 +1874,16 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
           }
 
+          if (data.user && data.user.role === 'customer') {
+            setAuthAlert('Welcome! Redirecting to Take Out Order...', 'success');
+            showToast('Welcome! Loading Take Out ordering...');
+            setTimeout(() => {
+              closeAuthModal();
+              window.location.href = 'takeout.php';
+            }, 600);
+            return;
+          }
+
           setTimeout(() => {
             closeAuthModal();
             if (state.pendingCheckout && state.cart.length > 0) {
