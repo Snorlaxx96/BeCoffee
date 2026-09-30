@@ -19,8 +19,8 @@ if ($currentUser['role'] === 'staff') {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Escobar Cafe | Admin Stock & Customization Control Portal</title>
-  <meta name="description" content="Staff and Administrator Stock Management Portal for Escobar Cafe / BeCoffee. 86 and cancel out customization options in real-time.">
+  <title>BeCoffee | Admin Stock & Customization Control Portal</title>
+  <meta name="description" content="Staff and Administrator Stock Management Portal for BeCoffee. 86 and cancel out customization options in real-time.">
   <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -509,7 +509,7 @@ if ($currentUser['role'] === 'staff') {
     <div class="admin-brand-wrap">
       <div class="admin-brand-logo">B</div>
       <div>
-        <div class="admin-brand-title">Escobar Cafe</div>
+        <div class="admin-brand-title">BeCoffee</div>
         <div class="admin-badge-pill">🛡️ Admin Stock Control Portal</div>
       </div>
     </div>

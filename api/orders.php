@@ -1,6 +1,6 @@
 <?php
 /**
- * Escobar Cafe / BeCoffee — Orders Controller (REST API)
+ * BeCoffee — Orders Controller (REST API)
  * Handles customer order placement, customization specs, daily queue generation, and live ticket polling
  */
 

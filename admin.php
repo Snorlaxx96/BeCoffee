@@ -19,8 +19,8 @@ if ($currentUser['role'] === 'staff') {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Escobar Cafe | Admin Operations & Analytics Studio</title>
-  <meta name="description" content="Operations studio for Escobar Cafe / BeCoffee: Analytics, Revenue Ledger, Product Catalog, and Stock Customization Control.">
+  <title>BeCoffee | Admin Operations & Analytics Studio</title>
+  <meta name="description" content="Operations studio for BeCoffee: Analytics, Revenue Ledger, Product Catalog, and Stock Customization Control.">
   <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1689,7 +1689,7 @@ if ($currentUser['role'] === 'staff') {
     <a href="home.php" class="sidebar-brand">
       <div class="sidebar-logo">B</div>
       <div>
-        <div class="sidebar-brand-name">Escobar Cafe</div>
+        <div class="sidebar-brand-name">BeCoffee</div>
         <span class="sidebar-brand-tag">Cafe Admin</span>
       </div>
     </a>

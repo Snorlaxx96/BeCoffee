@@ -472,20 +472,20 @@ document.addEventListener('DOMContentLoaded', () => {
   const liveStatusText = document.getElementById('liveStatusText');
   const siteHeader = document.getElementById('siteHeader');
 
-  // Order Customization Modal Elements (Hot/Iced & Medium/Large)
+  // Order Customization Modal Elements (Temperature, Add Ons, Sweetness, Notes)
   const orderModalOverlay = document.getElementById('orderModalOverlay');
   const closeOrderModalBtn = document.getElementById('closeOrderModalBtn');
   const orderModalImg = document.getElementById('orderModalImg');
-  const orderModalCategory = document.getElementById('orderModalCategory');
   const orderModalTitle = document.getElementById('orderModalTitle');
+  const orderModalCategory = document.getElementById('orderModalCategory');
   const orderModalDesc = document.getElementById('orderModalDesc');
+  const orderModalBasePrice = document.getElementById('orderModalBasePrice');
   const tempIcedBtn = document.getElementById('tempIcedBtn');
   const tempHotBtn = document.getElementById('tempHotBtn');
-  const tempOptionBadge = document.getElementById('tempOptionBadge');
-  const sizeMediumBtn = document.getElementById('sizeMediumBtn');
-  const sizeLargeBtn = document.getElementById('sizeLargeBtn');
-  const sizeMediumPrice = document.getElementById('sizeMediumPrice');
-  const sizeLargePrice = document.getElementById('sizeLargePrice');
+  const tempOptionsGroup = document.getElementById('tempOptionsGroup');
+  const addonOptionsGroup = document.getElementById('addonOptionsGroup');
+  const sweetnessOptionsGroup = document.getElementById('sweetnessOptionsGroup');
+  const orderModalNotesInput = document.getElementById('orderModalNotesInput');
   const modalQtyMinus = document.getElementById('modalQtyMinus');
   const modalQtyPlus = document.getElementById('modalQtyPlus');
   const modalQtyVal = document.getElementById('modalQtyVal');
@@ -494,7 +494,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let currentCustomizingItem = null;
   let customTemp = 'Iced';
-  let customSize = 'Medium';
+  let customAddon = 'Regular Milk';
+  let customAddonSurcharge = 0;
+  let customSweetness = 'Less Sweet (75%)';
   let customQty = 1;
 
   // Reservation Modal Elements
@@ -550,6 +552,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const orderCustomerName = document.getElementById('orderCustomerName');
   const orderCustomerPhone = document.getElementById('orderCustomerPhone');
   const orderCustomerNotes = document.getElementById('orderCustomerNotes');
+  const orderArrivalTime = document.getElementById('orderArrivalTime');
+  const orderCustomTimeInput = document.getElementById('orderCustomTimeInput');
+  const orderCustomTimeWrap = document.getElementById('orderCustomTimeWrap');
   const checkoutModeLabel = document.getElementById('checkoutModeLabel');
 
   // Location Outpost Tabs
@@ -837,54 +842,50 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // --- 10. Order Customization Modal & Cart System ---
   function openOrderModal(itemId) {
-    const item = state.menuItems.find(i => i.id === itemId);
+    const item = (state.menuItems && state.menuItems.find(i => i.id === itemId))
+      || (typeof MENU_ITEMS !== 'undefined' && MENU_ITEMS.find(i => i.id === itemId))
+      || (typeof menuData !== 'undefined' && menuData.find(i => i.id === itemId));
     if (!item || !orderModalOverlay) return;
 
     currentCustomizingItem = item;
     customTemp = 'Iced';
-    customSize = 'Medium';
+    customAddon = 'Regular Milk';
+    customAddonSurcharge = 0;
+    customSweetness = 'Less Sweet (75%)';
     customQty = 1;
 
     if (orderModalImg) {
-      orderModalImg.src = `${item.image}?v=7.0`;
+      orderModalImg.src = item.image ? `${item.image}?v=7.0` : 'images/menu/hc-caramel-macchiato.webp';
       orderModalImg.alt = item.name;
     }
-    if (orderModalCategory) {
-      const catLabels = {
-        'house-coffee': 'House Coffee',
-        'matcha': 'Matcha',
-        'house-specials': 'House Specials',
-        'yogurt-soda': 'Yogurt / Soda'
-      };
-      orderModalCategory.textContent = catLabels[item.category] || 'Specialty';
-    }
     if (orderModalTitle) orderModalTitle.textContent = item.name;
-    if (orderModalDesc) {
-      orderModalDesc.textContent = item.description;
-      orderModalDesc.title = item.description;
+    if (orderModalCategory) {
+      const catName = (item.category || 'COFFEE').toUpperCase().replace(/-/g, ' ');
+      orderModalCategory.textContent = catName;
     }
-
-    const mediumPrice = item.priceIcedM || item.price || 120;
-    const largePrice = item.priceIcedL || (item.price + 20) || 140;
-
-    if (sizeMediumPrice) sizeMediumPrice.textContent = formatPHP(mediumPrice);
-    if (sizeLargePrice) sizeLargePrice.textContent = formatPHP(largePrice);
+    if (orderModalDesc) {
+      orderModalDesc.textContent = item.notes || item.description || 'Crafted fresh to order with premium artisan ingredients.';
+    }
+    if (orderModalBasePrice) {
+      orderModalBasePrice.textContent = `₱${parseFloat(item.price || 120).toFixed(2)}`;
+    }
+    if (orderModalNotesInput) {
+      orderModalNotesInput.value = '';
+    }
 
     // Temperature Availability: Yogurt/Soda are iced-only
-    const allowHot = !!item.priceHot;
+    const isIcedOnly = item.category === 'yogurt-soda' || (item.elevation && item.elevation.includes('Iced Only')) || item.priceHot === null;
     if (tempHotBtn) {
-      if (allowHot) {
-        tempHotBtn.classList.remove('disabled');
+      if (!isIcedOnly) {
+        tempHotBtn.classList.remove('is-sold-out', 'disabled');
         tempHotBtn.removeAttribute('aria-disabled');
-        if (tempOptionBadge) tempOptionBadge.textContent = 'Select 1';
       } else {
-        tempHotBtn.classList.add('disabled');
+        tempHotBtn.classList.add('is-sold-out');
         tempHotBtn.setAttribute('aria-disabled', 'true');
-        if (tempOptionBadge) tempOptionBadge.textContent = 'Iced Only';
       }
     }
 
-    // Default Selection: Iced, Medium, Qty 1
+    // Default Selection: Iced, Regular Milk (+₱0), 75% Less Sweet, Qty 1
     if (tempIcedBtn) {
       tempIcedBtn.classList.add('active');
       tempIcedBtn.setAttribute('aria-checked', 'true');
@@ -894,13 +895,22 @@ document.addEventListener('DOMContentLoaded', () => {
       tempHotBtn.setAttribute('aria-checked', 'false');
     }
 
-    if (sizeMediumBtn) {
-      sizeMediumBtn.classList.add('active');
-      sizeMediumBtn.setAttribute('aria-checked', 'true');
+    // Reset Add-ons pills to Regular Milk active
+    if (addonOptionsGroup) {
+      addonOptionsGroup.querySelectorAll('.pill-radio-opt').forEach(opt => {
+        const isReg = opt.getAttribute('data-val') === 'Regular Milk';
+        opt.classList.toggle('active', isReg);
+        opt.setAttribute('aria-checked', isReg ? 'true' : 'false');
+      });
     }
-    if (sizeLargeBtn) {
-      sizeLargeBtn.classList.remove('active');
-      sizeLargeBtn.setAttribute('aria-checked', 'false');
+
+    // Reset Sweetness pills to 75% Less Sweet active
+    if (sweetnessOptionsGroup) {
+      sweetnessOptionsGroup.querySelectorAll('.pill-radio-opt').forEach(opt => {
+        const isLess = opt.getAttribute('data-val') === 'Less Sweet (75%)';
+        opt.classList.toggle('active', isLess);
+        opt.setAttribute('aria-checked', isLess ? 'true' : 'false');
+      });
     }
 
     if (modalQtyVal) modalQtyVal.textContent = '1';
@@ -917,12 +927,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function updateOrderModalTotal() {
     if (!currentCustomizingItem) return;
-    const mediumPrice = currentCustomizingItem.priceIcedM || currentCustomizingItem.price || 120;
-    const largePrice = currentCustomizingItem.priceIcedL || (currentCustomizingItem.price + 20) || 140;
-    const unitPrice = (customSize === 'Large') ? largePrice : mediumPrice;
+    const basePrice = parseFloat(currentCustomizingItem.price) || 120;
+    const unitPrice = basePrice + customAddonSurcharge;
     const total = unitPrice * customQty;
     if (orderConfirmTotal) {
-      orderConfirmTotal.textContent = `· ${formatPHP(total)}`;
+      orderConfirmTotal.textContent = `₱${total.toFixed(2)}`;
     }
   }
 
@@ -950,7 +959,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     tempHotBtn.addEventListener('click', () => {
-      if (tempHotBtn.classList.contains('disabled')) return;
+      if (tempHotBtn.classList.contains('is-sold-out') || tempHotBtn.classList.contains('disabled')) return;
       customTemp = 'Hot';
       tempHotBtn.classList.add('active');
       tempHotBtn.setAttribute('aria-checked', 'true');
@@ -960,22 +969,29 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  if (sizeMediumBtn && sizeLargeBtn) {
-    sizeMediumBtn.addEventListener('click', () => {
-      customSize = 'Medium';
-      sizeMediumBtn.classList.add('active');
-      sizeMediumBtn.setAttribute('aria-checked', 'true');
-      sizeLargeBtn.classList.remove('active');
-      sizeLargeBtn.setAttribute('aria-checked', 'false');
+  if (addonOptionsGroup) {
+    addonOptionsGroup.addEventListener('click', (e) => {
+      const opt = e.target.closest('.pill-radio-opt');
+      if (!opt || opt.classList.contains('is-sold-out')) return;
+      customAddon = opt.getAttribute('data-val') || 'Regular Milk';
+      customAddonSurcharge = parseFloat(opt.getAttribute('data-surcharge')) || 0;
+      addonOptionsGroup.querySelectorAll('.pill-radio-opt').forEach(p => {
+        p.classList.toggle('active', p === opt);
+        p.setAttribute('aria-checked', p === opt ? 'true' : 'false');
+      });
       updateOrderModalTotal();
     });
+  }
 
-    sizeLargeBtn.addEventListener('click', () => {
-      customSize = 'Large';
-      sizeLargeBtn.classList.add('active');
-      sizeLargeBtn.setAttribute('aria-checked', 'true');
-      sizeMediumBtn.classList.remove('active');
-      sizeMediumBtn.setAttribute('aria-checked', 'false');
+  if (sweetnessOptionsGroup) {
+    sweetnessOptionsGroup.addEventListener('click', (e) => {
+      const opt = e.target.closest('.pill-radio-opt');
+      if (!opt || opt.classList.contains('is-sold-out')) return;
+      customSweetness = opt.getAttribute('data-val') || 'Less Sweet (75%)';
+      sweetnessOptionsGroup.querySelectorAll('.pill-radio-opt').forEach(p => {
+        p.classList.toggle('active', p === opt);
+        p.setAttribute('aria-checked', p === opt ? 'true' : 'false');
+      });
       updateOrderModalTotal();
     });
   }
@@ -998,7 +1014,8 @@ document.addEventListener('DOMContentLoaded', () => {
   if (orderConfirmBtn) {
     orderConfirmBtn.addEventListener('click', () => {
       if (!currentCustomizingItem) return;
-      addToCartCustomized(currentCustomizingItem, customTemp, customSize, customQty);
+      const notes = orderModalNotesInput ? orderModalNotesInput.value.trim() : '';
+      addToCartCustomized(currentCustomizingItem, customTemp, customAddon, customAddonSurcharge, customSweetness, notes, customQty);
       closeOrderModal();
     });
   }
@@ -1008,22 +1025,23 @@ document.addEventListener('DOMContentLoaded', () => {
     updateCartUI();
   }
 
-  function addToCartCustomized(item, temperature, size, qty = 1) {
-    const mediumPrice = item.priceIcedM || item.price || 120;
-    const largePrice = item.priceIcedL || (item.price + 20) || 140;
-    const unitPrice = (size === 'Large') ? largePrice : mediumPrice;
-    const cartItemId = `${item.id}-${temperature.toLowerCase()}-${size.toLowerCase()}`;
+  function addToCartCustomized(item, temperature, addon, surcharge, sweetness, notes, qty = 1) {
+    const basePrice = parseFloat(item.price) || 120;
+    const unitPrice = basePrice + surcharge;
+    const sanitizedKey = `${item.id}-${temperature.toLowerCase()}-${addon.toLowerCase().replace(/[^a-z0-9]/g, '')}-${sweetness.toLowerCase().replace(/[^a-z0-9]/g, '')}-${(notes || '').toLowerCase().slice(0, 10).replace(/[^a-z0-9]/g, '')}`;
 
-    const existing = state.cart.find(i => (i.cartItemId || i.id) === cartItemId);
+    const existing = state.cart.find(i => (i.cartItemId || i.id) === sanitizedKey);
     if (existing) {
       existing.qty += qty;
     } else {
       state.cart.push({
-        cartItemId: cartItemId,
+        cartItemId: sanitizedKey,
         id: item.id,
         name: item.name,
         temperature: temperature,
-        size: size,
+        milk_option: addon,
+        sweetness_level: sweetness,
+        custom_notes: notes,
         price: unitPrice,
         qty: qty
       });
@@ -1036,7 +1054,7 @@ document.addEventListener('DOMContentLoaded', () => {
       cartDrawerOverlay.classList.add('active');
     }
 
-    showToast(`Added "${item.name} (${temperature} · ${size})"${qty > 1 ? ` ×${qty}` : ''} to order (${formatPHP(unitPrice * qty)})`);
+    showToast(`Added "${item.name} (${temperature} · ${addon})"${qty > 1 ? ` ×${qty}` : ''} to order (₱${(unitPrice * qty).toFixed(2)})`);
   }
 
   function updateQty(cartId, change) {
@@ -1084,6 +1102,10 @@ document.addEventListener('DOMContentLoaded', () => {
       if (cartSubtotalEl) cartSubtotalEl.textContent = '₱0';
       if (cartEcoFeeEl) cartEcoFeeEl.textContent = '₱0';
       if (cartGrandTotalEl) cartGrandTotalEl.textContent = '₱0';
+      const cartEtaCard = document.getElementById('cartEtaCard');
+      if (cartEtaCard) cartEtaCard.style.display = 'none';
+      const customTimeWrap = document.getElementById('orderCustomTimeWrap');
+      if (customTimeWrap) customTimeWrap.style.display = 'none';
       if (checkoutBtn) {
         checkoutBtn.disabled = true;
         checkoutBtn.textContent = 'Confirm Order Pickup (₱)';
@@ -1097,11 +1119,106 @@ document.addEventListener('DOMContentLoaded', () => {
     const ecoFee = 25; // ₱25 sustainable bamboo packaging fee
     const grandTotal = subtotal + ecoFee;
 
+    // Dynamic Estimated Pickup Time & Customer Arrival Time
+    const totalDrinks = state.cart.reduce((sum, i) => sum + i.qty, 0);
+    let minMins = 8;
+    let maxMins = 12;
+    if (totalDrinks >= 2 && totalDrinks <= 3) {
+      minMins = 10;
+      maxMins = 15;
+    } else if (totalDrinks >= 4 && totalDrinks <= 5) {
+      minMins = 15;
+      maxMins = 20;
+    } else if (totalDrinks > 5) {
+      minMins = 20;
+      maxMins = 25;
+    }
+
+    const now = new Date();
+    const asapTarget = new Date(now.getTime() + minMins * 60000);
+    const asapTimeStr = asapTarget.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+    const outpostSelect = document.getElementById('orderCustomerNotes');
+    const outpostName = (outpostSelect && outpostSelect.value) ? outpostSelect.value : 'Putik';
+    const arrivalSelect = document.getElementById('orderArrivalTime');
+    const customTimeInput = document.getElementById('orderCustomTimeInput');
+    const customTimeWrap = document.getElementById('orderCustomTimeWrap');
+
+    let arrivalMode = arrivalSelect ? arrivalSelect.value : 'asap';
+    let displayTimeStr = asapTimeStr;
+    let badgeText = `~${minMins}–${maxMins} mins`;
+    let arrivalSubtext = `Customer can come by: ~${asapTimeStr} at ${outpostName} (${totalDrinks} ${totalDrinks === 1 ? 'drink' : 'drinks'})`;
+
+    if (arrivalSelect) {
+      const optAsap = arrivalSelect.querySelector('option[value="asap"]');
+      const opt15 = arrivalSelect.querySelector('option[value="15"]');
+      const opt30 = arrivalSelect.querySelector('option[value="30"]');
+      const opt45 = arrivalSelect.querySelector('option[value="45"]');
+      const opt60 = arrivalSelect.querySelector('option[value="60"]');
+
+      const t15 = new Date(now.getTime() + 15 * 60000).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+      const t30 = new Date(now.getTime() + 30 * 60000).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+      const t45 = new Date(now.getTime() + 45 * 60000).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+      const t60 = new Date(now.getTime() + 60 * 60000).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+
+      if (optAsap) optAsap.textContent = `ASAP (~${asapTimeStr}, ready in ${minMins}–${maxMins}m)`;
+      if (opt15) opt15.textContent = `In 15 minutes (~${t15})`;
+      if (opt30) opt30.textContent = `In 30 minutes (~${t30})`;
+      if (opt45) opt45.textContent = `In 45 minutes (~${t45})`;
+      if (opt60) opt60.textContent = `In 1 hour (~${t60})`;
+
+      if (arrivalMode === '15') {
+        displayTimeStr = t15;
+        badgeText = 'In 15 mins';
+        arrivalSubtext = `Customer can come by: ~${t15} at ${outpostName}`;
+      } else if (arrivalMode === '30') {
+        displayTimeStr = t30;
+        badgeText = 'In 30 mins';
+        arrivalSubtext = `Customer can come by: ~${t30} at ${outpostName}`;
+      } else if (arrivalMode === '45') {
+        displayTimeStr = t45;
+        badgeText = 'In 45 mins';
+        arrivalSubtext = `Customer can come by: ~${t45} at ${outpostName}`;
+      } else if (arrivalMode === '60') {
+        displayTimeStr = t60;
+        badgeText = 'In 1 hour';
+        arrivalSubtext = `Customer can come by: ~${t60} at ${outpostName}`;
+      } else if (arrivalMode === 'custom') {
+        if (customTimeWrap) customTimeWrap.style.display = 'block';
+        if (customTimeInput && customTimeInput.value) {
+          const parts = customTimeInput.value.split(':');
+          const hr = parseInt(parts[0], 10);
+          const mn = parts[1];
+          const ampm = hr >= 12 ? 'PM' : 'AM';
+          const hr12 = hr % 12 || 12;
+          const formatted = `${hr12}:${mn} ${ampm}`;
+          displayTimeStr = formatted;
+          badgeText = formatted;
+          arrivalSubtext = `Customer can come by: ~${formatted} at ${outpostName}`;
+        } else {
+          badgeText = 'Scheduled';
+          arrivalSubtext = `Customer can come at custom time at ${outpostName}`;
+        }
+      }
+      if (arrivalMode !== 'custom' && customTimeWrap) {
+        customTimeWrap.style.display = 'none';
+      }
+    }
+
+    const cartEtaCard = document.getElementById('cartEtaCard');
+    const cartEtaBadge = document.getElementById('cartEtaBadge');
+    const cartEtaTarget = document.getElementById('cartEtaTarget');
+    if (cartEtaCard) cartEtaCard.style.display = 'flex';
+    if (cartEtaBadge) cartEtaBadge.textContent = badgeText;
+    if (cartEtaTarget) {
+      cartEtaTarget.textContent = arrivalSubtext;
+    }
+
     cartItemsContainer.innerHTML = state.cart.map(item => `
       <div class="cart-item-row" data-cart-id="${item.cartItemId || item.id}">
         <div class="cart-item-info">
           <div class="cart-item-name">${item.name}</div>
-          <span class="cart-item-variant">${item.temperature || 'Iced'} · ${item.size || 'Medium'}</span>
+          <span class="cart-item-variant">${item.temperature || 'Iced'} · ${item.milk_option || 'Regular Milk'} · ${item.sweetness_level || '75% Less Sweet'}</span>
+          ${item.custom_notes ? `<div style="font-size: 0.74rem; color: #DF9B64; font-style: italic; margin-top: 0.2rem;">"${item.custom_notes}"</div>` : ''}
           <div class="cart-item-price">${formatPHP(item.price)} each</div>
         </div>
         <div class="cart-qty-ctrl">
@@ -1200,16 +1317,32 @@ document.addEventListener('DOMContentLoaded', () => {
       checkoutBtn.textContent = 'Confirming Order...';
 
       try {
+        const arrivalSelect = document.getElementById('orderArrivalTime');
+        const customTimeInput = document.getElementById('orderCustomTimeInput');
+        const customTimeWrap = document.getElementById('orderCustomTimeWrap');
+        let arrivalLabel = 'ASAP';
+        if (arrivalSelect) {
+          if (arrivalSelect.value === 'custom' && customTimeInput && customTimeInput.value) {
+            arrivalLabel = customTimeInput.value;
+          } else if (arrivalSelect.selectedOptions && arrivalSelect.selectedOptions[0]) {
+            arrivalLabel = arrivalSelect.selectedOptions[0].textContent;
+          }
+        }
+        const combinedNotes = `${custNotes || 'Putik'} (Arrival: ${arrivalLabel})`;
+
         const payload = {
           items: state.cart.map(i => ({
             id: i.id,
             quantity: i.qty,
             temperature: i.temperature || 'Iced',
-            size: i.size || 'Medium'
+            milk_option: i.milk_option || 'Regular Milk',
+            sweetness_level: i.sweetness_level || 'Normal (100%)',
+            custom_notes: i.custom_notes || '',
+            size: 'Medium'
           })),
           customer_name: custName,
           customer_phone: custPhone,
-          customer_notes: custNotes
+          customer_notes: combinedNotes
         };
 
         const res = await fetch(getApiUrl('api/orders.php'), {
@@ -1222,11 +1355,25 @@ document.addEventListener('DOMContentLoaded', () => {
         const data = await res.json();
         if (res.ok && data.success) {
           const ref = data.order_reference || (data.order && (data.order.order_code || data.order.order_reference)) || 'BC-ORDER';
-          showToast(`Order ${ref} confirmed! Ready for pickup (${formatPHP(data.grand_total || state.cart.reduce((sum, i) => sum + i.price * i.qty, 0) + 25)})`);
+          const totalDrinks = state.cart.reduce((sum, i) => sum + i.qty, 0);
+          let estMins = '8–12';
+          if (totalDrinks >= 2 && totalDrinks <= 3) estMins = '10–15';
+          else if (totalDrinks >= 4 && totalDrinks <= 5) estMins = '15–20';
+          else if (totalDrinks > 5) estMins = '20–25';
+          showToast(`Order ${ref} confirmed! Customer can come by ~${displayTimeStr} at ${custNotes || 'Putik'}.`);
           state.cart = [];
           saveCart();
           if (cartDrawerOverlay) cartDrawerOverlay.classList.remove('active');
-          if (orderCustomerNotes) orderCustomerNotes.value = '';
+          if (orderCustomerNotes) {
+            if (orderCustomerNotes.tagName === 'SELECT') {
+              orderCustomerNotes.selectedIndex = 0;
+            } else {
+              orderCustomerNotes.value = '';
+            }
+          }
+          if (arrivalSelect) arrivalSelect.selectedIndex = 0;
+          if (customTimeInput) customTimeInput.value = '';
+          if (customTimeWrap) customTimeWrap.style.display = 'none';
         } else {
           showToast(data.error || 'Unable to complete order. Please try again.');
         }
@@ -1238,6 +1385,31 @@ document.addEventListener('DOMContentLoaded', () => {
       } finally {
         checkoutBtn.disabled = false;
         checkoutBtn.textContent = originalText;
+      }
+    });
+  }
+
+  // Outpost & Arrival Time switch listeners: dynamically recalculate ETA banner
+  if (orderCustomerNotes) {
+    orderCustomerNotes.addEventListener('change', () => {
+      if (typeof updateCartUI === 'function') {
+        updateCartUI();
+      }
+    });
+  }
+
+  if (orderArrivalTime) {
+    orderArrivalTime.addEventListener('change', () => {
+      if (typeof updateCartUI === 'function') {
+        updateCartUI();
+      }
+    });
+  }
+
+  if (orderCustomTimeInput) {
+    orderCustomTimeInput.addEventListener('input', () => {
+      if (typeof updateCartUI === 'function') {
+        updateCartUI();
       }
     });
   }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Escobar Cafe / BeCoffee — Owner Daily Revenue & Audit Ledger (REST API)
+ * BeCoffee — Owner Daily Revenue & Audit Ledger (REST API)
  * Aggregates financial totals, payment breakdowns, and completed order history
  */
 

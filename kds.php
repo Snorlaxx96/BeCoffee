@@ -16,8 +16,8 @@ $isStaff = ($currentUser['role'] === 'staff');
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Escobar Cafe · Kitchen Screen</title>
-  <meta name="description" content="Kitchen order management and preparation screen for Escobar Cafe.">
+  <title>BeCoffee · Kitchen Screen</title>
+  <meta name="description" content="Kitchen order management and preparation screen for BeCoffee Operations.">
   <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1370,10 +1370,10 @@ $isStaff = ($currentUser['role'] === 'staff');
   <!-- KDS Header Bar -->
   <header class="kds-header">
     <div class="kds-brand">
-      <div class="kds-logo">E</div>
+      <div class="kds-logo">B</div>
       <div class="kds-title-group">
-        <h1>Escobar Cafe · Kitchen</h1>
-        <div class="kds-subtitle">Live Orders & Preparation</div>
+        <h1>BeCoffee · Kitchen & Barista KDS</h1>
+        <div class="kds-subtitle">Live Orders & Station Preparation</div>
       </div>
     </div>
 
@@ -1567,7 +1567,7 @@ $isStaff = ($currentUser['role'] === 'staff');
   <script src="js/system-dialog.js"></script>
   <script>
     // =========================================================================
-    // Escobar Cafe KDS Engine & Barista Production Rush System
+    // BeCoffee KDS Engine & Barista Production Rush System
     // =========================================================================
     (function initKdsEngine() {
       var audioCtx = null;

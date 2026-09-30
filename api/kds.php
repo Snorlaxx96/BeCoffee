@@ -1,6 +1,6 @@
 <?php
 /**
- * Escobar Cafe / BeCoffee — Kitchen Display System (KDS) Controller
+ * BeCoffee — Kitchen Display System (KDS) Controller
  * Serves the Staff Tablet board, manages station routing, batch counts,
  * fast 1-tap bumps, order acknowledgments, QA lockouts, ticket recalls, and voiding.
  */
