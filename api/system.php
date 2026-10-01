@@ -148,6 +148,16 @@ if ($method === 'GET' && $action === 'migrations') {
         } elseif (str_contains($filename, '007_system_audit_logs')) {
             $applied = (bool) $db->query("SHOW TABLES LIKE 'system_audit_logs'")->fetch();
             $note = 'System audit logs & developer security trail';
+        } elseif (str_contains($filename, '008_system_settings')) {
+            $applied = (bool) $db->query("SHOW TABLES LIKE 'system_settings'")->fetch();
+            $note = 'System settings key-value store & QR ordering toggles';
+        } elseif (str_contains($filename, '009_order_source')) {
+            $hasOrderSource = false;
+            try {
+                $hasOrderSource = (bool) $db->query("SHOW COLUMNS FROM orders LIKE 'order_source'")->fetch();
+            } catch (Exception $e) {}
+            $applied = $hasOrderSource;
+            $note = 'Order channel origin tracking (qr_link, registrar, online)';
         }
 
         $migrationResults[] = [
@@ -158,30 +168,159 @@ if ($method === 'GET' && $action === 'migrations') {
         ];
     }
 
+    $totalCount = count($migrationResults);
+    $appliedCount = count(array_filter($migrationResults, fn($m) => $m['status'] === 'APPLIED'));
+    $pendingCount = $totalCount - $appliedCount;
+
     jsonResponse([
         'success'    => true,
+        'summary'    => [
+            'total'    => $totalCount,
+            'applied'  => $appliedCount,
+            'pending'  => $pendingCount,
+            'database' => 'becoffee_db'
+        ],
         'migrations' => $migrationResults
     ]);
 }
 
+// --- 3b. GET: View Migration SQL Content (?action=migration_sql&file=...) ---
+if ($method === 'GET' && $action === 'migration_sql') {
+    $file = basename($_GET['file'] ?? '');
+    if (!preg_match('/^[a-zA-Z0-9_\-]+\.sql$/', $file)) {
+        jsonResponse(['success' => false, 'error' => 'Invalid migration filename.'], 400);
+    }
+
+    $filePath = __DIR__ . '/../database/migrations/' . $file;
+    if (!file_exists($filePath)) {
+        jsonResponse(['success' => false, 'error' => 'Migration file not found.'], 404);
+    }
+
+    $sqlContent = file_get_contents($filePath);
+    jsonResponse([
+        'success'  => true,
+        'file'     => $file,
+        'sql'      => $sqlContent,
+        'filesize' => round(filesize($filePath) / 1024, 2) . ' KB'
+    ]);
+}
+
+// --- 3c. POST: Apply Migration (?action=apply_migration) ---
+if ($method === 'POST' && $action === 'apply_migration') {
+    $input = json_decode(file_get_contents('php://input'), true) ?: $_POST;
+    $file = basename($input['file'] ?? '');
+    if (!preg_match('/^[a-zA-Z0-9_\-]+\.sql$/', $file)) {
+        jsonResponse(['success' => false, 'error' => 'Invalid migration filename.'], 400);
+    }
+
+    $filePath = __DIR__ . '/../database/migrations/' . $file;
+    if (!file_exists($filePath)) {
+        jsonResponse(['success' => false, 'error' => 'Migration file not found.'], 404);
+    }
+
+    $sql = file_get_contents($filePath);
+    try {
+        $db->exec($sql);
+        logAuditEvent('MIGRATION_APPLIED', "Executed migration {$file}.", (int) $currentSuperAdmin['id'], $currentSuperAdmin['email'], 'superadmin');
+        jsonResponse([
+            'success' => true,
+            'message' => "Migration {$file} executed successfully."
+        ]);
+    } catch (Exception $e) {
+        jsonResponse([
+            'success' => false,
+            'error'   => 'Migration execution failed: ' . $e->getMessage()
+        ], 500);
+    }
+}
+
 // --- 4. GET: Security Audit Logs (?action=audit_logs) ---
 if ($method === 'GET' && $action === 'audit_logs') {
-    $limit = min(100, max(10, (int) ($_GET['limit'] ?? 50)));
+    $limit = min(200, max(10, (int) ($_GET['limit'] ?? 50)));
+    $roleFilter = trim($_GET['role'] ?? '');
+    $search = trim($_GET['search'] ?? '');
+
+    $whereClauses = [];
+    $params = [];
+
+    if ($roleFilter !== '' && $roleFilter !== 'all') {
+        $whereClauses[] = "role = ?";
+        $params[] = $roleFilter;
+    }
+
+    if ($search !== '') {
+        $whereClauses[] = "(user_email LIKE ? OR action LIKE ? OR details LIKE ? OR ip_address LIKE ?)";
+        $wildcard = "%{$search}%";
+        $params[] = $wildcard;
+        $params[] = $wildcard;
+        $params[] = $wildcard;
+        $params[] = $wildcard;
+    }
+
+    $whereSql = !empty($whereClauses) ? 'WHERE ' . implode(' AND ', $whereClauses) : '';
+
     $stmt = $db->prepare("
         SELECT id, user_id, user_email, role, action, details, ip_address, created_at 
         FROM system_audit_logs 
+        {$whereSql}
         ORDER BY id DESC 
         LIMIT ?
     ");
-    $stmt->bindValue(1, $limit, PDO::PARAM_INT);
+
+    foreach ($params as $idx => $val) {
+        $stmt->bindValue($idx + 1, $val, PDO::PARAM_STR);
+    }
+    $stmt->bindValue(count($params) + 1, $limit, PDO::PARAM_INT);
     $stmt->execute();
     $logs = $stmt->fetchAll();
+
+    // Summary counts for stat cards
+    $totalLogs = (int) $db->query("SELECT COUNT(*) FROM system_audit_logs")->fetchColumn();
+    $rbacLogs = (int) $db->query("SELECT COUNT(*) FROM system_audit_logs WHERE action IN ('ROLE_UPDATED', 'USER_CREATED', 'PASSWORD_RESET', 'USER_DELETED')")->fetchColumn();
+    $systemLogs = (int) $db->query("SELECT COUNT(*) FROM system_audit_logs WHERE action IN ('TOGGLE_TABLE_QR_ORDERING', 'CACHE_PURGED', 'MIGRATION_APPLIED', 'SETTINGS_UPDATED')")->fetchColumn();
 
     jsonResponse([
         'success' => true,
         'total'   => count($logs),
+        'summary' => [
+            'total_all'     => $totalLogs,
+            'rbac_events'   => $rbacLogs,
+            'system_events' => $systemLogs,
+            'scope'         => 'Append-Only'
+        ],
         'logs'    => $logs
     ]);
+}
+
+// --- 4b. GET: Export Security Audit Logs as CSV (?action=export_audit_csv) ---
+if ($method === 'GET' && $action === 'export_audit_csv') {
+    $filename = 'becoffee_security_audit_' . date('Ymd_His') . '.csv';
+
+    header('Content-Type: text/csv; charset=utf-8');
+    header('Content-Disposition: attachment; filename="' . $filename . '"');
+    header('Cache-Control: no-cache, no-store, must-revalidate');
+
+    $out = fopen('php://output', 'w');
+    // UTF-8 BOM for Excel compatibility
+    fprintf($out, chr(0xEF).chr(0xBB).chr(0xBF));
+
+    fputcsv($out, ['Event ID', 'Timestamp', 'Actor Email', 'User ID', 'Role', 'Action', 'Details', 'Client IP']);
+
+    $stmt = $db->query("SELECT id, created_at, user_email, user_id, role, action, details, ip_address FROM system_audit_logs ORDER BY id DESC LIMIT 500");
+    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        fputcsv($out, [
+            $row['id'],
+            $row['created_at'],
+            $row['user_email'] ?: 'System',
+            $row['user_id'] ?: 'N/A',
+            $row['role'] ?: 'system',
+            $row['action'],
+            $row['details'] ?: '',
+            $row['ip_address'] ?: '127.0.0.1'
+        ]);
+    }
+    fclose($out);
+    exit;
 }
 
 // --- 5. POST: Purge Cache (?action=purge_cache) ---

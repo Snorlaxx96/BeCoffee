@@ -406,73 +406,92 @@ if ($currentUser['role'] === 'staff') {
     }
     .date-presets-strip {
       display: inline-flex;
-      background: rgba(0, 0, 0, 0.4);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 10px;
-      padding: 3px;
-      gap: 3px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 6px;
+      padding: 2px;
+      gap: 2px;
     }
     .date-preset-btn {
-      padding: 0.4rem 0.8rem;
-      border-radius: 7px;
-      border: none;
+      padding: 0.35rem 0.75rem;
+      border-radius: 4px;
+      border: 1px solid transparent;
       background: transparent;
-      color: var(--admin-muted);
-      font-size: 0.8rem;
+      color: #A8988C;
+      font-size: 0.78rem;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.2s ease;
-      min-height: 38px;
+      transition: all 0.15s ease;
+      min-height: 34px;
       display: inline-flex;
       align-items: center;
     }
     .date-preset-btn:hover {
       color: #FFF;
-      background: rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.06);
     }
     .date-preset-btn.active {
-      background: rgba(226, 135, 67, 0.25);
-      color: #FDBA74;
+      background: rgba(223, 155, 100, 0.16);
+      color: #F5EDE4;
+      border-color: rgba(223, 155, 100, 0.3);
       font-weight: 700;
     }
 
-    .admin-action-btn {
-      padding: 0.5rem 1rem;
-      border-radius: 10px;
+    .date-input-clean {
+      background: #140F0D;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 6px;
+      color: #F5EDE4;
+      font-family: var(--font-mono);
       font-size: 0.82rem;
-      font-weight: 700;
+      padding: 0.35rem 0.65rem;
+      min-height: 38px;
+      box-sizing: border-box;
+      outline: none;
+      transition: border-color 0.15s ease;
+    }
+    .date-input-clean:focus {
+      border-color: #DF9B64;
+    }
+
+    .admin-action-btn {
+      padding: 0.45rem 0.85rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       gap: 0.45rem;
-      transition: all 0.2s ease;
-      border: 1px solid transparent;
+      transition: all 0.15s ease;
+      border: 1px solid rgba(255, 255, 255, 0.1);
       text-decoration: none;
-      min-height: 42px;
+      min-height: 38px;
       box-sizing: border-box;
     }
     .admin-action-btn:focus-visible {
-      outline: 2px solid #E28743;
+      outline: 2px solid #DF9B64;
       outline-offset: 2px;
     }
     .btn-action-accent {
-      background: linear-gradient(135deg, #E28743 0%, #944D1C 100%);
-      color: #FFF;
-      box-shadow: 0 4px 14px var(--admin-accent-glow);
+      background: #DF9B64;
+      border-color: #DF9B64;
+      color: #140F0D;
+      font-weight: 700;
     }
     .btn-action-accent:hover {
-      box-shadow: 0 6px 20px rgba(226, 135, 67, 0.5);
-      transform: translateY(-1px);
+      background: #E8AA79;
+      border-color: #E8AA79;
     }
     .btn-action-secondary {
-      background: rgba(255, 255, 255, 0.06);
-      border-color: rgba(255, 255, 255, 0.12);
-      color: #D1C5BD;
+      background: rgba(255, 255, 255, 0.04);
+      border-color: rgba(255, 255, 255, 0.1);
+      color: #E6DDD5;
     }
     .btn-action-secondary:hover {
-      background: rgba(255, 255, 255, 0.12);
+      background: rgba(255, 255, 255, 0.08);
       color: #FFF;
-      border-color: rgba(255, 255, 255, 0.25);
+      border-color: rgba(255, 255, 255, 0.2);
     }
 
     /* Content Sections */
@@ -616,74 +635,87 @@ if ($currentUser['role'] === 'staff') {
       flex-shrink: 0;
     }
 
-    /* Executive Analytics KPI Tiles (5-Card Strip) */
+    /* Executive Analytics KPI Tiles (3-Card Executive Strip) */
     .kpi-tiles-grid {
       display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 1rem;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.85rem;
       width: 100%;
       box-sizing: border-box;
     }
     .kpi-stat-card {
-      background: var(--admin-card);
-      border: 1px solid var(--admin-border);
-      border-radius: 16px;
-      padding: 1.25rem 1.35rem;
+      background: #181310;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 6px;
+      padding: 1.15rem 1.25rem;
       position: relative;
-      overflow: hidden;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       min-width: 0;
-      transition: transform 0.2s ease, border-color 0.2s ease;
+      box-shadow: none;
+      transition: border-color 0.15s ease;
     }
     .kpi-stat-card:hover {
-      border-color: rgba(226, 135, 67, 0.35);
-      transform: translateY(-1px);
+      border-color: rgba(223, 155, 100, 0.3);
     }
     .kpi-stat-label {
-      font-size: 0.72rem;
+      font-size: 0.68rem;
       text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--admin-muted);
+      letter-spacing: 0.07em;
+      color: #A8988C;
       font-weight: 700;
-      margin-bottom: 0.35rem;
+      margin-bottom: 0.5rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
+    .kpi-stat-label svg {
+      color: #7D6F64;
+      flex-shrink: 0;
+      opacity: 0.75;
+    }
     .kpi-stat-value {
       font-family: var(--font-mono);
       font-size: 1.65rem;
-      font-weight: 800;
+      font-weight: 700;
       color: #FFF;
       line-height: 1.15;
+      letter-spacing: -0.02em;
       word-break: normal;
     }
-    .kpi-stat-sub {
-      font-size: 0.75rem;
-      color: #DF9B64;
-      margin-top: 0.45rem;
+    .kpi-stat-value.kpi-stat-value-text {
+      font-size: 1.15rem;
+      white-space: nowrap;
       font-weight: 600;
+    }
+    .kpi-stat-sub {
+      font-size: 0.72rem;
+      color: #8E7E73;
+      margin-top: 0.45rem;
+      font-weight: 500;
+      line-height: 1.35;
     }
 
     /* Visual Analytics Bento Grid */
     .analytics-visual-grid {
       display: grid;
       grid-template-columns: repeat(12, 1fr);
-      gap: 1.25rem;
+      gap: 0.75rem;
       width: 100%;
       box-sizing: border-box;
+      margin-top: 0.75rem;
     }
     .viz-card {
-      background: var(--admin-card);
-      border: 1px solid var(--admin-border);
-      border-radius: 18px;
-      padding: 1.35rem 1.5rem;
+      background: #181310;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 6px;
+      padding: 1.25rem 1.35rem;
       display: flex;
       flex-direction: column;
       box-sizing: border-box;
       min-width: 0;
+      box-shadow: none;
     }
     .viz-card.span-4 { grid-column: span 4; }
     .viz-card.span-8 { grid-column: span 8; }
@@ -695,25 +727,30 @@ if ($currentUser['role'] === 'staff') {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 1.15rem;
+      margin-bottom: 1.1rem;
       gap: 0.75rem;
     }
     .viz-card-title {
-      font-size: 0.98rem;
+      font-size: 0.92rem;
       font-weight: 700;
       color: #FFF;
       margin: 0;
       display: flex;
       align-items: center;
       gap: 0.5rem;
+      letter-spacing: -0.01em;
+    }
+    .viz-card-title svg {
+      color: #DF9B64;
+      flex-shrink: 0;
     }
     .viz-card-badge {
-      font-size: 0.72rem;
-      color: #A99B92;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      padding: 0.2rem 0.55rem;
-      border-radius: 6px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: #DF9B64;
+      background: transparent;
+      border: none;
+      padding: 0;
       font-weight: 600;
       white-space: nowrap;
     }
@@ -721,55 +758,62 @@ if ($currentUser['role'] === 'staff') {
     /* Split Bar & Payment Distribution */
     .payment-split-bar {
       display: flex;
-      height: 14px;
-      border-radius: 7px;
+      height: 6px;
+      border-radius: 2px;
       overflow: hidden;
       background: rgba(255, 255, 255, 0.06);
-      margin: 0.5rem 0 1rem;
+      margin: 0.25rem 0 1.25rem;
     }
     .split-bar-gcash {
       background: #3B82F6;
       transition: width 0.4s ease;
     }
     .split-bar-cash {
-      background: #F59E0B;
+      background: #DF9B64;
       transition: width 0.4s ease;
     }
     .payment-legend-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 0.85rem;
-      margin-top: 0.5rem;
+      gap: 1.25rem;
+      margin-top: 0.25rem;
+      padding-top: 0.85rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
     }
     .payment-legend-box {
-      background: rgba(0, 0, 0, 0.25);
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      border-radius: 12px;
-      padding: 0.75rem 0.9rem;
+      background: transparent;
+      border: none;
+      border-radius: 0;
+      padding: 0;
+    }
+    .payment-legend-box:last-child {
+      border-left: 1px solid rgba(255, 255, 255, 0.06);
+      padding-left: 1.25rem;
     }
     .payment-legend-header {
       display: flex;
       align-items: center;
       gap: 0.45rem;
-      font-size: 0.75rem;
-      color: var(--admin-muted);
+      font-size: 0.68rem;
+      color: #A8988C;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.06em;
     }
-    .dot-gcash { width: 8px; height: 8px; border-radius: 50%; background: #3B82F6; }
-    .dot-cash { width: 8px; height: 8px; border-radius: 50%; background: #F59E0B; }
+    .dot-gcash { width: 6px; height: 6px; border-radius: 50%; background: #3B82F6; flex-shrink: 0; }
+    .dot-cash { width: 6px; height: 6px; border-radius: 50%; background: #DF9B64; flex-shrink: 0; }
     .payment-legend-amount {
       font-family: var(--font-mono);
-      font-size: 1.25rem;
-      font-weight: 800;
+      font-size: 1.35rem;
+      font-weight: 700;
       color: #FFF;
+      letter-spacing: -0.02em;
       margin: 0.35rem 0 0.15rem;
     }
     .payment-legend-share {
-      font-size: 0.75rem;
-      color: #C8B9AF;
-      font-weight: 600;
+      font-size: 0.72rem;
+      color: #8E7E73;
+      font-weight: 500;
     }
 
     /* Hourly Histogram Visuals */
@@ -789,49 +833,51 @@ if ($currentUser['role'] === 'staff') {
     .rank-list {
       display: flex;
       flex-direction: column;
-      gap: 0.75rem;
+      gap: 0.85rem;
       flex: 1;
+      justify-content: center;
     }
     .rank-item {
       display: flex;
       flex-direction: column;
-      gap: 0.3rem;
+      gap: 0.35rem;
     }
     .rank-item-meta {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 0.85rem;
+      font-size: 0.84rem;
     }
     .rank-item-name {
       color: #FFF;
-      font-weight: 700;
+      font-weight: 600;
       display: flex;
       align-items: center;
-      gap: 0.45rem;
+      gap: 0.5rem;
       font-size: 0.84rem;
     }
     .rank-item-num {
-      color: var(--admin-muted);
+      color: #7D6F64;
       font-family: var(--font-mono);
       font-size: 0.75rem;
+      font-weight: 700;
     }
     .rank-item-stats {
       font-family: var(--font-mono);
-      font-size: 0.82rem;
+      font-size: 0.8rem;
       color: #DF9B64;
-      font-weight: 700;
+      font-weight: 600;
     }
     .rank-progress-track {
-      height: 6px;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.08);
+      height: 4px;
+      border-radius: 2px;
+      background: rgba(255, 255, 255, 0.06);
       overflow: hidden;
     }
     .rank-progress-fill {
       height: 100%;
-      border-radius: 999px;
-      background: linear-gradient(90deg, #E28743 0%, #DF9B64 100%);
+      border-radius: 2px;
+      background: #DF9B64;
       transition: width 0.4s ease;
     }
 
@@ -839,28 +885,33 @@ if ($currentUser['role'] === 'staff') {
     .modifier-group-strip {
       display: flex;
       flex-direction: column;
-      gap: 0.65rem;
+      gap: 0;
       flex: 1;
-      justify-content: space-around;
+      justify-content: center;
     }
     .modifier-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background: rgba(0, 0, 0, 0.2);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      border-radius: 10px;
-      padding: 0.55rem 0.85rem;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 0;
+      padding: 0.75rem 0;
       font-size: 0.82rem;
     }
+    .modifier-row:last-child {
+      border-bottom: none;
+    }
     .modifier-name {
-      color: #E2D5CC;
-      font-weight: 600;
+      color: #E6DDD5;
+      font-weight: 500;
     }
     .modifier-count {
       font-family: var(--font-mono);
-      font-weight: 700;
-      color: #FDBA74;
+      font-weight: 600;
+      color: #DF9B64;
+      font-size: 0.84rem;
     }
 
     /* QA Lockout Health Meters */
@@ -869,89 +920,91 @@ if ($currentUser['role'] === 'staff') {
       flex-direction: column;
       gap: 0.85rem;
       flex: 1;
-      justify-content: space-around;
+      justify-content: center;
     }
     .qa-meter-row {
       display: flex;
       flex-direction: column;
-      gap: 0.3rem;
+      gap: 0.35rem;
     }
     .qa-meter-header {
       display: flex;
       justify-content: space-between;
-      font-size: 0.78rem;
+      font-size: 0.76rem;
+      font-weight: 600;
+      color: #C8B9AF;
+    }
+    .qa-meter-header span:last-child {
+      font-family: var(--font-mono);
       font-weight: 700;
-      color: #E2D5CC;
+      color: #10B981;
     }
     .qa-meter-bar-track {
-      height: 7px;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.08);
+      height: 4px;
+      border-radius: 2px;
+      background: rgba(255, 255, 255, 0.06);
       overflow: hidden;
     }
     .qa-meter-bar-fill {
       height: 100%;
-      border-radius: 999px;
+      border-radius: 2px;
       background: #10B981;
       transition: width 0.4s ease;
     }
 
     /* Ledger Table Section & Filter Toolbar */
     .ledger-table-wrap {
-      background: var(--admin-card);
-      border: 1px solid var(--admin-border);
-      border-radius: 20px;
-      padding: 1.5rem;
+      background: #181310;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 6px;
+      padding: 1.25rem 1.4rem;
       box-sizing: border-box;
       min-width: 0;
+      box-shadow: none;
     }
     .ledger-toolbar {
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
-      gap: 0.85rem;
+      gap: 1rem;
       margin-bottom: 1.25rem;
     }
-    .ledger-filter-chips {
-      display: flex;
-      gap: 0.4rem;
-      flex-wrap: wrap;
-      align-items: center;
+    .ledger-title-wrap h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #FFF;
+      margin: 0;
+      letter-spacing: -0.01em;
     }
-    .filter-chip-btn {
-      padding: 0.35rem 0.75rem;
-      border-radius: 8px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      background: rgba(255, 255, 255, 0.04);
-      color: #C8B9AF;
+    .ledger-title-wrap span {
       font-size: 0.78rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.18s ease;
-      min-height: 36px;
+      color: #A8988C;
+      margin-top: 0.2rem;
+      display: block;
     }
-    .filter-chip-btn:hover {
-      background: rgba(255, 255, 255, 0.1);
-      color: #FFF;
-    }
-    .filter-chip-btn.active {
-      background: #E28743;
-      border-color: #E28743;
-      color: #FFF;
-      box-shadow: 0 2px 8px var(--admin-accent-glow);
-    }
+
     .ledger-search-box {
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      background: rgba(0, 0, 0, 0.35);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 10px;
-      padding: 0.4rem 0.85rem;
-      min-width: 220px;
-      max-width: 320px;
+      background: #140F0D;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 6px;
+      padding: 0.35rem 0.75rem;
+      min-width: 240px;
+      max-width: 340px;
+      min-height: 38px;
+      box-sizing: border-box;
       flex: 1;
+      transition: border-color 0.15s ease;
+    }
+    .ledger-search-box:focus-within {
+      border-color: #DF9B64;
+    }
+    .ledger-search-box svg {
+      color: #7D6F64;
+      flex-shrink: 0;
     }
     .ledger-search-box input {
       background: transparent;
@@ -963,48 +1016,251 @@ if ($currentUser['role'] === 'staff') {
       width: 100%;
     }
     .ledger-search-box input::placeholder {
-      color: var(--admin-muted);
+      color: #7D6F64;
+    }
+
+    .ledger-filter-toolbar {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-bottom: 1.25rem;
+    }
+    .filter-chip-group {
+      display: inline-flex;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 6px;
+      padding: 2px;
+      gap: 2px;
+    }
+    .filter-chip-btn {
+      padding: 0.3rem 0.65rem;
+      border-radius: 4px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: #A8988C;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      min-height: 32px;
+      display: inline-flex;
+      align-items: center;
+      white-space: nowrap;
+    }
+    .filter-chip-btn:hover {
+      background: rgba(255, 255, 255, 0.06);
+      color: #FFF;
+    }
+    .filter-chip-btn.active {
+      background: rgba(223, 155, 100, 0.16);
+      border-color: rgba(223, 155, 100, 0.3);
+      color: #F5EDE4;
+      font-weight: 700;
+      box-shadow: none;
     }
 
     .ledger-table-scroll {
       width: 100%;
       overflow-x: auto;
+      border-radius: 4px;
     }
     .ledger-desktop-table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 0.85rem;
+      font-size: 0.84rem;
       text-align: left;
     }
     .ledger-desktop-table th {
-      padding: 0.85rem 0.65rem;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-      font-size: 0.72rem;
+      padding: 0.75rem 0.65rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      font-size: 0.68rem;
       text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: #DF9B64;
+      letter-spacing: 0.07em;
+      color: #A8988C;
       font-weight: 700;
       white-space: nowrap;
+      background: #140F0D;
     }
     .ledger-desktop-table td {
       padding: 0.85rem 0.65rem;
       border-bottom: 1px solid rgba(255, 255, 255, 0.05);
       color: #E2D5CC;
       vertical-align: middle;
+      line-height: 1.35;
+    }
+    .ledger-desktop-table tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    /* Order Status Tags */
+    .order-status-tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      line-height: 1;
+      white-space: nowrap;
+    }
+    .status-finished {
+      background: rgba(16, 185, 129, 0.12);
+      color: #34D399;
+      border: 1px solid rgba(16, 185, 129, 0.25);
+    }
+    .status-progress {
+      background: rgba(223, 155, 100, 0.14);
+      color: #F5EDE4;
+      border: 1px solid rgba(223, 155, 100, 0.3);
+    }
+    .status-waiting {
+      background: rgba(255, 255, 255, 0.05);
+      color: #A8988C;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .status-cancelled {
+      background: rgba(239, 68, 68, 0.12);
+      color: #FCA5A5;
+      border: 1px solid rgba(239, 68, 68, 0.25);
+    }
+
+    /* Dining, Payment & QA Badges */
+    .dining-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.18rem 0.45rem;
+      border-radius: 4px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .badge-dine-in {
+      background: rgba(223, 155, 100, 0.12);
+      color: #F5EDE4;
+      border: 1px solid rgba(223, 155, 100, 0.25);
+    }
+    .badge-takeout {
+      background: rgba(245, 158, 11, 0.12);
+      color: #FBBF24;
+      border: 1px solid rgba(245, 158, 11, 0.25);
+    }
+    .payment-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.18rem 0.45rem;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+    }
+    .badge-gcash {
+      background: rgba(96, 165, 250, 0.12);
+      color: #93C5FD;
+      border: 1px solid rgba(96, 165, 250, 0.25);
+    }
+    .badge-cash {
+      background: rgba(223, 155, 100, 0.12);
+      color: #DF9B64;
+      border: 1px solid rgba(223, 155, 100, 0.25);
+    }
+    .qa-badge-passed {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.18rem 0.45rem;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 700;
+      background: rgba(16, 185, 129, 0.12);
+      color: #34D399;
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      white-space: nowrap;
+    }
+    .qa-badge-pending {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.18rem 0.45rem;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 600;
+      background: rgba(255, 255, 255, 0.05);
+      color: #A8988C;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      white-space: nowrap;
+    }
+    .order-ref-code {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: #E2D5CC;
+      display: block;
+      word-break: break-all;
+    }
+    .order-customer-sub {
+      font-size: 0.75rem;
+      color: #8E7E73;
+      margin-top: 0.15rem;
+      display: block;
+    }
+    .prep-time-meta {
+      font-size: 0.72rem;
+      color: #8E7E73;
+      font-family: var(--font-mono);
+      margin-top: 0.2rem;
+    }
+    .order-total-cell {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      color: #FFF;
+      font-size: 0.95rem;
+      white-space: nowrap;
+    }
+    .btn-inspect-order {
+      padding: 0.28rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      background: rgba(223, 155, 100, 0.12);
+      color: #DF9B64;
+      border: 1px solid rgba(223, 155, 100, 0.25);
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+    .btn-inspect-order:hover {
+      background: rgba(223, 155, 100, 0.22);
+      border-color: #DF9B64;
+      color: #FFF;
+    }
+
+    #viewAuditTrail .diag-desktop-table th,
+    #viewAuditTrail .diag-desktop-table td {
+      padding: 0.65rem 0.5rem;
     }
 
     /* Mobile Ticket Cards Container */
     .ledger-mobile-cards {
       display: none;
       flex-direction: column;
-      gap: 0.85rem;
+      gap: 0.75rem;
       width: 100%;
       box-sizing: border-box;
     }
     .mobile-order-ticket {
-      background: rgba(0, 0, 0, 0.3);
+      background: #181310;
       border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 14px;
+      border-radius: 6px;
       padding: 1rem 1.15rem;
       display: flex;
       flex-direction: column;
@@ -1020,7 +1276,7 @@ if ($currentUser['role'] === 'staff') {
     .mobile-ticket-queue {
       font-family: var(--font-mono);
       font-size: 1.15rem;
-      font-weight: 800;
+      font-weight: 700;
       color: #FFF;
       display: flex;
       align-items: center;
@@ -1029,8 +1285,8 @@ if ($currentUser['role'] === 'staff') {
     .mobile-ticket-amount {
       font-family: var(--font-mono);
       font-size: 1.1rem;
-      font-weight: 800;
-      color: #34D399;
+      font-weight: 700;
+      color: #FFF;
     }
     .mobile-ticket-items {
       display: flex;
@@ -1049,51 +1305,69 @@ if ($currentUser['role'] === 'staff') {
       border-top: 1px solid rgba(255, 255, 255, 0.06);
     }
 
-    /* Menu & Stock Control Styles (Adopted from Admin Stock Control Portal) */
+    /* Menu & Stock Control Styles */
     .stock-controls-toolbar {
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 1rem;
       flex-wrap: wrap;
-      background: var(--admin-card);
-      border: 1px solid var(--admin-border);
-      border-radius: 16px;
-      padding: 0.85rem 1.25rem;
+      background: #140E0C;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 6px;
+      padding: 0.65rem 1rem;
+      margin-bottom: 1.25rem;
     }
     .cat-nav-strip {
       display: flex;
-      gap: 0.5rem;
+      gap: 0.35rem;
+      align-items: center;
       overflow-x: auto;
       scrollbar-width: none;
+      background: #0E0A08;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 6px;
+      padding: 0.25rem;
     }
     .cat-nav-strip::-webkit-scrollbar { display: none; }
     .cat-pill-btn {
-      padding: 0.45rem 1.1rem;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      color: #C8B9AF;
-      font-size: 0.82rem;
+      padding: 0.4rem 0.85rem;
+      border-radius: 4px;
+      background: transparent;
+      border: 1px solid transparent;
+      color: #9E8E81;
+      font-size: 0.8rem;
       font-weight: 600;
       white-space: nowrap;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: all 0.15s ease;
     }
-    .cat-pill-btn.active, .cat-pill-btn:hover {
-      background: #E28743;
-      border-color: #E28743;
+    .cat-pill-btn:hover {
       color: #FFF;
-      box-shadow: 0 4px 12px var(--admin-accent-glow);
+      background: rgba(255, 255, 255, 0.04);
+    }
+    .cat-pill-btn.active {
+      background: #251D18;
+      border-color: rgba(255, 255, 255, 0.12);
+      color: #FFF;
+      font-weight: 700;
     }
     .search-input-wrap {
       display: flex;
       align-items: center;
-      background: rgba(0, 0, 0, 0.35);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 10px;
-      padding: 0.35rem 0.75rem;
-      gap: 0.45rem;
+      background: #0E0A08;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 6px;
+      padding: 0.4rem 0.75rem;
+      gap: 0.5rem;
+      transition: border-color 0.15s ease;
+    }
+    .search-input-wrap:focus-within {
+      border-color: rgba(223, 155, 100, 0.4);
+    }
+    .search-input-wrap svg {
+      color: #7D6F64;
+      flex-shrink: 0;
     }
     .search-input-wrap input {
       background: transparent;
@@ -1102,38 +1376,38 @@ if ($currentUser['role'] === 'staff') {
       font-family: inherit;
       font-size: 0.82rem;
       outline: none;
-      width: 180px;
+      width: 200px;
     }
 
     /* Drinks Catalog Grid */
     .drinks-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-      gap: 1.35rem;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.25rem;
       width: 100%;
     }
     .drink-card {
-      background: var(--admin-card);
-      border: 1px solid var(--admin-border);
-      border-radius: 18px;
-      padding: 1.1rem;
+      background: #140E0C;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 6px;
+      padding: 1rem;
       display: flex;
       flex-direction: column;
       position: relative;
-      transition: transform 0.2s ease, border-color 0.2s ease;
+      transition: border-color 0.15s ease;
     }
     .drink-card:hover {
-      transform: translateY(-2px);
-      border-color: rgba(223, 155, 100, 0.35);
+      border-color: rgba(255, 255, 255, 0.18);
     }
     .drink-img-wrap {
       position: relative;
       width: 100%;
-      height: 175px;
-      border-radius: 12px;
+      height: 165px;
+      border-radius: 4px;
       overflow: hidden;
       margin-bottom: 0.85rem;
-      background: #1F1916;
+      background: #0E0A08;
+      border: 1px solid rgba(255, 255, 255, 0.06);
     }
     .drink-img-wrap img {
       width: 100%;
@@ -1141,48 +1415,12 @@ if ($currentUser['role'] === 'staff') {
       object-fit: cover;
       display: block;
     }
-    .drink-badge {
-      position: absolute;
-      top: 0.65rem;
-      left: 0.65rem;
-      background: rgba(0, 0, 0, 0.75);
-      backdrop-filter: blur(4px);
-      color: #DF9B64;
-      font-size: 0.7rem;
-      font-weight: 700;
-      padding: 0.25rem 0.65rem;
-      border-radius: 6px;
-      border: 1px solid rgba(223, 155, 100, 0.35);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-    .drink-stock-tag {
-      position: absolute;
-      top: 0.65rem;
-      right: 0.65rem;
-      font-size: 0.72rem;
-      font-weight: 800;
-      padding: 0.25rem 0.65rem;
-      border-radius: 6px;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      user-select: none;
-    }
-    .drink-stock-tag.in-stock {
-      background: rgba(16, 185, 129, 0.88);
-      color: #FFF;
-      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.4);
-    }
-    .drink-stock-tag.sold-out {
-      background: rgba(239, 68, 68, 0.9);
-      color: #FFF;
-      box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4);
-    }
     .drink-card.item-sold-out {
-      opacity: 0.78;
-      border-color: rgba(239, 68, 68, 0.3);
+      opacity: 0.8;
+      border-color: rgba(239, 68, 68, 0.25);
+    }
+    .drink-card.item-sold-out .drink-img-wrap img {
+      filter: grayscale(30%);
     }
     .drink-meta-row {
       display: flex;
@@ -1191,7 +1429,7 @@ if ($currentUser['role'] === 'staff') {
       margin-bottom: 0.35rem;
     }
     .drink-name {
-      font-size: 1.15rem;
+      font-size: 1.05rem;
       font-weight: 700;
       color: #FFF;
       margin: 0;
@@ -1199,141 +1437,233 @@ if ($currentUser['role'] === 'staff') {
     .drink-price {
       font-family: var(--font-mono);
       font-weight: 700;
-      color: #DF9B64;
-      font-size: 1.15rem;
+      color: #FFF;
+      font-size: 1.05rem;
     }
     .drink-desc {
-      font-size: 0.82rem;
-      color: var(--admin-muted);
+      font-size: 0.8rem;
+      color: #8E7E73;
       line-height: 1.45;
-      margin-bottom: 1.1rem;
+      margin-bottom: 0.85rem;
+      flex: 1;
+      min-height: 2.4em;
+    }
+    .drink-card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.65rem;
+      margin-top: auto;
+      padding-top: 0.75rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .drink-card-footer .btn-manage-options {
       flex: 1;
     }
-    .btn-manage-options {
-      width: 100%;
-      padding: 0.75rem;
-      border-radius: 12px;
-      border: 1px solid rgba(223, 155, 100, 0.3);
-      background: linear-gradient(135deg, rgba(226, 135, 67, 0.2) 0%, rgba(148, 77, 28, 0.2) 100%);
-      color: #FDBA74;
-      font-size: 0.88rem;
+    .drink-status-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.72rem;
+      font-family: var(--font-mono);
       font-weight: 700;
-      display: flex;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      white-space: nowrap;
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 4px;
+      padding: 0.25rem 0.5rem;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .drink-status-indicator:hover {
+      background: rgba(255, 255, 255, 0.06);
+    }
+    .drink-status-indicator.is-available,
+    .drink-status-indicator.in-stock {
+      color: #34D399;
+    }
+    .drink-status-indicator.is-soldout,
+    .drink-status-indicator.sold-out {
+      color: #F87171;
+    }
+    .status-dot-sm {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+      display: inline-block;
+    }
+    .btn-manage-options {
+      min-height: 36px;
+      padding: 0.45rem 0.75rem;
+      border-radius: 4px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.04);
+      color: #F5EDE4;
+      font-size: 0.78rem;
+      font-weight: 600;
+      display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 0.45rem;
+      gap: 0.4rem;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: all 0.15s ease;
+      white-space: nowrap;
     }
     .btn-manage-options:hover {
-      background: linear-gradient(135deg, #E28743 0%, #944D1C 100%);
+      background: rgba(223, 155, 100, 0.15);
+      border-color: rgba(223, 155, 100, 0.35);
       color: #FFF;
-      box-shadow: 0 4px 14px var(--admin-accent-glow);
     }
 
     /* Modal Styling */
     .oms-modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.8);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
+      background: rgba(0, 0, 0, 0.82);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
       z-index: 1000;
       display: none;
       align-items: center;
       justify-content: center;
-      padding: 1rem;
+      padding: 1.25rem;
     }
     .oms-modal-overlay.active {
       display: flex;
     }
     .oms-modal-box {
-      background: #1C1613;
-      border: 1px solid rgba(223, 155, 100, 0.3);
-      border-radius: 24px;
+      background: #140E0C;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 8px;
       width: 100%;
-      max-width: 540px;
+      max-width: 520px;
       max-height: 90vh;
       overflow-y: auto;
       padding: 1.75rem;
-      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.85);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.9);
       position: relative;
-      animation: modalSlideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      animation: modalSlideUp 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .oms-modal-box.wide-modal {
-      width: calc(100vw - 2.5rem);
-      max-width: calc(100vw - 2.5rem);
-      height: calc(100vh - 2.5rem);
-      max-height: calc(100vh - 2.5rem);
-      padding: clamp(1.25rem, 1.8vh, 1.75rem) clamp(1.5rem, 2vw, 2.25rem);
+      width: min(1040px, calc(100vw - 2.5rem));
+      max-width: min(1040px, calc(100vw - 2.5rem));
+      height: min(730px, calc(100vh - 2.5rem));
+      max-height: min(730px, calc(100vh - 2.5rem));
+      padding: 1.5rem 1.75rem;
       box-sizing: border-box;
       overflow: hidden;
       display: flex;
       flex-direction: column;
     }
+    .modal-dialog-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding-bottom: 0.85rem;
+      margin-bottom: 1.15rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      flex-shrink: 0;
+    }
+    .modal-dialog-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #FFF;
+      margin: 0;
+    }
+    .modal-dialog-subtitle {
+      font-size: 0.78rem;
+      color: #8E7E73;
+      margin: 0.2rem 0 0;
+    }
     .modal-two-col {
       display: grid;
-      grid-template-columns: 420px 1fr;
-      gap: clamp(1.5rem, 2.5vw, 2.5rem);
-      height: 100%;
+      grid-template-columns: 340px 1fr;
+      gap: 1.75rem;
+      flex: 1;
+      min-height: 0;
       align-items: stretch;
       overflow: hidden;
     }
     .modal-col-left {
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
+      gap: 0.85rem;
       height: 100%;
+      overflow-y: auto;
+      padding-right: 0.5rem;
     }
     .modal-col-right {
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
+      gap: 0.85rem;
       height: 100%;
       border-left: 1px solid rgba(255, 255, 255, 0.08);
-      padding-left: 2rem;
+      padding-left: 1.75rem;
+      overflow-y: auto;
     }
-    #modalTempGroup {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 0.75rem;
+    .modal-options-header {
+      margin-bottom: 0.25rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     }
-    #modalAddonsGroup {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
-      gap: 0.75rem;
+    .modal-options-header h4 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #FFF;
+      margin: 0 0 0.15rem;
     }
+    .modal-options-header p {
+      font-size: 0.75rem;
+      color: #8E7E73;
+      margin: 0;
+    }
+    #modalTempGroup,
+    #modalAddonsGroup,
     #modalSweetnessGroup {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 0.75rem;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.55rem;
     }
     @media (max-width: 960px) {
       .modal-two-col {
         grid-template-columns: 1fr;
         gap: 1.5rem;
+        height: auto;
+        overflow: visible;
+      }
+      .modal-col-left {
+        overflow: visible;
+        padding-right: 0;
+        height: auto;
       }
       .modal-col-right {
         border-left: none !important;
         padding-left: 0 !important;
         border-top: 1px solid rgba(255, 255, 255, 0.08);
         padding-top: 1.5rem;
+        overflow: visible;
+        height: auto;
       }
       .oms-modal-box.wide-modal {
         width: 96vw;
         max-width: 96vw;
-        padding: 1.5rem 1.25rem;
+        height: auto;
+        max-height: 90vh;
+        overflow-y: auto;
+        padding: 1.25rem;
       }
     }
     .drink-img-preview-box {
       position: relative;
       width: 100%;
-      height: clamp(170px, 26vh, 250px);
-      border-radius: 14px;
+      height: 155px;
+      border-radius: 4px;
       overflow: hidden;
-      margin-bottom: 0.75rem;
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      background: #1B1512;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: #0E0A08;
       flex-shrink: 0;
     }
     .drink-img-preview-box img {
@@ -1346,167 +1676,256 @@ if ($currentUser['role'] === 'staff') {
       position: absolute;
       bottom: 0.65rem;
       right: 0.65rem;
-      background: rgba(0, 0, 0, 0.85);
-      backdrop-filter: blur(4px);
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      color: #FFF;
-      font-size: 0.75rem;
-      font-weight: 700;
-      padding: 0.4rem 0.85rem;
-      border-radius: 8px;
+      background: rgba(18, 13, 11, 0.88);
+      backdrop-filter: blur(6px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #FAF7F2;
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 0.35rem 0.65rem;
+      border-radius: 5px;
       cursor: pointer;
-      display: flex;
+      display: inline-flex;
       align-items: center;
       gap: 0.4rem;
-      transition: all 0.2s ease;
+      transition: all 0.15s ease;
     }
     .btn-change-photo-badge:hover {
-      background: #E28743;
-      border-color: #E28743;
-    }
-    .addon-pill-actions {
-      display: flex;
-      align-items: center;
-      gap: 0.35rem;
-      margin-top: 0.25rem;
+      background: rgba(30, 22, 19, 0.95);
+      border-color: rgba(223, 155, 100, 0.35);
+      color: #FFF;
     }
     .btn-delete-addon {
-      background: none;
+      background: transparent;
       border: none;
-      color: #9CA3AF;
-      font-size: 0.95rem;
+      color: #7D6F64;
       cursor: pointer;
-      padding: 0 0.35rem;
+      padding: 0.25rem;
       border-radius: 4px;
-      line-height: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s ease;
     }
     .btn-delete-addon:hover {
       color: #F87171;
-      background: rgba(239, 68, 68, 0.25);
+      background: rgba(239, 68, 68, 0.12);
     }
     @keyframes modalSlideUp {
-      from { transform: translateY(20px) scale(0.97); opacity: 0; }
-      to { transform: translateY(0) scale(1); opacity: 1; }
+      from { transform: translateY(12px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
     }
     .oms-modal-close {
-      position: absolute;
-      top: 1.25rem;
-      right: 1.25rem;
-      width: 34px;
-      height: 34px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.08);
-      border: none;
-      color: #D6C7BC;
+      width: 28px;
+      height: 28px;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #C8B9AF;
       display: grid;
       place-content: center;
       cursor: pointer;
-      font-size: 1.25rem;
+      font-size: 1.15rem;
+      line-height: 1;
+      transition: all 0.15s ease;
+      flex-shrink: 0;
     }
     .oms-modal-close:hover {
-      background: rgba(255, 255, 255, 0.16);
+      background: rgba(255, 255, 255, 0.12);
       color: #FFF;
     }
 
     /* Modal Form Inputs */
     .modal-field-group {
-      margin-bottom: 1rem;
+      margin-bottom: 0.65rem;
     }
     .modal-field-label {
-      font-size: 0.78rem;
+      font-size: 0.7rem;
       text-transform: uppercase;
       letter-spacing: 0.06em;
-      color: #DF9B64;
+      color: #9E8E81;
       font-weight: 700;
       display: block;
-      margin-bottom: 0.35rem;
+      margin-bottom: 0.3rem;
     }
     .modal-text-input {
       width: 100%;
-      background: rgba(0, 0, 0, 0.35);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 10px;
-      padding: 0.65rem 0.85rem;
+      background: #0E0A08;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+      padding: 0.5rem 0.65rem;
       color: #FFF;
       font-family: inherit;
-      font-size: 0.88rem;
+      font-size: 0.84rem;
       box-sizing: border-box;
+      transition: border-color 0.15s ease;
     }
     .modal-text-input:focus {
       outline: none;
-      border-color: #DF9B64;
+      border-color: rgba(223, 155, 100, 0.5);
     }
 
-    /* Option Group & Pills */
+    /* Option Group & Flat Items (No Cards Inside Cards) */
     .option-group-label {
-      font-size: 0.8rem;
+      font-size: 0.72rem;
       text-transform: uppercase;
       letter-spacing: 0.06em;
-      color: #DF9B64;
+      color: #9E8E81;
       font-weight: 700;
-      margin: 1.15rem 0 0.5rem;
+      margin: 0.85rem 0 0.45rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
-    .pill-radio-group {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.6rem;
+    .btn-modifier-toggle {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #A8988C;
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 0.25rem 0.6rem;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .btn-modifier-toggle:hover {
+      background: rgba(255, 255, 255, 0.04);
+      color: #FAF7F2;
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+    .btn-modifier-add-extra {
+      background: rgba(223, 155, 100, 0.1);
+      border: 1px solid rgba(223, 155, 100, 0.25);
+      color: #DF9B64;
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 0.25rem 0.6rem;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .btn-modifier-add-extra:hover {
+      background: rgba(223, 155, 100, 0.18);
+      border-color: rgba(223, 155, 100, 0.4);
+      color: #FDBA74;
+    }
+    .new-addon-form-card {
+      display: none;
+      background: #140E0C;
+      border: 1px solid rgba(223, 155, 100, 0.25);
+      border-radius: 6px;
+      padding: 0.85rem;
+      margin-bottom: 0.75rem;
     }
     .admin-option-pill {
       min-width: 0;
       width: 100%;
       box-sizing: border-box;
-      text-align: center;
-      padding: 0.65rem 0.75rem;
-      border-radius: 12px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.12);
+      padding: 0.65rem 0.85rem;
+      border-radius: 6px;
+      background: #140E0C;
+      border: 1px solid rgba(255, 255, 255, 0.06);
       font-size: 0.82rem;
       font-weight: 600;
-      color: #E2D5CC;
+      color: #FAF7F2;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: all 0.15s ease;
       user-select: none;
       display: flex;
-      flex-direction: column;
+      flex-direction: row;
       align-items: center;
-      gap: 0.25rem;
+      justify-content: space-between;
+      gap: 0.5rem;
     }
     .admin-option-pill:hover {
-      transform: translateY(-2px);
+      border-color: rgba(223, 155, 100, 0.3);
+      background: #19120F;
     }
     .admin-option-pill.is-in-stock {
-      background: rgba(16, 185, 129, 0.12);
-      border-color: rgba(16, 185, 129, 0.4);
+      border-color: rgba(255, 255, 255, 0.08);
+      background: #140E0C;
     }
     .admin-option-pill.is-sold-out {
-      background: rgba(239, 68, 68, 0.15);
-      border-color: rgba(239, 68, 68, 0.5);
-      color: #F87171;
+      border-color: rgba(255, 255, 255, 0.04);
+      background: rgba(255, 255, 255, 0.02);
+      color: #7D6F64;
+      opacity: 0.7;
     }
     .admin-option-pill.is-sold-out .option-title-text {
       text-decoration: line-through;
-      opacity: 0.75;
+      color: #8E7E73;
     }
+    /* Anti-slop status indicator tags — zero background/border boxes behind text */
     .status-indicator-tag {
-      font-size: 0.65rem;
-      font-weight: 800;
-      padding: 0.12rem 0.45rem;
-      border-radius: 999px;
+      font-size: 0.7rem;
+      font-family: var(--font-mono);
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      padding: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      white-space: nowrap;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+      background: transparent !important;
+      border: none !important;
     }
     .tag-in-stock {
-      background: rgba(16, 185, 129, 0.25);
-      color: #34D399;
-      border: 1px solid rgba(16, 185, 129, 0.45);
+      color: #6EE7B7 !important;
+      background: none !important;
+      border: none !important;
+    }
+    .tag-in-stock::before {
+      content: '';
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #10B981;
+      box-shadow: 0 0 5px rgba(16, 185, 129, 0.4);
     }
     .tag-sold-out {
-      background: rgba(239, 68, 68, 0.3);
-      color: #F87171;
-      border: 1px solid rgba(239, 68, 68, 0.6);
+      color: #F87171 !important;
+      background: none !important;
+      border: none !important;
+    }
+    .tag-sold-out::before {
+      content: '';
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #EF4444;
+      box-shadow: 0 0 5px rgba(239, 68, 68, 0.4);
+    }
+    .admin-drink-status-btn {
+      width: 100%;
+      min-height: 36px;
+      padding: 0.45rem 0.75rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s ease;
+      background: #0E0A08;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #FAF7F2;
+    }
+    .admin-drink-status-btn:hover {
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+    .status-btn-available {
+      border-color: rgba(255, 255, 255, 0.12);
+      background: #0E0A08;
+      color: #FAF7F2;
+    }
+    .status-btn-soldout {
+      border-color: rgba(255, 255, 255, 0.12);
+      background: #0E0A08;
+      color: #A8988C;
     }
 
     /* Toast Notification */
@@ -1546,19 +1965,619 @@ if ($currentUser['role'] === 'staff') {
       color: #A7F3D0;
     }
 
+    /* ==========================================================================
+       Users & Access Management (SuperAdmin)
+       ========================================================================== */
+    .users-roles-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.85rem;
+      margin-bottom: 1.5rem;
+    }
+    .role-stat-card {
+      background: #181310;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 6px;
+      padding: 1rem 1.15rem;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      transition: border-color 0.15s ease, background-color 0.15s ease;
+      position: relative;
+    }
+    .role-stat-card:hover {
+      border-color: rgba(223, 155, 100, 0.3);
+      background: #1C1613;
+    }
+    .role-stat-label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #A8988C;
+      font-weight: 600;
+    }
+    .role-stat-pill {
+      font-size: 0.62rem;
+      font-weight: 700;
+      padding: 0.15rem 0.45rem;
+      border-radius: 3px;
+      letter-spacing: 0.05em;
+    }
+    .pill-superadmin { background: rgba(167, 139, 250, 0.12); color: #C4B5FD; border: 1px solid rgba(167, 139, 250, 0.25); }
+    .pill-admin { background: rgba(223, 155, 100, 0.12); color: #DF9B64; border: 1px solid rgba(223, 155, 100, 0.25); }
+    .pill-staff { background: rgba(16, 185, 129, 0.12); color: #6EE7B7; border: 1px solid rgba(16, 185, 129, 0.25); }
+    .pill-customer { background: rgba(148, 163, 184, 0.12); color: #CBD5E1; border: 1px solid rgba(148, 163, 184, 0.25); }
+
+    .role-stat-value {
+      font-family: var(--font-serif);
+      font-size: 1.85rem;
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      color: #FAF7F2;
+      margin: 0.15rem 0;
+    }
+    .role-stat-sub {
+      font-size: 0.74rem;
+      color: #8E7E73;
+      line-height: 1.35;
+    }
+
+    .users-table-wrap {
+      background: #181310;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 6px;
+      padding: 1.25rem 1.4rem;
+      box-sizing: border-box;
+    }
+    .users-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+    }
+    .users-title-wrap h3 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #FFF;
+      margin: 0 0 0.2rem 0;
+      letter-spacing: -0.01em;
+    }
+    .users-title-wrap p {
+      font-size: 0.82rem;
+      color: #8E7E73;
+      margin: 0;
+    }
+
+    .users-filter-toolbar {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .users-search-box {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: #140F0D;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 4px;
+      padding: 0.45rem 0.75rem;
+      flex: 1;
+      min-width: 200px;
+      max-width: 320px;
+      box-sizing: border-box;
+      transition: border-color 0.15s ease;
+    }
+    .users-search-box svg {
+      color: #8E7E73;
+      flex-shrink: 0;
+    }
+    .users-search-box input {
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #FFF;
+      font-size: 0.82rem;
+      width: 100%;
+    }
+    .users-search-box input::placeholder {
+      color: #8E7E73;
+    }
+    .users-search-box:focus-within {
+      border-color: #DF9B64;
+    }
+    .users-role-select-filter {
+      background: #140F0D;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 4px;
+      padding: 0.45rem 0.75rem;
+      color: #E2D5CC;
+      font-size: 0.82rem;
+      cursor: pointer;
+      outline: none;
+      min-width: 130px;
+      box-sizing: border-box;
+      transition: border-color 0.15s ease;
+    }
+    .users-role-select-filter:focus {
+      border-color: #DF9B64;
+    }
+
+    .users-table-scroll {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 6px;
+    }
+    .users-desktop-table {
+      width: 100%;
+      min-width: 700px;
+      border-collapse: collapse;
+      font-size: 0.84rem;
+      text-align: left;
+    }
+    .users-desktop-table th {
+      padding: 0.75rem 0.85rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: #8E7E73;
+      font-weight: 700;
+      background: #140E0C;
+      white-space: nowrap;
+    }
+    .users-desktop-table td {
+      padding: 0.85rem 0.85rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      color: #E2D5CC;
+      vertical-align: middle;
+    }
+    .users-desktop-table tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .user-id-code {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: #8E7E73;
+    }
+    .user-name-cell {
+      font-weight: 600;
+      color: #FFF;
+      display: block;
+    }
+    .user-email-cell {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: #C5BAAF;
+    }
+
+    /* Role Selector & Indicator inside Table */
+    .user-role-selector-wrap {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: #140E0C;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 4px;
+      padding: 0.28rem 0.55rem;
+      transition: border-color 0.15s ease, background-color 0.15s ease;
+    }
+    .user-role-selector-wrap:hover {
+      border-color: rgba(255, 255, 255, 0.22);
+    }
+    .user-role-selector-wrap:focus-within {
+      border-color: #DF9B64;
+      background: #181210;
+    }
+    .role-status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .role-dot-superadmin { background: #C4B5FD; box-shadow: 0 0 5px rgba(196, 181, 253, 0.35); }
+    .role-dot-admin { background: #DF9B64; box-shadow: 0 0 5px rgba(223, 155, 100, 0.35); }
+    .role-dot-staff { background: #10B981; box-shadow: 0 0 5px rgba(16, 185, 129, 0.35); }
+    .role-dot-customer { background: #94A3B8; box-shadow: 0 0 5px rgba(148, 163, 184, 0.35); }
+
+    .user-role-select {
+      background: transparent;
+      border: none;
+      color: #FAF7F2;
+      font-size: 0.8rem;
+      font-weight: 500;
+      cursor: pointer;
+      outline: none;
+      padding: 0;
+      font-family: inherit;
+    }
+    .user-role-select option {
+      background: #181310;
+      color: #FAF7F2;
+    }
+
+    /* Legacy badges maintained for Audit & Logs */
+    .user-role-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.2rem 0.55rem;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .role-badge-superadmin {
+      background: rgba(196, 181, 253, 0.12);
+      color: #C4B5FD;
+      border: 1px solid rgba(196, 181, 253, 0.25);
+    }
+    .role-badge-admin {
+      background: rgba(223, 155, 100, 0.12);
+      color: #DF9B64;
+      border: 1px solid rgba(223, 155, 100, 0.25);
+    }
+    .role-badge-staff {
+      background: rgba(16, 185, 129, 0.12);
+      color: #34D399;
+      border: 1px solid rgba(16, 185, 129, 0.25);
+    }
+    .role-badge-customer {
+      background: rgba(148, 163, 184, 0.12);
+      color: #CBD5E1;
+      border: 1px solid rgba(148, 163, 184, 0.25);
+    }
+
+    /* Clean, focused table action buttons */
+    .users-actions-group {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      justify-content: flex-end;
+    }
+    .btn-user-action {
+      padding: 0.35rem 0.65rem;
+      border-radius: 4px;
+      font-size: 0.76rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+    .btn-reset-pw {
+      background: rgba(223, 155, 100, 0.08);
+      border: 1px solid rgba(223, 155, 100, 0.22);
+      color: #DF9B64;
+    }
+    .btn-reset-pw:hover {
+      background: rgba(223, 155, 100, 0.18);
+      border-color: rgba(223, 155, 100, 0.4);
+      color: #FFF;
+    }
+    .btn-delete-user {
+      background: rgba(239, 68, 68, 0.08);
+      border: 1px solid rgba(239, 68, 68, 0.22);
+      color: #F87171;
+    }
+    .btn-delete-user:hover {
+      background: rgba(239, 68, 68, 0.18);
+      border-color: rgba(239, 68, 68, 0.4);
+      color: #FFF;
+    }
+
+    /* ==========================================================================
+       System Diagnostics & Health (SuperAdmin)
+       ========================================================================== */
+    .diag-health-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.85rem;
+      margin-bottom: 1.5rem;
+    }
+    .diag-health-card {
+      background: #181310;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 6px;
+      padding: 1rem 1.15rem;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      transition: border-color 0.15s ease, background-color 0.15s ease;
+      position: relative;
+    }
+    .diag-health-card:hover {
+      border-color: rgba(223, 155, 100, 0.3);
+      background: #1C1613;
+    }
+    .diag-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #A8988C;
+      font-weight: 600;
+    }
+    .diag-card-pill {
+      font-size: 0.62rem;
+      font-weight: 700;
+      padding: 0.15rem 0.45rem;
+      border-radius: 3px;
+      letter-spacing: 0.05em;
+    }
+    .pill-neutral { background: rgba(255, 255, 255, 0.06); color: #C5BAAF; border: 1px solid rgba(255, 255, 255, 0.12); }
+    .pill-accent { background: rgba(223, 155, 100, 0.12); color: #DF9B64; border: 1px solid rgba(223, 155, 100, 0.25); }
+    .pill-success { background: rgba(16, 185, 129, 0.12); color: #6EE7B7; border: 1px solid rgba(16, 185, 129, 0.25); }
+    .pill-info { background: rgba(148, 163, 184, 0.12); color: #CBD5E1; border: 1px solid rgba(148, 163, 184, 0.25); }
+
+    .diag-card-value {
+      font-family: var(--font-mono);
+      font-size: 1.25rem;
+      font-weight: 700;
+      line-height: 1.2;
+      letter-spacing: -0.01em;
+      color: #FAF7F2;
+      margin: 0.15rem 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .diag-card-meta {
+      font-family: var(--font-mono);
+      font-size: 0.73rem;
+      color: #8E7E73;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .diag-table-wrap {
+      background: #181310;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 6px;
+      padding: 1.25rem 1.4rem;
+      box-sizing: border-box;
+    }
+    .diag-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+    }
+    .diag-title-wrap h3 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #FFF;
+      margin: 0 0 0.2rem 0;
+      letter-spacing: -0.01em;
+    }
+    .diag-title-wrap p {
+      font-size: 0.82rem;
+      color: #8E7E73;
+      margin: 0;
+    }
+    .diag-actions-group {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      flex-wrap: wrap;
+    }
+
+    .diag-table-scroll {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 6px;
+    }
+    .diag-desktop-table {
+      width: 100%;
+      min-width: 680px;
+      border-collapse: collapse;
+      font-size: 0.84rem;
+      text-align: left;
+    }
+    .diag-desktop-table th {
+      padding: 0.75rem 0.85rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: #8E7E73;
+      font-weight: 700;
+      background: #140E0C;
+      white-space: nowrap;
+    }
+    .diag-desktop-table td {
+      padding: 0.85rem 0.85rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      color: #E2D5CC;
+      vertical-align: middle;
+    }
+    .diag-desktop-table tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    /* Unboxed table name code — clean monospace without artificial background */
+    .table-name-code {
+      font-family: var(--font-mono);
+      font-weight: 600;
+      font-size: 0.82rem;
+      color: #FAF7F2;
+      background: transparent;
+      border: none;
+      padding: 0;
+    }
+    .table-purpose-cell {
+      font-size: 0.8rem;
+      color: #A8988C;
+    }
+    .table-rows-cell {
+      font-family: var(--font-mono);
+      font-weight: 600;
+      font-size: 0.82rem;
+      color: #FAF7F2;
+    }
+    .table-size-cell {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: #8E7E73;
+    }
+
+    /* Modern dot-indicator status indicators */
+    .table-status-tag,
+    .status-badge-applied {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      color: #6EE7B7;
+      background: none;
+      border: none;
+      padding: 0;
+    }
+    .table-status-tag::before,
+    .status-badge-applied::before {
+      content: '';
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #10B981;
+      box-shadow: 0 0 5px rgba(16, 185, 129, 0.4);
+    }
+    .status-badge-pending {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      color: #DF9B64;
+      background: none;
+      border: none;
+      padding: 0;
+    }
+    .status-badge-pending::before {
+      content: '';
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #DF9B64;
+      box-shadow: 0 0 5px rgba(223, 155, 100, 0.4);
+    }
+    .status-badge-unavailable {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      color: #F87171;
+      background: none;
+      border: none;
+      padding: 0;
+    }
+    .status-badge-unavailable::before {
+      content: '';
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #EF4444;
+      box-shadow: 0 0 5px rgba(239, 68, 68, 0.4);
+    }
+
+    .role-badge-system {
+      background: rgba(148, 163, 184, 0.12);
+      color: #CBD5E1;
+      border: 1px solid rgba(148, 163, 184, 0.25);
+    }
+
+    /* Unboxed audit action tag — clean monospace without dark border/background */
+    .audit-action-tag {
+      display: inline-flex;
+      align-items: center;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: #FAF7F2;
+      background: transparent;
+      border: none;
+      padding: 0;
+      white-space: nowrap;
+    }
+    .audit-timestamp-cell {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: #8E7E73;
+      white-space: nowrap;
+    }
+    .audit-actor-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+    .audit-actor-name {
+      font-weight: 600;
+      color: #FFF;
+      font-size: 0.82rem;
+      word-break: break-all;
+    }
+    .audit-ip-cell {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: #8E7E73;
+      white-space: nowrap;
+    }
+
     /* Mobile & Multi-Viewport Responsiveness */
     @media (max-width: 1200px) {
       .kpi-tiles-grid {
-        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        grid-template-columns: repeat(3, 1fr);
       }
-      .viz-card.span-4 { grid-column: span 6; }
       .viz-card.span-8 { grid-column: span 12; }
+      .viz-card.span-4 { grid-column: span 12; }
       .viz-card.span-5 { grid-column: span 6; }
-      .viz-card.span-7 { grid-column: span 12; }
-      .viz-card.span-3 { grid-column: span 6; }
+      .viz-card.span-3 { grid-column: span 12; }
     }
 
     @media (max-width: 900px) {
+      .kpi-tiles-grid {
+        grid-template-columns: 1fr;
+      }
       .sidebar-toggle-btn {
         display: flex;
       }
@@ -1578,14 +2597,20 @@ if ($currentUser['role'] === 'staff') {
       .admin-view-panel {
         padding: 1.25rem;
       }
+      .users-roles-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .diag-health-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
     }
 
     @media (max-width: 768px) {
       .kpi-tiles-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: 1fr;
       }
       .kpi-stat-card:last-child {
-        grid-column: span 2;
+        grid-column: span 1;
       }
       .analytics-visual-grid > * {
         grid-column: span 12 !important;
@@ -1593,10 +2618,12 @@ if ($currentUser['role'] === 'staff') {
       .ledger-table-wrap {
         padding: 1.15rem;
       }
-      .ledger-desktop-table {
+      .ledger-desktop-table,
+      #viewAuditTrail .diag-table-scroll {
         display: none;
       }
-      .ledger-mobile-cards {
+      .ledger-mobile-cards,
+      #viewAuditTrail .ledger-mobile-cards {
         display: flex;
       }
       .canvas-title-group h2 {
@@ -1637,6 +2664,65 @@ if ($currentUser['role'] === 'staff') {
       .admin-action-btn {
         flex: 1;
         justify-content: center;
+      }
+      .ledger-filter-toolbar {
+        gap: 0.5rem;
+        width: 100%;
+      }
+      .filter-chip-group {
+        width: 100%;
+        display: flex;
+        box-sizing: border-box;
+      }
+      .filter-chip-group .filter-chip-btn {
+        flex: 1 1 0;
+        justify-content: center;
+        text-align: center;
+        font-size: 0.72rem;
+        padding: 0.3rem 0.25rem;
+      }
+      .ledger-search-box {
+        max-width: 100%;
+        width: 100%;
+      }
+      .users-roles-grid {
+        grid-template-columns: 1fr;
+      }
+      .users-search-box {
+        max-width: 100%;
+        width: 100%;
+      }
+      .users-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .users-filter-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .users-role-select-filter {
+        width: 100%;
+      }
+      .diag-health-grid {
+        grid-template-columns: 1fr;
+      }
+      .diag-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .diag-actions-group {
+        width: 100%;
+      }
+      .diag-actions-group .admin-action-btn {
+        flex: 1;
+        justify-content: center;
+      }
+      #modalSqlContent {
+        max-height: 180px;
+      }
+      .oms-modal-box {
+        padding: 1.15rem 1rem;
+        max-height: 86vh;
       }
     }
   </style>
@@ -1795,11 +2881,11 @@ if ($currentUser['role'] === 'staff') {
       <div class="canvas-actions-bar" id="canvasActionsBar">
         <!-- Date Selector & Quick Presets (for Analytics) -->
         <div id="analyticsHeaderControls" class="date-control-group">
-          <div class="date-presets-strip">
+          <div class="date-presets-strip" role="group" aria-label="Date range selector">
             <button type="button" class="date-preset-btn active" id="presetTodayBtn">Today</button>
             <button type="button" class="date-preset-btn" id="presetYesterdayBtn">Yesterday</button>
           </div>
-          <input type="date" id="ledgerDatePicker" class="modal-text-input" style="width: auto; padding: 0.42rem 0.75rem; font-family: var(--font-mono); font-size: 0.85rem;" aria-label="Select ledger date">
+          <input type="date" id="ledgerDatePicker" class="date-input-clean" aria-label="Select ledger date">
           <button type="button" class="admin-action-btn btn-action-secondary" id="btnRefreshLedger" title="Refresh data">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 4v6h-6"></path><path d="M1 20v-6h6"></path><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
             <span>Refresh Data</span>
@@ -1808,12 +2894,13 @@ if ($currentUser['role'] === 'staff') {
 
         <!-- Stock Controls (for Menu & Stock View) -->
         <div id="stockHeaderControls" style="display: none; gap: 0.65rem; align-items: center;">
-          <button type="button" class="admin-action-btn btn-action-secondary" id="btnResetAllStockTop">
-            ↺ Restock Everything
+          <button type="button" class="admin-action-btn btn-action-secondary" id="btnResetAllStockTop" title="Reset all drinks and options to in stock">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 4v6h-6"></path><path d="M1 20v-6h6"></path><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+            <span>Restock All</span>
           </button>
           <button type="button" class="admin-action-btn btn-action-accent" id="btnOpenAddDrinkModal">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-            + Add New Drink
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            <span>Add Drink</span>
           </button>
         </div>
 
@@ -1853,61 +2940,61 @@ if ($currentUser['role'] === 'staff') {
 
     <!-- VIEW 1: Sales & Reports -->
     <section class="admin-view-panel active" id="viewAnalytics">
-      <!-- 1. Performance Summary Cards (5 Cards) -->
+      <!-- 1. Executive Performance Summary Cards (3 Cards) -->
       <div class="kpi-tiles-grid">
         <div class="kpi-stat-card">
           <div class="kpi-stat-label">
             <span>Total Sales</span>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#34D399" stroke-width="2.5"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
           </div>
-          <div class="kpi-stat-value" id="ledgerGrossRevenue" style="color: #34D399;">₱0.00</div>
+          <div class="kpi-stat-value" id="ledgerGrossRevenue">₱0.00</div>
           <div class="kpi-stat-sub" id="ledgerGrossSub">Money made from finished orders</div>
         </div>
 
         <div class="kpi-stat-card">
           <div class="kpi-stat-label">
-            <span>Average Spend</span>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FBBF24" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-          </div>
-          <div class="kpi-stat-value" id="ledgerAovValue" style="color: #FBBF24;">₱0.00</div>
-          <div class="kpi-stat-sub" id="ledgerAovSub">Average money per customer</div>
-        </div>
-
-        <div class="kpi-stat-card">
-          <div class="kpi-stat-label">
-            <span>Average Prep Time</span>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#60A5FA" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 14 10"></polyline></svg>
-          </div>
-          <div class="kpi-stat-value" id="ledgerAvgPrepValue" style="color: #60A5FA;">0.0m</div>
-          <div class="kpi-stat-sub">Time to make and serve orders</div>
-        </div>
-
-        <div class="kpi-stat-card">
-          <div class="kpi-stat-label">
-            <span>Dine-In vs Take-Out</span>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#A78BFA" stroke-width="2.5"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path></svg>
-          </div>
-          <div class="kpi-stat-value" id="ledgerDiningSplitValue" style="color: #A78BFA; font-size: 1.22rem; white-space: nowrap;">0% Dine-In</div>
-          <div class="kpi-stat-sub" id="ledgerDiningSplitSub">0 Dine-In · 0 Take-Out</div>
-        </div>
-
-        <div class="kpi-stat-card">
-          <div class="kpi-stat-label">
             <span>Today's Orders</span>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#F472B6" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
           </div>
-          <div class="kpi-stat-value" id="ledgerPipelineValue" style="color: #F472B6;">0 Total</div>
+          <div class="kpi-stat-value" id="ledgerPipelineValue">0 Total</div>
           <div class="kpi-stat-sub" id="ledgerPipelineSub">0 finished · 0 being made</div>
+        </div>
+
+        <div class="kpi-stat-card">
+          <div class="kpi-stat-label">
+            <span>Average Spend</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          </div>
+          <div class="kpi-stat-value" id="ledgerAovValue">₱0.00</div>
+          <div class="kpi-stat-sub" id="ledgerAovSub">Average money per customer</div>
         </div>
       </div>
 
       <!-- 2. Visual Analytics Bento Grid -->
       <div class="analytics-visual-grid">
-        <!-- Panel A: How Customers Paid (span 4) -->
+        <!-- Panel A: Busiest Hours Today (span 8) -->
+        <div class="viz-card span-8">
+          <div class="viz-card-header">
+            <h3 class="viz-card-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+              Busiest Hours Today
+            </h3>
+            <span class="viz-card-badge" id="peakRushBadge">Busiest Time: Calculating...</span>
+          </div>
+
+          <div class="hourly-chart-container" id="hourlyChartContainer">
+            <!-- Dynamic SVG Chart Injected via JavaScript -->
+            <svg class="hourly-svg-chart" id="hourlySvgChart" viewBox="0 0 600 130" preserveAspectRatio="none">
+              <!-- Gridlines and bars rendered here -->
+            </svg>
+          </div>
+        </div>
+
+        <!-- Panel B: How Customers Paid (span 4) -->
         <div class="viz-card span-4">
           <div class="viz-card-header">
             <h3 class="viz-card-title">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E28743" stroke-width="2.5"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
               How Customers Paid
             </h3>
             <span class="viz-card-badge" id="paymentTotalBadge">₱0.00 Total</span>
@@ -1939,29 +3026,11 @@ if ($currentUser['role'] === 'staff') {
           </div>
         </div>
 
-        <!-- Panel B: Busiest Hours Today (span 8) -->
-        <div class="viz-card span-8">
-          <div class="viz-card-header">
-            <h3 class="viz-card-title">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E28743" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
-              Busiest Hours Today
-            </h3>
-            <span class="viz-card-badge" id="peakRushBadge" style="color: #FDBA74; border-color: rgba(226, 135, 67, 0.4);">Busiest Time: Calculating...</span>
-          </div>
-
-          <div class="hourly-chart-container" id="hourlyChartContainer">
-            <!-- Dynamic SVG Chart Injected via JavaScript -->
-            <svg class="hourly-svg-chart" id="hourlySvgChart" viewBox="0 0 600 130" preserveAspectRatio="none">
-              <!-- Gridlines and bars rendered here -->
-            </svg>
-          </div>
-        </div>
-
         <!-- Panel C: Best Selling Drinks (span 5) -->
         <div class="viz-card span-5">
           <div class="viz-card-header">
             <h3 class="viz-card-title">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E28743" stroke-width="2.5"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><line x1="6" y1="1" x2="6" y2="4"></line><line x1="10" y1="1" x2="10" y2="4"></line><line x1="14" y1="1" x2="14" y2="4"></line></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><line x1="6" y1="1" x2="6" y2="4"></line><line x1="10" y1="1" x2="10" y2="4"></line><line x1="14" y1="1" x2="14" y2="4"></line></svg>
               Best Selling Drinks
             </h3>
             <span class="viz-card-badge">Most Ordered</span>
@@ -1977,7 +3046,7 @@ if ($currentUser['role'] === 'staff') {
         <div class="viz-card span-4">
           <div class="viz-card-header">
             <h3 class="viz-card-title">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E28743" stroke-width="2.5"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
               Customer Preferences
             </h3>
             <span class="viz-card-badge">Popular Choices</span>
@@ -2002,16 +3071,16 @@ if ($currentUser['role'] === 'staff') {
         <div class="viz-card span-3">
           <div class="viz-card-header">
             <h3 class="viz-card-title">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
               Kitchen Checklist Score
             </h3>
-            <span class="viz-card-badge" id="qaOverallRate" style="color: #34D399;">100%</span>
+            <span class="viz-card-badge" id="qaOverallRate">100%</span>
           </div>
           <div class="qa-health-meters">
             <div class="qa-meter-row">
               <div class="qa-meter-header">
                 <span>Payment Confirmed</span>
-                <span id="qaPaymentRate" style="color: #34D399;">100%</span>
+                <span id="qaPaymentRate">100%</span>
               </div>
               <div class="qa-meter-bar-track">
                 <div class="qa-meter-bar-fill" id="qaPaymentBar" style="width: 100%;"></div>
@@ -2021,7 +3090,7 @@ if ($currentUser['role'] === 'staff') {
             <div class="qa-meter-row">
               <div class="qa-meter-header">
                 <span>Recipe Followed</span>
-                <span id="qaCustomRate" style="color: #34D399;">100%</span>
+                <span id="qaCustomRate">100%</span>
               </div>
               <div class="qa-meter-bar-track">
                 <div class="qa-meter-bar-fill" id="qaCustomBar" style="width: 100%;"></div>
@@ -2031,7 +3100,7 @@ if ($currentUser['role'] === 'staff') {
             <div class="qa-meter-row">
               <div class="qa-meter-header">
                 <span>Cup & Bag Sealed</span>
-                <span id="qaPackageRate" style="color: #34D399;">100%</span>
+                <span id="qaPackageRate">100%</span>
               </div>
               <div class="qa-meter-bar-track">
                 <div class="qa-meter-bar-fill" id="qaPackageBar" style="width: 100%;"></div>
@@ -2044,54 +3113,106 @@ if ($currentUser['role'] === 'staff') {
 
     <!-- VIEW 2: Customer Orders -->
     <section class="admin-view-panel" id="viewAuditTrail">
-      <!-- Chronological Customer Orders & Filterable Table -->
-      <div class="ledger-table-wrap">
-        <div class="ledger-toolbar">
-          <div>
-            <h3 style="font-size: 1.15rem; font-weight: 700; color: #FFF; margin: 0;">All Orders Today</h3>
-            <span style="font-size: 0.8rem; color: var(--admin-muted);" id="ledgerRowCountNotice">Showing all orders</span>
+      <!-- Orders Health / KPI Summary Strip (4 Cards) -->
+      <div class="diag-health-grid" style="margin-bottom: 1.5rem;">
+        <div class="diag-health-card diag-card-server">
+          <div class="diag-card-header">
+            <span>Total Orders Today</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
           </div>
+          <div class="diag-card-value" id="statOrdersTotal">0</div>
+          <div class="diag-card-meta" id="statOrdersTotalMeta">All orders placed today</div>
+        </div>
 
-          <div class="ledger-search-box">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-            <input type="text" id="ledgerSearchInput" placeholder="Search by customer name, phone, order #, or drink..." aria-label="Search order records">
+        <div class="diag-health-card diag-card-opcache">
+          <div class="diag-card-header">
+            <span>Completed &amp; Served</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div class="diag-card-value" id="statOrdersCompleted" style="color: #34D399;">0</div>
+          <div class="diag-card-meta" id="statOrdersCompletedMeta">Successfully delivered</div>
+        </div>
+
+        <div class="diag-health-card diag-card-php">
+          <div class="diag-card-header">
+            <span>Active in Kitchen</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <div class="diag-card-value" id="statOrdersActive" style="color: #F59E0B;">0</div>
+          <div class="diag-card-meta" id="statOrdersActiveMeta">In prep or awaiting prep</div>
+        </div>
+
+        <div class="diag-health-card diag-card-mysql">
+          <div class="diag-card-header">
+            <span>Gross Orders Value</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          </div>
+          <div class="diag-card-value" id="statOrdersRevenue">₱0.00</div>
+          <div class="diag-card-meta" id="statOrdersRevenueMeta">Daily gross order volume</div>
+        </div>
+      </div>
+
+      <!-- Main Customer Orders Table Wrap -->
+      <div class="diag-table-wrap">
+        <div class="diag-toolbar">
+          <div class="diag-title-wrap">
+            <h3>Customer Orders Ledger</h3>
+            <p>Chronological stream of dine-in and takeout tickets, customizations, and kitchen QA status.</p>
+          </div>
+          <div class="diag-actions-group">
+            <span id="ledgerRowCountNotice" style="font-size: 0.78rem; color: #8E7E73; font-weight: 500;">Showing 0 orders</span>
+            <button type="button" class="admin-action-btn btn-action-secondary" id="btnRefreshLedgerOrders" title="Refresh order stream">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg>
+              <span>Refresh Orders</span>
+            </button>
           </div>
         </div>
 
-        <div class="ledger-filter-chips" style="margin-bottom: 1.15rem;">
-          <button type="button" class="filter-chip-btn active" data-filter="status" data-val="all">All Orders</button>
-          <button type="button" class="filter-chip-btn" data-filter="status" data-val="completed">Finished</button>
-          <button type="button" class="filter-chip-btn" data-filter="status" data-val="active">Being Made / Waiting</button>
-          <button type="button" class="filter-chip-btn" data-filter="status" data-val="cancelled">Cancelled</button>
-          <span style="color: rgba(255,255,255,0.2); margin: 0 0.2rem;">|</span>
-          <button type="button" class="filter-chip-btn active" data-filter="dining" data-val="all">All Dining</button>
-          <button type="button" class="filter-chip-btn" data-filter="dining" data-val="dine_in">Dine-In</button>
-          <button type="button" class="filter-chip-btn" data-filter="dining" data-val="take_out">Take-Out</button>
-          <span style="color: rgba(255,255,255,0.2); margin: 0 0.2rem;">|</span>
-          <button type="button" class="filter-chip-btn active" data-filter="payment" data-val="all">All Payments</button>
-          <button type="button" class="filter-chip-btn" data-filter="payment" data-val="gcash">GCash</button>
-          <button type="button" class="filter-chip-btn" data-filter="payment" data-val="cash">Cash</button>
+        <!-- Filter & Search Sub-Bar -->
+        <div class="users-filter-toolbar" style="margin-bottom: 1.25rem;">
+          <div class="users-search-box">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="ledgerSearchInput" placeholder="Filter by customer, phone, order #, or drink..." aria-label="Search order records">
+          </div>
+          <div class="users-filter-controls">
+            <select id="ledgerStatusFilter" class="users-role-select-filter" aria-label="Filter by order status">
+              <option value="all" selected>All Statuses</option>
+              <option value="completed">Completed</option>
+              <option value="active">In Progress / Active</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+            <select id="ledgerDiningFilter" class="users-role-select-filter" aria-label="Filter by dining mode">
+              <option value="all" selected>All Dining</option>
+              <option value="dine_in">Dine-In</option>
+              <option value="take_out">Take-Out</option>
+            </select>
+            <select id="ledgerPaymentFilter" class="users-role-select-filter" aria-label="Filter by payment method">
+              <option value="all" selected>All Payments</option>
+              <option value="gcash">GCash</option>
+              <option value="cash">Cash</option>
+            </select>
+          </div>
         </div>
 
-        <!-- Desktop Table View (>= 768px) -->
-        <div class="ledger-table-scroll">
-          <table class="ledger-desktop-table">
+        <!-- Desktop Table View -->
+        <div class="diag-table-scroll">
+          <table class="diag-desktop-table">
             <thead>
               <tr>
-                <th>Order #</th>
-                <th>Receipt ID</th>
-                <th>Customer</th>
-                <th>Drinks & Customizations</th>
-                <th>Dining</th>
-                <th>Payment</th>
-                <th>Kitchen Checks</th>
-                <th>Status & Prep Time</th>
-                <th style="text-align: right;">Total</th>
+                <th style="width: 55px;">Order #</th>
+                <th style="width: 145px;">Receipt &amp; Customer</th>
+                <th>Drinks &amp; Customizations</th>
+                <th style="width: 75px;">Dining</th>
+                <th style="width: 65px;">Payment</th>
+                <th style="width: 75px;">Kitchen QA</th>
+                <th style="width: 95px;">Status &amp; Prep</th>
+                <th style="width: 75px; text-align: right;">Total</th>
+                <th style="width: 68px; text-align: right;">Inspect</th>
               </tr>
             </thead>
             <tbody id="ledgerTableBody">
               <tr>
-                <td colspan="9" style="text-align: center; padding: 3rem; color: var(--admin-muted);">Loading orders...</td>
+                <td colspan="9" style="text-align: center; padding: 2.5rem; color: var(--admin-muted);">Loading orders...</td>
               </tr>
             </tbody>
           </table>
@@ -2134,68 +3255,92 @@ if ($currentUser['role'] === 'staff') {
 
     <!-- VIEW 3: Users & Access (SuperAdmin Only) -->
     <section class="admin-view-panel" id="viewUsers">
-      <div style="background: rgba(26, 20, 16, 0.95); border: 1px solid var(--admin-border); border-radius: 16px; padding: 1.5rem; margin-bottom: 2rem;">
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
-          <div>
-            <h3 style="font-size: 1.35rem; font-weight: 700; color: #FFF; margin: 0 0 0.25rem 0;">Users & Access Management</h3>
-            <p style="font-size: 0.85rem; color: var(--admin-muted); margin: 0;">Manage authenticated accounts, modify roles, reset credentials, and oversee permissions.</p>
+      <!-- Role Distribution Stat Strip (4 Cards) -->
+      <div class="users-roles-grid">
+        <div class="role-stat-card role-card-superadmin">
+          <div class="role-stat-label">
+            <span>SuperAdmins</span>
+            <span class="role-stat-pill pill-superadmin">Root</span>
           </div>
-          <button type="button" class="admin-action-btn btn-action-accent" id="btnOpenCreateUserModal" style="background: var(--admin-accent); color: #FFF;">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-            + Create Account
+          <div class="role-stat-value" id="statSuperadminCount">0</div>
+          <div class="role-stat-sub">Developer & system security access</div>
+        </div>
+
+        <div class="role-stat-card role-card-admin">
+          <div class="role-stat-label">
+            <span>Admins</span>
+            <span class="role-stat-pill pill-admin">Manager</span>
+          </div>
+          <div class="role-stat-value" id="statAdminCount">0</div>
+          <div class="role-stat-sub">Sales reports & catalog pricing</div>
+        </div>
+
+        <div class="role-stat-card role-card-staff">
+          <div class="role-stat-label">
+            <span>Staff</span>
+            <span class="role-stat-pill pill-staff">Operator</span>
+          </div>
+          <div class="role-stat-value" id="statStaffCount">0</div>
+          <div class="role-stat-sub">Register POS & kitchen workstation</div>
+        </div>
+
+        <div class="role-stat-card role-card-customer">
+          <div class="role-stat-label">
+            <span>Customers</span>
+            <span class="role-stat-pill pill-customer">User</span>
+          </div>
+          <div class="role-stat-value" id="statCustomerCount">0</div>
+          <div class="role-stat-sub">Storefront & dine-in registered</div>
+        </div>
+      </div>
+
+      <!-- Main Directory Section -->
+      <div class="users-table-wrap">
+        <div class="users-toolbar">
+          <div class="users-title-wrap">
+            <h3>User Directory & Permissions</h3>
+            <p>Modify role assignments, enforce password resets, and provision system accounts.</p>
+          </div>
+          <button type="button" class="admin-action-btn btn-action-accent" id="btnOpenCreateUserModal">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            <span>Create Account</span>
           </button>
         </div>
 
-        <!-- Role Summary Badges -->
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 0.75rem; margin-bottom: 1.5rem;">
-          <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); padding: 0.75rem 1rem; border-radius: 10px;">
-            <div style="font-size: 0.72rem; color: var(--admin-muted); text-transform: uppercase; letter-spacing: 0.05em;">SuperAdmins</div>
-            <div id="statSuperadminCount" style="font-size: 1.4rem; font-weight: 700; color: #C4B5FD;">0</div>
+        <!-- Filter & Search Toolbar -->
+        <div class="users-filter-toolbar">
+          <div class="users-search-box">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" id="userSearchInput" placeholder="Search by name or email..." aria-label="Search users by name or email">
           </div>
-          <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); padding: 0.75rem 1rem; border-radius: 10px;">
-            <div style="font-size: 0.72rem; color: var(--admin-muted); text-transform: uppercase; letter-spacing: 0.05em;">Admins</div>
-            <div id="statAdminCount" style="font-size: 1.4rem; font-weight: 700; color: #F59E0B;">0</div>
-          </div>
-          <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); padding: 0.75rem 1rem; border-radius: 10px;">
-            <div style="font-size: 0.72rem; color: var(--admin-muted); text-transform: uppercase; letter-spacing: 0.05em;">Staff (Counter/KDS)</div>
-            <div id="statStaffCount" style="font-size: 1.4rem; font-weight: 700; color: #10B981;">0</div>
-          </div>
-          <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); padding: 0.75rem 1rem; border-radius: 10px;">
-            <div style="font-size: 0.72rem; color: var(--admin-muted); text-transform: uppercase; letter-spacing: 0.05em;">Customers</div>
-            <div id="statCustomerCount" style="font-size: 1.4rem; font-weight: 700; color: #60A5FA;">0</div>
-          </div>
-        </div>
-
-        <!-- Filter and Search Bar -->
-        <div style="display: flex; gap: 0.75rem; margin-bottom: 1rem; flex-wrap: wrap; align-items: center;">
-          <input type="text" id="userSearchInput" class="modal-text-input" placeholder="🔍 Search by name or email..." style="max-width: 280px; padding: 0.45rem 0.85rem; font-size: 0.85rem;">
-          <select id="userRoleFilterSelect" class="modal-text-input" style="max-width: 180px; padding: 0.45rem 0.85rem; font-size: 0.85rem;">
+          <select id="userRoleFilterSelect" class="users-role-select-filter" aria-label="Filter users by role">
             <option value="">All Roles</option>
             <option value="superadmin">SuperAdmin</option>
             <option value="admin">Admin</option>
             <option value="staff">Staff</option>
             <option value="customer">Customer</option>
           </select>
-          <button type="button" class="admin-action-btn btn-action-secondary" id="btnRefreshUsers" style="padding: 0.45rem 0.85rem; font-size: 0.82rem;">
-            ↻ Refresh
+          <button type="button" class="admin-action-btn btn-action-secondary" id="btnRefreshUsers" title="Refresh user list">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg>
+            <span>Refresh</span>
           </button>
         </div>
 
-        <!-- Users Table -->
-        <div style="overflow-x: auto; background: rgba(14, 11, 9, 0.75); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px;">
-          <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.85rem;">
+        <!-- Users Desktop Table -->
+        <div class="users-table-scroll">
+          <table class="users-desktop-table">
             <thead>
-              <tr style="border-bottom: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.02);">
-                <th style="padding: 0.85rem 1rem; color: var(--admin-muted); font-weight: 600;">ID</th>
-                <th style="padding: 0.85rem 1rem; color: var(--admin-muted); font-weight: 600;">Name</th>
-                <th style="padding: 0.85rem 1rem; color: var(--admin-muted); font-weight: 600;">Email / Login</th>
-                <th style="padding: 0.85rem 1rem; color: var(--admin-muted); font-weight: 600;">Role</th>
-                <th style="padding: 0.85rem 1rem; color: var(--admin-muted); font-weight: 600; text-align: right;">Actions</th>
+              <tr>
+                <th style="width: 65px;">ID</th>
+                <th style="min-width: 170px;">Full Name</th>
+                <th style="min-width: 210px;">Email / Login</th>
+                <th style="width: 170px;">Assigned Role</th>
+                <th style="text-align: right; width: 170px;">Actions</th>
               </tr>
             </thead>
             <tbody id="usersTableBody">
               <tr>
-                <td colspan="5" style="text-align: center; padding: 2rem; color: var(--admin-muted);">Loading system users...</td>
+                <td colspan="5" style="text-align: center; padding: 2.5rem; color: var(--admin-muted);">Loading system users...</td>
               </tr>
             </tbody>
           </table>
@@ -2205,62 +3350,79 @@ if ($currentUser['role'] === 'staff') {
 
     <!-- VIEW 4: System Diagnostics (SuperAdmin Only) -->
     <section class="admin-view-panel" id="viewDiagnostics">
-      <div style="background: rgba(26, 20, 16, 0.95); border: 1px solid var(--admin-border); border-radius: 16px; padding: 1.5rem; margin-bottom: 2rem;">
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
-          <div>
-            <h3 style="font-size: 1.35rem; font-weight: 700; color: #FFF; margin: 0 0 0.25rem 0;">System Diagnostics</h3>
-            <p style="font-size: 0.85rem; color: var(--admin-muted); margin: 0;">Monitor PHP runtime, database throughput, server memory consumption, and table health.</p>
+      <!-- 4 Health Cards Grid -->
+      <div class="diag-health-grid">
+        <div class="diag-health-card">
+          <div class="diag-card-header">
+            <span>PHP Runtime</span>
+            <span class="diag-card-pill pill-info">Runtime</span>
           </div>
-          <div style="display: flex; gap: 0.65rem;">
-            <button type="button" class="admin-action-btn btn-action-secondary" id="btnPurgeCache" style="border-color: rgba(245, 158, 11, 0.4); color: #FBBF24;">
-              ⚡ Purge Cache
+          <div class="diag-card-value" id="diagPhpVersion">Loading...</div>
+          <div class="diag-card-meta" id="diagMemory">Memory Peak: --</div>
+        </div>
+
+        <div class="diag-health-card">
+          <div class="diag-card-header">
+            <span>MySQL Database</span>
+            <span class="diag-card-pill pill-success">Database</span>
+          </div>
+          <div class="diag-card-value" id="diagMysqlVersion">Loading...</div>
+          <div class="diag-card-meta" id="diagDbSize">Storage: --</div>
+        </div>
+
+        <div class="diag-health-card">
+          <div class="diag-card-header">
+            <span>Server Host</span>
+            <span class="diag-card-pill pill-accent">Host OS</span>
+          </div>
+          <div class="diag-card-value" id="diagServerOs" title="Host Operating System">Loading...</div>
+          <div class="diag-card-meta" id="diagServerTime">Server Time: --</div>
+        </div>
+
+        <div class="diag-health-card">
+          <div class="diag-card-header">
+            <span>Execution State</span>
+            <span class="diag-card-pill pill-neutral">Cache</span>
+          </div>
+          <div class="diag-card-value" id="diagOpcache">Loading...</div>
+          <div class="diag-card-meta" id="diagMaxExec">Max Exec: --</div>
+        </div>
+      </div>
+
+      <!-- Database Table Metrics Table -->
+      <div class="diag-table-wrap">
+        <div class="diag-toolbar">
+          <div class="diag-title-wrap">
+            <h3>Database Table Metrics</h3>
+            <p>Row distribution, storage footprints, and engine health across active schema tables.</p>
+          </div>
+          <div class="diag-actions-group">
+            <button type="button" class="admin-action-btn btn-action-secondary" id="btnPurgeCache" title="Purge system OPcache and temporary cache files">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              <span>Purge Cache</span>
             </button>
-            <button type="button" class="admin-action-btn btn-action-secondary" id="btnRefreshDiagnostics">
-              ↻ Refresh Health
+            <button type="button" class="admin-action-btn btn-action-secondary" id="btnRefreshDiagnostics" title="Refresh environment metrics">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg>
+              <span>Refresh Health</span>
             </button>
           </div>
         </div>
 
-        <!-- 4 Health Cards -->
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 1.75rem;">
-          <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); padding: 1.1rem; border-radius: 12px;">
-            <div style="font-size: 0.72rem; color: var(--admin-muted); text-transform: uppercase;">PHP Runtime</div>
-            <div id="diagPhpVersion" style="font-size: 1.25rem; font-weight: 700; color: #60A5FA; margin: 0.25rem 0;">Loading...</div>
-            <div id="diagMemory" style="font-size: 0.75rem; color: var(--admin-muted);">Memory Peak: --</div>
-          </div>
-          <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); padding: 1.1rem; border-radius: 12px;">
-            <div style="font-size: 0.72rem; color: var(--admin-muted); text-transform: uppercase;">MySQL Database</div>
-            <div id="diagMysqlVersion" style="font-size: 1.25rem; font-weight: 700; color: #34D399; margin: 0.25rem 0;">Loading...</div>
-            <div id="diagDbSize" style="font-size: 0.75rem; color: var(--admin-muted);">Storage: --</div>
-          </div>
-          <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); padding: 1.1rem; border-radius: 12px;">
-            <div style="font-size: 0.72rem; color: var(--admin-muted); text-transform: uppercase;">Server Environment</div>
-            <div id="diagServerOs" style="font-size: 1.05rem; font-weight: 700; color: #F59E0B; margin: 0.25rem 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Loading...</div>
-            <div id="diagServerTime" style="font-size: 0.75rem; color: var(--admin-muted);">Server Time: --</div>
-          </div>
-          <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); padding: 1.1rem; border-radius: 12px;">
-            <div style="font-size: 0.72rem; color: var(--admin-muted); text-transform: uppercase;">Acceleration & State</div>
-            <div id="diagOpcache" style="font-size: 1.25rem; font-weight: 700; color: #C4B5FD; margin: 0.25rem 0;">Loading...</div>
-            <div id="diagMaxExec" style="font-size: 0.75rem; color: var(--admin-muted);">Max Exec Time: --</div>
-          </div>
-        </div>
-
-        <!-- Table Statistics -->
-        <h4 style="font-size: 1rem; font-weight: 700; color: #FFF; margin: 0 0 0.85rem 0;">Database Table Metrics</h4>
-        <div style="overflow-x: auto; background: rgba(14, 11, 9, 0.75); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px;">
-          <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.85rem;">
+        <!-- Desktop Table View -->
+        <div class="diag-table-scroll">
+          <table class="diag-desktop-table">
             <thead>
-              <tr style="border-bottom: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.02);">
-                <th style="padding: 0.75rem 1rem; color: var(--admin-muted); font-weight: 600;">Table Name</th>
-                <th style="padding: 0.75rem 1rem; color: var(--admin-muted); font-weight: 600;">Purpose</th>
-                <th style="padding: 0.75rem 1rem; color: var(--admin-muted); font-weight: 600;">Row Count</th>
-                <th style="padding: 0.75rem 1rem; color: var(--admin-muted); font-weight: 600;">Data Size</th>
-                <th style="padding: 0.75rem 1rem; color: var(--admin-muted); font-weight: 600;">Status</th>
+              <tr>
+                <th style="width: 160px;">Table Name</th>
+                <th>System Purpose</th>
+                <th style="width: 120px;">Row Count</th>
+                <th style="width: 120px;">Storage Size</th>
+                <th style="width: 100px;">Status</th>
               </tr>
             </thead>
             <tbody id="tableStatsBody">
               <tr>
-                <td colspan="5" style="text-align: center; padding: 2rem; color: var(--admin-muted);">Loading table statistics...</td>
+                <td colspan="5" style="text-align: center; padding: 2.5rem; color: var(--admin-muted);">Loading table statistics...</td>
               </tr>
             </tbody>
           </table>
@@ -2270,33 +3432,79 @@ if ($currentUser['role'] === 'staff') {
 
     <!-- VIEW 5: Database & Schema (SuperAdmin Only) -->
     <section class="admin-view-panel" id="viewDatabase">
-      <div style="background: rgba(26, 20, 16, 0.95); border: 1px solid var(--admin-border); border-radius: 16px; padding: 1.5rem; margin-bottom: 2rem;">
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
-          <div>
-            <h3 style="font-size: 1.35rem; font-weight: 700; color: #FFF; margin: 0 0 0.25rem 0;">Database & Migrations</h3>
-            <p style="font-size: 0.85rem; color: var(--admin-muted); margin: 0;">Audit applied schema migrations, database structure, and export full SQL backups.</p>
+      <!-- Database & Schema Stat Strip (4 Cards) -->
+      <div class="diag-health-grid" style="margin-bottom: 1.5rem;">
+        <div class="diag-health-card">
+          <div class="diag-card-header">
+            <span>Applied Migrations</span>
+            <span class="diag-card-pill pill-success">Ledger</span>
           </div>
-          <a href="api/system.php?action=export_backup" class="admin-action-btn btn-action-accent" id="btnDownloadBackup" style="background: var(--admin-accent); color: #FFF; text-decoration: none;">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-            Download SQL Backup (.sql)
-          </a>
+          <div class="diag-card-value" id="statAppliedMigrations">-- / --</div>
+          <div class="diag-card-meta" id="statMigrationSync">Verifying ledger...</div>
         </div>
 
-        <!-- Migrations Checklist Table -->
-        <h4 style="font-size: 1rem; font-weight: 700; color: #FFF; margin: 0 0 0.85rem 0;">Schema Migration Ledger</h4>
-        <div style="overflow-x: auto; background: rgba(14, 11, 9, 0.75); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px;">
-          <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.85rem;">
+        <div class="diag-health-card">
+          <div class="diag-card-header">
+            <span>Pending Executions</span>
+            <span class="diag-card-pill pill-accent">Queue</span>
+          </div>
+          <div class="diag-card-value" id="statPendingMigrations">0</div>
+          <div class="diag-card-meta" id="statPendingMeta">Ledger is up-to-date</div>
+        </div>
+
+        <div class="diag-health-card">
+          <div class="diag-card-header">
+            <span>Active Database</span>
+            <span class="diag-card-pill pill-info">Schema</span>
+          </div>
+          <div class="diag-card-value" id="statDbName">becoffee_db</div>
+          <div class="diag-card-meta" id="statDbEngine">InnoDB · utf8mb4</div>
+        </div>
+
+        <div class="diag-health-card">
+          <div class="diag-card-header">
+            <span>SQL Snapshot</span>
+            <span class="diag-card-pill pill-neutral">Backup</span>
+          </div>
+          <div class="diag-card-value" id="statBackupStatus">Ready</div>
+          <div class="diag-card-meta" id="statBackupTables">9 tracked tables</div>
+        </div>
+      </div>
+
+      <!-- Main Schema Migration Ledger -->
+      <div class="diag-table-wrap">
+        <div class="diag-toolbar">
+          <div class="diag-title-wrap">
+            <h3>Database Schema & Migrations</h3>
+            <p>Cryptographic migration ledger, verified table integrity, and full SQL backups.</p>
+          </div>
+          <div class="diag-actions-group">
+            <button type="button" class="admin-action-btn btn-action-secondary" id="btnRefreshMigrations" title="Refresh migration verification status">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg>
+              <span>Refresh Status</span>
+            </button>
+            <a href="api/system.php?action=export_backup" class="admin-action-btn btn-action-accent" id="btnDownloadBackup" style="text-decoration: none;" title="Export full SQL snapshot of becoffee_db">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              <span>Export SQL Backup (.sql)</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Migrations Ledger Table -->
+        <div class="diag-table-scroll">
+          <table class="diag-desktop-table">
             <thead>
-              <tr style="border-bottom: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.02);">
-                <th style="padding: 0.75rem 1rem; color: var(--admin-muted); font-weight: 600;">Migration File</th>
-                <th style="padding: 0.75rem 1rem; color: var(--admin-muted); font-weight: 600;">Title</th>
-                <th style="padding: 0.75rem 1rem; color: var(--admin-muted); font-weight: 600;">Applied Scope</th>
-                <th style="padding: 0.75rem 1rem; color: var(--admin-muted); font-weight: 600; text-align: right;">Status</th>
+              <tr>
+                <th style="width: 190px;">Migration File</th>
+                <th style="width: 210px;">Milestone Title</th>
+                <th>Applied Scope & Objectives</th>
+                <th style="width: 110px;">Status</th>
+                <th style="width: 105px; text-align: right;">Action</th>
               </tr>
             </thead>
             <tbody id="migrationsTableBody">
               <tr>
-                <td colspan="4" style="text-align: center; padding: 2rem; color: var(--admin-muted);">Verifying schema migrations...</td>
+                <td colspan="5" style="text-align: center; padding: 2.5rem; color: var(--admin-muted);">Verifying schema migrations...</td>
               </tr>
             </tbody>
           </table>
@@ -2306,32 +3514,103 @@ if ($currentUser['role'] === 'staff') {
 
     <!-- VIEW 6: Security Audit Trail (SuperAdmin Only) -->
     <section class="admin-view-panel" id="viewAuditLogs">
-      <div style="background: rgba(26, 20, 16, 0.95); border: 1px solid var(--admin-border); border-radius: 16px; padding: 1.5rem; margin-bottom: 2rem;">
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
-          <div>
-            <h3 style="font-size: 1.35rem; font-weight: 700; color: #FFF; margin: 0 0 0.25rem 0;">Audit & Security Logs</h3>
-            <p style="font-size: 0.85rem; color: var(--admin-muted); margin: 0;">Trace administrative operations, privilege modifications, credential resets, and schema events.</p>
+      <!-- Audit & Security Stat Strip (4 Cards) -->
+      <div class="diag-health-grid" style="margin-bottom: 1.5rem;">
+        <div class="diag-health-card">
+          <div class="diag-card-header">
+            <span>Total Logged Events</span>
+            <span class="diag-card-pill pill-accent">Events</span>
           </div>
-          <button type="button" class="admin-action-btn btn-action-secondary" id="btnRefreshAuditLogs">
-            ↻ Refresh Logs
-          </button>
+          <div class="diag-card-value" id="statTotalAuditEvents">--</div>
+          <div class="diag-card-meta" id="statTotalAuditMeta">Cryptographic audit stream</div>
+        </div>
+
+        <div class="diag-health-card">
+          <div class="diag-card-header">
+            <span>RBAC & Auth Mutations</span>
+            <span class="diag-card-pill pill-info">Security</span>
+          </div>
+          <div class="diag-card-value" id="statRbacAuditEvents">--</div>
+          <div class="diag-card-meta" id="statRbacAuditMeta">Role & credential changes</div>
+        </div>
+
+        <div class="diag-health-card">
+          <div class="diag-card-header">
+            <span>System & Operations</span>
+            <span class="diag-card-pill pill-neutral">Operations</span>
+          </div>
+          <div class="diag-card-value" id="statSystemAuditEvents">--</div>
+          <div class="diag-card-meta" id="statSystemAuditMeta">Config & schema events</div>
+        </div>
+
+        <div class="diag-health-card">
+          <div class="diag-card-header">
+            <span>Trail Integrity</span>
+            <span class="diag-card-pill pill-success">Integrity</span>
+          </div>
+          <div class="diag-card-value" id="statAuditIntegrity">Append-Only</div>
+          <div class="diag-card-meta" id="statAuditIntegrityMeta">Immutable audit ledger</div>
+        </div>
+      </div>
+
+      <!-- Main Audit Trail Table Wrap -->
+      <div class="diag-table-wrap">
+        <div class="diag-toolbar">
+          <div class="diag-title-wrap">
+            <h3>Security & Audit Log Trail</h3>
+            <p>Chronological stream of administrative operations, privilege modifications, and security actions.</p>
+          </div>
+          <div class="diag-actions-group">
+            <button type="button" class="admin-action-btn btn-action-secondary" id="btnRefreshAuditLogs" title="Refresh audit log stream">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg>
+              <span>Refresh Logs</span>
+            </button>
+            <a href="api/system.php?action=export_audit_csv" class="admin-action-btn btn-action-secondary" id="btnExportAuditCsv" style="text-decoration: none;" title="Download audit trail as CSV for compliance archiving">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              <span>Export CSV</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Filter & Search Sub-Bar -->
+        <div class="users-filter-toolbar" style="margin-bottom: 1.25rem;">
+          <div class="users-search-box">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="auditSearchInput" placeholder="Filter by actor, action, details, or IP..." aria-label="Filter audit logs">
+          </div>
+          <div class="users-filter-controls">
+            <select id="auditRoleFilter" class="users-role-select-filter" aria-label="Filter by actor role">
+              <option value="all">All Roles</option>
+              <option value="superadmin">SuperAdmin</option>
+              <option value="admin">Admin</option>
+              <option value="staff">Staff</option>
+              <option value="customer">Customer</option>
+              <option value="system">System</option>
+            </select>
+            <select id="auditLimitSelect" class="users-role-select-filter" aria-label="Filter by row limit">
+              <option value="50" selected>Latest 50</option>
+              <option value="100">Latest 100</option>
+              <option value="200">Latest 200</option>
+            </select>
+          </div>
         </div>
 
         <!-- Audit Log Table -->
-        <div style="overflow-x: auto; background: rgba(14, 11, 9, 0.75); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px;">
-          <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.85rem;">
+        <div class="diag-table-scroll">
+          <table class="diag-desktop-table" style="min-width: 820px;">
             <thead>
-              <tr style="border-bottom: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.02);">
-                <th style="padding: 0.75rem 1rem; color: var(--admin-muted); font-weight: 600;">Timestamp</th>
-                <th style="padding: 0.75rem 1rem; color: var(--admin-muted); font-weight: 600;">Actor</th>
-                <th style="padding: 0.75rem 1rem; color: var(--admin-muted); font-weight: 600;">Action</th>
-                <th style="padding: 0.75rem 1rem; color: var(--admin-muted); font-weight: 600;">Details</th>
-                <th style="padding: 0.75rem 1rem; color: var(--admin-muted); font-weight: 600;">IP Address</th>
+              <tr>
+                <th style="width: 145px;">Timestamp</th>
+                <th style="width: 140px;">Actor &amp; Role</th>
+                <th style="width: 175px;">Action Event</th>
+                <th>Event Details</th>
+                <th style="width: 85px;">Client IP</th>
+                <th style="width: 80px; text-align: right;">Inspect</th>
               </tr>
             </thead>
             <tbody id="auditLogsTableBody">
               <tr>
-                <td colspan="5" style="text-align: center; padding: 2rem; color: var(--admin-muted);">Loading audit logs...</td>
+                <td colspan="6" style="text-align: center; padding: 2.5rem; color: var(--admin-muted);">Loading audit logs...</td>
               </tr>
             </tbody>
           </table>
@@ -2359,50 +3638,231 @@ if ($currentUser['role'] === 'staff') {
   </div>
 
   <!-- CREATE USER MODAL -->
-  <div class="oms-modal-overlay" id="adminCreateUserModal" aria-modal="true" role="dialog">
-    <div class="oms-modal-box" style="max-width: 480px;">
-      <button type="button" class="oms-modal-close" id="btnCloseCreateUserModal" aria-label="Close">&times;</button>
-      <h3 style="margin: 0 0 0.5rem 0; font-size: 1.25rem;">Create New Account</h3>
-      <p style="font-size: 0.85rem; color: var(--admin-muted); margin-bottom: 1.25rem;">Create a staff, admin, or developer account with direct role assignment.</p>
+  <div class="oms-modal-overlay" id="adminCreateUserModal" aria-modal="true" role="dialog" aria-labelledby="createUserModalTitle">
+    <div class="oms-modal-box" style="max-width: 460px;">
+      <div class="modal-dialog-header">
+        <div>
+          <h3 class="modal-dialog-title" id="createUserModalTitle">Create User Account</h3>
+          <p class="modal-dialog-subtitle">Provision staff, manager, or developer credentials with direct role assignment.</p>
+        </div>
+        <button type="button" class="oms-modal-close" id="btnCloseCreateUserModal" aria-label="Close dialog">&times;</button>
+      </div>
       
       <div class="modal-field-group">
         <label for="newUserName" class="modal-field-label">Full Name</label>
-        <input type="text" id="newUserName" class="modal-text-input" placeholder="e.g. Counter Staff Alice">
+        <input type="text" id="newUserName" class="modal-text-input" placeholder="e.g. Counter Staff Alice" autocomplete="off">
       </div>
       <div class="modal-field-group">
         <label for="newUserEmail" class="modal-field-label">Email / Login</label>
-        <input type="email" id="newUserEmail" class="modal-text-input" placeholder="e.g. alice@becoffee.ph">
+        <input type="email" id="newUserEmail" class="modal-text-input" placeholder="e.g. alice@becoffee.ph" autocomplete="off">
       </div>
       <div class="modal-field-group">
         <label for="newUserPassword" class="modal-field-label">Password (Min 8 characters)</label>
-        <input type="password" id="newUserPassword" class="modal-text-input" placeholder="••••••••">
+        <input type="password" id="newUserPassword" class="modal-text-input" placeholder="••••••••" autocomplete="new-password">
       </div>
       <div class="modal-field-group">
         <label for="newUserRole" class="modal-field-label">Assigned Role</label>
         <select id="newUserRole" class="modal-text-input">
-          <option value="staff" selected>Staff (Can take orders & run KDS only)</option>
-          <option value="admin">Admin (Can change prices & view sales reports)</option>
-          <option value="superadmin">SuperAdmin (Developer Secret - Full Access)</option>
-          <option value="customer">Customer (Diner/Storefront only)</option>
+          <option value="staff" selected>Staff (Counter & KDS Workstation)</option>
+          <option value="admin">Admin (Sales Reports & Menu CMS)</option>
+          <option value="superadmin">SuperAdmin (Developer & System Controls)</option>
+          <option value="customer">Customer (Diner Storefront)</option>
         </select>
       </div>
 
-      <button type="button" class="admin-action-btn btn-action-accent" id="btnSubmitNewUser" style="width: 100%; min-height: 44px; justify-content: center; margin-top: 1rem;">
-        Create Account
-      </button>
+      <div style="display: flex; gap: 0.65rem; justify-content: flex-end; margin-top: 1.5rem; padding-top: 0.85rem; border-top: 1px solid rgba(255, 255, 255, 0.08);">
+        <button type="button" class="admin-action-btn btn-action-secondary" onclick="document.getElementById('adminCreateUserModal').classList.remove('active')">
+          Cancel
+        </button>
+        <button type="button" class="admin-action-btn btn-action-accent" id="btnSubmitNewUser">
+          Create Account
+        </button>
+      </div>
     </div>
   </div>
 
-  <!-- 3. THE "MANAGE DRINK OPTIONS" MODAL (Horizontally Wide 2-Column Layout) -->
+  <!-- MIGRATION SQL PREVIEW MODAL -->
+  <div class="oms-modal-overlay" id="migrationSqlModal" aria-modal="true" role="dialog" aria-labelledby="modalSqlFileName">
+    <div class="oms-modal-box" style="max-width: 680px; width: 92%; display: flex; flex-direction: column; max-height: 85vh;">
+      <div class="modal-dialog-header">
+        <div>
+          <div style="display: flex; align-items: center; gap: 0.65rem; margin-bottom: 0.2rem; flex-wrap: wrap;">
+            <h3 id="modalSqlFileName" class="modal-dialog-title" style="font-family: var(--font-mono);">001_create_schema.sql</h3>
+            <span id="modalSqlStatusBadge" class="status-badge-applied">APPLIED</span>
+          </div>
+          <p id="modalSqlDescription" class="modal-dialog-subtitle">Initial database schema creation</p>
+        </div>
+        <button type="button" class="oms-modal-close" id="btnCloseMigrationSqlModal" aria-label="Close dialog">&times;</button>
+      </div>
+      
+      <div style="position: relative; flex: 1; min-height: 0; display: flex; flex-direction: column;">
+        <pre id="modalSqlContent" style="background: #0E0A08; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 6px; padding: 1rem; color: #FAF7F2; font-family: var(--font-mono); font-size: 0.78rem; line-height: 1.5; max-height: 380px; overflow-y: auto; white-space: pre-wrap; word-break: break-all; margin: 0;">Loading SQL content...</pre>
+      </div>
+
+      <div style="display: flex; gap: 0.65rem; justify-content: space-between; align-items: center; margin-top: 1.25rem; padding-top: 0.85rem; border-top: 1px solid rgba(255, 255, 255, 0.08); flex-wrap: wrap; flex-shrink: 0;">
+        <span id="modalSqlFileSize" style="font-family: var(--font-mono); font-size: 0.75rem; color: #8E7E73;">Size: -- KB</span>
+        <div style="display: flex; gap: 0.65rem;">
+          <button type="button" class="admin-action-btn btn-action-secondary" id="btnCopyMigrationSql">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+            <span id="btnCopyMigrationSqlText">Copy SQL</span>
+          </button>
+          <button type="button" class="admin-action-btn btn-action-secondary" id="btnCloseMigrationSqlModalBtn">
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECURITY AUDIT EVENT INSPECT MODAL -->
+  <div class="oms-modal-overlay" id="auditDetailModal" aria-modal="true" role="dialog" aria-labelledby="modalAuditDialogTitle">
+    <div class="oms-modal-box" style="max-width: 640px; width: 92%; display: flex; flex-direction: column; max-height: 85vh;">
+      <div class="modal-dialog-header">
+        <div>
+          <div style="display: flex; align-items: center; gap: 0.65rem; margin-bottom: 0.2rem; flex-wrap: wrap;">
+            <h3 id="modalAuditDialogTitle" class="modal-dialog-title">
+              Audit Event #<span id="modalAuditId" style="font-family: var(--font-mono); color: var(--admin-accent);">--</span>
+            </h3>
+            <span id="modalAuditActionTag" class="audit-action-tag">ACTION</span>
+            <span id="modalAuditRoleBadge" class="user-role-badge role-badge-superadmin">superadmin</span>
+          </div>
+          <p class="modal-dialog-subtitle">
+            Recorded timestamp: <span id="modalAuditTimestamp" style="font-family: var(--font-mono); color: #FFF;">--</span>
+          </p>
+        </div>
+        <button type="button" class="oms-modal-close" id="btnCloseAuditDetailModal" aria-label="Close dialog">&times;</button>
+      </div>
+
+      <div style="overflow-y: auto; flex: 1; min-height: 0; padding-right: 0.25rem; display: flex; flex-direction: column; gap: 1rem;">
+        <!-- Two-box summary grid for Actor and Network context -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.75rem;">
+          <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.07); border-radius: 6px; padding: 0.85rem 1rem;">
+            <div style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--admin-muted); margin-bottom: 0.35rem; font-weight: 700;">Initiating Actor</div>
+            <div id="modalAuditActor" style="font-weight: 600; color: #FFF; font-size: 0.85rem; word-break: break-all;">System</div>
+            <div id="modalAuditActorSub" style="font-size: 0.75rem; color: #8E7E73; margin-top: 0.2rem; font-family: var(--font-mono);">ID: --</div>
+          </div>
+          <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.07); border-radius: 6px; padding: 0.85rem 1rem;">
+            <div style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--admin-muted); margin-bottom: 0.35rem; font-weight: 700;">Client Context</div>
+            <div style="font-family: var(--font-mono); font-size: 0.85rem; color: #DF9B64; display: flex; align-items: center; gap: 0.4rem;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+              <span id="modalAuditIp">127.0.0.1</span>
+            </div>
+            <div style="font-size: 0.75rem; color: #8E7E73; margin-top: 0.2rem;">Origin IP Address</div>
+          </div>
+        </div>
+
+        <!-- Details / Payload -->
+        <div>
+          <div style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--admin-muted); margin-bottom: 0.45rem; font-weight: 700; display: flex; justify-content: space-between; align-items: center;">
+            <span>Operation Payload &amp; Mutation Details</span>
+            <span style="font-size: 0.7rem; color: #8E7E73; font-weight: 400; text-transform: none;">Raw audit string / JSON</span>
+          </div>
+          <pre id="modalAuditDetails" style="background: #0E0A08; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 6px; padding: 1rem; color: #FAF7F2; font-family: var(--font-mono); font-size: 0.8rem; line-height: 1.5; max-height: 260px; overflow-y: auto; white-space: pre-wrap; word-break: break-all; margin: 0;">--</pre>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 0.65rem; justify-content: space-between; align-items: center; margin-top: 1.25rem; padding-top: 0.85rem; border-top: 1px solid rgba(255, 255, 255, 0.08); flex-wrap: wrap; flex-shrink: 0;">
+        <span style="font-family: var(--font-mono); font-size: 0.75rem; color: #8E7E73; display: flex; align-items: center; gap: 0.35rem;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          Immutable Log Ledger
+        </span>
+        <div style="display: flex; gap: 0.65rem;">
+          <button type="button" class="admin-action-btn btn-action-secondary" id="btnCopyAuditPayload">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+            <span id="btnCopyAuditPayloadText">Copy Details</span>
+          </button>
+          <button type="button" class="admin-action-btn btn-action-secondary" id="btnCloseAuditDetailModalBtn">
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CUSTOMER ORDER INSPECT MODAL -->
+  <div class="oms-modal-overlay" id="orderDetailModal" aria-modal="true" role="dialog">
+    <div class="oms-modal-box" style="max-width: 640px; width: 92%; display: flex; flex-direction: column; max-height: 85vh;">
+      <button type="button" class="oms-modal-close" id="btnCloseOrderDetailModal" aria-label="Close dialog">&times;</button>
+      
+      <div style="display: flex; align-items: center; gap: 0.65rem; margin-bottom: 0.35rem; flex-wrap: wrap; flex-shrink: 0;">
+        <h3 style="margin: 0; font-size: 1.15rem; font-weight: 700; color: #FFF;">
+          Order #<span id="modalOrderQueue" style="font-family: var(--font-mono); color: var(--admin-accent);">--</span>
+        </h3>
+        <span id="modalOrderStatusBadge" class="order-status-tag status-waiting">Waiting</span>
+        <span id="modalOrderDiningBadge" class="dining-badge badge-dine-in">Table 1</span>
+        <span id="modalOrderPaymentBadge" class="payment-badge badge-gcash">GCASH</span>
+      </div>
+      <p style="font-size: 0.82rem; color: var(--admin-muted); margin-bottom: 1.25rem; flex-shrink: 0;">
+        Receipt: <span id="modalOrderRef" style="font-family: var(--font-mono); color: #FFF;">--</span>
+        · <span id="modalOrderTimestamp">--</span>
+      </p>
+
+      <div style="overflow-y: auto; flex: 1; min-height: 0; padding-right: 0.25rem; display: flex; flex-direction: column; gap: 1rem;">
+        <!-- Two-box summary grid for Customer & Kitchen QA Context -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.75rem;">
+          <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.07); border-radius: 6px; padding: 0.75rem 0.85rem;">
+            <div style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--admin-muted); margin-bottom: 0.35rem; font-weight: 700;">Customer Information</div>
+            <div id="modalOrderCustomer" style="font-weight: 600; color: #FFF; font-size: 0.85rem;">Walk-in Customer</div>
+            <div id="modalOrderPhone" style="font-size: 0.75rem; color: #8E7E73; margin-top: 0.2rem; font-family: var(--font-mono);">No phone recorded</div>
+          </div>
+          <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.07); border-radius: 6px; padding: 0.75rem 0.85rem;">
+            <div style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--admin-muted); margin-bottom: 0.35rem; font-weight: 700;">Prep &amp; Kitchen QA</div>
+            <div id="modalOrderPrepTime" style="font-family: var(--font-mono); font-size: 0.85rem; color: #FBBF24;">Being prepared</div>
+            <div id="modalOrderQaBadges" style="font-size: 0.75rem; color: #8E7E73; margin-top: 0.2rem;">QA Checks</div>
+          </div>
+        </div>
+
+        <!-- Ordered Items List -->
+        <div>
+          <div style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--admin-muted); margin-bottom: 0.45rem; font-weight: 700;">
+            Order Items &amp; Customizations
+          </div>
+          <div id="modalOrderItemsList" style="display: flex; flex-direction: column; gap: 0.45rem;">
+            <!-- Line items injected dynamically -->
+          </div>
+        </div>
+
+        <!-- Pricing Summary -->
+        <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.07); border-radius: 6px; padding: 0.85rem; font-size: 0.82rem;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.35rem; color: #A8988C;">
+            <span>Subtotal</span>
+            <span id="modalOrderSubtotal" style="font-family: var(--font-mono); color: #FFF;">₱0.00</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.35rem; color: #A8988C;">
+            <span>Packaging &amp; Eco Fee</span>
+            <span id="modalOrderEcoFee" style="font-family: var(--font-mono); color: #FFF;">₱0.00</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; padding-top: 0.5rem; border-top: 1px solid rgba(255, 255, 255, 0.08); font-weight: 700; font-size: 0.95rem; color: #FFF;">
+            <span>Grand Total</span>
+            <span id="modalOrderGrandTotal" style="font-family: var(--font-mono); color: #DF9B64;">₱0.00</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 0.65rem; justify-content: flex-end; align-items: center; margin-top: 1.25rem; flex-shrink: 0;">
+        <button type="button" class="admin-action-btn btn-action-secondary" id="btnCloseOrderDetailModalBtn">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. THE "MANAGE DRINK OPTIONS" MODAL -->
   <div class="oms-modal-overlay" id="adminManageModal" aria-modal="true" role="dialog">
     <div class="oms-modal-box wide-modal">
-      <button type="button" class="oms-modal-close" id="btnCloseManageModal" aria-label="Close">&times;</button>
+      <div class="modal-dialog-header">
+        <div>
+          <h3 class="modal-dialog-title">Edit Drink &amp; Modifier Options</h3>
+          <p class="modal-dialog-subtitle">Configure pricing, details, and live customer ordering availability</p>
+        </div>
+        <button type="button" class="oms-modal-close" id="btnCloseManageModal" aria-label="Close">&times;</button>
+      </div>
       
       <div class="modal-two-col">
-        <!-- LEFT COLUMN: Full-Length Drink Image Changer & Base Details -->
+        <!-- LEFT COLUMN: Drink Image & Base Details -->
         <div class="modal-col-left">
           
-          <!-- Top: Large Drink Photo & Interactive Changer -->
+          <!-- Large Drink Photo & Interactive Changer -->
           <div class="drink-img-preview-box">
             <img id="modalDrinkImg" src="" alt="Drink preview">
             <label for="modalDrinkFileInput" class="btn-change-photo-badge" title="Upload new photo from your device">
@@ -2412,17 +3872,17 @@ if ($currentUser['role'] === 'staff') {
             <input type="file" id="modalDrinkFileInput" accept="image/jpeg,image/png,image/webp" style="display: none;">
           </div>
 
-          <!-- Middle Stack: Fields -->
-          <div style="display: flex; flex-direction: column; gap: 0.55rem; flex: 1; justify-content: space-evenly;">
+          <!-- Fields -->
+          <div style="display: flex; flex-direction: column; gap: 0.65rem; flex: 1;">
             <!-- Row 1: Drink Name & Category -->
-            <div style="display: grid; grid-template-columns: 1.25fr 1fr; gap: 0.65rem;">
-              <div>
+            <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 0.65rem;">
+              <div class="modal-field-group" style="margin-bottom: 0;">
                 <label for="modalDrinkName" class="modal-field-label">Drink Name</label>
-                <input type="text" id="modalDrinkName" class="modal-text-input" style="font-size: 1rem; font-weight: 700; padding: 0.45rem 0.65rem;" placeholder="Drink Name">
+                <input type="text" id="modalDrinkName" class="modal-text-input" style="font-weight: 700;" placeholder="Drink Name">
               </div>
-              <div>
+              <div class="modal-field-group" style="margin-bottom: 0;">
                 <label for="modalDrinkCategory" class="modal-field-label">Category</label>
-                <select id="modalDrinkCategory" class="modal-text-input" style="padding: 0.45rem 0.55rem;">
+                <select id="modalDrinkCategory" class="modal-text-input">
                   <option value="house-coffee">House Coffee</option>
                   <option value="matcha">Matcha</option>
                   <option value="house-specials">House Specials</option>
@@ -2433,14 +3893,14 @@ if ($currentUser['role'] === 'staff') {
 
             <!-- Row 2: Base Price & Drink Status -->
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.65rem;">
-              <div>
+              <div class="modal-field-group" style="margin-bottom: 0;">
                 <label for="modalBasePrice" class="modal-field-label">Base Price (₱)</label>
-                <input type="number" id="modalBasePrice" class="modal-text-input" step="5" min="1" style="font-family: var(--font-mono); font-size: 1.1rem; font-weight: 800; color: #DF9B64; padding: 0.45rem 0.65rem;" value="120">
+                <input type="number" id="modalBasePrice" class="modal-text-input" step="5" min="1" style="font-family: var(--font-mono); font-size: 0.95rem; font-weight: 700; color: #FFF;" value="120">
               </div>
-              <div>
+              <div class="modal-field-group" style="margin-bottom: 0;">
                 <span class="modal-field-label">Drink Status</span>
-                <button type="button" id="modalDrinkStockToggle" class="admin-action-btn" style="width: 100%; min-height: 38px; justify-content: center; font-weight: 700; font-size: 0.82rem;">
-                  ● In Stock
+                <button type="button" id="modalDrinkStockToggle" class="admin-drink-status-btn status-btn-available" title="Toggle overall availability">
+                  Available
                 </button>
               </div>
             </div>
@@ -2448,48 +3908,44 @@ if ($currentUser['role'] === 'staff') {
             <!-- Row 3: Direct Image URL / Path Input -->
             <div class="modal-field-group" style="margin-bottom: 0;">
               <label for="modalDrinkImgUrl" class="modal-field-label" style="display: flex; justify-content: space-between;">
-                <span>Image URL / File Path</span>
-                <span style="font-size: 0.68rem; color: var(--admin-muted);">Local file or URL</span>
+                <span>Image Path or URL</span>
+                <span style="font-size: 0.68rem; color: #8E7E73; text-transform: none; font-weight: 400;">Local file or URL</span>
               </label>
-              <input type="text" id="modalDrinkImgUrl" class="modal-text-input" style="padding: 0.45rem 0.65rem; font-size: 0.82rem;" placeholder="images/menu/...">
+              <input type="text" id="modalDrinkImgUrl" class="modal-text-input" style="font-size: 0.8rem;" placeholder="images/menu/...">
             </div>
 
             <!-- Row 4: Description -->
             <div class="modal-field-group" style="margin-bottom: 0;">
-              <label for="modalDrinkDesc" class="modal-field-label">Drink Description</label>
-              <textarea id="modalDrinkDesc" class="modal-text-input" style="min-height: 52px; max-height: 60px; font-size: 0.82rem; padding: 0.45rem 0.65rem; resize: none;" placeholder="Description shown to customers on mobile ordering..."></textarea>
+              <label for="modalDrinkDesc" class="modal-field-label">Description</label>
+              <textarea id="modalDrinkDesc" class="modal-text-input" style="min-height: 54px; max-height: 64px; font-size: 0.8rem; resize: none;" placeholder="Description shown to customers..."></textarea>
             </div>
           </div>
 
           <!-- Bottom: Left Actions -->
-          <div style="display: flex; gap: 0.65rem; margin-top: 0.65rem;">
-            <button type="button" class="admin-action-btn btn-action-accent" id="btnSaveDrinkChanges" style="flex: 1; min-height: 44px; justify-content: center; font-size: 0.92rem; font-weight: 700;">
-              💾 Save Drink Details
+          <div style="display: flex; gap: 0.65rem; margin-top: auto; padding-top: 0.5rem;">
+            <button type="button" class="admin-action-btn btn-action-accent" id="btnSaveDrinkChanges" style="flex: 1; min-height: 40px; justify-content: center; font-size: 0.84rem; font-weight: 700;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+              <span>Save Drink Details</span>
             </button>
-            <button type="button" class="admin-action-btn" id="btnDeleteDrink" style="background: rgba(239, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.4); color: #F87171; min-height: 44px; padding: 0 1rem;" title="Delete this drink">
-              🗑️
+            <button type="button" class="admin-action-btn" id="btnDeleteDrink" style="background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.35); color: #F87171; min-height: 40px; padding: 0 0.85rem; border-radius: 4px;" title="Delete this drink">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
             </button>
           </div>
         </div>
 
         <!-- RIGHT COLUMN: Customization Options & Extras -->
-        <div class="modal-col-right" style="border-left: 1px solid rgba(255, 255, 255, 0.08); padding-left: 1.75rem;">
+        <div class="modal-col-right">
           <!-- Header Row -->
-          <div style="margin-bottom: 0.5rem; padding-right: 2.5rem;">
-            <h4 style="font-size: 1.05rem; font-weight: 800; color: #FFF; margin: 0; display: flex; align-items: center; gap: 0.45rem;">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-              Drink Options & Extras
-            </h4>
-            <p style="font-size: 0.72rem; color: var(--admin-muted); margin: 0.15rem 0 0;">
-              Tap any option to switch between In Stock and Sold Out.
-            </p>
+          <div class="modal-options-header">
+            <h4>Modifier Availability &amp; Add-ons</h4>
+            <p>Toggle option stock state or add new modifiers for this cafe item.</p>
           </div>
 
           <!-- Group 1: TEMPERATURE -->
-          <div class="option-group-label" style="margin-top: 0.35rem; margin-bottom: 0.25rem;">
-            <span>Drink Temperature (Hot / Iced)</span>
-            <button type="button" class="btn-cat-toggle-stock" data-cat-type="temperature" style="background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(223, 155, 100, 0.3); color: #DF9B64; font-size: 0.7rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 6px; cursor: pointer; transition: all 0.2s ease;">
-              ⇄ Toggle Stock
+          <div class="option-group-label" style="margin-top: 0.25rem;">
+            <span>Drink Temperature</span>
+            <button type="button" class="btn-cat-toggle-stock btn-modifier-toggle" data-cat-type="temperature">
+              Toggle All
             </button>
           </div>
           <div class="pill-radio-group" id="modalTempGroup">
@@ -2504,34 +3960,31 @@ if ($currentUser['role'] === 'staff') {
           </div>
 
           <!-- Group 2: MILK & EXTRAS -->
-          <div class="option-group-label" style="margin-top: 0.65rem; margin-bottom: 0.25rem;">
-            <div style="display: flex; align-items: center; gap: 0.4rem;">
-              <span>Milk & Extras</span>
-              <span style="font-size: 0.68rem; color: #DF9B64; font-weight: 600;">(Milk & Syrup choices)</span>
-            </div>
-            <div style="display: flex; gap: 0.45rem; align-items: center;">
-              <button type="button" class="btn-cat-toggle-stock" data-cat-type="addon" style="background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(223, 155, 100, 0.3); color: #DF9B64; font-size: 0.7rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 6px; cursor: pointer; transition: all 0.2s ease;">
-                ⇄ Toggle All
+          <div class="option-group-label">
+            <span>Milk &amp; Extras</span>
+            <div style="display: flex; gap: 0.4rem; align-items: center;">
+              <button type="button" class="btn-cat-toggle-stock btn-modifier-toggle" data-cat-type="addon">
+                Toggle All
               </button>
-              <button type="button" id="btnShowAddAddonForm" style="background: rgba(226, 135, 67, 0.2); border: 1px solid rgba(226, 135, 67, 0.45); color: #FDBA74; font-size: 0.7rem; font-weight: 700; padding: 0.2rem 0.55rem; border-radius: 6px; cursor: pointer; transition: all 0.2s ease;">
-                + Add New Extra
+              <button type="button" id="btnShowAddAddonForm" class="btn-modifier-add-extra">
+                + Add Extra
               </button>
             </div>
           </div>
 
           <!-- Inline New Add-on Creator Form -->
-          <div id="newAddonFormWrap" style="display: none; background: rgba(0,0,0,0.35); border: 1px dashed rgba(226, 135, 67, 0.4); border-radius: 10px; padding: 0.6rem; margin-bottom: 0.55rem;">
-            <div style="font-size: 0.72rem; font-weight: 700; color: #FFF; margin-bottom: 0.35rem;">Create New Extra Option</div>
+          <div id="newAddonFormWrap" class="new-addon-form-card">
+            <div style="font-size: 0.72rem; font-weight: 700; color: #FFF; margin-bottom: 0.45rem; text-transform: uppercase; letter-spacing: 0.05em;">Create Extra Option</div>
             <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-              <input type="text" id="inputNewAddonName" class="modal-text-input" style="flex: 2; min-width: 140px; padding: 0.35rem 0.55rem; font-size: 0.78rem;" placeholder="e.g. Vanilla Syrup">
+              <input type="text" id="inputNewAddonName" class="modal-text-input" style="flex: 2; min-width: 140px; padding: 0.4rem 0.6rem; font-size: 0.8rem;" placeholder="e.g. Vanilla Syrup">
               <div style="display: flex; align-items: center; gap: 0.25rem;">
-                <span style="color: #DF9B64; font-weight: 700; font-size: 0.78rem;">+₱</span>
-                <input type="number" id="inputNewAddonPrice" class="modal-text-input" style="width: 65px; padding: 0.35rem 0.45rem; font-family: var(--font-mono); font-size: 0.78rem;" value="30" step="5" min="0">
+                <span style="color: #9E8E81; font-weight: 700; font-size: 0.8rem;">+₱</span>
+                <input type="number" id="inputNewAddonPrice" class="modal-text-input" style="width: 65px; padding: 0.4rem 0.5rem; font-family: var(--font-mono); font-size: 0.8rem;" value="30" step="5" min="0">
               </div>
-              <button type="button" id="btnSubmitNewAddon" class="admin-action-btn btn-action-accent" style="padding: 0.35rem 0.75rem; font-size: 0.75rem;">
+              <button type="button" id="btnSubmitNewAddon" class="admin-action-btn btn-action-accent" style="padding: 0.4rem 0.75rem; font-size: 0.75rem;">
                 Save Extra
               </button>
-              <button type="button" id="btnCancelNewAddon" class="admin-action-btn btn-action-secondary" style="padding: 0.35rem 0.55rem; font-size: 0.75rem;">
+              <button type="button" id="btnCancelNewAddon" class="admin-action-btn btn-action-secondary" style="padding: 0.4rem 0.6rem; font-size: 0.75rem;">
                 Cancel
               </button>
             </div>
@@ -2543,10 +3996,10 @@ if ($currentUser['role'] === 'staff') {
           </div>
 
           <!-- Group 3: SWEETNESS LEVEL -->
-          <div class="option-group-label" style="margin-top: 0.65rem; margin-bottom: 0.25rem;">
+          <div class="option-group-label">
             <span>Sweetness Level</span>
-            <button type="button" class="btn-cat-toggle-stock" data-cat-type="sweetness" style="background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(223, 155, 100, 0.3); color: #DF9B64; font-size: 0.7rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 6px; cursor: pointer; transition: all 0.2s ease;">
-              ⇄ Toggle Stock
+            <button type="button" class="btn-cat-toggle-stock btn-modifier-toggle" data-cat-type="sweetness">
+              Toggle All
             </button>
           </div>
           <div class="pill-radio-group" id="modalSweetnessGroup">
@@ -2575,17 +4028,21 @@ if ($currentUser['role'] === 'staff') {
   <!-- 4. Add New Drink Modal -->
   <div class="oms-modal-overlay" id="adminAddDrinkModal" aria-modal="true" role="dialog">
     <div class="oms-modal-box">
-      <button type="button" class="oms-modal-close" id="btnCloseAddModalBtn">&times;</button>
-      <h3 style="font-size: 1.35rem; font-weight: 700; color: #FFF; margin-bottom: 0.35rem;">Add New Drink</h3>
-      <p style="font-size: 0.82rem; color: var(--admin-muted); margin-bottom: 1.25rem;">Add a new drink to your cafe menu.</p>
+      <div class="modal-dialog-header">
+        <div>
+          <h3 class="modal-dialog-title">Add New Drink</h3>
+          <p class="modal-dialog-subtitle">Add a new handcrafted beverage to your cafe menu.</p>
+        </div>
+        <button type="button" class="oms-modal-close" id="btnCloseAddModalBtn" aria-label="Close">&times;</button>
+      </div>
 
       <div class="modal-field-group">
         <label for="newDrinkName" class="modal-field-label">Drink Name</label>
         <input type="text" id="newDrinkName" class="modal-text-input" placeholder="e.g. Vanilla Cold Foam">
       </div>
 
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; margin-bottom: 1rem;">
-        <div class="modal-field-group">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; margin-bottom: 0.85rem;">
+        <div class="modal-field-group" style="margin-bottom: 0;">
           <label for="newDrinkCategory" class="modal-field-label">Category</label>
           <select id="newDrinkCategory" class="modal-text-input">
             <option value="house-coffee">House Coffee</option>
@@ -2594,7 +4051,7 @@ if ($currentUser['role'] === 'staff') {
             <option value="yogurt-soda">Yogurt / Soda</option>
           </select>
         </div>
-        <div class="modal-field-group">
+        <div class="modal-field-group" style="margin-bottom: 0;">
           <label for="newDrinkPrice" class="modal-field-label">Base Price (₱)</label>
           <input type="number" id="newDrinkPrice" class="modal-text-input" value="130" step="5">
         </div>
@@ -2605,8 +4062,9 @@ if ($currentUser['role'] === 'staff') {
         <textarea id="newDrinkDesc" class="modal-text-input" placeholder="Tasting notes and ingredients..."></textarea>
       </div>
 
-      <button type="button" class="admin-action-btn btn-action-accent" id="btnSubmitNewDrink" style="width: 100%; min-height: 48px; justify-content: center; font-size: 0.95rem; margin-top: 1rem;">
-        + Save New Drink
+      <button type="button" class="admin-action-btn btn-action-accent" id="btnSubmitNewDrink" style="width: 100%; min-height: 44px; justify-content: center; font-size: 0.9rem; margin-top: 1rem;">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        <span>Save New Drink</span>
       </button>
     </div>
   </div>
@@ -2977,49 +4435,51 @@ if ($currentUser['role'] === 'staff') {
       // ==========================================
       var allLoadedUsers = [];
 
+      function sanitizeHtml(str) {
+        if (!str) return '';
+        var d = document.createElement('div');
+        d.textContent = str;
+        return d.innerHTML;
+      }
+
       function renderUsersTable(usersToRender) {
         var tbody = document.getElementById('usersTableBody');
         if (!tbody) return;
         tbody.innerHTML = '';
 
         if (!usersToRender || usersToRender.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 2rem; color: var(--admin-muted);">No matching users found.</td></tr>';
+          tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 2.5rem; color: var(--admin-muted);">No matching users found.</td></tr>';
           return;
         }
 
         usersToRender.forEach(function(u) {
           var tr = document.createElement('tr');
-          tr.style.borderBottom = '1px solid rgba(255,255,255,0.06)';
-
-          var roleBadgeColor = {
-            superadmin: '#C4B5FD',
-            admin: '#F59E0B',
-            staff: '#10B981',
-            customer: '#60A5FA'
-          }[u.role] || '#9CA3AF';
+          var roleKey = (u.role || 'customer').toLowerCase();
 
           tr.innerHTML = `
-            <td style="padding: 0.85rem 1rem; color: var(--admin-muted); font-family: monospace;">#${u.id}</td>
-            <td style="padding: 0.85rem 1rem; font-weight: 600; color: #FFF;">${u.name}</td>
-            <td style="padding: 0.85rem 1rem; color: #E5E7EB;">${u.email}</td>
-            <td style="padding: 0.85rem 1rem;">
-              <span style="display: inline-block; padding: 0.2rem 0.6rem; border-radius: 6px; font-size: 0.75rem; font-weight: 600; background: rgba(255,255,255,0.06); color: ${roleBadgeColor}; text-transform: uppercase;">
-                ${u.role}
-              </span>
-            </td>
-            <td style="padding: 0.85rem 1rem; text-align: right;">
-              <div style="display: inline-flex; align-items: center; gap: 0.5rem; justify-content: flex-end;">
-                <select class="user-role-select" data-user-id="${u.id}" style="background: rgba(30,24,20,0.9); border: 1px solid rgba(255,255,255,0.2); color: #FFF; padding: 0.3rem 0.5rem; border-radius: 6px; font-size: 0.8rem; cursor: pointer;">
+            <td><span class="user-id-code">#${u.id}</span></td>
+            <td><strong class="user-name-cell">${sanitizeHtml(u.name || '')}</strong></td>
+            <td><span class="user-email-cell">${sanitizeHtml(u.email || '')}</span></td>
+            <td>
+              <div class="user-role-selector-wrap">
+                <span class="role-status-dot role-dot-${roleKey}"></span>
+                <select class="user-role-select" data-user-id="${u.id}" aria-label="Change role for ${sanitizeHtml(u.name || '')}">
                   <option value="superadmin" ${u.role === 'superadmin' ? 'selected' : ''}>SuperAdmin</option>
                   <option value="admin" ${u.role === 'admin' ? 'selected' : ''}>Admin</option>
                   <option value="staff" ${u.role === 'staff' ? 'selected' : ''}>Staff</option>
                   <option value="customer" ${u.role === 'customer' ? 'selected' : ''}>Customer</option>
                 </select>
-                <button type="button" class="btn-reset-pw" data-user-id="${u.id}" data-user-name="${u.name}" title="Reset Password" style="background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.4); color: #FBBF24; padding: 0.3rem 0.6rem; border-radius: 6px; font-size: 0.78rem; font-weight: 600; cursor: pointer;">
-                  🔑 Reset
+              </div>
+            </td>
+            <td style="text-align: right;">
+              <div class="users-actions-group">
+                <button type="button" class="btn-user-action btn-reset-pw" data-user-id="${u.id}" data-user-name="${sanitizeHtml(u.name || '')}" title="Reset Password" aria-label="Reset password for ${sanitizeHtml(u.name || '')}">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M21 2l-2 2m-1.5 1.5L16 7l-1.5-1.5M16 7l-4.5 4.5a5 5 0 1 1-7.07 7.07 5 5 0 0 1 7.07-7.07L16 7z"/></svg>
+                  <span>Reset</span>
                 </button>
-                <button type="button" class="btn-delete-user" data-user-id="${u.id}" data-user-name="${u.name}" title="Delete User" style="background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.4); color: #FCA5A5; padding: 0.3rem 0.6rem; border-radius: 6px; font-size: 0.78rem; font-weight: 600; cursor: pointer;">
-                  ✕
+                <button type="button" class="btn-user-action btn-delete-user" data-user-id="${u.id}" data-user-name="${sanitizeHtml(u.name || '')}" title="Delete User" aria-label="Delete user ${sanitizeHtml(u.name || '')}">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                  <span>Delete</span>
                 </button>
               </div>
             </td>
@@ -3195,16 +4655,17 @@ if ($currentUser['role'] === 'staff') {
             if (tbody && tblData.success) {
               tbody.innerHTML = '';
               (tblData.table_stats || []).forEach(function(t) {
+                var isHealthy = (t.status || '').toLowerCase() === 'healthy';
+                var statusClass = isHealthy ? 'table-status-tag' : 'status-badge-unavailable';
                 var tr = document.createElement('tr');
-                tr.style.borderBottom = '1px solid rgba(255,255,255,0.06)';
                 tr.innerHTML = `
-                  <td style="padding: 0.75rem 1rem; font-family: monospace; font-weight: 700; color: #FFF;">${t.table}</td>
-                  <td style="padding: 0.75rem 1rem; color: var(--admin-muted); font-size: 0.8rem;">${t.description}</td>
-                  <td style="padding: 0.75rem 1rem; font-weight: 700; color: #DF9B64; font-family: monospace;">${t.rows}</td>
-                  <td style="padding: 0.75rem 1rem; color: #E5E7EB; font-family: monospace;">${t.size}</td>
-                  <td style="padding: 0.75rem 1rem;">
-                    <span style="display: inline-block; padding: 0.2rem 0.55rem; border-radius: 6px; font-size: 0.72rem; font-weight: 700; background: rgba(16,185,129,0.15); color: #34D399;">
-                      ${t.status}
+                  <td><code class="table-name-code">${sanitizeHtml(t.table)}</code></td>
+                  <td><span class="table-purpose-cell">${sanitizeHtml(t.description)}</span></td>
+                  <td><span class="table-rows-cell">${sanitizeHtml(t.rows)}</span></td>
+                  <td><span class="table-size-cell">${sanitizeHtml(t.size)}</span></td>
+                  <td>
+                    <span class="${statusClass}">
+                      ${sanitizeHtml(t.status)}
                     </span>
                   </td>
                 `;
@@ -3236,29 +4697,142 @@ if ($currentUser['role'] === 'staff') {
       // ==========================================
       // DATABASE MIGRATIONS CONTROLLER (SuperAdmin)
       // ==========================================
+      var currentLoadedSql = '';
+
+      async function openMigrationSqlModal(file, title, note, status) {
+        var modal = document.getElementById('migrationSqlModal');
+        var fileEl = document.getElementById('modalSqlFileName');
+        var descEl = document.getElementById('modalSqlDescription');
+        var statusEl = document.getElementById('modalSqlStatusBadge');
+        var contentEl = document.getElementById('modalSqlContent');
+        var sizeEl = document.getElementById('modalSqlFileSize');
+        var copyBtnText = document.getElementById('btnCopyMigrationSqlText');
+
+        if (!modal) return;
+        if (fileEl) fileEl.textContent = file;
+        if (descEl) descEl.textContent = title + (note ? ' — ' + note : '');
+        if (statusEl) {
+          statusEl.textContent = status;
+          statusEl.className = status === 'APPLIED' ? 'status-badge-applied' : 'status-badge-pending';
+        }
+        if (contentEl) contentEl.textContent = 'Loading SQL definition from server...';
+        if (sizeEl) sizeEl.textContent = 'Size: -- KB';
+        if (copyBtnText) copyBtnText.textContent = 'Copy SQL';
+        currentLoadedSql = '';
+
+        modal.classList.add('active');
+
+        try {
+          var res = await fetch('api/system.php?action=migration_sql&file=' + encodeURIComponent(file), { credentials: 'include' });
+          var data = await res.json();
+          if (data.success && data.sql) {
+            currentLoadedSql = data.sql;
+            if (contentEl) contentEl.textContent = data.sql;
+            if (sizeEl) sizeEl.textContent = 'Size: ' + (data.filesize || '-- KB');
+          } else {
+            if (contentEl) contentEl.textContent = 'Error: ' + (data.error || 'Unable to load SQL file.');
+          }
+        } catch(e) {
+          if (contentEl) contentEl.textContent = 'Network error fetching SQL content.';
+        }
+      }
+
+      // Close modal handlers
+      document.getElementById('btnCloseMigrationSqlModal')?.addEventListener('click', function() {
+        document.getElementById('migrationSqlModal')?.classList.remove('active');
+      });
+      document.getElementById('btnCloseMigrationSqlModalBtn')?.addEventListener('click', function() {
+        document.getElementById('migrationSqlModal')?.classList.remove('active');
+      });
+      document.getElementById('migrationSqlModal')?.addEventListener('click', function(e) {
+        if (e.target === this) this.classList.remove('active');
+      });
+
+      // Copy SQL button
+      document.getElementById('btnCopyMigrationSql')?.addEventListener('click', async function() {
+        if (!currentLoadedSql) return;
+        try {
+          await navigator.clipboard.writeText(currentLoadedSql);
+          var txt = document.getElementById('btnCopyMigrationSqlText');
+          if (txt) {
+            txt.textContent = 'Copied!';
+            setTimeout(function() { txt.textContent = 'Copy SQL'; }, 2000);
+          }
+        } catch(e) {
+          showToast('Failed to copy to clipboard', true);
+        }
+      });
+
       async function loadMigrationsData() {
         try {
           var res = await fetch('api/system.php?action=migrations', { credentials: 'include' });
           if (!res.ok) return;
           var data = await res.json();
+
+          // Populate stat strip if summary metadata is returned
+          if (data.summary) {
+            var appliedEl = document.getElementById('statAppliedMigrations');
+            var syncEl = document.getElementById('statMigrationSync');
+            var pendingEl = document.getElementById('statPendingMigrations');
+            var pendingMetaEl = document.getElementById('statPendingMeta');
+            var dbNameEl = document.getElementById('statDbName');
+
+            if (appliedEl) appliedEl.textContent = data.summary.applied + ' / ' + data.summary.total;
+            if (syncEl) {
+              syncEl.textContent = data.summary.pending === 0 
+                ? '100% Schema Synced' 
+                : data.summary.pending + ' migrations pending execution';
+            }
+            if (pendingEl) pendingEl.textContent = data.summary.pending;
+            if (pendingMetaEl) {
+              pendingMetaEl.textContent = data.summary.pending === 0 
+                ? 'Ledger is up-to-date' 
+                : 'Pending execution required';
+            }
+            if (dbNameEl && data.summary.database) {
+              dbNameEl.textContent = data.summary.database;
+            }
+          }
+
           var tbody = document.getElementById('migrationsTableBody');
           if (tbody && data.success) {
             tbody.innerHTML = '';
             (data.migrations || []).forEach(function(m) {
               var tr = document.createElement('tr');
-              tr.style.borderBottom = '1px solid rgba(255,255,255,0.06)';
               var isApplied = m.status === 'APPLIED';
               var statusBadge = isApplied 
-                ? '<span style="display: inline-block; padding: 0.2rem 0.6rem; border-radius: 6px; font-size: 0.72rem; font-weight: 700; background: rgba(16,185,129,0.15); color: #34D399;">✔ APPLIED</span>'
-                : '<span style="display: inline-block; padding: 0.2rem 0.6rem; border-radius: 6px; font-size: 0.72rem; font-weight: 700; background: rgba(245,158,11,0.15); color: #FBBF24;">⏳ PENDING</span>';
+                ? '<span class="status-badge-applied">APPLIED</span>'
+                : '<span class="status-badge-pending">PENDING</span>';
 
               tr.innerHTML = `
-                <td style="padding: 0.75rem 1rem; font-family: monospace; font-size: 0.8rem; color: #93C5FD;">${m.file}</td>
-                <td style="padding: 0.75rem 1rem; font-weight: 600; color: #FFF;">${m.title}</td>
-                <td style="padding: 0.75rem 1rem; color: var(--admin-muted); font-size: 0.8rem;">${m.note}</td>
-                <td style="padding: 0.75rem 1rem; text-align: right;">${statusBadge}</td>
+                <td><span class="table-name-code">${sanitizeHtml(m.file)}</span></td>
+                <td><strong style="color: #FFF; font-size: 0.82rem; font-weight: 600;">${sanitizeHtml(m.title)}</strong></td>
+                <td><span class="table-purpose-cell">${sanitizeHtml(m.note)}</span></td>
+                <td>${statusBadge}</td>
+                <td style="text-align: right;">
+                  <button type="button" class="btn-user-action btn-action-secondary btn-view-sql" 
+                    data-file="${sanitizeHtml(m.file)}" 
+                    data-title="${sanitizeHtml(m.title)}" 
+                    data-note="${sanitizeHtml(m.note)}" 
+                    data-status="${m.status}" 
+                    title="Inspect SQL DDL statements">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    <span>View SQL</span>
+                  </button>
+                </td>
               `;
               tbody.appendChild(tr);
+            });
+
+            // Wire click handlers for View SQL buttons
+            tbody.querySelectorAll('.btn-view-sql').forEach(function(btn) {
+              btn.addEventListener('click', function() {
+                var file = this.getAttribute('data-file');
+                var title = this.getAttribute('data-title');
+                var note = this.getAttribute('data-note');
+                var status = this.getAttribute('data-status');
+                openMigrationSqlModal(file, title, note, status);
+              });
             });
           }
         } catch(e) {
@@ -3266,49 +4840,180 @@ if ($currentUser['role'] === 'staff') {
         }
       }
 
+      document.getElementById('btnRefreshMigrations')?.addEventListener('click', loadMigrationsData);
+
       // ==========================================
       // SECURITY AUDIT LOGS CONTROLLER (SuperAdmin)
       // ==========================================
-      async function loadAuditLogsData() {
+      var currentAuditRecordPayload = '';
+
+      function openAuditDetailModal(id, action, role, email, userId, ip, timestamp, details) {
+        var modal = document.getElementById('auditDetailModal');
+        var idEl = document.getElementById('modalAuditId');
+        var actionEl = document.getElementById('modalAuditActionTag');
+        var roleBadgeEl = document.getElementById('modalAuditRoleBadge');
+        var timeEl = document.getElementById('modalAuditTimestamp');
+        var actorEl = document.getElementById('modalAuditActor');
+        var actorSubEl = document.getElementById('modalAuditActorSub');
+        var ipEl = document.getElementById('modalAuditIp');
+        var detailsEl = document.getElementById('modalAuditDetails');
+        var copyBtnText = document.getElementById('btnCopyAuditPayloadText');
+
+        if (!modal) return;
+        if (idEl) idEl.textContent = id;
+        if (actionEl) actionEl.textContent = action;
+        if (roleBadgeEl) {
+          roleBadgeEl.textContent = role || 'system';
+          roleBadgeEl.className = 'user-role-badge role-badge-' + (role || 'system');
+        }
+        if (timeEl) timeEl.textContent = timestamp;
+        if (actorEl) actorEl.textContent = email || 'System';
+        if (actorSubEl) actorSubEl.textContent = 'User ID: ' + (userId && userId !== 'N/A' ? userId : 'System Process');
+        if (ipEl) ipEl.textContent = ip || '127.0.0.1';
+
+        // Format details if JSON
+        var formattedDetails = details || '—';
         try {
-          var res = await fetch('api/system.php?action=audit_logs&limit=50', { credentials: 'include' });
+          var parsed = JSON.parse(details);
+          formattedDetails = JSON.stringify(parsed, null, 2);
+        } catch(e) {
+          // not json, keep raw text
+        }
+        if (detailsEl) detailsEl.textContent = formattedDetails;
+        currentAuditRecordPayload = JSON.stringify({
+          id: id,
+          timestamp: timestamp,
+          action: action,
+          role: role,
+          actor: email,
+          user_id: userId,
+          ip_address: ip,
+          details: details
+        }, null, 2);
+
+        if (copyBtnText) copyBtnText.textContent = 'Copy Details';
+        modal.classList.add('active');
+      }
+
+      // Modal close handlers
+      document.getElementById('btnCloseAuditDetailModal')?.addEventListener('click', function() {
+        document.getElementById('auditDetailModal')?.classList.remove('active');
+      });
+      document.getElementById('btnCloseAuditDetailModalBtn')?.addEventListener('click', function() {
+        document.getElementById('auditDetailModal')?.classList.remove('active');
+      });
+      document.getElementById('auditDetailModal')?.addEventListener('click', function(e) {
+        if (e.target === this) this.classList.remove('active');
+      });
+
+      // Copy payload button handler
+      document.getElementById('btnCopyAuditPayload')?.addEventListener('click', async function() {
+        if (!currentAuditRecordPayload) return;
+        try {
+          await navigator.clipboard.writeText(currentAuditRecordPayload);
+          var txt = document.getElementById('btnCopyAuditPayloadText');
+          if (txt) {
+            txt.textContent = 'Copied!';
+            setTimeout(function() { txt.textContent = 'Copy Details'; }, 2000);
+          }
+        } catch(e) {
+          showToast('Failed to copy to clipboard', true);
+        }
+      });
+
+      async function loadAuditLogsData() {
+        var searchInput = document.getElementById('auditSearchInput');
+        var roleSelect = document.getElementById('auditRoleFilter');
+        var limitSelect = document.getElementById('auditLimitSelect');
+
+        var search = (searchInput?.value || '').trim();
+        var role = roleSelect?.value || 'all';
+        var limit = limitSelect?.value || '50';
+
+        var queryParams = new URLSearchParams({
+          action: 'audit_logs',
+          limit: limit,
+          role: role,
+          search: search
+        });
+
+        try {
+          var res = await fetch('api/system.php?' + queryParams.toString(), { credentials: 'include' });
           if (!res.ok) return;
           var data = await res.json();
+
+          // Populate stat cards
+          if (data.summary) {
+            var totalEl = document.getElementById('statTotalAuditEvents');
+            var rbacEl = document.getElementById('statRbacAuditEvents');
+            var sysEl = document.getElementById('statSystemAuditEvents');
+            var integEl = document.getElementById('statAuditIntegrity');
+
+            if (totalEl) totalEl.textContent = data.summary.total_all ?? '--';
+            if (rbacEl) rbacEl.textContent = data.summary.rbac_events ?? '--';
+            if (sysEl) sysEl.textContent = data.summary.system_events ?? '--';
+            if (integEl) integEl.textContent = data.summary.scope ?? 'Append-Only';
+          }
+
           var tbody = document.getElementById('auditLogsTableBody');
           if (tbody && data.success) {
             tbody.innerHTML = '';
             if (!data.logs || data.logs.length === 0) {
-              tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 2rem; color: var(--admin-muted);">No audit log events recorded yet.</td></tr>';
+              tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 2.5rem; color: var(--admin-muted);">No audit log events match current criteria.</td></tr>';
               return;
             }
 
             data.logs.forEach(function(l) {
               var tr = document.createElement('tr');
-              tr.style.borderBottom = '1px solid rgba(255,255,255,0.06)';
-
-              var roleColor = {
-                superadmin: '#C4B5FD',
-                admin: '#F59E0B',
-                staff: '#10B981',
-                customer: '#60A5FA',
-                system: '#9CA3AF'
-              }[l.role] || '#9CA3AF';
+              var roleClass = 'role-badge-' + (l.role || 'system');
 
               tr.innerHTML = `
-                <td style="padding: 0.75rem 1rem; color: var(--admin-muted); font-family: monospace; font-size: 0.78rem; white-space: nowrap;">${l.created_at}</td>
-                <td style="padding: 0.75rem 1rem; font-weight: 600; color: #FFF; font-size: 0.82rem;">
-                  <div>${l.user_email || 'System'}</div>
-                  <span style="font-size: 0.68rem; color: ${roleColor}; text-transform: uppercase; font-weight: 700;">${l.role}</span>
+                <td><span class="audit-timestamp-cell">${sanitizeHtml(l.created_at)}</span></td>
+                <td>
+                  <div class="audit-actor-wrap">
+                    <span class="audit-actor-name">${sanitizeHtml(l.user_email || 'System')}</span>
+                    <div><span class="user-role-badge ${roleClass}">${sanitizeHtml(l.role || 'system')}</span></div>
+                  </div>
                 </td>
-                <td style="padding: 0.75rem 1rem;">
-                  <span style="display: inline-block; padding: 0.2rem 0.5rem; border-radius: 5px; font-family: monospace; font-size: 0.72rem; font-weight: 700; background: rgba(255,255,255,0.06); color: #FCA5A5;">
-                    ${l.action}
-                  </span>
+                <td>
+                  <span class="audit-action-tag">${sanitizeHtml(l.action)}</span>
                 </td>
-                <td style="padding: 0.75rem 1rem; color: #E5E7EB; font-size: 0.82rem;">${l.details || '—'}</td>
-                <td style="padding: 0.75rem 1rem; color: var(--admin-muted); font-family: monospace; font-size: 0.78rem;">${l.ip_address || '127.0.0.1'}</td>
+                <td style="color: #E2D5CC; font-size: 0.82rem; max-width: 320px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${sanitizeHtml(l.details || '')}">
+                  ${sanitizeHtml(l.details || '—')}
+                </td>
+                <td><span class="audit-ip-cell">${sanitizeHtml(l.ip_address || '127.0.0.1')}</span></td>
+                <td style="text-align: right;">
+                  <button type="button" class="btn-user-action btn-action-secondary btn-inspect-audit" 
+                    data-id="${l.id}" 
+                    data-action="${sanitizeHtml(l.action)}" 
+                    data-role="${sanitizeHtml(l.role || 'system')}" 
+                    data-email="${sanitizeHtml(l.user_email || 'System')}" 
+                    data-userid="${l.user_id || 'N/A'}" 
+                    data-ip="${sanitizeHtml(l.ip_address || '127.0.0.1')}" 
+                    data-timestamp="${sanitizeHtml(l.created_at)}" 
+                    data-details="${encodeURIComponent(l.details || '')}" 
+                    title="Inspect full audit record">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    <span>Inspect</span>
+                  </button>
+                </td>
               `;
               tbody.appendChild(tr);
+            });
+
+            // Wire inspect buttons
+            tbody.querySelectorAll('.btn-inspect-audit').forEach(function(btn) {
+              btn.addEventListener('click', function() {
+                var id = this.getAttribute('data-id');
+                var action = this.getAttribute('data-action');
+                var role = this.getAttribute('data-role');
+                var email = this.getAttribute('data-email');
+                var userId = this.getAttribute('data-userid');
+                var ip = this.getAttribute('data-ip');
+                var timestamp = this.getAttribute('data-timestamp');
+                var details = decodeURIComponent(this.getAttribute('data-details') || '');
+                openAuditDetailModal(id, action, role, email, userId, ip, timestamp, details);
+              });
             });
           }
         } catch(e) {
@@ -3317,6 +5022,15 @@ if ($currentUser['role'] === 'staff') {
       }
 
       document.getElementById('btnRefreshAuditLogs')?.addEventListener('click', loadAuditLogsData);
+
+      // Wire search and filter listeners
+      var auditSearchTimer = null;
+      document.getElementById('auditSearchInput')?.addEventListener('input', function() {
+        clearTimeout(auditSearchTimer);
+        auditSearchTimer = setTimeout(loadAuditLogsData, 250);
+      });
+      document.getElementById('auditRoleFilter')?.addEventListener('change', loadAuditLogsData);
+      document.getElementById('auditLimitSelect')?.addEventListener('change', loadAuditLogsData);
 
       // Create User Modal Handlers
       var adminCreateUserModal = document.getElementById('adminCreateUserModal');
@@ -3470,8 +5184,40 @@ if ($currentUser['role'] === 'staff') {
         });
       }
 
+      var ledgerStatusFilter = document.getElementById('ledgerStatusFilter');
+      if (ledgerStatusFilter) {
+        ledgerStatusFilter.addEventListener('change', function() {
+          activeFilters.status = ledgerStatusFilter.value;
+          renderLedgerOrders();
+        });
+      }
+
+      var ledgerDiningFilter = document.getElementById('ledgerDiningFilter');
+      if (ledgerDiningFilter) {
+        ledgerDiningFilter.addEventListener('change', function() {
+          activeFilters.dining = ledgerDiningFilter.value;
+          renderLedgerOrders();
+        });
+      }
+
+      var ledgerPaymentFilter = document.getElementById('ledgerPaymentFilter');
+      if (ledgerPaymentFilter) {
+        ledgerPaymentFilter.addEventListener('change', function() {
+          activeFilters.payment = ledgerPaymentFilter.value;
+          renderLedgerOrders();
+        });
+      }
+
+      var btnRefreshLedgerOrders = document.getElementById('btnRefreshLedgerOrders');
+      if (btnRefreshLedgerOrders) {
+        btnRefreshLedgerOrders.addEventListener('click', function() {
+          loadLedgerData();
+          showToast('Orders refreshed.');
+        });
+      }
+
       async function loadLedgerData() {
-        var dateVal = ledgerDatePicker.value || getLocalDateStr(0);
+        var dateVal = (ledgerDatePicker && ledgerDatePicker.value) ? ledgerDatePicker.value : getLocalDateStr(0);
         try {
           var res = await fetch(`api/ledger.php?date=${encodeURIComponent(dateVal)}`, { cache: 'no-store', credentials: 'include' });
           if (!res.ok) return;
@@ -3497,19 +5243,44 @@ if ($currentUser['role'] === 'staff') {
           var avgPrep = parseFloat(kpi.avg_prep_minutes || 0);
           var dineInPct = (totalDining > 0) ? Math.round((dineInCount / totalDining) * 100) : 0;
 
-          document.getElementById('ledgerGrossRevenue').textContent = `₱${totalRev.toLocaleString('en-PH', { minimumFractionDigits: 2 })}`;
-          document.getElementById('ledgerGrossSub').textContent = `${completedCount} finished order${completedCount === 1 ? '' : 's'} today`;
+          // Customer Orders 4 Stat Cards
+          var statOrdersTotalEl = document.getElementById('statOrdersTotal');
+          if (statOrdersTotalEl) statOrdersTotalEl.textContent = totalTickets;
+          var statOrdersTotalMetaEl = document.getElementById('statOrdersTotalMeta');
+          if (statOrdersTotalMetaEl) statOrdersTotalMetaEl.textContent = `${completedCount} completed · ${activeTotal} active`;
 
-          document.getElementById('ledgerAovValue').textContent = `₱${aov.toLocaleString('en-PH', { minimumFractionDigits: 2 })}`;
-          document.getElementById('ledgerAovSub').textContent = (completedCount > 0) ? `From ${completedCount} customer order${completedCount === 1 ? '' : 's'}` : 'No sales recorded yet';
+          var statOrdersCompletedEl = document.getElementById('statOrdersCompleted');
+          if (statOrdersCompletedEl) statOrdersCompletedEl.textContent = completedCount;
 
-          document.getElementById('ledgerAvgPrepValue').textContent = (avgPrep > 0) ? `${avgPrep.toFixed(1)}m` : '—';
+          var statOrdersActiveEl = document.getElementById('statOrdersActive');
+          if (statOrdersActiveEl) statOrdersActiveEl.textContent = activeTotal;
 
-          document.getElementById('ledgerDiningSplitValue').textContent = (totalDining > 0) ? `${dineInPct}% Dine-In` : 'No orders yet';
-          document.getElementById('ledgerDiningSplitSub').textContent = `${dineInCount} Dine-In · ${takeOutCount} Take-Out`;
+          var statOrdersRevenueEl = document.getElementById('statOrdersRevenue');
+          if (statOrdersRevenueEl) statOrdersRevenueEl.textContent = `₱${totalRev.toLocaleString('en-PH', { minimumFractionDigits: 2 })}`;
 
-          document.getElementById('ledgerPipelineValue').textContent = `${totalTickets} Total`;
-          document.getElementById('ledgerPipelineSub').textContent = `${completedCount} finished · ${activeTotal} being made · ${cancelledCount} cancelled`;
+          // Sales & Reports Summary Cards (Safe Checks)
+          var grossRevEl = document.getElementById('ledgerGrossRevenue');
+          if (grossRevEl) grossRevEl.textContent = `₱${totalRev.toLocaleString('en-PH', { minimumFractionDigits: 2 })}`;
+          var grossSubEl = document.getElementById('ledgerGrossSub');
+          if (grossSubEl) grossSubEl.textContent = `${completedCount} finished order${completedCount === 1 ? '' : 's'} today`;
+
+          var aovValEl = document.getElementById('ledgerAovValue');
+          if (aovValEl) aovValEl.textContent = `₱${aov.toLocaleString('en-PH', { minimumFractionDigits: 2 })}`;
+          var aovSubEl = document.getElementById('ledgerAovSub');
+          if (aovSubEl) aovSubEl.textContent = (completedCount > 0) ? `From ${completedCount} customer order${completedCount === 1 ? '' : 's'}` : 'No sales recorded yet';
+
+          var pipelineValEl = document.getElementById('ledgerPipelineValue');
+          if (pipelineValEl) pipelineValEl.textContent = `${totalTickets} Total`;
+          var pipelineSubEl = document.getElementById('ledgerPipelineSub');
+          if (pipelineSubEl) pipelineSubEl.textContent = `${completedCount} finished · ${activeTotal} being made · ${cancelledCount} cancelled`;
+
+          var avgPrepEl = document.getElementById('ledgerAvgPrepValue');
+          if (avgPrepEl) avgPrepEl.textContent = (avgPrep > 0) ? `${avgPrep.toFixed(1)}m` : '—';
+
+          var diningSplitValEl = document.getElementById('ledgerDiningSplitValue');
+          if (diningSplitValEl) diningSplitValEl.textContent = (totalDining > 0) ? `${dineInPct}% Dine-In` : 'No orders yet';
+          var diningSplitSubEl = document.getElementById('ledgerDiningSplitSub');
+          if (diningSplitSubEl) diningSplitSubEl.textContent = `${dineInCount} Dine-In · ${takeOutCount} Take-Out`;
 
           // 2. Payment Breakdown Card
           var gcashRev = parseFloat(kpi.gcash_revenue || 0);
@@ -3517,11 +5288,16 @@ if ($currentUser['role'] === 'staff') {
           var gcashPct = (totalRev > 0) ? Math.round((gcashRev / totalRev) * 100) : 0;
           var cashPct = (totalRev > 0) ? (100 - gcashPct) : 0;
 
-          document.getElementById('paymentTotalBadge').textContent = `₱${totalRev.toLocaleString('en-PH', { minimumFractionDigits: 2 })}`;
-          document.getElementById('ledgerGcashTotal').textContent = `₱${gcashRev.toLocaleString('en-PH', { minimumFractionDigits: 2 })}`;
-          document.getElementById('ledgerGcashShare').textContent = `${gcashPct}% of total sales`;
-          document.getElementById('ledgerCashTotal').textContent = `₱${cashRev.toLocaleString('en-PH', { minimumFractionDigits: 2 })}`;
-          document.getElementById('ledgerCashShare').textContent = `${cashPct}% of total sales`;
+          var paymentTotalBadge = document.getElementById('paymentTotalBadge');
+          if (paymentTotalBadge) paymentTotalBadge.textContent = `₱${totalRev.toLocaleString('en-PH', { minimumFractionDigits: 2 })}`;
+          var ledgerGcashTotal = document.getElementById('ledgerGcashTotal');
+          if (ledgerGcashTotal) ledgerGcashTotal.textContent = `₱${gcashRev.toLocaleString('en-PH', { minimumFractionDigits: 2 })}`;
+          var ledgerGcashShare = document.getElementById('ledgerGcashShare');
+          if (ledgerGcashShare) ledgerGcashShare.textContent = `${gcashPct}% of total sales`;
+          var ledgerCashTotal = document.getElementById('ledgerCashTotal');
+          if (ledgerCashTotal) ledgerCashTotal.textContent = `₱${cashRev.toLocaleString('en-PH', { minimumFractionDigits: 2 })}`;
+          var ledgerCashShare = document.getElementById('ledgerCashShare');
+          if (ledgerCashShare) ledgerCashShare.textContent = `${cashPct}% of total sales`;
 
           var splitBarGcash = document.getElementById('splitBarGcash');
           var splitBarCash = document.getElementById('splitBarCash');
@@ -3795,40 +5571,72 @@ if ($currentUser['role'] === 'staff') {
         if (tbody) {
           tbody.innerHTML = filtered.map(function(ord) {
             var itemsHtml = (ord.items || []).map(function(it) {
-              return `<div><strong>${it.quantity}x ${it.item_name}</strong> <span style="color:#DF9B64;">(${it.temperature || 'Iced'} · ${it.milk_option || 'Standard'})</span></div>`;
+              var customParts = [];
+              var nameLower = (it.item_name || '').toLowerCase();
+              if (it.temperature && !nameLower.includes(it.temperature.toLowerCase())) {
+                customParts.push(sanitizeHtml(it.temperature));
+              }
+              if (it.milk_option && it.milk_option !== 'Standard' && it.milk_option !== 'Regular Milk') {
+                customParts.push(sanitizeHtml(it.milk_option));
+              }
+              if (it.sweetness_level && it.sweetness_level !== '100%' && it.sweetness_level !== 'Normal (100%)') {
+                customParts.push(sanitizeHtml(it.sweetness_level));
+              }
+              var customStr = customParts.length > 0 ? ` <span style="font-size: 0.73rem; color: #A8988C;">(${customParts.join(' · ')})</span>` : '';
+              return `<div style="margin-bottom: 0.15rem; line-height: 1.3;"><strong>${it.quantity}× ${sanitizeHtml(it.item_name)}</strong>${customStr}</div>`;
             }).join('');
+            if (!itemsHtml) {
+              itemsHtml = '<span style="color: var(--admin-muted); font-size: 0.78rem;">No line items</span>';
+            }
 
-            var qaBadges = `
-              <div style="display:flex; flex-direction:column; gap:0.2rem; font-size:0.75rem;">
-                <span style="color:${ord.qa_payment_verified ? '#34D399' : '#F87171'};">● Payment ${ord.qa_payment_verified ? 'Confirmed' : 'Pending'}</span>
-                <span style="color:${ord.qa_customizations_followed ? '#34D399' : '#F87171'};">● Recipe ${ord.qa_customizations_followed ? 'Followed' : 'Pending'}</span>
-                <span style="color:${ord.qa_packaging_secured ? '#34D399' : '#F87171'};">● Cup & Bag ${ord.qa_packaging_secured ? 'Sealed' : 'Pending'}</span>
-              </div>
-            `;
+            var diningBadge = ord.order_type === 'take_out'
+              ? '<span class="dining-badge badge-takeout">Take-Out</span>'
+              : `<span class="dining-badge badge-dine-in">Table ${sanitizeHtml(String(ord.table_number || '1'))}</span>`;
 
-            var statusPill = (ord.status === 'completed')
-              ? '<span style="background:rgba(16,185,129,0.15); color:#34D399; padding:0.25rem 0.55rem; border-radius:6px; font-weight:700; font-size:0.78rem;">Finished</span>'
+            var paymentBadge = ord.payment_method === 'gcash'
+              ? '<span class="payment-badge badge-gcash">GCASH</span>'
+              : '<span class="payment-badge badge-cash">CASH</span>';
+
+            var qaPassed = (Number(ord.qa_payment_verified) === 1 && Number(ord.qa_customizations_followed) === 1 && Number(ord.qa_packaging_secured) === 1);
+            var qaScore = (Number(ord.qa_payment_verified) || 0) + (Number(ord.qa_customizations_followed) || 0) + (Number(ord.qa_packaging_secured) || 0);
+            var qaBadge = qaPassed
+              ? `<span class="qa-badge-passed" title="Payment, customizations, and packaging all verified"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg> 3/3 QA</span>`
+              : `<span class="qa-badge-pending" title="${qaScore} of 3 kitchen QA checks passed">${qaScore}/3 QA</span>`;
+
+            var statusTag = (ord.status === 'completed')
+              ? '<span class="order-status-tag status-finished">Finished</span>'
               : (ord.status === 'in_progress')
-              ? '<span style="background:rgba(226,135,67,0.15); color:#FDBA74; padding:0.25rem 0.55rem; border-radius:6px; font-weight:700; font-size:0.78rem;">Being Made</span>'
+              ? '<span class="order-status-tag status-progress">In Progress</span>'
               : (ord.status === 'cancelled')
-              ? '<span style="background:rgba(239,68,68,0.15); color:#F87171; padding:0.25rem 0.55rem; border-radius:6px; font-weight:700; font-size:0.78rem;">Cancelled</span>'
-              : `<span style="background:rgba(96,165,250,0.15); color:#60A5FA; padding:0.25rem 0.55rem; border-radius:6px; font-weight:700; font-size:0.78rem;">Waiting</span>`;
+              ? '<span class="order-status-tag status-cancelled">Cancelled</span>'
+              : '<span class="order-status-tag status-waiting">Waiting</span>';
 
             var prepTimeStr = ord.completed_at
-              ? `${Math.round((ord.elapsed_seconds || 0) / 60)}m prep time`
-              : (ord.status === 'cancelled' ? 'Cancelled' : 'Being prepared');
+              ? `${Math.round((ord.elapsed_seconds || 0) / 60)}m prep`
+              : (ord.status === 'cancelled' ? 'Cancelled' : 'Preparing');
 
             return `
               <tr>
-                <td style="font-family: var(--font-mono); font-weight: 800; color: #FFF; font-size: 1.1rem;">#${ord.queue_number}</td>
-                <td style="font-family: var(--font-mono); color: #DF9B64; font-size: 0.82rem;">${ord.order_reference}</td>
-                <td><strong>${ord.customer_name}</strong><div style="font-size:0.75rem; color:#A99B92;">${ord.customer_phone || ''}</div></td>
+                <td style="font-family: var(--font-mono); font-weight: 700; color: #FFF; font-size: 1.05rem;">#${sanitizeHtml(String(ord.queue_number))}</td>
+                <td>
+                  <span class="order-ref-code">${sanitizeHtml(String(ord.order_reference))}</span>
+                  <span class="order-customer-sub"><strong style="color: #FFF;">${sanitizeHtml(ord.customer_name || 'Walk-in')}</strong>${ord.customer_phone ? ' · ' + sanitizeHtml(ord.customer_phone) : ''}</span>
+                </td>
                 <td>${itemsHtml}</td>
-                <td style="text-transform: capitalize;">${ord.order_type === 'take_out' ? '🛍️ Take-Out' : `🪑 Table ${ord.table_number || '1'}`}</td>
-                <td style="text-transform: uppercase; font-weight: 700; color: ${ord.payment_method === 'gcash' ? '#60A5FA' : '#FBBF24'};">${ord.payment_method}</td>
-                <td>${qaBadges}</td>
-                <td>${statusPill}<div style="font-size:0.75rem; color:#A99B92; margin-top:0.2rem;">${prepTimeStr}</div></td>
-                <td style="text-align: right; font-family: var(--font-mono); font-weight: 700; color: #34D399; font-size: 1rem;">₱${parseFloat(ord.grand_total).toFixed(2)}</td>
+                <td>${diningBadge}</td>
+                <td>${paymentBadge}</td>
+                <td>${qaBadge}</td>
+                <td>
+                  ${statusTag}
+                  <div class="prep-time-meta">${prepTimeStr}</div>
+                </td>
+                <td style="text-align: right;"><span class="order-total-cell">₱${parseFloat(ord.grand_total || 0).toFixed(2)}</span></td>
+                <td style="text-align: right;">
+                  <button type="button" class="btn-inspect-order" data-order-id="${ord.id}" title="Inspect full ticket details">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    <span>Inspect</span>
+                  </button>
+                </td>
               </tr>
             `;
           }).join('');
@@ -3838,33 +5646,35 @@ if ($currentUser['role'] === 'staff') {
         if (mobileCards) {
           mobileCards.innerHTML = filtered.map(function(ord) {
             var itemsList = (ord.items || []).map(function(it) {
-              return `<div><strong>${it.quantity}x ${it.item_name}</strong> <span style="color:#DF9B64;">(${it.temperature || 'Iced'} · ${it.milk_option || 'Standard'})</span></div>`;
+              return `<div style="margin-bottom: 0.2rem;"><strong>${it.quantity}× ${sanitizeHtml(it.item_name)}</strong> <span style="color: #A8988C;">(${sanitizeHtml(it.temperature || 'Iced')} · ${sanitizeHtml(it.milk_option || 'Standard')})</span></div>`;
             }).join('');
 
-            var statusPill = (ord.status === 'completed')
-              ? '<span style="background:rgba(16,185,129,0.15); color:#34D399; padding:0.2rem 0.5rem; border-radius:6px; font-weight:700; font-size:0.75rem;">Finished</span>'
+            var statusTag = (ord.status === 'completed')
+              ? '<span class="order-status-tag status-finished">Finished</span>'
               : (ord.status === 'in_progress')
-              ? '<span style="background:rgba(226,135,67,0.15); color:#FDBA74; padding:0.2rem 0.5rem; border-radius:6px; font-weight:700; font-size:0.75rem;">Being Made</span>'
+              ? '<span class="order-status-tag status-progress">In Progress</span>'
               : (ord.status === 'cancelled')
-              ? '<span style="background:rgba(239,68,68,0.15); color:#F87171; padding:0.2rem 0.5rem; border-radius:6px; font-weight:700; font-size:0.75rem;">Cancelled</span>'
-              : `<span style="background:rgba(96,165,250,0.15); color:#60A5FA; padding:0.2rem 0.5rem; border-radius:6px; font-weight:700; font-size:0.75rem;">Waiting</span>`;
+              ? '<span class="order-status-tag status-cancelled">Cancelled</span>'
+              : '<span class="order-status-tag status-waiting">Waiting</span>';
 
-            var qaStatus = ord.qa_payment_verified && ord.qa_customizations_followed && ord.qa_packaging_secured
-              ? '<span style="color: #34D399; font-size: 0.75rem; font-weight: 700;">● Checks Done</span>'
-              : '<span style="color: #F87171; font-size: 0.75rem; font-weight: 700;">● Checks Incomplete</span>';
+            var diningText = ord.order_type === 'take_out' ? 'Take-Out' : `Table ${ord.table_number || '1'}`;
+            var qaPassed = (Number(ord.qa_payment_verified) === 1 && Number(ord.qa_customizations_followed) === 1 && Number(ord.qa_packaging_secured) === 1);
+            var qaStatus = qaPassed
+              ? '<span style="color: #10B981; font-size: 0.72rem; font-weight: 700;">● Checks Complete</span>'
+              : '<span style="color: #7D6F64; font-size: 0.72rem; font-weight: 600;">● Checks Incomplete</span>';
 
             return `
               <div class="mobile-order-ticket">
                 <div class="mobile-ticket-header">
                   <div class="mobile-ticket-queue">
-                    <span>#${ord.queue_number}</span>
-                    <span style="font-size: 0.75rem; color: #DF9B64; font-weight: normal;">(${ord.order_type === 'take_out' ? 'Take-Out' : `Table ${ord.table_number || '1'}`})</span>
+                    <span>#${sanitizeHtml(String(ord.queue_number))}</span>
+                    <span style="font-size: 0.75rem; color: #DF9B64; font-weight: 600;">(${diningText})</span>
                   </div>
-                  <div class="mobile-ticket-amount">₱${parseFloat(ord.grand_total).toFixed(2)}</div>
+                  <div class="mobile-ticket-amount">₱${parseFloat(ord.grand_total || 0).toFixed(2)}</div>
                 </div>
 
-                <div style="font-size: 0.8rem; color: #FFF; font-weight: 700;">
-                  ${ord.customer_name} <span style="font-size: 0.75rem; color: #A99B92; font-weight: normal;">${ord.customer_phone || ''}</span>
+                <div style="font-size: 0.82rem; color: #FFF; font-weight: 700;">
+                  ${sanitizeHtml(ord.customer_name || 'Walk-in')} <span style="font-size: 0.75rem; color: #8E7E73; font-weight: normal;">${sanitizeHtml(ord.customer_phone || '')}</span>
                 </div>
 
                 <div class="mobile-ticket-items">
@@ -3873,19 +5683,185 @@ if ($currentUser['role'] === 'staff') {
 
                 <div class="mobile-ticket-footer">
                   <div style="display: flex; gap: 0.45rem; align-items: center;">
-                    <span style="text-transform: uppercase; font-size: 0.75rem; font-weight: 700; color: ${ord.payment_method === 'gcash' ? '#60A5FA' : '#FBBF24'};">${ord.payment_method}</span>
-                    <span style="font-size: 0.75rem; color: #A99B92;">·</span>
+                    <span style="font-family: var(--font-mono); font-size: 0.75rem; font-weight: 700; color: ${ord.payment_method === 'gcash' ? '#60A5FA' : '#DF9B64'};">${(ord.payment_method || '').toUpperCase()}</span>
+                    <span style="font-size: 0.75rem; color: #8E7E73;">·</span>
                     ${qaStatus}
                   </div>
-                  <div>
-                    ${statusPill}
+                  <div style="display: flex; gap: 0.5rem; align-items: center;">
+                    ${statusTag}
+                    <button type="button" class="btn-inspect-order" data-order-id="${ord.id}" title="Inspect full ticket details">
+                      <span>Inspect</span>
+                    </button>
                   </div>
                 </div>
               </div>
             `;
           }).join('');
         }
+
+        // Attach Inspect click listeners to all buttons
+        document.querySelectorAll('.btn-inspect-order').forEach(function(btn) {
+          btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            var orderId = parseInt(btn.getAttribute('data-order-id'), 10);
+            var ord = rawLedgerOrders.find(function(o) { return parseInt(o.id, 10) === orderId; });
+            if (ord) {
+              openOrderDetailModal(ord);
+            }
+          });
+        });
       }
+
+      function openOrderDetailModal(ord) {
+        var modal = document.getElementById('orderDetailModal');
+        if (!modal) return;
+
+        var qEl = document.getElementById('modalOrderQueue');
+        if (qEl) qEl.textContent = ord.queue_number || '--';
+
+        var refEl = document.getElementById('modalOrderRef');
+        if (refEl) refEl.textContent = ord.order_reference || '--';
+
+        var timeEl = document.getElementById('modalOrderTimestamp');
+        if (timeEl) {
+          timeEl.textContent = ord.created_at ? new Date(ord.created_at.replace(' ', 'T')).toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true }) : '--';
+        }
+
+        var statusBadge = document.getElementById('modalOrderStatusBadge');
+        if (statusBadge) {
+          statusBadge.className = 'order-status-tag';
+          if (ord.status === 'completed') {
+            statusBadge.classList.add('status-finished');
+            statusBadge.textContent = 'Finished';
+          } else if (ord.status === 'in_progress') {
+            statusBadge.classList.add('status-progress');
+            statusBadge.textContent = 'In Progress';
+          } else if (ord.status === 'cancelled') {
+            statusBadge.classList.add('status-cancelled');
+            statusBadge.textContent = 'Cancelled';
+          } else {
+            statusBadge.classList.add('status-waiting');
+            statusBadge.textContent = 'Waiting';
+          }
+        }
+
+        var diningBadge = document.getElementById('modalOrderDiningBadge');
+        if (diningBadge) {
+          diningBadge.className = 'dining-badge';
+          if (ord.order_type === 'take_out') {
+            diningBadge.classList.add('badge-takeout');
+            diningBadge.textContent = 'Take-Out';
+          } else {
+            diningBadge.classList.add('badge-dine-in');
+            diningBadge.textContent = `Table ${ord.table_number || '1'}`;
+          }
+        }
+
+        var paymentBadge = document.getElementById('modalOrderPaymentBadge');
+        if (paymentBadge) {
+          paymentBadge.className = 'payment-badge';
+          if (ord.payment_method === 'gcash') {
+            paymentBadge.classList.add('badge-gcash');
+            paymentBadge.textContent = 'GCASH';
+          } else {
+            paymentBadge.classList.add('badge-cash');
+            paymentBadge.textContent = 'CASH';
+          }
+        }
+
+        var custEl = document.getElementById('modalOrderCustomer');
+        if (custEl) custEl.textContent = ord.customer_name || 'Walk-in Customer';
+
+        var phoneEl = document.getElementById('modalOrderPhone');
+        if (phoneEl) phoneEl.textContent = ord.customer_phone ? `Phone: ${ord.customer_phone}` : 'No phone recorded';
+
+        var prepEl = document.getElementById('modalOrderPrepTime');
+        if (prepEl) {
+          if (ord.completed_at) {
+            prepEl.textContent = `Completed in ${Math.round((ord.elapsed_seconds || 0) / 60)} min`;
+            prepEl.style.color = '#34D399';
+          } else if (ord.status === 'cancelled') {
+            prepEl.textContent = 'Order Cancelled';
+            prepEl.style.color = '#FCA5A5';
+          } else {
+            prepEl.textContent = 'In Kitchen Preparation';
+            prepEl.style.color = '#FBBF24';
+          }
+        }
+
+        var qaBox = document.getElementById('modalOrderQaBadges');
+        if (qaBox) {
+          var pOk = Number(ord.qa_payment_verified) === 1;
+          var rOk = Number(ord.qa_customizations_followed) === 1;
+          var kOk = Number(ord.qa_packaging_secured) === 1;
+          qaBox.innerHTML = `
+            <div style="display:flex; flex-direction:column; gap:0.25rem; margin-top:0.35rem; font-size:0.75rem; font-family:var(--font-mono);">
+              <span style="color:${pOk ? '#34D399' : '#8E7E73'};">${pOk ? '✓' : '○'} Payment Verification (${pOk ? 'Passed' : 'Pending'})</span>
+              <span style="color:${rOk ? '#34D399' : '#8E7E73'};">${rOk ? '✓' : '○'} Custom Recipe & Temperature (${rOk ? 'Followed' : 'Pending'})</span>
+              <span style="color:${kOk ? '#34D399' : '#8E7E73'};">${kOk ? '✓' : '○'} Packaging & Eco-Seal (${kOk ? 'Secured' : 'Pending'})</span>
+            </div>
+          `;
+        }
+
+        // Items list
+        var itemsContainer = document.getElementById('modalOrderItemsList');
+        if (itemsContainer) {
+          var items = ord.items || [];
+          if (items.length === 0) {
+            itemsContainer.innerHTML = '<div style="color:var(--admin-muted); font-size:0.82rem; padding:0.5rem 0;">No items found.</div>';
+          } else {
+            itemsContainer.innerHTML = items.map(function(it) {
+              var customDetails = [];
+              if (it.temperature) customDetails.push(it.temperature);
+              if (it.milk_option && it.milk_option !== 'Standard') customDetails.push(`Milk: ${it.milk_option}`);
+              if (it.sweetness_level && it.sweetness_level !== '100%') customDetails.push(`Sweetness: ${it.sweetness_level}`);
+              if (it.custom_notes) customDetails.push(`Notes: "${sanitizeHtml(it.custom_notes)}"`);
+
+              return `
+                <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06); border-radius:5px; padding:0.6rem 0.75rem; display:flex; justify-content:space-between; align-items:flex-start; gap:0.5rem;">
+                  <div>
+                    <div style="font-weight:600; color:#FFF; font-size:0.85rem;">
+                      ${it.quantity}× ${sanitizeHtml(it.item_name)}
+                      <span style="font-family:var(--font-mono); font-size:0.75rem; color:#8E7E73; margin-left:0.35rem;">@ ₱${parseFloat(it.unit_price || 0).toFixed(2)}</span>
+                    </div>
+                    ${customDetails.length > 0 ? `<div style="font-size:0.75rem; color:#A8988C; margin-top:0.25rem;">${customDetails.join(' · ')}</div>` : ''}
+                  </div>
+                  <div style="font-family:var(--font-mono); font-weight:700; color:#FFF; font-size:0.85rem; white-space:nowrap;">
+                    ₱${parseFloat(it.subtotal || 0).toFixed(2)}
+                  </div>
+                </div>
+              `;
+            }).join('');
+          }
+        }
+
+        // Subtotal, Eco Fee, Grand Total
+        var subtotalEl = document.getElementById('modalOrderSubtotal');
+        if (subtotalEl) subtotalEl.textContent = `₱${parseFloat(ord.subtotal || 0).toFixed(2)}`;
+
+        var ecoEl = document.getElementById('modalOrderEcoFee');
+        if (ecoEl) ecoEl.textContent = `₱${parseFloat(ord.eco_fee || 0).toFixed(2)}`;
+
+        var grandEl = document.getElementById('modalOrderGrandTotal');
+        if (grandEl) grandEl.textContent = `₱${parseFloat(ord.grand_total || 0).toFixed(2)}`;
+
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeOrderDetailModal() {
+        var modal = document.getElementById('orderDetailModal');
+        if (modal) {
+          modal.classList.remove('active');
+          document.body.style.overflow = '';
+        }
+      }
+
+      document.getElementById('btnCloseOrderDetailModal')?.addEventListener('click', closeOrderDetailModal);
+      document.getElementById('btnCloseOrderDetailModalBtn')?.addEventListener('click', closeOrderDetailModal);
+      document.getElementById('orderDetailModal')?.addEventListener('click', function(e) {
+        if (e.target === this) closeOrderDetailModal();
+      });
 
       // ==========================================
       // 3. MENU & STOCK CONTROL CONTROLLER
@@ -3943,29 +5919,28 @@ if ($currentUser['role'] === 'staff') {
 
         grid.innerHTML = filtered.map(function(item) {
           var isItemInStock = (itemAvailability[item.id] !== false && item.isAvailable !== false);
-          var tagBadge = (item.tags && item.tags.length > 0)
-            ? `<span class="drink-badge">${item.tags[0]}</span>`
-            : '';
-          var stockTagClass = isItemInStock ? 'drink-stock-tag in-stock' : 'drink-stock-tag sold-out';
-          var stockTagText = isItemInStock ? '● In Stock' : '✕ Sold Out';
           var cardClass = isItemInStock ? 'drink-card' : 'drink-card item-sold-out';
 
           return `
             <div class="${cardClass}" id="card_${item.id}">
               <div class="drink-img-wrap">
                 <img src="${item.image || 'images/menu/hc-spanish.webp'}" alt="${item.name}" loading="lazy">
-                ${tagBadge}
-                <span class="${stockTagClass}" data-item-id="${item.id}" title="Click to toggle drink availability">${stockTagText}</span>
               </div>
               <div class="drink-meta-row">
                 <h4 class="drink-name">${item.name}</h4>
                 <span class="drink-price">₱${parseFloat(item.price).toFixed(2)}</span>
               </div>
               <p class="drink-desc">${item.description || 'Specialty handcrafted cafe beverage.'}</p>
-              <button type="button" class="btn-manage-options btn-open-manage" data-item-id="${item.id}">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
-                Edit Drink & Options
-              </button>
+              <div class="drink-card-footer">
+                <button type="button" class="drink-status-indicator ${isItemInStock ? 'in-stock' : 'sold-out'}" data-item-id="${item.id}" title="Click to toggle drink availability">
+                  <span class="status-dot-sm"></span>
+                  <span>${isItemInStock ? 'Available' : 'Sold Out'}</span>
+                </button>
+                <button type="button" class="btn-manage-options btn-open-manage" data-item-id="${item.id}">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                  <span>Edit Drink</span>
+                </button>
+              </div>
             </div>
           `;
         }).join('');
@@ -3978,8 +5953,8 @@ if ($currentUser['role'] === 'staff') {
           });
         });
 
-        // Quick drink stock tag toggles
-        document.querySelectorAll('.drink-stock-tag').forEach(function(tag) {
+        // Quick drink stock status toggles
+        document.querySelectorAll('.drink-status-indicator').forEach(function(tag) {
           tag.addEventListener('click', function(e) {
             e.stopPropagation();
             var itemId = tag.getAttribute('data-item-id');
@@ -4061,17 +6036,9 @@ if ($currentUser['role'] === 'staff') {
         if (!activeEditingItem) return;
         var isAvail = (itemAvailability[activeEditingItem.id] !== false);
         var btn = document.getElementById('modalDrinkStockToggle');
-        if (isAvail) {
-          btn.textContent = '● In Stock';
-          btn.style.background = 'rgba(16, 185, 129, 0.2)';
-          btn.style.color = '#34D399';
-          btn.style.borderColor = 'rgba(16, 185, 129, 0.5)';
-        } else {
-          btn.textContent = '✕ Sold Out';
-          btn.style.background = 'rgba(239, 68, 68, 0.2)';
-          btn.style.color = '#F87171';
-          btn.style.borderColor = 'rgba(239, 68, 68, 0.5)';
-        }
+        if (!btn) return;
+        btn.className = 'admin-drink-status-btn ' + (isAvail ? 'status-btn-available' : 'status-btn-soldout');
+        btn.innerHTML = `<span class="status-dot-sm" style="margin-right: 0.4rem; background: ${isAvail ? '#34D399' : '#F87171'};"></span>` + (isAvail ? 'Available' : 'Sold Out');
       }
 
       // Toggle modal drink stock button
@@ -4144,7 +6111,7 @@ if ($currentUser['role'] === 'staff') {
 
         var addons = stockOptions.filter(function(o) { return o.category_type === 'addon'; });
         if (addons.length === 0) {
-          container.innerHTML = '<div style="color: var(--admin-muted); font-size: 0.8rem; padding: 0.5rem 0;">No extras created yet. Click "+ Add New Extra" above to add one.</div>';
+          container.innerHTML = '<div style="color: var(--admin-muted); font-size: 0.8rem; padding: 0.5rem 0;">No extras created yet. Click "+ Add Extra" above to add one.</div>';
           return;
         }
 
@@ -4152,11 +6119,13 @@ if ($currentUser['role'] === 'staff') {
           var isAvail = (stockAvailability[opt.option_key] === true);
           return `
             <div class="admin-option-pill ${isAvail ? 'is-in-stock' : 'is-sold-out'}" data-opt="${opt.option_key}">
-              <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%; gap: 0.4rem;">
-                <span class="option-title-text">${opt.option_label}</span>
-                <button type="button" class="btn-delete-addon" data-opt="${opt.option_key}" title="Delete this option">&times;</button>
+              <span class="option-title-text">${opt.option_label}</span>
+              <div style="display: flex; align-items: center; gap: 0.65rem;">
+                <span class="status-indicator-tag ${isAvail ? 'tag-in-stock' : 'tag-sold-out'}">${isAvail ? 'In Stock' : 'Sold Out'}</span>
+                <button type="button" class="btn-delete-addon" data-opt="${opt.option_key}" title="Delete option" aria-label="Delete option">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
               </div>
-              <span class="status-indicator-tag ${isAvail ? 'tag-in-stock' : 'tag-sold-out'}">${isAvail ? 'In Stock' : '✕ Sold Out'}</span>
             </div>
           `;
         }).join('');
@@ -4307,7 +6276,7 @@ if ($currentUser['role'] === 'staff') {
           var tag = pill.querySelector('.status-indicator-tag');
           if (tag) {
             tag.className = isAvailable ? 'status-indicator-tag tag-in-stock' : 'status-indicator-tag tag-sold-out';
-            tag.textContent = isAvailable ? 'In Stock' : '✕ Sold Out';
+            tag.textContent = isAvailable ? 'In Stock' : 'Sold Out';
           }
         });
       }
@@ -4421,7 +6390,10 @@ if ($currentUser['role'] === 'staff') {
           showToast('Save error: ' + e.message, true);
         } finally {
           saveBtn.disabled = false;
-          saveBtn.textContent = '💾 Save Drink Details';
+          saveBtn.innerHTML = `
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+            <span>Save Drink Details</span>
+          `;
         }
       });
 

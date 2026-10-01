@@ -60,18 +60,21 @@ $isStaff = ($currentUser['role'] === 'staff');
       user-select: none;
     }
 
-    /* KDS Top Bar */
+    /* KDS Top Bar (Editorial Anti-Slop) */
     .kds-header {
-      background: rgba(23, 18, 15, 0.95);
-      border-bottom: 1px solid var(--kds-border);
-      padding: 0.75rem 1.5rem;
+      background: #171210;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 0.6rem 1.25rem;
+      min-height: 58px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       position: sticky;
       top: 0;
       z-index: 50;
-      backdrop-filter: blur(12px);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-sizing: border-box;
     }
     .kds-brand {
       display: flex;
@@ -79,72 +82,144 @@ $isStaff = ($currentUser['role'] === 'staff');
       gap: 0.85rem;
     }
     .kds-logo {
-      width: 38px;
-      height: 38px;
-      border-radius: 10px;
-      background: linear-gradient(135deg, #E28743 0%, #944D1C 100%);
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: #E28743;
       color: #FFF;
       display: flex;
       align-items: center;
       justify-content: center;
       font-family: var(--font-serif);
       font-weight: 700;
-      font-size: 1.25rem;
-      box-shadow: 0 4px 12px var(--kds-amber-glow);
+      font-size: 1.15rem;
+      flex-shrink: 0;
     }
     .kds-title-group h1 {
+      font-family: var(--font-serif);
       font-size: 1.15rem;
       font-weight: 700;
       color: #FFF;
       line-height: 1.1;
       letter-spacing: -0.01em;
+      margin: 0;
     }
     .kds-subtitle {
-      font-size: 0.72rem;
-      color: var(--kds-amber);
+      font-size: 0.68rem;
+      color: #DF9B64;
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.08em;
     }
-
-    .kds-actions {
+    .kds-op-cluster {
       display: flex;
       align-items: center;
-      gap: 0.85rem;
+      gap: 0.25rem;
+      margin-left: 0.35rem;
     }
     .kds-clock {
       font-family: var(--font-mono);
-      font-size: 0.9rem;
+      font-size: 0.84rem;
+      font-weight: 600;
       color: #D6C7BC;
-      background: rgba(255, 255, 255, 0.05);
-      padding: 0.4rem 0.85rem;
-      border-radius: 8px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      letter-spacing: 0.03em;
+      background: transparent;
+      border: none;
+      padding: 0.35rem 0.5rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
+      white-space: nowrap;
+    }
+    .kds-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
     }
     .kds-btn {
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 0.45rem;
-      padding: 0.45rem 0.95rem;
-      border-radius: 8px;
-      font-size: 0.82rem;
-      font-weight: 600;
-      cursor: pointer;
-      border: 1px solid var(--kds-border);
-      background: rgba(255, 255, 255, 0.06);
-      color: var(--kds-text);
-      transition: all 0.2s ease;
+      min-height: 44px;
+      padding: 0.35rem 0.65rem;
+      background: transparent;
+      border: none;
+      font-family: inherit;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      line-height: 1;
       text-decoration: none;
+      cursor: pointer;
+      border-radius: 6px;
+      color: #A8988C;
+      transition: color 0.15s ease, opacity 0.15s ease;
+      box-sizing: border-box;
+      white-space: nowrap;
     }
-    .kds-btn:hover {
-      background: rgba(226, 135, 67, 0.15);
-      border-color: var(--kds-amber);
-      color: #FFF;
+    .kds-btn:focus-visible {
+      outline: 2px solid #DF9B64;
+      outline-offset: 2px;
+    }
+    .kds-btn svg {
+      flex-shrink: 0;
+      stroke: currentColor;
+      transition: transform 0.15s ease;
+    }
+    .kds-header-divider {
+      width: 1px;
+      height: 16px;
+      background: rgba(255, 255, 255, 0.12);
+      margin: 0 0.15rem;
+      flex-shrink: 0;
+    }
+
+    /* Operational Buttons */
+    .sound-btn {
+      color: #8E8279;
     }
     .sound-btn.active {
-      background: rgba(226, 135, 67, 0.12);
-      border-color: rgba(226, 135, 67, 0.3);
-      color: #EDE3DA;
+      color: #DF9B64;
+      font-weight: 600;
+    }
+    .sound-btn:hover {
+      color: #FFF;
+    }
+    .sound-btn:hover svg {
+      transform: scale(1.08);
+    }
+    .btn-kds-reset {
+      color: #8E8279;
+    }
+    .btn-kds-reset:hover {
+      color: #F87171;
+    }
+    .btn-kds-reset:hover svg {
+      transform: translateY(-1px);
+    }
+
+    /* Right Action Buttons */
+    .btn-kds-pos {
+      color: #DF9B64;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+    }
+    .btn-kds-pos:hover {
+      color: #FFF;
+    }
+    .btn-kds-pos:hover svg {
+      transform: translateY(-1px);
+    }
+    .btn-kds-signout {
+      color: #8E8279;
+      letter-spacing: 0.01em;
+    }
+    .btn-kds-signout:hover {
+      color: #F87171;
+    }
+    .btn-kds-signout:hover svg {
+      transform: translateX(1px);
     }
 
     /* KDS Main Multi-Column Board */
@@ -174,25 +249,56 @@ $isStaff = ($currentUser['role'] === 'staff');
     @media (max-width: 1024px) {
       .kds-header {
         flex-wrap: wrap;
-        gap: 0.75rem;
-        padding: 0.75rem 1rem;
+        gap: 0.5rem;
+        padding: 0.6rem 1rem;
       }
       .kds-actions {
         flex-wrap: wrap;
-        gap: 0.4rem;
+        gap: 0.2rem;
+      }
+    }
+    @media (max-width: 768px) {
+      .kds-op-cluster {
+        gap: 0.15rem;
+      }
+      .kds-btn {
+        padding: 0.25rem 0.45rem;
+        font-size: 0.75rem;
+        min-height: 38px;
+      }
+      .kds-header-divider {
+        height: 14px;
+        margin: 0 0.05rem;
       }
     }
     @media (max-width: 640px) {
       .kds-header {
         flex-direction: column;
         align-items: stretch;
-        gap: 0.75rem;
-        padding: 0.75rem 0.85rem;
+        gap: 0.5rem;
+        padding: 0.5rem 0.75rem;
       }
-      .kds-actions {
+      .kds-brand {
+        justify-content: space-between;
         width: 100%;
         flex-wrap: wrap;
         gap: 0.4rem;
+      }
+      .kds-op-cluster {
+        width: 100%;
+        justify-content: flex-start;
+        margin-left: 0;
+        flex-wrap: wrap;
+        gap: 0.15rem;
+      }
+      .kds-op-cluster > .kds-header-divider:first-child {
+        display: none;
+      }
+      .kds-actions {
+        width: 100%;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+        gap: 0.2rem;
       }
       .kds-board {
         padding: 0.75rem 0.65rem;
@@ -219,53 +325,52 @@ $isStaff = ($currentUser['role'] === 'staff');
       }
     }
 
-    /* Column Styles */
+    /* Column Styles (Editorial Anti-Slop) */
     .kds-col {
-      background: var(--kds-surface);
-      border: 1px solid var(--kds-border);
-      border-radius: 16px;
+      background: #171311;
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 10px;
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+      box-shadow: none;
     }
     .kds-col-header {
-      padding: 1rem 1.25rem;
-      border-bottom: 1px solid var(--kds-border);
+      padding: 0.85rem 1.15rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: rgba(0, 0, 0, 0.2);
+      background: transparent;
     }
     .kds-col-title {
-      font-size: 0.95rem;
+      font-size: 0.8125rem;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.06em;
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.45rem;
+      color: #EDE3DA;
     }
-    .col-pending .kds-col-title { color: #EDE3DA; }
-    .col-progress .kds-col-title { color: #EDE3DA; }
-    .col-pending .kds-col-title svg { color: var(--kds-amber); }
-    .col-progress .kds-col-title svg { color: #A89A8F; }
+    .col-pending .kds-col-title svg { color: #DF9B64; }
+    .col-progress .kds-col-title svg { color: #A8988C; }
     .kds-badge-count {
-      padding: 0.15rem 0.55rem;
-      border-radius: 999px;
-      font-size: 0.75rem;
-      font-weight: 700;
       font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: #8E8279;
+      background: transparent;
+      border: none;
+      padding: 0;
+      line-height: 1;
+      letter-spacing: 0.02em;
     }
     .col-pending .kds-badge-count {
-      background: rgba(226, 135, 67, 0.15);
-      color: #F6AD55;
-      border: 1px solid rgba(226, 135, 67, 0.3);
+      color: #DF9B64;
     }
     .col-progress .kds-badge-count {
-      background: rgba(255, 255, 255, 0.08);
-      color: #EDE3DA;
-      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #A8988C;
     }
 
     /* Ticket List - 2 Orders Per Row Grid */
@@ -291,37 +396,38 @@ $isStaff = ($currentUser['role'] === 'staff');
       font-size: 0.88rem;
     }
 
-    /* Ticket Card - Bare Minimum */
+    /* Ticket Card - Streamlined Anti-Slop Layout */
     .kds-ticket-card {
-      background: var(--kds-card);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 9px;
-      padding: 0.55rem 0.65rem;
+      background: #1C1714;
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 8px;
+      padding: 0.65rem 0.75rem;
       cursor: pointer;
-      transition: border-color 0.18s ease, background-color 0.18s ease, box-shadow 0.18s ease, transform 0.12s ease;
+      transition: background-color 0.15s ease, border-color 0.15s ease;
       position: relative;
       display: flex;
       flex-direction: column;
       gap: 0.35rem;
       min-width: 0;
+      box-sizing: border-box;
     }
     .kds-ticket-card:hover {
-      background: #231B16;
-      border-color: rgba(237, 227, 218, 0.25);
-      transform: translateY(-1px);
+      background: #231C18;
+      border-color: rgba(255, 255, 255, 0.14);
     }
     .kds-ticket-card.selected {
-      border-color: var(--kds-amber) !important;
+      border-color: #DF9B64 !important;
       background: #251D18 !important;
-      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.45);
     }
-    .ticket-head-row {
+    .ticket-card-top {
       display: flex;
       justify-content: space-between;
       align-items: baseline;
+      gap: 0.4rem;
+      min-width: 0;
     }
     .ticket-queue-num {
-      font-size: 1.15rem;
+      font-size: 1.25rem;
       font-weight: 800;
       color: #FFF;
       font-family: var(--font-mono);
@@ -333,60 +439,36 @@ $isStaff = ($currentUser['role'] === 'staff');
       font-family: var(--font-mono);
       font-weight: 600;
       color: #9C8E82;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
-    .ticket-timer.urgent {
-      color: #E07A5F;
-      font-weight: 700;
-    }
-    .ticket-origin-row {
-      display: flex;
-      align-items: center;
-    }
-    .origin-badge {
-      font-size: 0.66rem;
+    .ticket-origin {
+      font-size: 0.68rem;
       font-weight: 700;
       letter-spacing: 0.04em;
-      padding: 0.12rem 0.45rem;
-      border-radius: 4px;
-      display: inline-flex;
-      align-items: center;
       text-transform: uppercase;
-      line-height: 1.2;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.25;
     }
-    .origin-qr {
-      background: rgba(226, 135, 67, 0.14);
+    .ticket-origin.origin-qr {
       color: #F5A25D;
-      border: 1px solid rgba(226, 135, 67, 0.3);
     }
-    .origin-registrar {
-      background: rgba(184, 151, 126, 0.14);
-      color: #D8C3B3;
-      border: 1px solid rgba(184, 151, 126, 0.28);
+    .ticket-origin.origin-registrar {
+      color: #93C5FD;
     }
-    .origin-online {
-      background: rgba(82, 183, 136, 0.14);
-      color: #74C69D;
-      border: 1px solid rgba(82, 183, 136, 0.3);
+    .ticket-origin.origin-online {
+      color: #6EE7B7;
     }
-    .ticket-summary-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-top: 0.3rem;
-      border-top: 1px solid rgba(255, 255, 255, 0.06);
-      font-size: 0.72rem;
-    }
-    .ticket-summary-count {
+    .ticket-count {
+      font-size: 0.74rem;
       font-family: var(--font-mono);
       font-weight: 600;
-      color: #EDE3DA;
+      color: #A89A8E;
+      line-height: 1.2;
     }
-    .ticket-summary-station {
-      font-size: 0.68rem;
-      color: #9C8E82;
-      text-transform: uppercase;
-      letter-spacing: 0.03em;
-    }
+
     .meta-pill {
       font-size: 0.66rem;
       padding: 0.12rem 0.45rem;
@@ -406,18 +488,18 @@ $isStaff = ($currentUser['role'] === 'staff');
 
     /* Right Panel: Workstation & Preparation Checklist */
     .kds-workstation {
-      background: var(--kds-surface);
-      border: 1px solid var(--kds-border);
-      border-radius: 16px;
+      background: #171311;
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 10px;
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+      box-shadow: none;
     }
     .ws-header {
-      padding: 0.85rem 1.25rem;
-      background: rgba(18, 14, 12, 0.75);
-      border-bottom: 1px solid var(--kds-border);
+      padding: 0.85rem 1.15rem;
+      background: transparent;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
       flex-shrink: 0;
     }
     .ws-header-grid {
@@ -436,18 +518,18 @@ $isStaff = ($currentUser['role'] === 'staff');
       flex: 1 1 auto;
     }
     .ws-queue-badge {
-      font-size: 1.45rem;
+      font-size: 1.75rem;
       font-weight: 800;
       font-family: var(--font-mono);
       color: #FFF;
       line-height: 1;
-      padding: 0.4rem 0.75rem;
-      border-radius: 8px;
-      background: rgba(226, 135, 67, 0.16);
-      border: 1px solid rgba(226, 135, 67, 0.42);
+      padding: 0;
+      border-radius: 0;
+      background: none;
+      border: none;
       flex-shrink: 0;
       letter-spacing: -0.02em;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+      box-shadow: none;
       display: none;
       align-items: center;
       justify-content: center;
@@ -479,49 +561,43 @@ $isStaff = ($currentUser['role'] === 'staff');
     }
     .ws-header-tags {
       display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
+      align-items: baseline;
+      gap: 0.45rem;
       flex-shrink: 0;
     }
     .ws-table-badge {
-      font-size: 0.72rem;
-      font-weight: 700;
+      font-size: 0.74rem;
+      font-weight: 600;
       color: #EDE3DA;
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      padding: 0.16rem 0.52rem;
-      border-radius: 4px;
+      background: none;
+      border: none;
+      padding: 0;
       letter-spacing: 0.02em;
       white-space: nowrap;
       line-height: 1.2;
     }
     .origin-badge {
-      font-size: 0.68rem;
+      font-size: 0.72rem;
       font-weight: 700;
-      padding: 0.16rem 0.48rem;
-      border-radius: 4px;
-      letter-spacing: 0.03em;
+      padding: 0;
+      border: none;
+      background: none;
+      letter-spacing: 0.04em;
       text-transform: uppercase;
       white-space: nowrap;
       line-height: 1.2;
     }
-    .origin-qr {
-      background: rgba(226, 135, 67, 0.18);
-      color: #F8C39A;
-      border: 1px solid rgba(226, 135, 67, 0.42);
+    .origin-badge.origin-qr {
+      color: #F5A25D;
     }
-    .origin-registrar {
-      background: rgba(59, 130, 246, 0.16);
+    .origin-badge.origin-registrar {
       color: #93C5FD;
-      border: 1px solid rgba(59, 130, 246, 0.35);
     }
-    .origin-online {
-      background: rgba(16, 185, 129, 0.16);
-      color: #A7F3D0;
-      border: 1px solid rgba(16, 185, 129, 0.35);
+    .origin-badge.origin-online {
+      color: #6EE7B7;
     }
     .ws-order-meta-sep {
-      color: rgba(255, 255, 255, 0.22);
+      color: rgba(255, 255, 255, 0.25);
       font-size: 0.75rem;
       line-height: 1;
     }
@@ -541,36 +617,35 @@ $isStaff = ($currentUser['role'] === 'staff');
     }
     .ws-price-badge {
       display: inline-flex;
-      align-items: center;
+      align-items: baseline;
       gap: 0.45rem;
-      background: rgba(226, 135, 67, 0.12);
-      border: 1px solid rgba(226, 135, 67, 0.38);
-      border-radius: 6px;
-      padding: 0.22rem 0.65rem;
+      background: none;
+      border: none;
+      padding: 0;
       white-space: nowrap;
       line-height: 1;
-      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+      box-shadow: none;
     }
     .ws-pay-method {
-      font-size: 0.7rem;
-      font-weight: 800;
-      color: #E28743;
+      font-size: 0.74rem;
+      font-weight: 700;
+      color: var(--kds-amber);
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      background: rgba(226, 135, 67, 0.22);
-      padding: 0.12rem 0.38rem;
-      border-radius: 4px;
+      background: none;
+      padding: 0;
       line-height: 1;
     }
     .ws-price-divider {
-      color: rgba(255, 255, 255, 0.2);
+      color: rgba(255, 255, 255, 0.25);
+      font-size: 0.85rem;
     }
     .ws-price-val {
       font-family: var(--font-mono);
-      font-size: 1.12rem;
+      font-size: 1.32rem;
       font-weight: 800;
       color: #FFF;
-      letter-spacing: -0.01em;
+      letter-spacing: -0.02em;
       line-height: 1;
     }
     .ws-mode-switch-container {
@@ -758,90 +833,60 @@ $isStaff = ($currentUser['role'] === 'staff');
       color: #ECFDF5;
     }
 
-    /* Workstation Footer & Action Buttons */
+    /* Workstation Footer & Action Buttons (Anti-Slop Matte) */
     .ws-footer {
-      padding: 0.65rem 1rem;
-      background: rgba(0, 0, 0, 0.3);
-      border-top: 1px solid var(--kds-border);
+      padding: 0.75rem 1.15rem;
+      background: transparent;
+      border-top: 1px solid rgba(255, 255, 255, 0.07);
       display: flex;
-      gap: 0.75rem;
+      align-items: center;
+      gap: 0.65rem;
     }
     .btn-action-primary {
       flex: 1;
       min-height: 44px;
       border-radius: 8px;
-      font-size: 0.92rem;
+      font-size: 0.875rem;
       font-weight: 600;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 0.45rem;
-      transition: all 0.2s ease;
+      transition: all 0.18s ease;
       border: none;
+      box-sizing: border-box;
+      white-space: nowrap;
     }
     /* Locked state */
     .btn-action-primary.locked {
-      background: rgba(255, 255, 255, 0.05);
+      background: #201A16;
       color: #6B5B50;
       border: 1px solid rgba(255, 255, 255, 0.06);
       cursor: not-allowed;
       pointer-events: none;
+      box-shadow: none;
     }
     /* Unlocked Solid Emerald Green */
     .btn-action-primary.unlocked {
-      background: #059669;
+      background: #10B981;
       color: #FFF;
-      box-shadow: 0 2px 8px rgba(5, 150, 105, 0.3);
+      box-shadow: none;
       cursor: pointer;
       pointer-events: auto;
     }
     .btn-action-primary.unlocked:hover {
-      background: #10B981;
+      background: #059669;
     }
     /* Primary Start Order - Warm Coffee Amber */
     .btn-acknowledge {
-      background: var(--kds-amber);
-      color: #110D0B;
+      background: #E28743;
+      color: #14100E;
       font-weight: 700;
-      box-shadow: 0 2px 8px rgba(226, 135, 67, 0.3);
+      box-shadow: none;
     }
     .btn-acknowledge:hover {
-      background: #FDBA74;
-    }
-
-    /* Staff Pill & Signout Button */
-    .kds-staff-pill {
-      font-size: 0.82rem;
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      padding: 0.38rem 0.85rem;
-      border-radius: 8px;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.45rem;
-      color: #EDE3DA;
-      font-weight: 600;
-    }
-    .btn-kds-signout {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.45rem;
-      padding: 0.42rem 0.85rem;
-      border-radius: 8px;
-      font-size: 0.82rem;
-      font-weight: 600;
-      cursor: pointer;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      background: rgba(255, 255, 255, 0.05);
-      color: #C8BAAF;
-      transition: all 0.2s ease;
-      text-decoration: none;
-    }
-    .btn-kds-signout:hover {
-      background: rgba(239, 68, 68, 0.15);
-      border-color: rgba(239, 68, 68, 0.35);
-      color: #FCA5A5;
+      background: #F5A25D;
     }
 
     /* Workstation Standby Hub */
@@ -856,16 +901,15 @@ $isStaff = ($currentUser['role'] === 'staff');
       text-align: center;
     }
     .ws-standby-icon {
-      width: 58px;
-      height: 58px;
-      border-radius: 16px;
-      background: rgba(226, 135, 67, 0.12);
-      border: 1px solid rgba(226, 135, 67, 0.3);
-      color: var(--kds-amber);
+      width: 48px;
+      height: 48px;
+      background: transparent;
+      border: none;
+      color: #DF9B64;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 0.75rem;
+      margin-bottom: 0.5rem;
     }
     .ws-standby-action-card {
       background: #1C1613;
@@ -919,62 +963,7 @@ $isStaff = ($currentUser['role'] === 'staff');
       border: 1px solid rgba(255, 255, 255, 0.06);
     }
 
-    /* Station Filter Navigation Pills */
-    .kds-station-nav {
-      display: flex;
-      align-items: center;
-      gap: 0.35rem;
-      background: rgba(0, 0, 0, 0.4);
-      padding: 0.25rem 0.35rem;
-      border-radius: 10px;
-      border: 1px solid var(--kds-border);
-      max-width: 100%;
-      min-width: 0;
-      flex-shrink: 1;
-      overflow-x: auto;
-      scrollbar-width: none;
-      -webkit-overflow-scrolling: touch;
-    }
-    .kds-station-nav::-webkit-scrollbar {
-      display: none;
-    }
-    .station-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      padding: 0.32rem 0.7rem;
-      border-radius: 7px;
-      font-size: 0.78rem;
-      font-weight: 600;
-      cursor: pointer;
-      border: 1px solid transparent;
-      background: transparent;
-      color: var(--kds-muted);
-      transition: all 0.2s ease;
-      white-space: nowrap;
-    }
-    .station-pill:hover {
-      color: var(--kds-text);
-      background: rgba(255, 255, 255, 0.05);
-    }
-    .station-pill.active {
-      background: rgba(226, 135, 67, 0.18);
-      border-color: rgba(226, 135, 67, 0.45);
-      color: #FFF;
-      box-shadow: 0 2px 8px rgba(226, 135, 67, 0.2);
-    }
-    .station-count-pill {
-      font-family: var(--font-mono);
-      font-size: 0.7rem;
-      padding: 0.08rem 0.4rem;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.08);
-      color: inherit;
-    }
-    .station-pill.active .station-count-pill {
-      background: rgba(226, 135, 67, 0.35);
-      color: #FFDFBA;
-    }
+
 
     /* Modifiers & Subtle Spec Tags */
     .mod-badge-oat,
@@ -988,56 +977,35 @@ $isStaff = ($currentUser['role'] === 'staff');
       letter-spacing: 0.01em;
     }
 
-    /* Urgency Timers */
+    /* Urgency Timers - Clean Typography */
     .ticket-timer.warning {
-      color: var(--kds-amber) !important;
-      font-weight: 600;
-      background: rgba(226, 135, 67, 0.1);
-      padding: 0.12rem 0.45rem;
-      border-radius: 4px;
-      border: 1px solid rgba(226, 135, 67, 0.2);
+      color: #FBBF24 !important;
+      font-weight: 700 !important;
+      background: none !important;
+      border: none !important;
+      padding: 0 !important;
     }
     .ticket-timer.urgent {
-      color: #E07A5F !important;
-      font-weight: 600;
-      background: rgba(224, 122, 95, 0.12) !important;
-      padding: 0.12rem 0.45rem;
-      border-radius: 4px;
-      border: 1px solid rgba(224, 122, 95, 0.25);
-      box-shadow: none;
+      color: #F87171 !important;
+      font-weight: 700 !important;
+      background: none !important;
+      border: none !important;
+      padding: 0 !important;
+      box-shadow: none !important;
     }
 
-    /* Station Tag on Ticket & Recipe */
-    .station-tag {
-      font-size: 0.65rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      padding: 0.1rem 0.35rem;
-      border-radius: 4px;
-      letter-spacing: 0.04em;
-    }
-    .station-tag.station-barista {
-      background: rgba(226, 135, 67, 0.15);
-      color: #FDBA74;
-      border: 1px solid rgba(226, 135, 67, 0.3);
-    }
-    .station-tag.station-kitchen {
-      background: rgba(16, 185, 129, 0.15);
-      color: #6EE7B7;
-      border: 1px solid rgba(16, 185, 129, 0.3);
-    }
 
-    /* Bump Mode Switch Button */
+
+    /* Bump Mode Switch Button - Clean Ghost Action */
     .bump-mode-btn-switch {
       font-size: 0.72rem;
       font-weight: 600;
-      color: #D6C7BC;
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      padding: 0.22rem 0.6rem;
-      border-radius: 5px;
+      color: #A89A8E;
+      background: none;
+      border: none;
+      padding: 0.15rem 0;
       cursor: pointer;
-      transition: all 0.15s ease;
+      transition: color 0.15s ease;
       white-space: nowrap;
       display: inline-flex;
       align-items: center;
@@ -1046,46 +1014,48 @@ $isStaff = ($currentUser['role'] === 'staff');
       line-height: 1.2;
     }
     .bump-mode-btn-switch:hover {
-      background: rgba(226, 135, 67, 0.18);
-      border-color: rgba(226, 135, 67, 0.45);
-      color: #FFF;
+      background: none;
+      border-color: transparent;
+      color: var(--kds-amber);
+      text-decoration: underline;
     }
     .bump-mode-btn-switch svg {
-      color: var(--kds-amber);
+      color: currentColor;
       flex-shrink: 0;
     }
 
     .btn-fast-bump {
-      background: #059669;
+      background: #10B981;
       color: #FFF;
-      box-shadow: 0 4px 14px rgba(5, 150, 105, 0.35);
-      font-weight: 700;
-      font-size: 0.92rem;
+      box-shadow: none;
+      font-weight: 600;
     }
     .btn-fast-bump:hover {
-      background: #10B981;
+      background: #059669;
     }
 
     .btn-action-void {
-      background: rgba(239, 68, 68, 0.12);
-      border: 1px solid rgba(239, 68, 68, 0.3);
-      color: #FCA5A5;
-      font-size: 0.82rem;
-      font-weight: 600;
-      padding: 0.5rem 0.85rem;
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #8E8279;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      padding: 0.5rem 0.95rem;
       border-radius: 8px;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 0.35rem;
-      transition: all 0.2s ease;
+      gap: 0.45rem;
+      transition: all 0.18s ease;
       min-height: 44px;
       flex-shrink: 0;
+      box-sizing: border-box;
+      white-space: nowrap;
     }
     .btn-action-void:hover {
-      background: rgba(239, 68, 68, 0.25);
-      border-color: #EF4444;
-      color: #FFF;
+      background: rgba(239, 68, 68, 0.08);
+      border-color: rgba(239, 68, 68, 0.35);
+      color: #F87171;
     }
 
     /* Modals & Dialogs (History & Void & PIN) */
@@ -1244,29 +1214,34 @@ $isStaff = ($currentUser['role'] === 'staff');
       }
     }
     .btn-void-reason {
-      background: #221A15;
-      border: 1px solid rgba(239, 68, 68, 0.25);
-      border-radius: 10px;
-      padding: 0.95rem;
+      background: #1C1714;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      padding: 0.85rem 1rem;
       text-align: left;
       cursor: pointer;
-      transition: all 0.2s ease;
-      color: #FFF;
+      transition: all 0.18s ease;
+      color: #D6C7BC;
     }
     .btn-void-reason:hover {
-      background: rgba(239, 68, 68, 0.18);
-      border-color: #EF4444;
+      background: rgba(239, 68, 68, 0.08);
+      border-color: rgba(239, 68, 68, 0.4);
       transform: translateY(-1px);
     }
     .btn-void-reason strong {
-      display: block;
-      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-size: 0.88rem;
       margin-bottom: 0.2rem;
-      color: #FCA5A5;
+      color: #EDE3DA;
+    }
+    .btn-void-reason:hover strong {
+      color: #F87171;
     }
     .btn-void-reason span {
       font-size: 0.75rem;
-      color: var(--kds-muted);
+      color: #8E8279;
     }
 
     /* Supervisor PIN Keypad */
@@ -1341,12 +1316,9 @@ $isStaff = ($currentUser['role'] === 'staff');
         };
 
         function setupKdsHeader() {
-          var staffPill = document.getElementById('kdsStaffPill');
-          if (staffPill) {
-            staffPill.innerHTML = `
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color: var(--kds-amber); flex-shrink: 0;"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-              <span>${data.user.name}</span>
-            `;
+          var posBtn = document.getElementById('kdsPosBtn');
+          if (posBtn && data && data.user) {
+            posBtn.title = `Switch to Cashier POS (Signed in as ${data.user.name || 'Staff'})`;
           }
           var signoutBtn = document.getElementById('kdsSignOutBtn');
           if (signoutBtn) {
@@ -1372,45 +1344,33 @@ $isStaff = ($currentUser['role'] === 'staff');
     <div class="kds-brand">
       <div class="kds-logo">B</div>
       <div class="kds-title-group">
-        <h1>BeCoffee · Kitchen & Barista KDS</h1>
-        <div class="kds-subtitle">Live Orders & Station Preparation</div>
+        <h1>BeCoffee KDS</h1>
+        <div class="kds-subtitle">Live Orders &amp; Preparation</div>
+      </div>
+      <div class="kds-op-cluster" aria-label="Operational Controls">
+        <span class="kds-header-divider" aria-hidden="true"></span>
+        <div class="kds-clock" id="kdsClock">00:00:00</div>
+        <span class="kds-header-divider" aria-hidden="true"></span>
+        <button type="button" class="kds-btn sound-btn active" id="kdsSoundToggle" title="Toggle audio chime alert on new incoming tickets">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5L6 9H2v6h4l5 4V5z"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+          <span id="soundLabel">Chime: ON</span>
+        </button>
+        <span class="kds-header-divider" aria-hidden="true"></span>
+        <button type="button" class="kds-btn btn-kds-reset" id="kdsResetQueueBtn" title="Supervisor PIN required to reset active queue">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+          <span>Reset Queue</span>
+        </button>
       </div>
     </div>
 
-    <!-- Station Routing Filter Navigation -->
-    <nav class="kds-station-nav" role="tablist" aria-label="Station Filter">
-      <button type="button" class="station-pill active" data-station="all" id="stationPillAll" role="tab" aria-selected="true" title="View all beverage and food orders">
-        <span>All Stations</span>
-        <span class="station-count-pill" id="stationCountAll">0</span>
-      </button>
-      <button type="button" class="station-pill" data-station="barista" id="stationPillBarista" role="tab" aria-selected="false" title="View espresso and beverage drink orders">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><line x1="6" y1="1" x2="6" y2="4"></line><line x1="10" y1="1" x2="10" y2="4"></line><line x1="14" y1="1" x2="14" y2="4"></line></svg>
-        <span>Barista (Drinks)</span>
-        <span class="station-count-pill" id="stationCountBarista">0</span>
-      </button>
-      <button type="button" class="station-pill" data-station="kitchen" id="stationPillKitchen" role="tab" aria-selected="false" title="View food prep, sandwiches, and pastries">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path></svg>
-        <span>Kitchen (Food)</span>
-        <span class="station-count-pill" id="stationCountKitchen">0</span>
-      </button>
-    </nav>
-
-    <div class="kds-actions">
-      <button type="button" class="kds-btn" id="kdsHistoryBtn" title="Recall completed orders or view voided tickets">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v5h5"></path><path d="M3.05 13A9 9 0 1 0 6 5.3L3 8"></path><path d="M12 7v5l4 2"></path></svg>
-        <span>Recall / History</span>
-      </button>
-      <div class="kds-clock" id="kdsClock">00:00:00</div>
-      <div class="kds-staff-pill" id="kdsStaffPill">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color: var(--kds-amber); flex-shrink: 0;"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-        <span>Barista</span>
-      </div>
-      <button type="button" class="kds-btn sound-btn active" id="kdsSoundToggle" title="Toggle audio chime alert on new incoming tickets">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5z"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
-        <span id="soundLabel">Chime: ON</span>
-      </button>
+    <div class="kds-actions" aria-label="Staff Navigation">
+      <a href="index.php?mode=walkin" class="kds-btn btn-kds-pos" id="kdsPosBtn" title="Open Cashier Register to take customer orders">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+        <span>Take Orders (POS)</span>
+      </a>
+      <span class="kds-header-divider" aria-hidden="true"></span>
       <button type="button" class="kds-btn btn-kds-signout" id="kdsSignOutBtn" onclick="handleKdsSignOut()" title="Sign out of Kitchen Screen">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
         <span>Sign Out</span>
       </button>
     </div>
@@ -1496,31 +1456,19 @@ $isStaff = ($currentUser['role'] === 'staff');
 
   </main>
 
-  <!-- Modal 1: Recall & Order History / Queue Tools Modal -->
-  <div class="kds-modal-overlay" id="kdsHistoryModal" role="dialog" aria-modal="true" aria-labelledby="historyModalTitle">
-    <div class="kds-modal-card">
+  <!-- Modal 1: Supervisor Queue Reset Modal -->
+  <div class="kds-modal-overlay" id="kdsResetModal" role="dialog" aria-modal="true" aria-labelledby="resetModalTitle">
+    <div class="kds-modal-card" style="max-width: 440px;">
       <div class="kds-modal-head">
-        <div class="kds-modal-title" id="historyModalTitle">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="color: var(--kds-amber);"><path d="M3 3v5h5"></path><path d="M3.05 13A9 9 0 1 0 6 5.3L3 8"></path><path d="M12 7v5l4 2"></path></svg>
-          <span>Ticket History & Queue Tools</span>
+        <div class="kds-modal-title" id="resetModalTitle">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="color: var(--kds-amber);"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+          <span>Reset Active Queue</span>
         </div>
-        <button type="button" class="kds-modal-close" id="btnCloseHistoryModal" aria-label="Close dialog">&times;</button>
+        <button type="button" class="kds-modal-close" id="btnCloseResetModal" aria-label="Close dialog">&times;</button>
       </div>
 
-      <div class="kds-modal-tabs" role="tablist">
-        <button type="button" class="kds-modal-tab active" id="tabBtnCompleted" role="tab">
-          Completed (<span id="tabCountCompleted">0</span>)
-        </button>
-        <button type="button" class="kds-modal-tab" id="tabBtnVoided" role="tab">
-          Voided / Cancelled (<span id="tabCountVoided">0</span>)
-        </button>
-        <button type="button" class="kds-modal-tab" id="tabBtnReset" role="tab">
-          🔒 Queue Reset
-        </button>
-      </div>
-
-      <div class="kds-modal-body" id="historyModalContent">
-        <!-- Dynamic: completed list, voided list, or pin reset -->
+      <div class="kds-modal-body" id="resetModalContent">
+        <!-- Rendered PIN Keypad -->
       </div>
     </div>
   </div>
@@ -1541,19 +1489,31 @@ $isStaff = ($currentUser['role'] === 'staff');
         </p>
         <div class="void-reasons-grid">
           <button type="button" class="btn-void-reason" data-reason="Customer Walkout / Cancelled">
-            <strong>🚶 Customer Cancelled</strong>
+            <strong>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="18" y1="8" x2="23" y2="13"></line><line x1="23" y1="8" x2="18" y2="13"></line></svg>
+              Customer Cancelled
+            </strong>
             <span>Customer left or cancelled ticket</span>
           </button>
           <button type="button" class="btn-void-reason" data-reason="Duplicate Cashier Ring">
-            <strong>🔁 Duplicate Ring</strong>
+            <strong>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg>
+              Duplicate Ring
+            </strong>
             <span>Accidentally rung up twice</span>
           </button>
           <button type="button" class="btn-void-reason" data-reason="Out of Stock / 86'd">
-            <strong>🚫 Out of Stock</strong>
+            <strong>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14"></path><path d="m7.5 4.27 9 5.15"></path><polyline points="3.29 7 12 12 20.71 7"></polyline><line x1="12" y1="22" x2="12" y2="12"></line><path d="m17 13 5 5m-5 0 5-5"></path></svg>
+              Out of Stock
+            </strong>
             <span>Milk, beans, or food item 86'd</span>
           </button>
           <button type="button" class="btn-void-reason" data-reason="Staff Mistake / Wrong Item">
-            <strong>⚠️ Mistake / Wrong Item</strong>
+            <strong>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+              Mistake / Wrong Item
+            </strong>
             <span>Incorrect item or customization entered</span>
           </button>
         </div>
@@ -1576,11 +1536,17 @@ $isStaff = ($currentUser['role'] === 'staff');
       var selectedOrderId = null;
       var activeOrdersMap = new Map();
       var lastData = null;
-      var stationFilter = localStorage.getItem('kds_station_filter') || 'all';
       var bumpMode = localStorage.getItem('kds_bump_mode') || 'fast'; // 'fast' | 'qa'
       var currentVoidOrderId = null;
       var currentHistoryTab = 'completed';
       var enteredPin = '';
+
+      function escapeHtml(str) {
+        if (!str) return '';
+        return String(str).replace(/[&<>"']/g, function(m) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m];
+        });
+      }
 
       // Digital Clock
       function updateClock() {
@@ -1631,29 +1597,7 @@ $isStaff = ($currentUser['role'] === 'staff');
         }
       });
 
-      // Station Navigation Buttons
-      document.querySelectorAll('.station-pill').forEach(function(btn) {
-        btn.addEventListener('click', function() {
-          var target = btn.getAttribute('data-station');
-          stationFilter = target;
-          localStorage.setItem('kds_station_filter', target);
-          document.querySelectorAll('.station-pill').forEach(function(p) {
-            var isActive = (p.getAttribute('data-station') === target);
-            p.classList.toggle('active', isActive);
-            p.setAttribute('aria-selected', isActive ? 'true' : 'false');
-          });
-          if (lastData) {
-            renderBoard(lastData);
-          }
-        });
-      });
 
-      // Restore saved station filter tab
-      var activePill = document.querySelector(`.station-pill[data-station="${stationFilter}"]`);
-      if (activePill) {
-        document.querySelectorAll('.station-pill').forEach(function(p) { p.classList.remove('active'); });
-        activePill.classList.add('active');
-      }
 
       // Format elapsed time string
       function formatElapsed(seconds) {
@@ -1740,35 +1684,8 @@ $isStaff = ($currentUser['role'] === 'staff');
         rawPending.forEach(function(o) { activeOrdersMap.set(o.id, o); });
         rawInProgress.forEach(function(o) { activeOrdersMap.set(o.id, o); });
 
-        // Calculate Station Counts across all active tickets
-        var totalActive = rawPending.length + rawInProgress.length;
-        var baristaActive = 0;
-        var kitchenActive = 0;
-
-        var allActive = rawPending.concat(rawInProgress);
-        allActive.forEach(function(o) {
-          var hasBarista = (o.station === 'barista' || o.station === 'both');
-          var hasKitchen = (o.station === 'kitchen' || o.station === 'both');
-          if (hasBarista) baristaActive++;
-          if (hasKitchen) kitchenActive++;
-        });
-
-        document.getElementById('stationCountAll').textContent = totalActive;
-        document.getElementById('stationCountBarista').textContent = baristaActive;
-        document.getElementById('stationCountKitchen').textContent = kitchenActive;
-
-        // Apply Station Filter
-        var pending = rawPending.filter(function(o) {
-          if (stationFilter === 'barista') return (o.station === 'barista' || o.station === 'both');
-          if (stationFilter === 'kitchen') return (o.station === 'kitchen' || o.station === 'both');
-          return true;
-        });
-
-        var inProgress = rawInProgress.filter(function(o) {
-          if (stationFilter === 'barista') return (o.station === 'barista' || o.station === 'both');
-          if (stationFilter === 'kitchen') return (o.station === 'kitchen' || o.station === 'both');
-          return true;
-        });
+        var pending = rawPending;
+        var inProgress = rawInProgress;
 
         // Update column counts
         document.getElementById('pendingCount').textContent = pending.length;
@@ -1777,8 +1694,7 @@ $isStaff = ($currentUser['role'] === 'staff');
         // Render Pending Column
         var pendingList = document.getElementById('pendingTicketList');
         if (pending.length === 0) {
-          var filterNote = (stationFilter !== 'all') ? ` for ${stationFilter === 'barista' ? 'Barista' : 'Kitchen'}` : '';
-          pendingList.innerHTML = `<div class="kds-empty-notice">No pending orders${filterNote} right now.</div>`;
+          pendingList.innerHTML = '<div class="kds-empty-notice">No pending orders right now.</div>';
         } else {
           pendingList.innerHTML = pending.map(function(ord) {
             return buildTicketCardHtml(ord);
@@ -1788,8 +1704,7 @@ $isStaff = ($currentUser['role'] === 'staff');
         // Render In Progress Column
         var progressList = document.getElementById('inProgressTicketList');
         if (inProgress.length === 0) {
-          var filterNote2 = (stationFilter !== 'all') ? ` for ${stationFilter === 'barista' ? 'Barista' : 'Kitchen'}` : '';
-          progressList.innerHTML = `<div class="kds-empty-notice">No orders in progress${filterNote2} right now.</div>`;
+          progressList.innerHTML = '<div class="kds-empty-notice">No orders in progress right now.</div>';
         } else {
           progressList.innerHTML = inProgress.map(function(ord) {
             return buildTicketCardHtml(ord);
@@ -1828,28 +1743,31 @@ $isStaff = ($currentUser['role'] === 'staff');
           originText = 'ONLINE';
         } else if (ord.order_source === 'registrar') {
           originClass = 'origin-registrar';
-          originText = ord.table_number ? `REGISTRAR · T#${ord.table_number}` : 'REGISTRAR';
+          if (ord.table_number) {
+            originText = `REGISTRAR · T#${ord.table_number}`;
+          } else {
+            var isGeneric = !ord.customer_name || /^(guest|customer|autotest|walk-in)/i.test(ord.customer_name.trim());
+            originText = isGeneric ? 'REGISTRAR' : `CALL: ${escapeHtml(ord.customer_name.substring(0, 10))}`;
+          }
         } else {
           originClass = 'origin-qr';
           originText = ord.table_number ? `QR / LINK · T#${ord.table_number}` : 'QR / LINK';
         }
 
-        var stationLabel = ord.station === 'barista'
-          ? 'Barista'
-          : (ord.station === 'kitchen' ? 'Kitchen' : 'Barista & Kitchen');
+        var gcashPill = (ord.payment_method === 'gcash')
+          ? '<span style="font-size: 0.65rem; font-weight: 800; background: rgba(223, 155, 100, 0.2); color: #F5A25D; border: 1px solid rgba(223, 155, 100, 0.4); padding: 1px 5px; border-radius: 4px; letter-spacing: 0.04em;">GCASH</span>'
+          : '';
 
         return `
           <div class="kds-ticket-card ${isSelected ? 'selected' : ''}" data-order-id="${ord.id}">
-            <div class="ticket-head-row">
+            <div class="ticket-card-top">
               <span class="ticket-queue-num">#${ord.queue_number}</span>
               <span class="${timerClass}">${formatElapsed(ord.elapsed_seconds || 0)}</span>
             </div>
-            <div class="ticket-origin-row">
-              <span class="origin-badge ${originClass}">${originText}</span>
-            </div>
-            <div class="ticket-summary-row">
-              <span class="ticket-summary-count">${totalQty} ${totalQty === 1 ? 'item' : 'items'}</span>
-              <span class="ticket-summary-station">${stationLabel}</span>
+            <div class="ticket-origin ${originClass}">${originText}</div>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 0.25rem;">
+              <span class="ticket-count">${totalQty} ${totalQty === 1 ? 'item' : 'items'}</span>
+              ${gcashPill}
             </div>
           </div>
         `;
@@ -1902,10 +1820,12 @@ $isStaff = ($currentUser['role'] === 'staff');
           var isGeneric = !nextPending.customer_name || /^(guest|customer|autotest|walk-in)/i.test(nextPending.customer_name.trim());
           var destinationLabel = nextPending.order_type === 'take_out'
             ? 'Take-Out'
-            : 'Table #' + (nextPending.table_number || '1');
+            : (nextPending.table_number ? 'Table #' + nextPending.table_number : 'Counter Pick-Up');
           var destLine = isGeneric
             ? destinationLabel
-            : `${nextPending.customer_name} · ${destinationLabel}`;
+            : (nextPending.table_number
+                ? `${escapeHtml(nextPending.customer_name)} · ${destinationLabel}`
+                : `CALL: ${escapeHtml(nextPending.customer_name)} · ${destinationLabel}`);
 
           quickActionHtml = `
             <div class="ws-standby-action-card">
@@ -1963,7 +1883,7 @@ $isStaff = ($currentUser['role'] === 'staff');
         var customerDisplayName = isGenericName ? 'Guest Customer' : ord.customer_name;
         var destinationLabel = (ord.order_type === 'take_out')
           ? 'Take-Out'
-          : `Table #${ord.table_number || '1'}`;
+          : (ord.table_number ? `Table #${ord.table_number}` : 'Dine-In (Counter Pick-Up)');
 
         document.getElementById('wsCustomerName').textContent = customerDisplayName;
         document.getElementById('wsOrderRef').textContent = `Placed ${formatElapsed(ord.elapsed_seconds || 0)} ago`;
@@ -1983,11 +1903,21 @@ $isStaff = ($currentUser['role'] === 'staff');
           originText = 'QR / LINK';
         }
 
+        var isWalkinCall = (ord.order_source === 'registrar' && !ord.table_number);
         var tags = document.getElementById('wsHeaderTags');
         if (tags) {
+          var callBadge = isWalkinCall ? `
+            <span class="ws-order-meta-sep">·</span>
+            <span class="ws-table-badge" style="background: rgba(223, 155, 100, 0.2); color: #FDBA74; border: 1px solid rgba(223, 155, 100, 0.4); display: inline-flex; align-items: center; gap: 4px;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+              <span>CALL NAME</span>
+            </span>` : '';
+
           tags.innerHTML = `
             <span class="origin-badge ${originClass}">${originText}</span>
+            <span class="ws-order-meta-sep">·</span>
             <span class="ws-table-badge">${destinationLabel}</span>
+            ${callBadge}
           `;
           tags.style.display = 'inline-flex';
         }
@@ -1997,7 +1927,11 @@ $isStaff = ($currentUser['role'] === 'staff');
         if (priceBadge) {
           var payMethodEl = document.getElementById('wsPayMethod');
           var priceValEl = document.getElementById('wsPriceVal');
-          if (payMethodEl) payMethodEl.textContent = (ord.payment_method === 'gcash') ? 'GCash' : 'Cash';
+          if (payMethodEl) {
+            payMethodEl.textContent = (ord.payment_method === 'gcash')
+              ? (ord.table_number ? 'GCash · Verify Table' : 'GCash · Verify Counter')
+              : 'Cash';
+          }
           if (priceValEl) priceValEl.textContent = `₱${parseFloat(ord.grand_total).toFixed(2)}`;
           priceBadge.style.display = 'inline-flex';
         }
@@ -2050,10 +1984,18 @@ $isStaff = ($currentUser['role'] === 'staff');
         var footer = document.getElementById('wsFooter');
         footer.style.display = 'flex';
 
+        var gcashAlertHtml = (ord.payment_method === 'gcash') ? `
+          <div style="background: rgba(223, 155, 100, 0.12); border: 1px solid rgba(223, 155, 100, 0.35); border-radius: 8px; padding: 0.65rem 0.85rem; margin-bottom: 0.85rem; font-size: 0.78rem; color: #FAF7F2; display: flex; align-items: center; gap: 0.5rem;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#DF9B64" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12.01" y2="8"></line><polyline points="12 12 12 16 14 16"></polyline></svg>
+            <span><strong>Verify GCash Receipt:</strong> Inspect customer phone (sent to <strong>BECOFFEE</strong> · <strong>₱${parseFloat(ord.grand_total).toFixed(2)}</strong>) before releasing drinks.</span>
+          </div>
+        ` : '';
+
         // PENDING STATE
         if (ord.status === 'pending') {
           wsBody.innerHTML = `
             <div>
+              ${gcashAlertHtml}
               <div class="recipe-list-heading">Items to Prepare</div>
               <div class="recipe-list-items">
                 ${recipesHtml}
@@ -2063,8 +2005,8 @@ $isStaff = ($currentUser['role'] === 'staff');
 
           footer.innerHTML = `
             <button type="button" class="btn-action-void" id="btnVoidTicket" title="Cancel or void ticket with 1-tap reason">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
-              <span>Void Ticket</span>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+              <span>Void</span>
             </button>
             <button type="button" class="btn-action-primary btn-acknowledge" id="btnAcknowledge" style="flex: 1;">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
@@ -2096,7 +2038,7 @@ $isStaff = ($currentUser['role'] === 'staff');
         } else if (ord.status === 'in_progress') {
           // IN PROGRESS STATE: Support Fast Bump (Rush Mode) & 3-Step QA Mode
           var payLabel = (ord.payment_method === 'gcash')
-            ? `Payment verified (GCash · ₱${parseFloat(ord.grand_total).toFixed(2)})`
+            ? `GCash receipt verified on phone (BECOFFEE · ₱${parseFloat(ord.grand_total).toFixed(2)})`
             : `Cash payment received at counter (₱${parseFloat(ord.grand_total).toFixed(2)})`;
 
           var customList = [];
@@ -2111,7 +2053,9 @@ $isStaff = ($currentUser['role'] === 'staff');
 
           var packLabel = (ord.order_type === 'take_out')
             ? `Packed for take-out (Lids sealed, straw included)`
-            : `Ready for Table #${ord.table_number || '1'} (Glassware & tray prepared)`;
+            : (ord.table_number
+                ? `Ready for Table #${ord.table_number} (Glassware & tray prepared)`
+                : `Ready for Counter Pick-Up (Call: ${escapeHtml(customerDisplayName)})`);
 
           var qaBoxHtml = '';
           if (bumpMode === 'qa') {
@@ -2144,6 +2088,7 @@ $isStaff = ($currentUser['role'] === 'staff');
 
           wsBody.innerHTML = `
             <div>
+              ${gcashAlertHtml}
               <div class="recipe-list-heading">Items to Prepare</div>
               <div class="recipe-list-items">
                 ${recipesHtml}
@@ -2156,12 +2101,12 @@ $isStaff = ($currentUser['role'] === 'staff');
           if (bumpMode === 'fast') {
             footer.innerHTML = `
               <button type="button" class="btn-action-void" id="btnVoidTicket" title="Cancel or void ticket with 1-tap reason">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
                 <span>Void</span>
               </button>
               <button type="button" class="btn-action-primary btn-fast-bump" id="btnFastBumpOrder" style="flex: 1;">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                <span>⚡ Fast Bump Order #${ord.queue_number}</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                <span>Fast Bump Order #${ord.queue_number}</span>
               </button>
             `;
 
@@ -2186,12 +2131,12 @@ $isStaff = ($currentUser['role'] === 'staff');
                 } else {
                   await SystemDialog.alert('Unable to bump order: ' + (result.error || 'Server error'), { title: 'Bump Notice', type: 'warning' });
                   btn.disabled = false;
-                  btn.innerHTML = `⚡ Fast Bump Order #${ord.queue_number}`;
+                  btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg><span>Fast Bump Order #${ord.queue_number}</span>`;
                 }
               } catch (err) {
                 await SystemDialog.alert('Error completing order: ' + err.message, { title: 'Completion Error', type: 'danger' });
                 btn.disabled = false;
-                btn.innerHTML = `⚡ Fast Bump Order #${ord.queue_number}`;
+                btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg><span>Fast Bump Order #${ord.queue_number}</span>`;
               }
             });
 
@@ -2331,196 +2276,33 @@ $isStaff = ($currentUser['role'] === 'staff');
       });
 
       // =========================================================================
-      // Recall & Order History / Queue Reset Tools Modal
+      // Supervisor Queue Reset Tool Modal
       // =========================================================================
-      var historyModal = document.getElementById('kdsHistoryModal');
-      var historyBtn = document.getElementById('kdsHistoryBtn');
-      var tabBtnCompleted = document.getElementById('tabBtnCompleted');
-      var tabBtnVoided = document.getElementById('tabBtnVoided');
-      var tabBtnReset = document.getElementById('tabBtnReset');
-      var historyContent = document.getElementById('historyModalContent');
+      var resetModal = document.getElementById('kdsResetModal');
+      var resetBtn = document.getElementById('kdsResetQueueBtn');
+      var btnCloseReset = document.getElementById('btnCloseResetModal');
 
-      historyBtn.addEventListener('click', function() {
-        historyModal.classList.add('active');
-        switchHistoryTab('completed');
-      });
-
-      document.getElementById('btnCloseHistoryModal').addEventListener('click', function() {
-        historyModal.classList.remove('active');
-      });
-
-      tabBtnCompleted.addEventListener('click', function() { switchHistoryTab('completed'); });
-      tabBtnVoided.addEventListener('click', function() { switchHistoryTab('voided'); });
-      tabBtnReset.addEventListener('click', function() { switchHistoryTab('reset'); });
-
-      async function switchHistoryTab(tab) {
-        currentHistoryTab = tab;
-        tabBtnCompleted.classList.toggle('active', tab === 'completed');
-        tabBtnVoided.classList.toggle('active', tab === 'voided');
-        tabBtnReset.classList.toggle('active', tab === 'reset');
-
-        if (tab === 'reset') {
+      if (resetBtn && resetModal) {
+        resetBtn.addEventListener('click', function() {
+          resetModal.classList.add('active');
           renderResetPinKeypad();
-          return;
-        }
-
-        historyContent.innerHTML = '<div style="text-align: center; color: var(--kds-muted); padding: 2rem;">Loading ticket history...</div>';
-
-        try {
-          var res = await fetch('api/kds.php?view=history', { credentials: 'include' });
-          var data = await res.json();
-          if (!data.success) {
-            historyContent.innerHTML = '<div style="color: #F87171; text-align: center; padding: 2rem;">Failed to load history</div>';
-            return;
-          }
-
-          var completedList = data.completed || [];
-          var voidedList = data.cancelled || [];
-
-          document.getElementById('tabCountCompleted').textContent = completedList.length;
-          document.getElementById('tabCountVoided').textContent = voidedList.length;
-
-          if (tab === 'completed') {
-            renderCompletedHistory(completedList);
-          } else if (tab === 'voided') {
-            renderVoidedHistory(voidedList);
-          }
-        } catch (e) {
-          historyContent.innerHTML = `<div style="color: #F87171; text-align: center; padding: 2rem;">Error: ${e.message}</div>`;
-        }
-      }
-
-      function renderCompletedHistory(list) {
-        if (!list.length) {
-          historyContent.innerHTML = '<div style="text-align: center; color: var(--kds-muted); padding: 2.5rem 1rem;">No completed tickets in recent history.</div>';
-          return;
-        }
-
-        historyContent.innerHTML = list.map(function(ord) {
-          var itemsDesc = ord.items.map(function(it) {
-            var milk = (it.milk_option && it.milk_option !== 'Regular Milk') ? ` (${it.milk_option})` : '';
-            return `${it.quantity}x ${it.item_name}${milk}`;
-          }).join(', ');
-
-          var typeLabel = ord.order_type === 'take_out' ? 'Take-Out' : `Table #${ord.table_number || '1'}`;
-
-          return `
-            <div class="history-ticket-card">
-              <div class="history-card-head">
-                <div>
-                  <strong style="color: #FFF; font-size: 0.95rem; font-family: var(--font-mono);">#${ord.queue_number}</strong>
-                  <span style="color: #C8BAAF; font-size: 0.8rem; margin-left: 0.4rem;">${ord.customer_name}</span>
-                  <span style="color: var(--kds-muted); font-size: 0.74rem;">· ${typeLabel}</span>
-                </div>
-                <div class="history-card-actions">
-                  <span style="font-size: 0.72rem; color: #10B981; font-weight: 600;">Completed ${formatElapsed(ord.elapsed_seconds || 0)} ago</span>
-                  <button type="button" class="btn-recall" data-order-id="${ord.id}" title="Pull ticket back into active In-Progress rail">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
-                    <span>Recall Order</span>
-                  </button>
-                </div>
-              </div>
-              <div style="font-size: 0.78rem; color: #D6C7BC; line-height: 1.3;">
-                ${itemsDesc}
-              </div>
-            </div>
-          `;
-        }).join('');
-
-        // Attach Recall Handlers
-        historyContent.querySelectorAll('.btn-recall').forEach(function(btn) {
-          btn.addEventListener('click', async function() {
-            var orderId = parseInt(btn.getAttribute('data-order-id'), 10);
-            btn.disabled = true;
-            btn.innerHTML = 'Recalling...';
-            try {
-              var res = await fetch('api/kds.php?action=recall', {
-                method: 'PATCH',
-                credentials: 'include',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ order_id: orderId })
-              });
-              var result = await res.json();
-              if (result.success) {
-                historyModal.classList.remove('active');
-                await fetchKdsQueue();
-                selectOrder(orderId);
-              } else {
-                await SystemDialog.alert('Unable to recall ticket: ' + (result.error || 'Server error'), { title: 'Recall Notice', type: 'warning' });
-                btn.disabled = false;
-                btn.innerHTML = 'Recall Order';
-              }
-            } catch (err) {
-              await SystemDialog.alert('Recall error: ' + err.message, { title: 'Error', type: 'danger' });
-              btn.disabled = false;
-              btn.innerHTML = 'Recall Order';
-            }
-          });
         });
       }
 
-      function renderVoidedHistory(list) {
-        if (!list.length) {
-          historyContent.innerHTML = '<div style="text-align: center; color: var(--kds-muted); padding: 2.5rem 1rem;">No voided or cancelled tickets in recent history.</div>';
-          return;
-        }
-
-        historyContent.innerHTML = list.map(function(ord) {
-          var itemsDesc = ord.items.map(function(it) {
-            return `${it.quantity}x ${it.item_name}`;
-          }).join(', ');
-
-          var typeLabel = ord.order_type === 'take_out' ? 'Take-Out' : `Table #${ord.table_number || '1'}`;
-          var voidReason = ord.void_reason || 'Cancelled';
-
-          return `
-            <div class="history-ticket-card">
-              <div class="history-card-head">
-                <div>
-                  <strong style="color: #F87171; font-size: 0.95rem; font-family: var(--font-mono);">#${ord.queue_number}</strong>
-                  <span style="color: #C8BAAF; font-size: 0.8rem; margin-left: 0.4rem;">${ord.customer_name}</span>
-                  <span style="color: var(--kds-muted); font-size: 0.74rem;">· ${typeLabel}</span>
-                </div>
-                <div class="history-card-actions">
-                  <span class="void-reason-pill">VOID: ${voidReason}</span>
-                  <button type="button" class="btn-recall" data-order-id="${ord.id}" title="Restore ticket back to queue">
-                    <span>Restore</span>
-                  </button>
-                </div>
-              </div>
-              <div style="font-size: 0.78rem; color: #D6C7BC; line-height: 1.3;">
-                ${itemsDesc}
-              </div>
-            </div>
-          `;
-        }).join('');
-
-        historyContent.querySelectorAll('.btn-recall').forEach(function(btn) {
-          btn.addEventListener('click', async function() {
-            var orderId = parseInt(btn.getAttribute('data-order-id'), 10);
-            try {
-              var res = await fetch('api/kds.php?action=recall', {
-                method: 'PATCH',
-                credentials: 'include',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ order_id: orderId })
-              });
-              var result = await res.json();
-              if (result.success) {
-                historyModal.classList.remove('active');
-                await fetchKdsQueue();
-                selectOrder(orderId);
-              }
-            } catch (e) {}
-          });
+      if (btnCloseReset && resetModal) {
+        btnCloseReset.addEventListener('click', function() {
+          resetModal.classList.remove('active');
         });
       }
 
       function renderResetPinKeypad() {
         enteredPin = '';
-        historyContent.innerHTML = `
-          <div style="text-align: center; max-width: 320px; margin: 0 auto;">
-            <p style="font-size: 0.84rem; color: #FCA5A5; margin-bottom: 0.5rem; line-height: 1.35;">
+        var resetContent = document.getElementById('resetModalContent');
+        if (!resetContent) return;
+
+        resetContent.innerHTML = `
+          <div style="text-align: center; max-width: 320px; margin: 0 auto; padding: 0.5rem 0;">
+            <p style="font-size: 0.84rem; color: #FCA5A5; margin-bottom: 0.75rem; line-height: 1.35;">
               <strong>Supervisor PIN Required:</strong> Full queue reset is protected to prevent accidental wipes during rush. Enter PIN (Default 1234):
             </p>
             <div class="pin-input-display" id="resetPinDisplay">----</div>
@@ -2545,7 +2327,7 @@ $isStaff = ($currentUser['role'] === 'staff');
         var display = document.getElementById('resetPinDisplay');
         var errEl = document.getElementById('pinErrorMsg');
 
-        historyContent.querySelectorAll('.pin-key').forEach(function(key) {
+        resetContent.querySelectorAll('.pin-key').forEach(function(key) {
           key.addEventListener('click', async function() {
             var d = key.getAttribute('data-digit');
             errEl.textContent = '';
@@ -2565,7 +2347,7 @@ $isStaff = ($currentUser['role'] === 'staff');
                 });
                 var result = await res.json();
                 if (result.success) {
-                  historyModal.classList.remove('active');
+                  resetModal.classList.remove('active');
                   clearWorkstation();
                   await fetchKdsQueue();
                   await SystemDialog.alert('Active queue successfully cleared.', { title: 'Shift Reset', type: 'info' });

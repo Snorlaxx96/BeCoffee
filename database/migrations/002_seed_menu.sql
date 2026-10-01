@@ -13,38 +13,38 @@ ON DUPLICATE KEY UPDATE name=VALUES(name), sort_order=VALUES(sort_order);
 -- 2. Insert Menu Items
 INSERT INTO menu_items (id, category_id, name, origin_notes, elevation_info, price, price_iced_m, price_iced_l, price_hot, description, image_url, is_bestseller, is_available) VALUES
 -- House Coffee
-('hc-classic', 1, 'Classic Coffee', 'House Roast Blend', 'Hot / Iced', 120.00, 120.00, 140.00, 120.00, 'Smooth, balanced house-brewed coffee with rich nutty undertones and a clean, satisfying finish.', 'images/menu/hc-classic.webp', FALSE, TRUE),
-('hc-spanish', 1, 'Spanish Latte', 'Espresso & Sweetened Milk', 'Hot / Iced', 120.00, 120.00, 140.00, 120.00, 'Velvety espresso combined with smooth fresh milk and rich condensed milk for a perfectly sweet kick.', 'images/menu/hc-spanish.webp', FALSE, TRUE),
-('hc-americano', 1, 'Americano', 'Double Espresso & Water', 'Hot / Iced', 120.00, 120.00, 140.00, 120.00, 'Bold, clean double shot of house espresso poured over hot water or crisp ice.', 'images/menu/hc-americano.webp', FALSE, TRUE),
-('hc-french-vanilla', 1, 'French Vanilla Latte', 'Espresso & French Vanilla', 'Hot / Iced', 120.00, 120.00, 140.00, 120.00, 'Silky espresso and textured milk infused with sweet, aromatic French vanilla bean syrup.', 'images/menu/hc-french-vanilla.webp', FALSE, TRUE),
-('hc-coffee-latte', 1, 'Coffee Latte', 'Espresso & Fresh Milk', 'Hot / Iced', 120.00, 120.00, 140.00, 120.00, 'The timeless coffeehouse essential with smooth textured milk folded into freshly pulled espresso.', 'images/menu/hc-coffee-latte.webp', FALSE, TRUE),
-('hc-caramel-macchiato', 1, 'Caramel Macchiato', 'Espresso, Vanilla & Caramel', 'Hot / Iced', 120.00, 120.00, 140.00, 120.00, 'Layered vanilla-infused milk crowned with rich espresso and golden buttery caramel drizzle.', 'images/menu/hc-caramel-macchiato.webp', TRUE, TRUE),
-('hc-salted-caramel', 1, 'Salted Caramel', 'Espresso & Flaky Sea Salt Caramel', 'Hot / Iced', 120.00, 120.00, 140.00, 120.00, 'Slow-cooked rich caramel paired with espresso, fresh milk, and a delicate touch of flaky sea salt.', 'images/menu/hc-salted-caramel.webp', TRUE, TRUE),
-('hc-sea-salt-latte', 1, 'Sea Salt Latte', 'Espresso & Sea Salt Cold Cream', 'Hot / Iced', 120.00, 120.00, 140.00, 120.00, 'Rich, comforting latte topped with velvety lightly salted cream for a sublime sweet-savory contrast.', 'images/menu/hc-sea-salt-latte.webp', FALSE, TRUE),
-('hc-ube-latte', 1, 'Ube Latte', 'Espresso & Purple Yam Jam', 'Hot / Iced', 120.00, 120.00, 140.00, 120.00, 'Vibrant handcrafted ube halaya blend with fresh milk and a smooth espresso float.', 'images/menu/hc-ube-latte.webp', FALSE, TRUE),
-('hc-mocha', 1, 'Mocha', 'Espresso & Rich Dark Cocoa', 'Hot / Iced', 120.00, 120.00, 140.00, 120.00, 'Decadent dark cocoa melted into freshly pulled espresso and steamed milk.', 'images/menu/hc-mocha.webp', FALSE, TRUE),
-('hc-white-choco-mocha', 1, 'White Chocolate Mocha', 'Espresso & White Cacao', 'Hot / Iced', 120.00, 120.00, 140.00, 120.00, 'Sweet, velvety white chocolate sauce paired with bold espresso and creamy textured milk.', 'images/menu/hc-white-choco-mocha.webp', FALSE, TRUE),
-('hc-coffee-milo', 1, 'Coffee Milo', 'Espresso & Malted Milo Milk', 'Hot / Iced', 120.00, 120.00, 140.00, 120.00, 'The ultimate power brew—rich espresso combined with hearty malted Milo chocolate milk.', 'images/menu/hc-coffee-milo.webp', FALSE, TRUE),
-('hc-biscoff-latte', 1, 'Biscoff Latte', 'Espresso & Speculoos Cookie Butter', 'Hot / Iced', 120.00, 120.00, 140.00, 120.00, 'Spiced Belgian caramelized cookie spread melted into hot or iced espresso and milk.', 'images/menu/hc-biscoff-latte.webp', FALSE, TRUE),
+('hc-classic', 1, 'Classic Coffee', 'House Roast Blend', 'Hot / Iced', 120.00, 120.00, 140.00, 120.00, 'Single-origin house arabica blend, batch brewed fresh daily.', 'images/menu/hc-classic.webp', FALSE, TRUE),
+('hc-spanish', 1, 'Spanish Latte', 'Espresso & Sweetened Milk', 'Hot / Iced', 120.00, 120.00, 140.00, 120.00, 'Espresso, condensed milk, fresh milk. Sweet and creamy.', 'images/menu/hc-spanish.webp', FALSE, TRUE),
+('hc-americano', 1, 'Americano', 'Double Espresso & Water', 'Hot / Iced', 120.00, 120.00, 140.00, 120.00, 'Double shot espresso, filtered water. Served hot or iced.', 'images/menu/hc-americano.webp', FALSE, TRUE),
+('hc-french-vanilla', 1, 'French Vanilla Latte', 'Espresso & French Vanilla', 'Hot / Iced', 120.00, 120.00, 140.00, 120.00, 'Espresso, vanilla bean syrup, steamed milk.', 'images/menu/hc-french-vanilla.webp', FALSE, TRUE),
+('hc-coffee-latte', 1, 'Coffee Latte', 'Espresso & Fresh Milk', 'Hot / Iced', 120.00, 120.00, 140.00, 120.00, 'Espresso with textured steamed milk and microfoam.', 'images/menu/hc-coffee-latte.webp', FALSE, TRUE),
+('hc-caramel-macchiato', 1, 'Caramel Macchiato', 'Espresso, Vanilla & Caramel', 'Hot / Iced', 120.00, 120.00, 140.00, 120.00, 'Espresso, vanilla syrup, fresh milk, caramel drizzle.', 'images/menu/hc-caramel-macchiato.webp', TRUE, TRUE),
+('hc-salted-caramel', 1, 'Salted Caramel', 'Espresso & Flaky Sea Salt Caramel', 'Hot / Iced', 120.00, 120.00, 140.00, 120.00, 'Espresso, house caramel syrup, sea salt, fresh milk.', 'images/menu/hc-salted-caramel.webp', TRUE, TRUE),
+('hc-sea-salt-latte', 1, 'Sea Salt Latte', 'Espresso & Sea Salt Cold Cream', 'Hot / Iced', 120.00, 120.00, 140.00, 120.00, 'Espresso, textured milk, lightly salted cold foam.', 'images/menu/hc-sea-salt-latte.webp', FALSE, TRUE),
+('hc-ube-latte', 1, 'Ube Latte', 'Espresso & Purple Yam Jam', 'Hot / Iced', 120.00, 120.00, 140.00, 120.00, 'Espresso, purple yam halaya, fresh milk.', 'images/menu/hc-ube-latte.webp', FALSE, TRUE),
+('hc-mocha', 1, 'Mocha', 'Espresso & Rich Dark Cocoa', 'Hot / Iced', 120.00, 120.00, 140.00, 120.00, 'Espresso, dark cocoa, steamed fresh milk.', 'images/menu/hc-mocha.webp', FALSE, TRUE),
+('hc-white-choco-mocha', 1, 'White Chocolate Mocha', 'Espresso & White Cacao', 'Hot / Iced', 120.00, 120.00, 140.00, 120.00, 'Espresso, white chocolate sauce, fresh milk.', 'images/menu/hc-white-choco-mocha.webp', FALSE, TRUE),
+('hc-coffee-milo', 1, 'Coffee Milo', 'Espresso & Malted Milo Milk', 'Hot / Iced', 120.00, 120.00, 140.00, 120.00, 'Espresso, malted Milo chocolate, steamed or cold milk.', 'images/menu/hc-coffee-milo.webp', FALSE, TRUE),
+('hc-biscoff-latte', 1, 'Biscoff Latte', 'Espresso & Speculoos Cookie Butter', 'Hot / Iced', 120.00, 120.00, 140.00, 120.00, 'Espresso, spiced Belgian cookie spread, fresh milk.', 'images/menu/hc-biscoff-latte.webp', FALSE, TRUE),
 
 -- Matcha
-('mat-latte', 2, 'Matcha Latte', 'Uji Ceremonial Green Tea', 'Hot / Iced', 120.00, 120.00, 140.00, 120.00, 'Stone-ground green tea whisked fresh with silky milk for a soothing, umami-rich experience.', 'images/menu/mat-latte.webp', TRUE, TRUE),
-('mat-dirty', 2, 'Dirty Matcha', 'Uji Matcha & Espresso Shot', 'Hot / Iced', 120.00, 120.00, 140.00, 120.00, 'Earthy ceremonial matcha latte topped with a concentrated shot of dark espresso.', 'images/menu/mat-dirty.webp', FALSE, TRUE),
-('mat-berry', 2, 'Matcha Berry', 'Uji Matcha & Wild Strawberry', 'Hot / Iced', 120.00, 120.00, 140.00, 120.00, 'Layered handcrafted sweet berry compote with milk and crowned with frothy green matcha.', 'images/menu/mat-berry.webp', FALSE, TRUE),
-('mat-ube', 2, 'Matcha Ube', 'Uji Matcha & Purple Yam Jam', 'Hot / Iced', 120.00, 120.00, 140.00, 120.00, 'Vibrant dual-color fusion of velvety purple yam and green ceremonial matcha tea.', 'images/menu/mat-ube.webp', FALSE, TRUE),
-('mat-choco', 2, 'Matchoco', 'Uji Matcha & Cocoa Chocolate', 'Hot / Iced', 120.00, 120.00, 140.00, 120.00, 'Deep cocoa chocolate swirled together with vibrant ceremonial green tea.', 'images/menu/mat-choco.webp', FALSE, TRUE),
-('mat-caramel', 2, 'Matcharamel', 'Uji Matcha & Golden Caramel', 'Hot / Iced', 120.00, 120.00, 140.00, 120.00, 'Ceremonial matcha latte drizzled with luscious buttery golden caramel syrup.', 'images/menu/mat-caramel.webp', FALSE, TRUE),
+('mat-latte', 2, 'Matcha Latte', 'Uji Ceremonial Green Tea', 'Hot / Iced', 120.00, 120.00, 140.00, 120.00, 'Japanese Uji green tea whisked with fresh milk.', 'images/menu/mat-latte.webp', TRUE, TRUE),
+('mat-dirty', 2, 'Dirty Matcha', 'Uji Matcha & Espresso Shot', 'Hot / Iced', 120.00, 120.00, 140.00, 120.00, 'Uji matcha latte with a fresh shot of espresso.', 'images/menu/mat-dirty.webp', FALSE, TRUE),
+('mat-berry', 2, 'Matcha Berry', 'Uji Matcha & Wild Strawberry', 'Hot / Iced', 120.00, 120.00, 140.00, 120.00, 'Uji matcha, strawberry compote, fresh milk.', 'images/menu/mat-berry.webp', FALSE, TRUE),
+('mat-ube', 2, 'Matcha Ube', 'Uji Matcha & Purple Yam Jam', 'Hot / Iced', 120.00, 120.00, 140.00, 120.00, 'Uji matcha, purple yam halaya, fresh milk.', 'images/menu/mat-ube.webp', FALSE, TRUE),
+('mat-choco', 2, 'Matchoco', 'Uji Matcha & Cocoa Chocolate', 'Hot / Iced', 120.00, 120.00, 140.00, 120.00, 'Uji matcha whisked with pure dark cocoa and milk.', 'images/menu/mat-choco.webp', FALSE, TRUE),
+('mat-caramel', 2, 'Matcharamel', 'Uji Matcha & Golden Caramel', 'Hot / Iced', 120.00, 120.00, 140.00, 120.00, 'Uji matcha latte with caramel drizzle.', 'images/menu/mat-caramel.webp', FALSE, TRUE),
 
 -- House Specials
-('hs-milo', 3, 'Milo', 'Malted Chocolate Milk', 'Hot / Iced', 90.00, 90.00, 110.00, 90.00, 'Rich, creamy malted chocolate beverage prepared hot or poured over cracked ice with malt powder.', 'images/menu/hs-milo.webp', TRUE, TRUE),
-('hs-choco', 3, 'Choco', 'Classic Dark Chocolate Milk', 'Hot / Iced', 90.00, 90.00, 110.00, 90.00, 'Decadent, velvety chocolate milk made with pure cocoa and smooth fresh milk.', 'images/menu/hs-choco.webp', FALSE, TRUE),
-('hs-chocoberry', 3, 'Chocoberry', 'Dark Chocolate & Berry Puree', 'Hot / Iced', 90.00, 90.00, 110.00, 90.00, 'Indulgent sweet chocolate milk infused with real strawberry and mixed berry nectar.', 'images/menu/hs-chocoberry.webp', FALSE, TRUE),
+('hs-milo', 3, 'Milo', 'Malted Chocolate Milk', 'Hot / Iced', 90.00, 90.00, 110.00, 90.00, 'Malted Milo chocolate drink, served hot or iced.', 'images/menu/hs-milo.webp', TRUE, TRUE),
+('hs-choco', 3, 'Choco', 'Classic Dark Chocolate Milk', 'Hot / Iced', 90.00, 90.00, 110.00, 90.00, 'Dark cocoa whisked with fresh whole milk.', 'images/menu/hs-choco.webp', FALSE, TRUE),
+('hs-chocoberry', 3, 'Chocoberry', 'Dark Chocolate & Berry Puree', 'Hot / Iced', 90.00, 90.00, 110.00, 90.00, 'Dark chocolate milk with mixed berry puree.', 'images/menu/hs-chocoberry.webp', FALSE, TRUE),
 
 -- Yogurt / Soda
-('ys-strawberry', 4, 'Strawberry', 'Sweet Strawberry Puree', 'Iced Only', 80.00, 80.00, 100.00, NULL, 'Crisp, refreshing sparkling soda or creamy yogurt drink infused with ripe strawberry puree.', 'images/menu/ys-strawberry.webp', FALSE, TRUE),
-('ys-blueberry', 4, 'Blueberry', 'Wild Blueberry Puree', 'Iced Only', 80.00, 80.00, 100.00, NULL, 'Tart and sweet wild blueberry syrup paired with effervescent soda or chilled probiotic yogurt.', 'images/menu/ys-blueberry.webp', FALSE, TRUE),
-('ys-mixed-berries', 4, 'Mixed Berries', 'Raspberry, Blackberry & Blueberry', 'Iced Only', 80.00, 80.00, 100.00, NULL, 'Vibrant blend of summer berries sparkling with crisp botanical soda or smooth yogurt.', 'images/menu/ys-mixed-berries.webp', FALSE, TRUE),
-('ys-green-apple', 4, 'Green Apple', 'Crisp Green Apple Cordial', 'Iced Only', 80.00, 80.00, 100.00, NULL, 'Zesty, bright green apple cordial served over ice with fizzy sparkling soda or creamy yogurt.', 'images/menu/ys-green-apple.webp', FALSE, TRUE)
+('ys-strawberry', 4, 'Strawberry', 'Sweet Strawberry Puree', 'Iced Only', 80.00, 80.00, 100.00, NULL, 'Strawberry puree with sparkling soda or yogurt.', 'images/menu/ys-strawberry.webp', FALSE, TRUE),
+('ys-blueberry', 4, 'Blueberry', 'Wild Blueberry Puree', 'Iced Only', 80.00, 80.00, 100.00, NULL, 'Wild blueberry puree with sparkling soda or yogurt.', 'images/menu/ys-blueberry.webp', FALSE, TRUE),
+('ys-mixed-berries', 4, 'Mixed Berries', 'Raspberry, Blackberry & Blueberry', 'Iced Only', 80.00, 80.00, 100.00, NULL, 'Raspberry, blackberry, blueberry with soda or yogurt.', 'images/menu/ys-mixed-berries.webp', FALSE, TRUE),
+('ys-green-apple', 4, 'Green Apple', 'Crisp Green Apple Cordial', 'Iced Only', 80.00, 80.00, 100.00, NULL, 'Green apple cordial with sparkling soda or yogurt.', 'images/menu/ys-green-apple.webp', FALSE, TRUE)
 ON DUPLICATE KEY UPDATE
     name=VALUES(name),
     category_id=VALUES(category_id),

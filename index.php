@@ -1,6 +1,8 @@
 <?php
 require_once __DIR__ . '/api/config.php';
 $currentUser = getAuthenticatedUser();
+$isWalkin = (isset($_GET['mode']) && $_GET['mode'] === 'walkin');
+$isTableQR = !empty($_GET['table']);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -17,10 +19,10 @@ $currentUser = getAuthenticatedUser();
   <style>
     /* Direct Order App Layout */
     body.order-app-body {
-      background: #110D0B;
-      background-image: 
-        radial-gradient(circle at 50% -12%, rgba(226, 135, 67, 0.14) 0%, transparent 55%),
-        radial-gradient(circle at 90% 25%, rgba(148, 77, 28, 0.08) 0%, transparent 45%);
+      --order-topbar-height: 64px;
+      --order-catnav-height: 52px;
+      --order-sticky-gap: 16px;
+      background: #14100E;
       color: #F5EBE1;
       font-family: var(--font-sans);
       min-height: 100vh;
@@ -31,9 +33,12 @@ $currentUser = getAuthenticatedUser();
 
     /* Sticky Order App Header */
     .order-header {
-      background: rgba(21, 17, 14, 0.94);
-      border-bottom: 1px solid rgba(223, 155, 100, 0.18);
-      padding: 0.75rem 1.25rem;
+      background: #171210;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 0.6rem 1.25rem;
+      height: var(--order-topbar-height);
+      min-height: var(--order-topbar-height);
+      box-sizing: border-box;
       position: sticky;
       top: 0;
       z-index: 100;
@@ -53,8 +58,8 @@ $currentUser = getAuthenticatedUser();
     .order-brand-logo {
       width: 36px;
       height: 36px;
-      border-radius: 10px;
-      background: linear-gradient(135deg, #E28743 0%, #944D1C 100%);
+      border-radius: 8px;
+      background: #E28743;
       color: #FFF;
       display: flex;
       align-items: center;
@@ -62,7 +67,6 @@ $currentUser = getAuthenticatedUser();
       font-family: var(--font-serif);
       font-size: 1.15rem;
       font-weight: 700;
-      box-shadow: 0 4px 12px rgba(226, 135, 67, 0.3);
     }
     .order-brand-title {
       font-family: var(--font-serif);
@@ -99,39 +103,106 @@ $currentUser = getAuthenticatedUser();
       background: rgba(226, 135, 67, 0.25);
     }
 
-    /* Top Action Links */
+    /* Top Action Links (Editorial Anti-Slop) */
     .order-top-actions {
       display: flex;
       align-items: center;
-      gap: 0.65rem;
+      gap: 0.5rem;
     }
+    .staff-header-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+    .header-action-btn,
     .btn-story-link {
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: #D6C7BC;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      min-height: 44px;
+      padding: 0.35rem 0.65rem;
+      background: transparent;
+      border: none;
+      font-family: inherit;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      line-height: 1;
       text-decoration: none;
-      padding: 0.4rem 0.75rem;
-      border-radius: 999px;
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      transition: all 0.2s ease;
+      cursor: pointer;
+      border-radius: 6px;
+      color: #A8988C;
+      transition: color 0.15s ease, opacity 0.15s ease;
+      white-space: nowrap;
+      box-sizing: border-box;
     }
-    .btn-story-link:hover {
-      background: rgba(255, 255, 255, 0.08);
+    .header-action-btn:focus-visible,
+    .btn-story-link:focus-visible {
+      outline: 2px solid #DF9B64;
+      outline-offset: 2px;
+    }
+    .header-action-btn svg {
+      flex-shrink: 0;
+      stroke: currentColor;
+      transition: transform 0.15s ease;
+    }
+    .header-action-btn.action-kds {
+      color: #DF9B64;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+    }
+    .header-action-btn.action-kds:hover {
       color: #FFF;
     }
-    .btn-leave-link {
-      color: #FCA5A5 !important;
-      border-color: rgba(239, 68, 68, 0.35) !important;
-      background: rgba(239, 68, 68, 0.08) !important;
+    .header-action-btn.action-kds:hover svg {
+      transform: translateY(-1px);
     }
+    .header-action-btn.action-logout {
+      color: #8E8279;
+      letter-spacing: 0.01em;
+    }
+    .header-action-btn.action-logout:hover {
+      color: #F87171;
+    }
+    .header-action-btn.action-logout:hover svg {
+      transform: translateX(1px);
+    }
+    .header-action-divider {
+      width: 1px;
+      height: 16px;
+      background: rgba(255, 255, 255, 0.12);
+      margin: 0 0.15rem;
+      flex-shrink: 0;
+    }
+    .header-action-btn.action-story,
+    .btn-story-link {
+      color: #A8988C;
+      font-weight: 500;
+    }
+    .header-action-btn.action-story:hover,
+    .btn-story-link:hover {
+      color: #FFF;
+      background: transparent;
+    }
+    .header-action-btn.action-leave,
+    .btn-leave-link {
+      color: #8E8279 !important;
+      border: none !important;
+      background: transparent !important;
+    }
+    .header-action-btn.action-leave:hover,
     .btn-leave-link:hover {
-      background: rgba(239, 68, 68, 0.2) !important;
-      border-color: rgba(239, 68, 68, 0.6) !important;
-      color: #FFF !important;
+      color: #F87171 !important;
+      background: transparent !important;
+      border: none !important;
     }
     @media (max-width: 480px) {
+      body.order-app-body {
+        --order-topbar-height: 54px;
+        --order-catnav-height: 48px;
+        --order-sticky-gap: 12px;
+      }
       .order-header {
-        padding: 0.55rem 0.65rem;
+        padding: 0.45rem 0.65rem;
         gap: 0.35rem;
       }
       .order-brand-tag {
@@ -150,11 +221,21 @@ $currentUser = getAuthenticatedUser();
         font-size: 0.72rem;
       }
       .order-top-actions {
-        gap: 0.3rem;
+        gap: 0.2rem;
       }
+      .staff-header-actions {
+        gap: 0.15rem;
+      }
+      .header-action-btn,
       .btn-story-link {
-        padding: 0.3rem 0.5rem;
-        font-size: 0.72rem;
+        padding: 0.25rem 0.45rem;
+        font-size: 0.75rem;
+        gap: 0.3rem;
+        min-height: 38px;
+      }
+      .header-action-divider {
+        height: 14px;
+        margin: 0 0.05rem;
       }
     }
 
@@ -219,11 +300,14 @@ $currentUser = getAuthenticatedUser();
     /* Sticky Category Nav with Prep Timer */
     .order-category-nav {
       position: sticky;
-      top: 59px;
+      top: var(--order-topbar-height);
+      height: var(--order-catnav-height);
+      min-height: var(--order-catnav-height);
+      box-sizing: border-box;
       z-index: 90;
-      background: rgba(17, 13, 11, 0.92);
+      background: #171210;
       border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      padding: 0.65rem 1.25rem;
+      padding: 0.5rem 1.25rem;
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       display: flex;
@@ -246,24 +330,29 @@ $currentUser = getAuthenticatedUser();
       display: none;
     }
     .cat-pill-btn {
-      padding: 0.45rem 1rem;
+      padding: 0.4rem 0.95rem;
       border-radius: 999px;
       font-size: 0.82rem;
       font-weight: 600;
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      background: rgba(255, 255, 255, 0.04);
-      color: #D1C5BD;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: transparent;
+      color: #A99B92;
       cursor: pointer;
       white-space: nowrap;
-      transition: all 0.2s ease;
+      transition: all 0.15s ease;
       flex-shrink: 0;
     }
-    .cat-pill-btn.active,
     .cat-pill-btn:hover {
-      background: linear-gradient(135deg, #E28743 0%, #944D1C 100%);
+      color: #FFF;
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+    .cat-pill-btn.active {
+      background: #E28743;
       color: #FFF;
       border-color: #E28743;
-      box-shadow: 0 4px 14px rgba(226, 135, 67, 0.3);
+      font-weight: 700;
+      box-shadow: none;
     }
     .order-prep-timer {
       display: inline-flex;
@@ -296,7 +385,7 @@ $currentUser = getAuthenticatedUser();
     }
     @media (max-width: 520px) {
       .order-category-nav {
-        padding: 0.55rem 0.75rem;
+        padding: 0.35rem 0.65rem;
         gap: 0.5rem;
       }
       .order-prep-timer {
@@ -311,12 +400,24 @@ $currentUser = getAuthenticatedUser();
       }
     }
 
-    /* Drinks Grid */
-    .order-catalog-wrap {
-      max-width: 1200px;
-      margin: 1.25rem auto;
-      padding: 0 1.25rem;
+    /* Main Layout: Split Screen on Desktop (Catalog + Kiosk Sidebar) */
+    .order-app-container {
+      max-width: 1440px;
+      margin: var(--order-sticky-gap) auto;
+      padding: 0 1.5rem;
+      display: flex;
+      gap: 1.75rem;
+      align-items: flex-start;
       width: 100%;
+      box-sizing: border-box;
+    }
+    .order-catalog-wrap {
+      flex: 1;
+      min-width: 0;
+      width: auto;
+      margin: 0;
+      padding: 0;
+      max-width: none;
     }
     .catalog-section-title {
       font-family: var(--font-serif);
@@ -329,7 +430,7 @@ $currentUser = getAuthenticatedUser();
     }
     .catalog-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
       gap: 1.25rem;
     }
     @media (max-width: 600px) {
@@ -339,97 +440,578 @@ $currentUser = getAuthenticatedUser();
       }
     }
 
-    .drink-card {
-      background: #1C1613;
-      border: 1px solid rgba(223, 155, 100, 0.16);
-      border-radius: 18px;
-      padding: 1.15rem;
+    /* Kiosk Order Sidebar (Flat Matte Register Panel) */
+    .kiosk-order-sidebar {
+      width: 380px;
+      flex-shrink: 0;
+      position: sticky;
+      top: calc(var(--order-topbar-height) + var(--order-catnav-height) + var(--order-sticky-gap));
+      height: calc(100vh - (var(--order-topbar-height) + var(--order-catnav-height) + (var(--order-sticky-gap) * 2)));
+      max-height: calc(100vh - (var(--order-topbar-height) + var(--order-catnav-height) + (var(--order-sticky-gap) * 2)));
+      background: #181311;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
       display: flex;
       flex-direction: column;
+      overflow: hidden;
+      box-sizing: border-box;
+      z-index: 80;
+    }
+
+    /* Kiosk Sidebar Panels */
+    .kiosk-panel {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      min-height: 0;
+      flex: 1;
+    }
+
+    /* Kiosk Sidebar Header */
+    .kiosk-sidebar-header {
+      padding: 1rem 1.15rem 0.85rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      background: #181311;
+      flex-shrink: 0;
+    }
+    .kiosk-header-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.65rem;
+    }
+    .kiosk-header-title-wrap {
+      display: flex;
+      align-items: baseline;
+      gap: 0.4rem;
+    }
+    .kiosk-header-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #FFFFFF;
+      margin: 0;
+      letter-spacing: -0.01em;
+    }
+    .kiosk-item-badge {
+      font-size: 0.85rem;
+      font-family: inherit;
+      font-weight: 500;
+      color: #8C7E75;
+      background: none;
+      border: none;
+      padding: 0;
+    }
+    .kiosk-btn-clear {
+      background: none;
+      border: none;
+      color: #8C7E75;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 0.2rem 0.4rem;
+      border-radius: 6px;
+      transition: color 0.15s ease;
+    }
+    .kiosk-btn-clear:hover {
+      color: #EF4444;
+    }
+
+    /* Segmented Dining Selector */
+    .kiosk-segmented-dining {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 8px;
+      padding: 3px;
+      gap: 3px;
+    }
+    .kiosk-seg-btn {
+      background: none;
+      border: none;
+      color: #9E8E85;
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 0.45rem 0.5rem;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+      transition: all 0.15s ease;
+    }
+    .kiosk-seg-btn:hover:not(.active) {
+      color: #FFF;
+    }
+    .kiosk-seg-btn.active {
+      background: #E28743;
+      color: #FFFFFF;
+      font-weight: 700;
+      box-shadow: none;
+    }
+
+    /* Scrollable Items Container */
+    .kiosk-items-scroll {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      padding: 0.25rem 1.15rem;
+      display: flex;
+      flex-direction: column;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+    }
+    .kiosk-items-scroll::-webkit-scrollbar {
+      width: 4px;
+    }
+    .kiosk-items-scroll::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 4px;
+    }
+
+    /* Empty State */
+    .kiosk-empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2.5rem 1.25rem;
+      color: #8C7E75;
+      margin: auto 0;
+    }
+    .kiosk-empty-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 0;
+      background: none;
+      border: none;
+      display: grid;
+      place-content: center;
+      color: #786D65;
+      margin-bottom: 0.75rem;
+    }
+    .kiosk-empty-state h4 {
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: #D1C5BD;
+      margin: 0 0 0.3rem;
+    }
+    .kiosk-empty-state p {
+      font-size: 0.8rem;
+      color: #7E7068;
+      margin: 0;
+      line-height: 1.4;
+    }
+
+    /* Individual Kiosk Order Card (Flat Row) */
+    .kiosk-item-card {
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 0;
+      padding: 0.75rem 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+    .kiosk-item-card:last-child {
+      border-bottom: none;
+    }
+    .kiosk-item-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+    .kiosk-item-name {
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: #FFFFFF;
+      line-height: 1.25;
+    }
+    .kiosk-item-price {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 0.92rem;
+      color: #E28743;
+      white-space: nowrap;
+    }
+    .kiosk-item-specs {
+      font-size: 0.75rem;
+      color: #8C7E75;
+      line-height: 1.35;
+    }
+    .kiosk-item-note {
+      font-size: 0.72rem;
+      color: #B5A8A0;
+      background: rgba(0, 0, 0, 0.25);
+      border-left: none;
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+    }
+    .kiosk-item-foot {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 0.25rem;
+      padding-top: 0.35rem;
+      border-top: none;
+    }
+    .kiosk-item-stepper {
+      display: flex;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 6px;
+      padding: 2px 4px;
+      gap: 2px;
+    }
+    .kiosk-step-btn {
+      background: none;
+      border: none;
+      color: #FFF;
+      width: 24px;
+      height: 24px;
+      display: grid;
+      place-content: center;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: background 0.15s ease;
+    }
+    .kiosk-step-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+    .kiosk-step-val {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #FFF;
+      width: 22px;
+      text-align: center;
+    }
+    .kiosk-btn-remove {
+      background: none;
+      border: none;
+      color: #786D65;
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      transition: color 0.15s ease;
+    }
+    .kiosk-btn-remove:hover {
+      color: #EF4444;
+    }
+
+    /* Kiosk Footer: Totals & Primary CTA */
+    .kiosk-sidebar-footer {
+      padding: 0.9rem 1.15rem 1.1rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      background: #181311;
+      flex-shrink: 0;
+      margin-top: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+    }
+    .kiosk-calc-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.82rem;
+      color: #8C7E75;
+    }
+    .kiosk-calc-row.total {
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: #C8B9AF;
+      padding-top: 0.65rem;
+      border-top: 1px dashed rgba(255, 255, 255, 0.12);
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+    .kiosk-calc-total-val {
+      font-family: var(--font-mono);
+      font-size: 1.85rem;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      color: #DF9B64;
+      line-height: 1;
+    }
+    .btn-kiosk-checkout {
+      width: 100%;
+      min-height: 46px;
+      background: #E28743;
+      border: none;
+      border-radius: 10px;
+      color: #FFFFFF;
+      font-size: 0.94rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      box-shadow: none;
+      transition: background 0.15s ease;
+    }
+    .btn-kiosk-checkout:hover:not(:disabled) {
+      background: #D97706;
+    }
+    .btn-kiosk-checkout:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+      background: #2E2420;
+      color: #7E7068;
+      box-shadow: none;
+    }
+
+    /* In-place Checkout Panel inside Kiosk Sidebar */
+    .kiosk-checkout-panel {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      padding: 1rem 1.15rem;
       gap: 0.85rem;
-      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .kiosk-checkout-back-btn {
+      align-self: flex-start;
+      background: none;
+      border: none;
+      color: #E28743;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0;
+      margin-bottom: 0.35rem;
+    }
+    .kiosk-checkout-back-btn:hover {
+      text-decoration: underline;
+    }
+    .kiosk-field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+    .kiosk-field-label {
+      font-size: 0.74rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #E28743;
+      font-weight: 700;
+    }
+    .kiosk-input {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.4) !important;
+      border: 1px solid rgba(255, 255, 255, 0.1) !important;
+      border-radius: 8px;
+      padding: 0.65rem 0.85rem;
+      color: #FFF !important;
+      font-family: inherit;
+      font-size: 0.9rem;
+      box-sizing: border-box;
+      transition: border-color 0.15s ease;
+    }
+    .kiosk-input:focus {
+      outline: none;
+      background: #191310 !important;
+      border-color: #E28743 !important;
+      box-shadow: 0 0 0 2px rgba(226, 135, 67, 0.2) !important;
+    }
+    .kiosk-input-lock-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+      width: 100%;
+    }
+    .kiosk-input.kiosk-input-locked {
+      background: rgba(255, 255, 255, 0.03) !important;
+      border-color: rgba(255, 255, 255, 0.08) !important;
+      color: #FAF7F2 !important;
+      font-weight: 700;
+      cursor: default;
+      user-select: none;
+      padding-right: 2.4rem;
+    }
+    .kiosk-input.kiosk-input-locked:focus {
+      background: rgba(255, 255, 255, 0.03) !important;
+      border-color: rgba(255, 255, 255, 0.08) !important;
+      box-shadow: none !important;
+    }
+    .kiosk-input-lock-icon {
+      position: absolute;
+      right: 0.85rem;
+      display: inline-flex;
+      align-items: center;
+      color: #8E7E73;
+      pointer-events: none;
+    }
+    .kiosk-payment-pills {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.45rem;
+    }
+    .kiosk-pay-pill {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      padding: 0.55rem 0.75rem;
+      color: #CFC4BC;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.15s ease;
+    }
+    .kiosk-pay-pill.active {
+      background: rgba(226, 135, 67, 0.15);
+      border-color: #E28743;
+      color: #FFF;
+      font-weight: 700;
+    }
+    .btn-kiosk-place-order {
+      width: 100%;
+      min-height: 48px;
+      background: #10B981;
+      border: none;
+      border-radius: 10px;
+      color: #FFF;
+      font-size: 0.98rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      box-shadow: none;
+      margin-top: 0.45rem;
+      transition: background 0.15s ease;
+    }
+    .btn-kiosk-place-order:hover {
+      background: #059669;
+    }
+
+    /* Responsive toggle between Kiosk Sidebar & Floating Bottom Bar */
+    @media (min-width: 992px) {
+      .floating-cart-bar {
+        display: none !important;
+      }
+    }
+    @media (max-width: 991px) {
+      .order-app-container {
+        display: block;
+        padding: 0;
+        margin: 0;
+      }
+      .order-catalog-wrap {
+        max-width: 1200px;
+        margin: 1.25rem auto;
+        padding: 0 1.25rem;
+      }
+      .kiosk-order-sidebar {
+        display: none !important;
+      }
+    }
+
+    .drink-card {
+      background: transparent;
+      border: none;
+      border-radius: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
       position: relative;
     }
     .drink-card:hover {
-      border-color: rgba(226, 135, 67, 0.4);
-      transform: translateY(-3px);
-      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45);
+      border-color: transparent;
+      transform: none;
+      box-shadow: none;
     }
     .drink-img-wrap {
-      aspect-ratio: 16/10;
+      aspect-ratio: 16/11;
       border-radius: 12px;
       overflow: hidden;
-      background: #251D18;
+      background: #1C1613;
       position: relative;
     }
     .drink-img-wrap img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transition: transform 0.3s ease;
+      transition: transform 0.25s ease;
     }
     .drink-card:hover .drink-img-wrap img {
-      transform: scale(1.04);
+      transform: scale(1.03);
     }
     .drink-badge {
-      position: absolute;
-      top: 8px;
-      left: 8px;
-      background: rgba(17, 13, 11, 0.85);
-      border: 1px solid rgba(226, 135, 67, 0.4);
-      color: #FDBA74;
-      font-size: 0.7rem;
-      font-weight: 700;
-      padding: 0.2rem 0.55rem;
-      border-radius: 6px;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      backdrop-filter: blur(8px);
+      display: none !important;
     }
     .drink-meta-row {
       display: flex;
       justify-content: space-between;
       align-items: baseline;
+      gap: 0.5rem;
     }
     .drink-name {
-      font-size: 1.18rem;
+      font-size: 1.05rem;
       font-weight: 700;
-      color: #FFF;
-      line-height: 1.2;
+      color: #FFFFFF;
+      line-height: 1.25;
+      margin: 0;
     }
     .drink-price {
       font-family: var(--font-mono);
-      font-size: 1.15rem;
+      font-size: 1.05rem;
       font-weight: 700;
-      color: #DF9B64;
+      color: #E28743;
+      white-space: nowrap;
     }
     .drink-desc {
-      font-size: 0.85rem;
-      color: #A99B92;
+      font-size: 0.82rem;
+      color: #9E8E85;
       line-height: 1.4;
+      margin: 0;
       flex: 1;
     }
     .btn-customize-add {
-      min-height: 46px;
-      border-radius: 12px;
-      background: rgba(226, 135, 67, 0.15);
-      border: 1px solid rgba(226, 135, 67, 0.35);
-      color: #FDBA74;
-      font-size: 0.9rem;
+      min-height: 42px;
+      border-radius: 10px;
+      background: #241D19;
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      color: #F5EBE1;
+      font-size: 0.85rem;
       font-weight: 700;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 0.45rem;
-      transition: all 0.2s ease;
+      gap: 0.4rem;
+      transition: all 0.15s ease;
       width: 100%;
     }
-    .btn-customize-add:hover {
-      background: linear-gradient(135deg, #E28743 0%, #944D1C 100%);
-      color: #FFF;
+    .btn-customize-add:hover:not(:disabled) {
+      background: #E28743;
       border-color: #E28743;
-      box-shadow: 0 4px 16px rgba(226, 135, 67, 0.35);
+      color: #FFFFFF;
+    }
+    .btn-customize-add:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      background: rgba(255, 255, 255, 0.04);
+      border-color: rgba(255, 255, 255, 0.06);
+      color: #736760;
     }
 
     /* Floating Cart Bar (Sticky at bottom on mobile) */
@@ -439,21 +1021,20 @@ $currentUser = getAuthenticatedUser();
       left: 50%;
       transform: translateX(-50%);
       width: min(calc(100% - 2.5rem), 540px);
-      background: linear-gradient(135deg, #221B17 0%, #15110E 100%);
-      border: 1px solid rgba(223, 155, 100, 0.35);
-      border-radius: 18px;
+      background: #181311;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 14px;
       padding: 0.85rem 1.25rem;
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(226, 135, 67, 0.2);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
       display: flex;
       justify-content: space-between;
       align-items: center;
       z-index: 99;
       cursor: pointer;
-      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: transform 0.2s ease;
     }
     .floating-cart-bar:hover {
       transform: translateX(-50%) translateY(-2px);
-      box-shadow: 0 20px 48px rgba(0, 0, 0, 0.75), 0 0 20px rgba(226, 135, 67, 0.3);
     }
     .cart-bar-left {
       display: flex;
@@ -565,49 +1146,274 @@ $currentUser = getAuthenticatedUser();
       color: #FFF;
     }
 
-    /* Customization Options UI */
-    .option-group-label {
-      font-size: 0.82rem;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: #DF9B64;
-      font-weight: 700;
-      margin: 1rem 0 0.5rem;
-    }
-    .pill-radio-group {
+    /* Customization Options & Elongated Modal UI */
+    .oms-modal-box.custom-modal-long {
+      max-width: 920px;
+      width: min(920px, calc(100vw - 2.5rem));
+      max-height: 88vh;
+      padding: 1.75rem 2rem 1.25rem;
+      background: linear-gradient(180deg, #1F1815 0%, #16110F 100%);
+      border: 1px solid rgba(223, 155, 100, 0.3);
+      border-radius: 24px;
+      box-shadow: 0 28px 72px rgba(0, 0, 0, 0.85), 0 0 0 1px rgba(223, 155, 100, 0.12);
       display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
+      flex-direction: column;
+      overflow: hidden;
     }
-    .pill-radio-opt {
+
+    /* Modal Hero Section */
+    .custom-modal-hero {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      padding-bottom: 1.1rem;
+      padding-right: 2.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      margin-bottom: 1.1rem;
+      flex-shrink: 0;
+    }
+    .custom-modal-hero-img-wrap {
+      width: 84px;
+      height: 84px;
+      border-radius: 16px;
+      overflow: hidden;
+      flex-shrink: 0;
+      border: 1.5px solid rgba(223, 155, 100, 0.35);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+      background: #110D0B;
+    }
+    .custom-modal-hero-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .custom-modal-hero-info {
       flex: 1;
-      min-width: 100px;
-      text-align: center;
-      padding: 0.65rem 0.85rem;
-      border-radius: 10px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      font-size: 0.85rem;
+      min-width: 0;
+    }
+    .custom-modal-hero-tag {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      color: #DF9B64;
+      text-transform: uppercase;
+      margin-bottom: 0.25rem;
+    }
+    .custom-modal-hero-info h3 {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: #FFFFFF;
+      margin: 0 0 0.35rem;
+      line-height: 1.25;
+    }
+    .custom-modal-hero-price-wrap {
+      display: flex;
+      align-items: baseline;
+      gap: 0.4rem;
+    }
+    .custom-price-prefix {
+      font-size: 0.8rem;
+      color: #A99B92;
       font-weight: 600;
-      color: #E2D5CC;
-      cursor: pointer;
-      transition: all 0.2s ease;
     }
-    .pill-radio-opt.active {
-      background: linear-gradient(135deg, #E28743 0%, #944D1C 100%);
-      border-color: #E28743;
-      color: #FFF;
-      box-shadow: 0 4px 12px rgba(226, 135, 67, 0.3);
+    #customItemBasePrice {
+      font-family: var(--font-mono);
+      font-size: 1.15rem;
+      color: #DF9B64;
+      font-weight: 800;
     }
-    .pill-radio-opt.is-sold-out {
-      opacity: 0.45 !important;
-      background: rgba(239, 68, 68, 0.08) !important;
-      border-color: rgba(239, 68, 68, 0.25) !important;
+
+    /* Scrollable Options Body - Wide 2-Column Desktop Grid */
+    .custom-modal-scrollable-body {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem 2rem;
+      align-items: start;
+      overflow-y: auto;
+      flex: 1;
+      min-height: 0;
+      padding-right: 0.35rem;
+      padding-bottom: 0.5rem;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(223, 155, 100, 0.45) transparent;
+    }
+    .custom-modal-col {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+    .custom-modal-scrollable-body::-webkit-scrollbar {
+      width: 5px;
+    }
+    .custom-modal-scrollable-body::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .custom-modal-scrollable-body::-webkit-scrollbar-thumb {
+      background: rgba(223, 155, 100, 0.4);
+      border-radius: 8px;
+    }
+    .custom-modal-scrollable-body::-webkit-scrollbar-thumb:hover {
+      background: rgba(223, 155, 100, 0.65);
+    }
+    .custom-opt-section {
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Option Group Headers */
+    .option-group-label {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #DF9B64;
+      font-weight: 800;
+      margin: 0 0 0.6rem;
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+
+    /* Scoped Dark Pill Radios - Overriding all light leaks */
+    #customizationModal .pill-radio-group {
+      display: grid;
+      gap: 0.65rem;
+      width: 100%;
+    }
+    #customizationModal #tempRadioGroup {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    #customizationModal #addonRadioGroup {
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    }
+    #customizationModal #sweetnessRadioGroup {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    @media (max-width: 720px) {
+      .custom-modal-scrollable-body {
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
+      }
+    }
+    @media (max-width: 600px) {
+      #customizationModal #sweetnessRadioGroup {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      #customizationModal #addonRadioGroup {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      }
+    }
+    @media (max-width: 480px) {
+      .oms-modal-box.custom-modal-long {
+        padding: 1.25rem 1rem 1rem;
+        max-height: 92vh;
+        border-radius: 20px;
+      }
+      .custom-modal-hero {
+        gap: 0.85rem;
+        padding-bottom: 0.85rem;
+        margin-bottom: 0.85rem;
+        padding-right: 2.2rem;
+      }
+      .custom-modal-hero-img-wrap {
+        width: 68px;
+        height: 68px;
+        border-radius: 12px;
+      }
+      .custom-modal-hero-info h3 {
+        font-size: 1.15rem;
+      }
+      .custom-modal-sticky-footer {
+        gap: 0.6rem;
+        margin-top: 0.75rem;
+        padding-top: 0.75rem;
+      }
+      .custom-modal-qty-control {
+        padding: 0.2rem 0.35rem;
+      }
+      .custom-qty-btn {
+        width: 30px;
+        height: 30px;
+      }
+      #customQtyDisplay {
+        width: 22px;
+        font-size: 1rem;
+      }
+      .btn-label-desktop {
+        display: none !important;
+      }
+      .btn-label-mobile {
+        display: inline !important;
+      }
+      .custom-submit-btn {
+        min-height: 48px;
+        font-size: 0.94rem !important;
+        padding: 0 0.85rem !important;
+        gap: 0.35rem !important;
+        white-space: nowrap !important;
+      }
+    }
+    .btn-label-mobile {
+      display: none;
+    }
+
+    #customizationModal .pill-radio-opt {
+      background: rgba(255, 255, 255, 0.04) !important;
+      border: 1px solid rgba(255, 255, 255, 0.12) !important;
+      color: #E2D5CC !important;
+      border-radius: 12px !important;
+      padding: 0.75rem 0.9rem !important;
+      font-size: 0.88rem !important;
+      font-weight: 600 !important;
+      min-height: 50px !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      text-align: center !important;
+      cursor: pointer !important;
+      box-shadow: none !important;
+      transform: none !important;
+      transition: all 0.18s ease !important;
+      user-select: none !important;
+      gap: 0.45rem !important;
+    }
+    #customizationModal .pill-radio-opt:hover:not(.is-sold-out):not(.active) {
+      background: rgba(255, 255, 255, 0.08) !important;
+      border-color: rgba(223, 155, 100, 0.4) !important;
+      color: #FFFFFF !important;
+      transform: translateY(-1px) !important;
+    }
+    #customizationModal .pill-radio-opt.active {
+      background: linear-gradient(135deg, #E28743 0%, #944D1C 100%) !important;
+      border: 1.5px solid #E28743 !important;
+      color: #FFFFFF !important;
+      font-weight: 700 !important;
+      box-shadow: 0 4px 16px rgba(226, 135, 67, 0.4) !important;
+      transform: translateY(-1px) !important;
+    }
+    #customizationModal .pill-radio-opt.is-sold-out {
+      opacity: 0.4 !important;
+      background: rgba(239, 68, 68, 0.06) !important;
+      border-color: rgba(239, 68, 68, 0.2) !important;
       color: #9CA3AF !important;
       cursor: not-allowed !important;
       pointer-events: none !important;
       text-decoration: line-through;
     }
+
+    .opt-emoji {
+      font-size: 1.15rem;
+      line-height: 1;
+    }
+    .opt-pct {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      font-weight: 700;
+      opacity: 0.8;
+      margin-right: 0.2rem;
+    }
+
     .sold-out-badge {
       display: inline-block;
       text-decoration: none !important;
@@ -648,21 +1454,112 @@ $currentUser = getAuthenticatedUser();
       cursor: not-allowed !important;
       pointer-events: none !important;
     }
-    .notes-textarea {
+    .notes-textarea,
+    body.order-app-body .notes-textarea {
       width: 100%;
-      background: rgba(0, 0, 0, 0.35);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 10px;
-      padding: 0.75rem 1rem;
-      color: #FFF;
+      background: rgba(0, 0, 0, 0.45) !important;
+      border: 1px solid rgba(255, 255, 255, 0.16) !important;
+      border-radius: 12px;
+      padding: 0.85rem 1rem;
+      color: #FFFFFF !important;
       font-family: inherit;
-      font-size: 0.88rem;
+      font-size: 0.92rem;
       resize: vertical;
-      min-height: 70px;
+      min-height: 80px;
+      transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+      box-sizing: border-box;
     }
-    .notes-textarea:focus {
-      outline: none;
-      border-color: #DF9B64;
+    .notes-textarea:focus,
+    body.order-app-body .notes-textarea:focus {
+      outline: none !important;
+      background: #191310 !important;
+      border-color: #DF9B64 !important;
+      color: #FFFFFF !important;
+      box-shadow: 0 0 0 3px rgba(223, 155, 100, 0.25) !important;
+    }
+    .notes-textarea::placeholder,
+    body.order-app-body .notes-textarea::placeholder {
+      color: #8C7E75 !important;
+      font-size: 0.88rem;
+    }
+
+    /* Modal Sticky Bottom Action Bar */
+    .custom-modal-sticky-footer {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      margin-top: 1.5rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      position: sticky;
+      bottom: 0;
+      width: 100%;
+      box-sizing: border-box;
+      flex-shrink: 0;
+      background: linear-gradient(180deg, rgba(22, 17, 15, 0.85) 0%, rgba(22, 17, 15, 0.98) 100%);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 10;
+    }
+    .custom-modal-qty-control {
+      display: flex;
+      align-items: center;
+      flex-shrink: 0;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      padding: 0.35rem 0.5rem;
+      gap: 0.25rem;
+    }
+    .custom-qty-btn {
+      background: none;
+      border: none;
+      color: #FFF;
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-content: center;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: background 0.15s ease;
+    }
+    .custom-qty-btn:hover {
+      background: rgba(255, 255, 255, 0.12);
+    }
+    #customQtyDisplay {
+      font-family: var(--font-mono);
+      font-weight: 800;
+      font-size: 1.15rem;
+      width: 32px;
+      text-align: center;
+      color: #FFF;
+    }
+    .custom-submit-btn {
+      flex: 1;
+      width: auto !important;
+      min-width: 0 !important;
+      min-height: 52px;
+      background: linear-gradient(135deg, #E28743 0%, #944D1C 100%) !important;
+      border: none !important;
+      border-radius: 12px !important;
+      color: #FFFFFF !important;
+      font-size: 1.02rem !important;
+      font-weight: 700 !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      gap: 0.6rem !important;
+      box-shadow: 0 6px 20px rgba(226, 135, 67, 0.35) !important;
+      cursor: pointer !important;
+      transition: all 0.2s ease !important;
+    }
+    .custom-submit-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 26px rgba(226, 135, 67, 0.5) !important;
+    }
+    .custom-submit-sep {
+      opacity: 0.5;
+      font-size: 0.8rem;
     }
 
     /* THE ORDER TICKET WAITING SCREEN (Starts Fresh at 00:00) */
@@ -793,6 +1690,518 @@ $currentUser = getAuthenticatedUser();
       margin-top: 1.25rem;
       box-shadow: 0 4px 18px rgba(16, 185, 129, 0.5);
     }
+
+    /* 0.5s ANIMATED SUCCESS CHECKMARK HUD */
+    .order-success-hud {
+      position: fixed;
+      inset: 0;
+      z-index: 3500;
+      background: rgba(17, 13, 11, 0.82);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.15s ease-out;
+    }
+    .order-success-hud.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .hud-box {
+      background: #1C1613;
+      border: 1.5px solid rgba(16, 185, 129, 0.5);
+      border-radius: 24px;
+      padding: 1.75rem 2.25rem;
+      text-align: center;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 35px rgba(16, 185, 129, 0.25);
+      transform: scale(0.85);
+      transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .order-success-hud.active .hud-box {
+      transform: scale(1);
+    }
+    .hud-icon-svg {
+      width: 56px;
+      height: 56px;
+      margin: 0 auto 0.75rem;
+      display: block;
+    }
+    .hud-circle {
+      stroke: #10B981;
+      stroke-width: 3.5;
+      fill: none;
+    }
+    .hud-check {
+      stroke: #10B981;
+      stroke-width: 4;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+      stroke-dasharray: 48;
+      stroke-dashoffset: 48;
+      animation: hudCheckAnim 0.35s 0.08s ease-out forwards;
+    }
+    @keyframes hudCheckAnim {
+      to { stroke-dashoffset: 0; }
+    }
+    .hud-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #FFF;
+      margin-bottom: 0.25rem;
+      letter-spacing: -0.01em;
+    }
+    .hud-sub {
+      font-size: 0.88rem;
+      color: #6EE7B7;
+      font-weight: 700;
+      font-family: var(--font-mono);
+    }
+
+    /* DIGITAL PAID RECEIPT OVERLAY */
+    .receipt-screen-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(17, 13, 11, 0.95);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      z-index: 2800;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1.25rem;
+      overflow-y: auto;
+    }
+    .receipt-screen-overlay.active {
+      display: flex;
+    }
+    .receipt-card {
+      width: 100%;
+      max-width: 420px;
+      background: #1C1613;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 22px;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .receipt-header-strip {
+      background: linear-gradient(135deg, rgba(223, 155, 100, 0.16) 0%, rgba(223, 155, 100, 0.04) 100%);
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.15);
+      padding: 1.35rem 1.25rem 1rem;
+      text-align: center;
+    }
+    .receipt-brand {
+      font-size: 0.82rem;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #DF9B64;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+    }
+    .receipt-giant-queue {
+      font-size: 2.85rem;
+      font-weight: 900;
+      font-family: var(--font-mono);
+      color: #FFF;
+      line-height: 1;
+      margin: 0.6rem 0 0.4rem;
+      letter-spacing: -0.03em;
+    }
+    .receipt-paid-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: rgba(16, 185, 129, 0.18);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      color: #6EE7B7;
+      padding: 0.3rem 0.75rem;
+      border-radius: 999px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .receipt-meta-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.65rem;
+      padding: 0.9rem 1.25rem;
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.12);
+      font-size: 0.82rem;
+    }
+    .receipt-meta-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+    .receipt-meta-label {
+      color: #8C7C72;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .receipt-meta-val {
+      color: #FFF;
+      font-weight: 700;
+    }
+    .receipt-items-body {
+      padding: 1rem 1.25rem;
+      max-height: 180px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+    }
+    .receipt-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      font-size: 0.85rem;
+    }
+    .receipt-line-left {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+      padding-right: 0.5rem;
+    }
+    .receipt-line-name {
+      color: #FFF;
+      font-weight: 600;
+    }
+    .receipt-line-specs {
+      font-size: 0.74rem;
+      color: #A99B92;
+    }
+    .receipt-line-price {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      color: #FDBA74;
+      white-space: nowrap;
+    }
+    .receipt-total-row {
+      padding: 0.85rem 1.25rem;
+      background: rgba(0, 0, 0, 0.25);
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #FFF;
+    }
+    .receipt-total-num {
+      font-family: var(--font-mono);
+      font-size: 1.25rem;
+      color: #10B981;
+    }
+    .receipt-staff-notice {
+      margin: 0.85rem 1.25rem 0.5rem;
+      background: rgba(223, 155, 100, 0.12);
+      border: 1px solid rgba(223, 155, 100, 0.3);
+      border-radius: 12px;
+      padding: 0.75rem 0.85rem;
+      text-align: center;
+      font-size: 0.82rem;
+      color: #FDBA74;
+      line-height: 1.4;
+    }
+    .receipt-staff-notice strong {
+      display: block;
+      color: #FFF;
+      margin-bottom: 0.2rem;
+      font-size: 0.85rem;
+    }
+    .receipt-actions {
+      padding: 0.85rem 1.25rem 1.25rem;
+      display: flex;
+      gap: 0.65rem;
+    }
+    .btn-receipt-order-more {
+      flex: 1;
+      min-height: 44px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 10px;
+      color: #FFF;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+    .btn-receipt-order-more:hover {
+      background: rgba(255, 255, 255, 0.14);
+    }
+    .btn-receipt-exit {
+      min-height: 44px;
+      padding: 0 1.1rem;
+      background: none;
+      border: 1px solid rgba(239, 68, 68, 0.35);
+      border-radius: 10px;
+      color: #FCA5A5;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .btn-receipt-exit:hover {
+      background: rgba(239, 68, 68, 0.15);
+    }
+
+    /* GCASH PAYMENT MODAL SHEET */
+    /* GCASH PAYMENT MODAL SHEET (WIDE HORIZONTAL LANDSCAPE LAYOUT) */
+    .gcash-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(14, 10, 8, 0.94);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      z-index: 2900;
+      display: none;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 1.25rem;
+      overflow-y: auto;
+    }
+    .gcash-modal-overlay.active {
+      display: flex;
+    }
+    .gcash-modal-card {
+      margin: auto;
+      width: 100%;
+      max-width: 720px;
+      background: #16100D;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 18px;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9), 0 0 20px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .gcash-card-header {
+      background: #130D0A;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+      padding: 0.9rem 1.35rem;
+      color: #FFF;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .gcash-header-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+    }
+    .gcash-header-brand h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      margin: 0;
+      color: #FAF7F2;
+    }
+    .gcash-badge-pill {
+      background: rgba(0, 125, 254, 0.12);
+      border: 1px solid rgba(0, 125, 254, 0.3);
+      color: #60A5FA;
+      border-radius: 999px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 0.12rem 0.5rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .gcash-badge-instapay {
+      background: rgba(223, 155, 100, 0.12);
+      border: 1px solid rgba(223, 155, 100, 0.3);
+      color: #DF9B64;
+      border-radius: 999px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 0.12rem 0.5rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .gcash-btn-close {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 6px;
+      color: #C8B9AF;
+      width: 28px;
+      height: 28px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      line-height: 1;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .gcash-btn-close:hover {
+      background: rgba(255, 255, 255, 0.12);
+      color: #FFF;
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+    .gcash-modal-grid {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 1.5rem;
+      padding: 1.35rem 1.5rem;
+      align-items: stretch;
+    }
+    /* Left Column: QR Code Display */
+    .gcash-grid-col-qr {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      background: #110B09;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 0.85rem;
+    }
+    .gcash-qr-showcase {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .gcash-qr-img {
+      width: 100%;
+      max-width: 220px;
+      height: auto;
+      display: block;
+      border-radius: 8px;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.6);
+    }
+    .gcash-qr-caption {
+      font-size: 0.74rem;
+      color: #9E8E81;
+      text-align: center;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+    /* Right Column: Amount, Channels, Auto-detect & Action */
+    .gcash-grid-col-info {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .gcash-amount-block {
+      background: #110B09;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 1rem 1.15rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+    .gcash-amount-label {
+      font-size: 0.72rem;
+      color: #9E8E81;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 700;
+    }
+    .gcash-amount-val {
+      font-family: var(--font-mono);
+      font-size: 2.35rem;
+      font-weight: 800;
+      color: #FAF7F2;
+      line-height: 1;
+      letter-spacing: -0.02em;
+    }
+    .gcash-channels-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .gcash-channels-title {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: #8E7E73;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .gcash-channels-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+    .channel-chip {
+      font-size: 0.72rem;
+      color: #C8B9AF;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      padding: 0.22rem 0.55rem;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+    .gcash-autodetect-hint {
+      background: rgba(223, 155, 100, 0.08);
+      border: 1px solid rgba(223, 155, 100, 0.2);
+      border-radius: 10px;
+      padding: 0.75rem 0.9rem;
+      font-size: 0.78rem;
+      color: #E2D5CC;
+      line-height: 1.4;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.55rem;
+      box-sizing: border-box;
+    }
+    .gcash-autodetect-hint strong {
+      color: #DF9B64;
+    }
+    .btn-confirm-gcash {
+      width: 100%;
+      min-height: 48px;
+      background: var(--brand-accent, #DF9B64);
+      border: none;
+      border-radius: 10px;
+      color: #140E0C;
+      font-size: 0.92rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: all 0.15s ease;
+      box-shadow: 0 4px 18px rgba(223, 155, 100, 0.25);
+    }
+    .btn-confirm-gcash:hover {
+      background: #E8A876;
+      transform: translateY(-1px);
+    }
+    @media (max-width: 640px) {
+      .gcash-modal-card {
+        max-width: 440px;
+      }
+      .gcash-modal-grid {
+        grid-template-columns: 1fr;
+        gap: 1.15rem;
+        padding: 1.15rem;
+      }
+      .gcash-qr-img {
+        max-width: 170px;
+      }
+      .gcash-badge-pill,
+      .gcash-badge-instapay {
+        display: none;
+      }
+      .gcash-amount-val {
+        font-size: 1.95rem;
+      }
+    }
   </style>
 </head>
 <body class="order-app-body">
@@ -807,22 +2216,40 @@ $currentUser = getAuthenticatedUser();
       </div>
     </a>
 
-    <!-- Context Pill (Dine-in / Table / Take-out) -->
-    <div class="table-context-pill" id="tableContextPill" title="Tap to switch Dine-in or Take-out">
-      <span id="tableContextIcon">🪑</span>
-      <span id="tableContextText">Table #01</span>
-    </div>
-
     <!-- Right Actions -->
     <div class="order-top-actions">
       <?php if (!empty($currentUser)): ?>
-        <a href="api/auth.php?action=logout&redirect=home.php" class="btn-story-link" style="color: #FCA5A5; border-color: rgba(239, 68, 68, 0.4); background: rgba(239, 68, 68, 0.1);" title="Sign out of account">🚪 Log Out</a>
+        <div class="staff-header-actions" aria-label="Staff navigation">
+          <?php if (in_array($currentUser['role'], ['staff', 'admin', 'superadmin'])): ?>
+            <a href="kds.php" class="header-action-btn action-kds" title="Open Kitchen Display System">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect width="20" height="14" x="2" y="3" rx="2"></rect>
+                <line x1="8" x2="16" y1="21" y2="21"></line>
+                <line x1="12" x2="12" y1="17" y2="21"></line>
+              </svg>
+              <span>Staff KDS</span>
+            </a>
+          <?php endif; ?>
+          <span class="header-action-divider" aria-hidden="true"></span>
+          <a href="api/auth.php?action=logout&redirect=home.php" class="header-action-btn action-logout" title="Sign out of account">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+              <polyline points="16 17 21 12 16 7"></polyline>
+              <line x1="21" y1="12" x2="9" y2="12"></line>
+            </svg>
+            <span>Log Out</span>
+          </a>
+        </div>
       <?php else: ?>
-        <a href="home.php" class="btn-story-link" title="Explore roastery background and story">Our Story</a>
-        <button type="button" class="btn-story-link btn-leave-link" id="btnLeaveSession" title="Leave table ordering and exit" style="background: none; cursor: pointer;">🚪 Leave</button>
-      <?php endif; ?>
-      <?php if (!empty($currentUser) && in_array($currentUser['role'], ['staff', 'admin', 'superadmin'])): ?>
-        <a href="kds.php" class="btn-story-link" style="color: #DF9B64; border-color: rgba(223, 155, 100, 0.3);">Staff KDS</a>
+        <a href="home.php" class="btn-story-link header-action-btn action-story" title="Explore roastery background and story">Our Story</a>
+        <button type="button" class="btn-story-link btn-leave-link header-action-btn action-leave" id="btnLeaveSession" title="Leave table ordering and exit" style="background: none; cursor: pointer;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+            <polyline points="16 17 21 12 16 7"></polyline>
+            <line x1="21" y1="12" x2="9" y2="12"></line>
+          </svg>
+          <span>Leave</span>
+        </button>
       <?php endif; ?>
     </div>
   </header>
@@ -836,7 +2263,7 @@ $currentUser = getAuthenticatedUser();
       <button type="button" class="cat-pill-btn" data-cat="house-specials">House Specials</button>
       <button type="button" class="cat-pill-btn" data-cat="yogurt-soda">Yogurt / Soda</button>
     </div>
-    <div class="order-prep-timer" id="orderPrepTimer" title="Remaining time to place your order" role="timer" aria-live="polite">
+    <div class="order-prep-timer" id="orderPrepTimer" title="Remaining time to place your order" role="timer" aria-live="polite" style="<?= ($isWalkin || !$isTableQR) ? 'display: none;' : '' ?>">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="timer-icon" aria-hidden="true">
         <circle cx="12" cy="12" r="10"></circle>
         <polyline points="12 6 12 12 16 14"></polyline>
@@ -860,16 +2287,136 @@ $currentUser = getAuthenticatedUser();
     </button>
   </div>
 
-  <!-- Main Order Catalog -->
-  <main class="order-catalog-wrap">
-    <div id="catalogLoadingNotice" style="text-align: center; padding: 3rem 1rem; color: #A99B92;">
-      Loading artisanal drink selection...
-    </div>
+  <!-- Main Order App Layout (Catalog + Desktop/Kiosk Order Sidebar) -->
+  <div class="order-app-container">
+    <main class="order-catalog-wrap">
+      <div id="catalogLoadingNotice" style="text-align: center; padding: 3rem 1rem; color: #A99B92;">
+        Loading artisanal drink selection...
+      </div>
 
-    <div class="catalog-grid" id="drinksCatalogGrid" style="display: none;">
-      <!-- Drink Cards injected dynamically -->
-    </div>
-  </main>
+      <div class="catalog-grid" id="drinksCatalogGrid" style="display: none;">
+        <!-- Drink Cards injected dynamically -->
+      </div>
+    </main>
+
+    <!-- Kiosk / POS Register Right Sidebar (Active on Desktop/Tablet) -->
+    <aside class="kiosk-order-sidebar" id="kioskOrderSidebar" aria-label="Order Register Tray">
+      <!-- Panel 1: Tray Items & Summary -->
+      <div class="kiosk-panel" id="kioskViewTray">
+        <div class="kiosk-sidebar-header">
+          <div class="kiosk-header-top">
+            <div class="kiosk-header-title-wrap">
+              <h3 class="kiosk-header-title">Order Tray</h3>
+              <span class="kiosk-item-badge" id="kioskItemCountBadge">(0)</span>
+            </div>
+            <button type="button" class="kiosk-btn-clear" id="kioskBtnClearTray" title="Clear all items in tray" style="display: none;">
+              Clear
+            </button>
+          </div>
+          <!-- Dining Mode Segmented Switch -->
+          <div class="kiosk-segmented-dining" id="kioskDiningSegmented">
+            <button type="button" class="kiosk-seg-btn active" data-type="dine_in" id="kioskBtnDineIn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><line x1="6" y1="1" x2="6" y2="4"></line><line x1="10" y1="1" x2="10" y2="4"></line><line x1="14" y1="1" x2="14" y2="4"></line></svg>
+              <span>Dine In</span>
+            </button>
+            <button type="button" class="kiosk-seg-btn" data-type="take_out" id="kioskBtnTakeOut">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+              <span>Take Out</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Scrollable Items List -->
+        <div class="kiosk-items-scroll" id="kioskItemsList">
+          <div class="kiosk-empty-state" id="kioskEmptyState">
+            <div class="kiosk-empty-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><line x1="6" y1="1" x2="6" y2="4"></line><line x1="10" y1="1" x2="10" y2="4"></line><line x1="14" y1="1" x2="14" y2="4"></line></svg>
+            </div>
+            <h4>Your tray is empty</h4>
+            <p>Tap any drink to add it to your order.</p>
+          </div>
+        </div>
+
+        <!-- Sticky Footer -->
+        <div class="kiosk-sidebar-footer">
+          <div class="kiosk-calc-row">
+            <span>Subtotal</span>
+            <strong id="kioskSubtotalDisplay" style="color: #FFF; font-family: var(--font-mono);">₱0.00</strong>
+          </div>
+          <div class="kiosk-calc-row" id="kioskEcoRow" style="display: none;">
+            <span>Packaging & Eco Fee</span>
+            <strong id="kioskEcoDisplay" style="color: #DF9B64; font-family: var(--font-mono);">₱15.00</strong>
+          </div>
+          <div class="kiosk-calc-row total">
+            <span>Total Amount</span>
+            <span class="kiosk-calc-total-val" id="kioskGrandTotalDisplay">₱0.00</span>
+          </div>
+          <button type="button" class="btn-kiosk-checkout" id="btnKioskProceedCheckout" disabled>
+            <span>Proceed to Checkout</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Panel 2: In-place Kiosk Checkout -->
+      <div class="kiosk-panel" id="kioskViewCheckout" style="display: none;">
+        <div class="kiosk-sidebar-header">
+          <button type="button" class="kiosk-checkout-back-btn" id="btnKioskBackToTray">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            <span>Back to Tray</span>
+          </button>
+          <h3 class="kiosk-header-title">Checkout</h3>
+        </div>
+
+        <div class="kiosk-checkout-panel">
+          <!-- Table Number (Locked for Table QR Scan) -->
+          <div class="kiosk-field-group" id="kioskTableGroup" style="<?= $isWalkin ? 'display: none !important;' : '' ?>">
+            <label class="kiosk-field-label" for="kioskTableInput">Table Number</label>
+            <div class="kiosk-input-lock-wrap">
+              <input type="text" id="kioskTableInput" class="kiosk-input kiosk-input-locked" readonly placeholder="1" value="<?= htmlspecialchars($_GET['table'] ?? '1') ?>">
+              <span class="kiosk-input-lock-icon" aria-hidden="true">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+              </span>
+            </div>
+          </div>
+
+          <!-- Customer Name (Primary Call-Out Identifier) -->
+          <div class="kiosk-field-group">
+            <label class="kiosk-field-label" for="kioskNameInput">Customer Name <span style="font-size: 0.72rem; color: #DF9B64; font-weight: normal;">(Called when ready)</span></label>
+            <input type="text" id="kioskNameInput" class="kiosk-input" placeholder="e.g. John or Sarah" value="">
+          </div>
+
+          <!-- Payment Method -->
+          <div class="kiosk-field-group">
+            <label class="kiosk-field-label">Payment Method</label>
+            <div class="kiosk-payment-pills" id="kioskPaymentPills">
+              <div class="kiosk-pay-pill active" data-val="cash">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"></rect><circle cx="12" cy="12" r="2"></circle><path d="M6 12h.01M18 12h.01"></path></svg>
+                <span>Pay at Counter (Cash)</span>
+              </div>
+              <div class="kiosk-pay-pill" data-val="gcash">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+                <span>GCash (QR Code)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="kiosk-sidebar-footer">
+          <div class="kiosk-calc-row total">
+            <span>Total Due</span>
+            <span class="kiosk-calc-total-val" id="kioskFinalTotalDisplay">₱0.00</span>
+          </div>
+          <button type="button" class="btn-kiosk-place-order" id="btnKioskPlaceOrderFinal">
+            <span>Place Order Now</span>
+          </button>
+        </div>
+      </div>
+    </aside>
+  </div>
 
   <!-- Floating Sticky Cart Bar -->
   <div class="floating-cart-bar" id="floatingCartBar" style="display: none;">
@@ -891,52 +2438,113 @@ $currentUser = getAuthenticatedUser();
 
   <!-- Customization Modal Sheet -->
   <div class="oms-modal-overlay" id="customizationModal" aria-modal="true" role="dialog">
-    <div class="oms-modal-box">
+    <div class="oms-modal-box custom-modal-long">
       <button type="button" class="oms-modal-close" id="closeCustomModalBtn" aria-label="Close Customizer">&times;</button>
       
-      <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1.25rem;">
-        <img id="customItemImg" src="" alt="Drink preview" style="width: 70px; height: 70px; border-radius: 12px; object-fit: cover;">
-        <div>
-          <h3 id="customItemName" style="font-size: 1.25rem; font-weight: 700; color: #FFF; margin-bottom: 0.2rem;">Spanish Latte</h3>
-          <p id="customItemBasePrice" style="font-family: var(--font-mono); font-size: 1.05rem; color: #DF9B64; font-weight: 700;">₱120.00</p>
+      <!-- Modern Hero Header -->
+      <div class="custom-modal-hero">
+        <div class="custom-modal-hero-img-wrap">
+          <img id="customItemImg" src="" alt="Drink preview">
+        </div>
+        <div class="custom-modal-hero-info">
+          <span class="custom-modal-hero-tag">Handcrafted Specialty</span>
+          <h3 id="customItemName">Spanish Latte</h3>
+          <div class="custom-modal-hero-price-wrap">
+            <span class="custom-price-prefix">Base Price:</span>
+            <span id="customItemBasePrice">₱120.00</span>
+          </div>
         </div>
       </div>
 
-      <!-- Temperature Choice -->
-      <div class="option-group-label">TEMPERATURE</div>
-      <div class="pill-radio-group" id="tempRadioGroup">
-        <div class="pill-radio-opt active" data-val="Iced">Iced</div>
-        <div class="pill-radio-opt" data-val="Hot">Hot</div>
-      </div>
+      <!-- Wide 2-Column Options Body -->
+      <div class="custom-modal-scrollable-body">
+        <!-- Left Column: Core Formulation (Temperature & Sweetness) -->
+        <div class="custom-modal-col">
+          <!-- Temperature Choice -->
+          <div class="custom-opt-section">
+            <div class="option-group-label">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"></path></svg>
+              Temperature
+            </div>
+            <div class="pill-radio-group" id="tempRadioGroup">
+              <div class="pill-radio-opt active" data-val="Iced">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="12" y1="2" x2="12" y2="22"></line><line x1="2" y1="12" x2="22" y2="12"></line><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line><line x1="19.07" y1="4.93" x2="4.93" y2="19.07"></line></svg>
+                <span>Iced</span>
+              </div>
+              <div class="pill-radio-opt" data-val="Hot">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><line x1="6" y1="1" x2="6" y2="4"></line><line x1="10" y1="1" x2="10" y2="4"></line><line x1="14" y1="1" x2="14" y2="4"></line></svg>
+                <span>Hot</span>
+              </div>
+            </div>
+          </div>
 
-      <!-- Add-ons Selection (Replaced Milk Selection) -->
-      <div class="option-group-label">ADD ONS</div>
-      <div class="pill-radio-group" id="addonRadioGroup">
-        <!-- Injected dynamically from live stock options -->
-      </div>
-
-      <!-- Sweetness Levels -->
-      <div class="option-group-label">SWEETNESS / SUGAR LEVEL</div>
-      <div class="pill-radio-group" id="sweetnessRadioGroup">
-        <div class="pill-radio-opt" data-val="Normal (100%)">100% Normal</div>
-        <div class="pill-radio-opt active" data-val="Less Sweet (75%)">75% Less Sweet</div>
-        <div class="pill-radio-opt" data-val="Half Sweet (50%)">50% Half Sweet</div>
-        <div class="pill-radio-opt" data-val="No Sugar (0%)">0% No Sugar</div>
-      </div>
-
-      <!-- Special Notes -->
-      <div class="option-group-label">SPECIAL NOTES / INSTRUCTIONS</div>
-      <textarea class="notes-textarea" id="customNotesInput" placeholder="e.g. Less sweet, extra ice, separate lid..."></textarea>
-
-      <!-- Quantity & Submit -->
-      <div style="display: flex; gap: 1rem; align-items: center; margin-top: 1.5rem;">
-        <div style="display: flex; align-items: center; background: rgba(255,255,255,0.06); border-radius: 12px; border: 1px solid rgba(255,255,255,0.12); padding: 0.25rem 0.5rem;">
-          <button type="button" id="btnQtyMinus" style="background: none; border: none; color: #FFF; font-size: 1.25rem; width: 32px; cursor: pointer;">-</button>
-          <span id="customQtyDisplay" style="font-family: var(--font-mono); font-weight: 700; width: 28px; text-align: center;">1</span>
-          <button type="button" id="btnQtyPlus" style="background: none; border: none; color: #FFF; font-size: 1.25rem; width: 32px; cursor: pointer;">+</button>
+          <!-- Sweetness Levels -->
+          <div class="custom-opt-section">
+            <div class="option-group-label">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><path d="M8 12h8"></path></svg>
+              Sweetness / Sugar Level
+            </div>
+            <div class="pill-radio-group" id="sweetnessRadioGroup">
+              <div class="pill-radio-opt" data-val="Normal (100%)">
+                <span class="opt-pct">100%</span>
+                <span>Normal</span>
+              </div>
+              <div class="pill-radio-opt active" data-val="Less Sweet (75%)">
+                <span class="opt-pct">75%</span>
+                <span>Less Sweet</span>
+              </div>
+              <div class="pill-radio-opt" data-val="Half Sweet (50%)">
+                <span class="opt-pct">50%</span>
+                <span>Half Sweet</span>
+              </div>
+              <div class="pill-radio-opt" data-val="No Sugar (0%)">
+                <span class="opt-pct">0%</span>
+                <span>No Sugar</span>
+              </div>
+            </div>
+          </div>
         </div>
-        <button type="button" class="btn-customize-add" id="btnSubmitCustomItem" style="flex: 1; min-height: 52px; background: linear-gradient(135deg, #E28743 0%, #944D1C 100%); color: #FFF; font-size: 1rem;">
-          Add to Cart — <span id="customModalTotalPrice">₱150.00</span>
+
+        <!-- Right Column: Add-ons & Special Instructions -->
+        <div class="custom-modal-col">
+          <!-- Add-ons Selection -->
+          <div class="custom-opt-section">
+            <div class="option-group-label">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"></path></svg>
+              Add-ons & Options
+            </div>
+            <div class="pill-radio-group" id="addonRadioGroup">
+              <!-- Injected dynamically from live stock options -->
+            </div>
+          </div>
+
+          <!-- Special Notes -->
+          <div class="custom-opt-section">
+            <div class="option-group-label">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+              Special Notes / Instructions
+            </div>
+            <textarea class="notes-textarea" id="customNotesInput" placeholder="e.g. Extra ice, separate lid, double cup..."></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sticky Bottom Action Footer -->
+      <div class="custom-modal-sticky-footer">
+        <div class="custom-modal-qty-control">
+          <button type="button" id="btnQtyMinus" class="custom-qty-btn" aria-label="Decrease quantity">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          </button>
+          <span id="customQtyDisplay">1</span>
+          <button type="button" id="btnQtyPlus" class="custom-qty-btn" aria-label="Increase quantity">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          </button>
+        </div>
+        <button type="button" class="btn-customize-add custom-submit-btn" id="btnSubmitCustomItem">
+          <span class="btn-label-desktop">Add to Tray</span>
+          <span class="btn-label-mobile">Add</span>
+          <span class="custom-submit-sep">•</span>
+          <span id="customModalTotalPrice">₱150.00</span>
         </button>
       </div>
     </div>
@@ -1004,7 +2612,7 @@ $currentUser = getAuthenticatedUser();
       </div>
 
       <!-- Locked Table Badge (Auto-assigned via Table QR Sticker ?table=N) -->
-      <div id="tableLockedBadge" style="display: none; margin-top: 0.85rem; background: rgba(223, 155, 100, 0.12); border: 1px solid rgba(223, 155, 100, 0.35); border-radius: 10px; padding: 0.75rem 0.85rem; align-items: center; gap: 0.75rem;">
+      <div id="tableLockedBadge" style="<?= $isWalkin ? 'display: none !important;' : 'display: none;' ?> margin-top: 0.85rem; background: rgba(223, 155, 100, 0.12); border: 1px solid rgba(223, 155, 100, 0.35); border-radius: 10px; padding: 0.75rem 0.85rem; align-items: center; gap: 0.75rem;">
         <div style="font-size: 1.4rem;">🪑</div>
         <div>
           <div style="font-size: 0.9rem; font-weight: 700; color: #DF9B64;">Seated at Table <span id="tableLockedNumber">1</span></div>
@@ -1013,7 +2621,7 @@ $currentUser = getAuthenticatedUser();
       </div>
 
       <!-- Table Number (Shown if Dine-In and not arriving from table-locked QR) -->
-      <div id="tableNumberWrap" style="margin-top: 0.85rem; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 0.75rem 0.85rem;">
+      <div id="tableNumberWrap" style="<?= $isWalkin ? 'display: none !important;' : '' ?>margin-top: 0.85rem; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 0.75rem 0.85rem;">
         <label for="checkoutTableInput" style="display: block; font-size: 0.78rem; color: #DF9B64; font-weight: 700; margin-bottom: 0.35rem;">Table Number</label>
         <div style="display: flex; align-items: center; gap: 0.6rem;">
           <input type="text" id="checkoutTableInput" class="notes-textarea" style="min-height: 40px; width: 90px; padding: 0.45rem 0.75rem; font-size: 1rem; font-weight: 700; color: #FFF; text-align: center;" placeholder="e.g. 4" value="4">
@@ -1028,15 +2636,15 @@ $currentUser = getAuthenticatedUser();
         <div class="pill-radio-opt" data-val="gcash">📱 GCash</div>
       </div>
 
-      <div id="gcashNoticeWrap" style="display: none; background: rgba(59, 130, 246, 0.12); border: 1px solid rgba(59, 130, 246, 0.35); border-radius: 12px; padding: 0.85rem; margin-top: 0.75rem; font-size: 0.82rem; color: #93C5FD;">
-        <strong>GCash Instructions:</strong> Send payment to <strong>0917 555 2026 (BeCoffee)</strong> upon placing order. Show your reference number to cashier at counter.
+      <div id="gcashNoticeWrap" style="display: none; background: rgba(223, 155, 100, 0.1); border: 1px solid rgba(223, 155, 100, 0.3); border-radius: 10px; padding: 0.75rem 0.9rem; margin-top: 0.75rem; font-size: 0.8rem; color: #FAF7F2; line-height: 1.4;">
+        <strong style="color: #DF9B64;">Table GCash Payment:</strong> Scan the GCash QR sticker on your table to pay. Show your GCash transaction receipt to the server when your drinks arrive.
       </div>
 
       <!-- Customer Details -->
       <div class="option-group-label" style="margin-top: 1.25rem;">Customer Details</div>
       <div style="display: flex; flex-direction: column; gap: 0.65rem;">
-        <input type="text" id="checkoutNameInput" class="notes-textarea" style="min-height: 44px; padding: 0.6rem 0.85rem;" placeholder="Your Name (e.g. Mark or Sarah)" value="Mark">
-        <input type="tel" id="checkoutPhoneInput" class="notes-textarea" style="min-height: 44px; padding: 0.6rem 0.85rem;" placeholder="Mobile Number (+63 9XX XXX XXXX)" value="+63 917 555 2026">
+        <input type="text" id="checkoutNameInput" class="notes-textarea" style="min-height: 44px; padding: 0.6rem 0.85rem;" placeholder="<?= $isWalkin ? 'Customer Name (Called when ready)' : 'Your Name (e.g. Mark or Sarah)' ?>" value="<?= $isWalkin ? '' : 'Mark' ?>">
+        <input type="tel" id="checkoutPhoneInput" class="notes-textarea" style="<?= $isWalkin ? 'display: none !important;' : '' ?>min-height: 44px; padding: 0.6rem 0.85rem;" placeholder="Mobile Number (+63 9XX XXX XXXX)" value="<?= $isWalkin ? '' : '+63 917 555 2026' ?>">
       </div>
 
       <!-- Place Order CTA -->
@@ -1046,58 +2654,69 @@ $currentUser = getAuthenticatedUser();
     </div>
   </div>
 
-  <!-- ACTIVE ORDER TICKET WAITING SCREEN (Starts Fresh at 00:00) -->
-  <div class="ticket-screen-overlay" id="orderTicketScreen">
-    <div class="ticket-container">
-      <div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.12em; color: #DF9B64; font-weight: 700;">
-        Active Order Ticket
-      </div>
+  <!-- 0.5s FAST SUCCESS CHECKMARK HUD -->
+  <div class="order-success-hud" id="orderSuccessHud" role="status" aria-live="polite">
+    <div class="hud-box">
+      <svg class="hud-icon-svg" viewBox="0 0 52 52" aria-hidden="true">
+        <circle class="hud-circle" cx="26" cy="26" r="23"/>
+        <path class="hud-check" d="M14 27l8 8 16-17"/>
+      </svg>
+      <div class="hud-title" id="hudSuccessTitle">Order Transmitted!</div>
+      <div class="hud-sub" id="hudSuccessSub">Queue #104 · Direct to KDS</div>
+    </div>
+  </div>
 
-      <!-- Giant Queue Number -->
-      <div class="ticket-giant-num" id="ticketQueueNum">#104</div>
-
-      <!-- Dining Mode Confirmation Pill & Fallback Switcher -->
-      <div id="ticketDiningWrap" style="display: flex; flex-direction: column; align-items: center; gap: 0.35rem; margin-bottom: 0.85rem;">
-        <span id="ticketDiningTag" style="display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.35rem 0.85rem; border-radius: 999px; font-size: 0.82rem; font-weight: 700; background: rgba(226, 135, 67, 0.18); color: #FDBA74; border: 1px solid rgba(226, 135, 67, 0.35);">
-          🪑 Dine In · Table #4
-        </span>
-        <button type="button" id="btnSwitchDiningPostOrder" style="background: none; border: none; color: #DF9B64; font-size: 0.76rem; text-decoration: underline; cursor: pointer; padding: 0.2rem 0.5rem; transition: opacity 0.15s ease;" title="Change dining mode if selected by mistake">
-          Accidentally chose Take Out? Switch to Dine In
-        </button>
-      </div>
-
-      <!-- Live Elapsed Stopwatch (Fresh at 00:00) -->
-      <div class="ticket-stopwatch-row">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-        <span>Wait Time: <strong id="stopwatchDisplay">00:00</strong></span>
-      </div>
-
-      <!-- Dynamic Status Card -->
-      <div class="ticket-status-card status-pending" id="ticketStatusCard">
-        <div class="status-beacon-wrap">
-          <span class="beacon-dot"></span>
-          <span id="ticketStatusText">Order Sent – Waiting for Barista.</span>
+  <!-- DIGITAL PAID ORDER RECEIPT SCREEN (For Table QR) -->
+  <div class="receipt-screen-overlay" id="orderReceiptScreen" role="dialog" aria-modal="true" aria-labelledby="receiptQueueNum">
+    <div class="receipt-card">
+      <div class="receipt-header-strip">
+        <div class="receipt-brand">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><line x1="6" y1="1" x2="6" y2="4"></line><line x1="10" y1="1" x2="10" y2="4"></line><line x1="14" y1="1" x2="14" y2="4"></line></svg>
+          <span>BeCoffee Roastery</span>
         </div>
-        <p style="font-size: 0.82rem; color: #A99B92; margin-top: 0.35rem;" id="ticketSubNotice">
-          Your ticket is queued in the kitchen. The barista tablet has been alerted.
-        </p>
+        <div class="receipt-giant-queue" id="receiptQueueNum">#104</div>
+        <div class="receipt-paid-pill" id="receiptPaidBadge">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          <span id="receiptPaidText">PAID · Cash at Counter</span>
+        </div>
       </div>
 
-      <!-- Live Queue Depth Indicator -->
-      <div style="font-size: 0.85rem; color: #D1C5BD; margin-bottom: 1.25rem;">
-        Queue Status: <strong id="ordersAheadDisplay" style="color: #FDBA74;">0 orders ahead of you</strong>
+      <div class="receipt-meta-grid">
+        <div class="receipt-meta-item">
+          <span class="receipt-meta-label">Location / Dining</span>
+          <span class="receipt-meta-val" id="receiptDiningVal">Table #4 (Dine-In)</span>
+        </div>
+        <div class="receipt-meta-item">
+          <span class="receipt-meta-label">Customer</span>
+          <span class="receipt-meta-val" id="receiptCustomerVal">Mark</span>
+        </div>
+        <div class="receipt-meta-item">
+          <span class="receipt-meta-label">Order Ref</span>
+          <span class="receipt-meta-val" id="receiptRefVal" style="font-family: var(--font-mono); font-size: 0.78rem;">BEC-9988</span>
+        </div>
+        <div class="receipt-meta-item">
+          <span class="receipt-meta-label">Time Placed</span>
+          <span class="receipt-meta-val" id="receiptTimeVal">Just now</span>
+        </div>
       </div>
 
-      <!-- Ticket Items Summary -->
-      <div style="background: rgba(0,0,0,0.25); border-radius: 12px; padding: 1rem; text-align: left; font-size: 0.85rem; color: #E2D5CC; margin-bottom: 1.25rem;" id="ticketItemsSummary">
-        <!-- Injected list of items -->
+      <div class="receipt-items-body" id="receiptItemsBody">
+        <!-- Injected line items -->
       </div>
 
-      <!-- Pickup Announcement (Only active on Completed) -->
-      <div id="pickupCelebrateWrap" style="display: none;">
-        <h2 class="pickup-celebrate-title">Ready for Pickup! Please proceed to the counter.</h2>
-        <p style="font-size: 0.9rem; color: #D1FAE5; margin-bottom: 1rem;">Your handcrafted order is freshly packaged and ready at the barista bar.</p>
-        <button type="button" class="btn-pickup-dismiss" id="btnDismissPickup">Order Picked Up · Dismiss</button>
+      <div class="receipt-total-row">
+        <span>Total Amount</span>
+        <span class="receipt-total-num" id="receiptTotalVal">₱120.00</span>
+      </div>
+
+      <div class="receipt-staff-notice" id="receiptStaffNotice">
+        <strong>📱 Pay via Table GCash Sticker</strong>
+        Scan the GCash QR sticker on your table and present your transaction receipt to the server when your order arrives.
+      </div>
+
+      <div class="receipt-actions">
+        <button type="button" class="btn-receipt-order-more" id="btnReceiptOrderMore">Order More Drinks</button>
+        <button type="button" class="btn-receipt-exit" id="btnReceiptExit">Exit</button>
       </div>
     </div>
   </div>
@@ -1146,20 +2765,15 @@ $currentUser = getAuthenticatedUser();
       }
 
       function updateContextBadge() {
-        var pillIcon = document.getElementById('tableContextIcon');
-        var pillText = document.getElementById('tableContextText');
-        if (currentOrderType === 'take_out') {
-          pillIcon.textContent = '🛍️';
-          pillText.textContent = 'Take-out';
-        } else {
-          pillIcon.textContent = '🪑';
-          pillText.textContent = `Table #${currentTableNumber}`;
-        }
         sessionStorage.setItem('becoffee_order_type', currentOrderType);
         if (currentOrderType === 'dine_in') {
           sessionStorage.setItem('becoffee_table_num', currentTableNumber);
         }
         updatePausedBanner();
+        var pill = document.getElementById('tableContextPill');
+        if (pill) {
+          pill.style.display = 'none';
+        }
       }
       updateContextBadge();
 
@@ -1182,9 +2796,24 @@ $currentUser = getAuthenticatedUser();
         var manualWrap = document.getElementById('tableNumberWrap');
         var lockedNum = document.getElementById('tableLockedNumber');
         var checkoutInput = document.getElementById('checkoutTableInput');
+        var kioskTableGrp = document.getElementById('kioskTableGroup');
+        var kioskPhoneGrp = document.getElementById('kioskPhoneGroup');
+
+        if (isWalkin) {
+          if (lockedBadge) lockedBadge.style.display = 'none';
+          if (manualWrap) manualWrap.style.display = 'none';
+          if (kioskTableGrp) kioskTableGrp.style.display = 'none';
+          if (kioskPhoneGrp) kioskPhoneGrp.style.display = 'none';
+          return;
+        }
 
         if (lockedNum) lockedNum.textContent = currentTableNumber;
         if (checkoutInput) checkoutInput.value = currentTableNumber;
+        var kioskTableInp = document.getElementById('kioskTableInput');
+        if (kioskTableInp) {
+          kioskTableInp.value = currentTableNumber;
+          kioskTableInp.readOnly = true;
+        }
 
         if (currentOrderType === 'dine_in') {
           if (isTableLocked) {
@@ -1194,19 +2823,24 @@ $currentUser = getAuthenticatedUser();
             if (lockedBadge) lockedBadge.style.display = 'none';
             if (manualWrap) manualWrap.style.display = 'block';
           }
+          if (kioskTableGrp) kioskTableGrp.style.display = 'flex';
         } else {
           if (lockedBadge) lockedBadge.style.display = 'none';
           if (manualWrap) manualWrap.style.display = 'none';
+          if (kioskTableGrp) kioskTableGrp.style.display = 'none';
         }
       }
 
       // Tap context badge to toggle passively
-      document.getElementById('tableContextPill').addEventListener('click', function() {
-        currentOrderType = (currentOrderType === 'dine_in') ? 'take_out' : 'dine_in';
-        updateContextBadge();
-        updateCartUI();
-        syncCheckoutTableDisplay();
-      });
+      var pillElem = document.getElementById('tableContextPill');
+      if (pillElem) {
+        pillElem.addEventListener('click', function() {
+          currentOrderType = (currentOrderType === 'dine_in') ? 'take_out' : 'dine_in';
+          updateContextBadge();
+          updateCartUI();
+          syncCheckoutTableDisplay();
+        });
+      }
 
       // 2. Fetch Menu Items & Live Stock Availability
       var menuData = [];
@@ -1260,10 +2894,10 @@ $currentUser = getAuthenticatedUser();
         // Fallback default items if database is empty or offline
         if (!menuData || menuData.length === 0) {
           menuData = [
-            { id: 'hc-spanish', category: 'house-coffee', name: 'Spanish Latte', price: 120, description: 'Velvety espresso combined with smooth fresh milk and rich condensed milk for a perfectly sweet kick.', image: 'images/menu/hc-spanish.webp', tags: ['Bestseller'] },
-            { id: 'hc-salted-caramel', category: 'house-coffee', name: 'Salted Caramel', price: 120, description: 'Slow-cooked rich caramel paired with espresso, fresh milk, and a delicate touch of flaky sea salt.', image: 'images/menu/hc-salted-caramel.webp', tags: ['House Coffee'] },
-            { id: 'mat-latte', category: 'matcha', name: 'Matcha Latte', price: 120, description: 'Stone-ground Uji green tea whisked fresh with silky milk for a soothing, umami-rich experience.', image: 'images/menu/mat-latte.webp', tags: ['Bestseller'] },
-            { id: 'hs-choco', category: 'house-specials', name: 'Artisanal Choco', price: 90, description: 'Decadent, velvety chocolate milk made with pure cocoa and smooth fresh milk.', image: 'images/menu/hs-choco.webp', tags: ['House Specials'] }
+            { id: 'hc-spanish', category: 'house-coffee', name: 'Spanish Latte', price: 120, description: 'Espresso, condensed milk, fresh milk. Sweet and creamy.', image: 'images/menu/hc-spanish.webp', tags: [] },
+            { id: 'hc-salted-caramel', category: 'house-coffee', name: 'Salted Caramel', price: 120, description: 'Espresso, house caramel syrup, sea salt, fresh milk.', image: 'images/menu/hc-salted-caramel.webp', tags: [] },
+            { id: 'mat-latte', category: 'matcha', name: 'Matcha Latte', price: 120, description: 'Japanese Uji green tea whisked with fresh milk.', image: 'images/menu/mat-latte.webp', tags: [] },
+            { id: 'hs-choco', category: 'house-specials', name: 'Dark Choco', price: 90, description: 'Dark cocoa whisked with fresh whole milk.', image: 'images/menu/hs-choco.webp', tags: [] }
           ];
         }
 
@@ -1280,10 +2914,7 @@ $currentUser = getAuthenticatedUser();
 
         grid.innerHTML = filtered.map(function(item) {
           var isItemSoldOut = (itemAvailability[item.id] === false);
-          var tagBadge = (item.tags && item.tags.length > 0)
-            ? `<span class="drink-badge">${item.tags[0]}</span>`
-            : '';
-          var buttonText = isItemSoldOut ? 'Sold Out' : 'Customize & Add';
+          var buttonText = isItemSoldOut ? 'Sold Out' : '+ Add';
           var cardClass = isItemSoldOut ? 'drink-card is-sold-out' : 'drink-card';
           var btnDisabled = isItemSoldOut ? 'disabled' : '';
 
@@ -1291,16 +2922,15 @@ $currentUser = getAuthenticatedUser();
             <div class="${cardClass}">
               <div class="drink-img-wrap">
                 <img src="${item.image || 'images/menu/hc-spanish.webp'}" alt="${item.name}" loading="lazy">
-                ${tagBadge}
               </div>
               <div class="drink-meta-row">
                 <h4 class="drink-name">${item.name}</h4>
                 <span class="drink-price">₱${parseFloat(item.price).toFixed(2)}</span>
               </div>
-              <p class="drink-desc">${item.description || 'Specialty handcrafted cafe beverage.'}</p>
+              <p class="drink-desc">${item.description || 'Fresh handcrafted beverage.'}</p>
               <button type="button" class="btn-customize-add btn-open-custom" data-item-id="${item.id}" ${btnDisabled}>
-                ${isItemSoldOut ? '🚫' : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>'}
-                ${buttonText}
+                ${isItemSoldOut ? '🚫' : '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>'}
+                <span>${buttonText}</span>
               </button>
             </div>
           `;
@@ -1356,11 +2986,18 @@ $currentUser = getAuthenticatedUser();
         });
       }
 
-      // 10-Minute Table Ordering Session Countdown Timer & Inactivity Auto-Leave
+      // 10-Minute Table Ordering Session Countdown Timer & Inactivity Auto-Leave (Only for Table QR scans)
       (function initOrderPrepTimer() {
         var clockEl = document.getElementById('prepCountdownClock');
         var timerWrap = document.getElementById('orderPrepTimer');
         if (!clockEl) return;
+
+        // ONLY activate timer for Table QR scans (?table=N); remove in walk-in / POS mode
+        if (isWalkin || !initialTable) {
+          if (timerWrap) timerWrap.style.display = 'none';
+          return;
+        }
+        if (timerWrap) timerWrap.style.display = 'inline-flex';
 
         var STORAGE_KEY = 'becoffee_order_prep_end';
         var TEN_MINUTES_MS = 10 * 60 * 1000;
@@ -1638,49 +3275,181 @@ $currentUser = getAuthenticatedUser();
         updateCartUI();
       });
 
+      function escapeHtml(str) {
+        if (!str) return '';
+        return String(str)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#039;');
+      }
+
       function updateCartUI() {
         var totalQty = cart.reduce(function(sum, it) { return sum + it.quantity; }, 0);
         var subtotal = cart.reduce(function(sum, it) { return sum + it.subtotal; }, 0);
         var ecoFee = (currentOrderType === 'take_out') ? 15.00 : 0.00;
         var grandTotal = subtotal + ecoFee;
 
+        // 1. Mobile Floating Cart Bar
         var bar = document.getElementById('floatingCartBar');
-        if (totalQty > 0) {
-          bar.style.display = 'flex';
-          document.getElementById('cartCountBadge').textContent = totalQty;
-          document.getElementById('cartBarTotal').textContent = `₱${grandTotal.toFixed(2)}`;
-          document.getElementById('cartBarSubtitle').textContent = `${totalQty} item${totalQty > 1 ? 's' : ''} in tray`;
-        } else {
-          bar.style.display = 'none';
+        if (bar) {
+          if (totalQty > 0) {
+            bar.style.display = 'flex';
+            document.getElementById('cartCountBadge').textContent = totalQty;
+            document.getElementById('cartBarTotal').textContent = `₱${grandTotal.toFixed(2)}`;
+            document.getElementById('cartBarSubtitle').textContent = `${totalQty} item${totalQty > 1 ? 's' : ''} in tray`;
+          } else {
+            bar.style.display = 'none';
+          }
         }
 
-        // Render Cart Modal Items
+        // 2. Mobile Cart Modal Items
         var listWrap = document.getElementById('cartItemsList');
-        listWrap.innerHTML = cart.map(function(item, idx) {
-          return `
-            <div style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 0.85rem; display: flex; justify-content: space-between; align-items: center;">
-              <div>
-                <strong style="color: #FFF; font-size: 0.95rem;">${item.quantity}x ${item.name}</strong>
-                <div style="font-size: 0.75rem; color: #DF9B64; margin-top: 0.2rem;">
-                  ${item.temperature} · ${item.milk_option} · ${item.sweetness_level}
+        if (listWrap) {
+          listWrap.innerHTML = cart.map(function(item, idx) {
+            return `
+              <div style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 0.85rem; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                  <strong style="color: #FFF; font-size: 0.95rem;">${item.quantity}x ${escapeHtml(item.name)}</strong>
+                  <div style="font-size: 0.75rem; color: #DF9B64; margin-top: 0.2rem;">
+                    ${item.temperature} · ${item.milk_option} · ${item.sweetness_level}
+                  </div>
+                  ${item.custom_notes ? `<div style="font-size: 0.75rem; color: #A99B92; font-style: italic;">"${escapeHtml(item.custom_notes)}"</div>` : ''}
                 </div>
-                ${item.custom_notes ? `<div style="font-size: 0.75rem; color: #A99B92; font-style: italic;">"${item.custom_notes}"</div>` : ''}
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                  <span style="font-family: var(--font-mono); font-weight: 700; color: #FFF;">₱${item.subtotal.toFixed(2)}</span>
+                  <button type="button" class="btn-remove-item" data-idx="${idx}" style="background: none; border: none; color: #F87171; cursor: pointer; padding: 0.25rem;">&times;</button>
+                </div>
               </div>
-              <div style="display: flex; align-items: center; gap: 0.75rem;">
-                <span style="font-family: var(--font-mono); font-weight: 700; color: #FFF;">₱${item.subtotal.toFixed(2)}</span>
-                <button type="button" class="btn-remove-item" data-idx="${idx}" style="background: none; border: none; color: #F87171; cursor: pointer; padding: 0.25rem;">&times;</button>
-              </div>
-            </div>
-          `;
-        }).join('');
+            `;
+          }).join('');
 
-        document.querySelectorAll('.btn-remove-item').forEach(function(b) {
-          b.addEventListener('click', function() {
-            var i = parseInt(b.getAttribute('data-idx'), 10);
-            cart.splice(i, 1);
-            updateCartUI();
+          listWrap.querySelectorAll('.btn-remove-item').forEach(function(b) {
+            b.addEventListener('click', function() {
+              var i = parseInt(b.getAttribute('data-idx'), 10);
+              cart.splice(i, 1);
+              updateCartUI();
+            });
           });
-        });
+        }
+
+        // 3. Desktop / Kiosk Order Sidebar
+        var kioskBadge = document.getElementById('kioskItemCountBadge');
+        if (kioskBadge) kioskBadge.textContent = `(${totalQty})`;
+        
+        var kioskClearBtn = document.getElementById('kioskBtnClearTray');
+        if (kioskClearBtn) kioskClearBtn.style.display = totalQty > 0 ? 'inline-block' : 'none';
+
+        var kioskBtnDine = document.getElementById('kioskBtnDineIn');
+        var kioskBtnTake = document.getElementById('kioskBtnTakeOut');
+        if (kioskBtnDine) kioskBtnDine.classList.toggle('active', currentOrderType === 'dine_in');
+        if (kioskBtnTake) kioskBtnTake.classList.toggle('active', currentOrderType === 'take_out');
+
+        var kioskList = document.getElementById('kioskItemsList');
+        if (kioskList) {
+          if (totalQty === 0) {
+            kioskList.innerHTML = `
+              <div class="kiosk-empty-state" id="kioskEmptyState">
+                <div class="kiosk-empty-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><line x1="6" y1="1" x2="6" y2="4"></line><line x1="10" y1="1" x2="10" y2="4"></line><line x1="14" y1="1" x2="14" y2="4"></line></svg>
+                </div>
+                <h4>Your tray is empty</h4>
+                <p>Tap any drink to add it to your order.</p>
+              </div>
+            `;
+            // Switch back to tray panel if empty
+            var viewTray = document.getElementById('kioskViewTray');
+            var viewCheckout = document.getElementById('kioskViewCheckout');
+            if (viewTray && viewCheckout) {
+              viewCheckout.style.display = 'none';
+              viewTray.style.display = 'flex';
+            }
+          } else {
+            kioskList.innerHTML = cart.map(function(item, idx) {
+              return `
+                <div class="kiosk-item-card" data-idx="${idx}">
+                  <div class="kiosk-item-head">
+                    <span class="kiosk-item-name">${item.quantity}x ${escapeHtml(item.name)}</span>
+                    <span class="kiosk-item-price">₱${item.subtotal.toFixed(2)}</span>
+                  </div>
+                  <div class="kiosk-item-specs">
+                    ${item.temperature} · ${item.sweetness_level} · ${item.milk_option}
+                  </div>
+                  ${item.custom_notes ? `<div class="kiosk-item-note">Note: "${escapeHtml(item.custom_notes)}"</div>` : ''}
+                  <div class="kiosk-item-foot">
+                    <div class="kiosk-item-stepper">
+                      <button type="button" class="kiosk-step-btn btn-kiosk-minus" data-idx="${idx}" aria-label="Decrease quantity">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                      </button>
+                      <span class="kiosk-step-val">${item.quantity}</span>
+                      <button type="button" class="kiosk-step-btn btn-kiosk-plus" data-idx="${idx}" aria-label="Increase quantity">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                      </button>
+                    </div>
+                    <button type="button" class="kiosk-btn-remove btn-kiosk-remove" data-idx="${idx}" title="Remove item" aria-label="Remove item">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                    </button>
+                  </div>
+                </div>
+              `;
+            }).join('');
+
+            kioskList.querySelectorAll('.btn-kiosk-plus').forEach(function(btn) {
+              btn.addEventListener('click', function() {
+                var i = parseInt(btn.getAttribute('data-idx'), 10);
+                if (cart[i]) {
+                  cart[i].quantity++;
+                  cart[i].subtotal = cart[i].quantity * cart[i].unit_price;
+                  updateCartUI();
+                }
+              });
+            });
+
+            kioskList.querySelectorAll('.btn-kiosk-minus').forEach(function(btn) {
+              btn.addEventListener('click', function() {
+                var i = parseInt(btn.getAttribute('data-idx'), 10);
+                if (cart[i]) {
+                  cart[i].quantity--;
+                  if (cart[i].quantity <= 0) {
+                    cart.splice(i, 1);
+                  } else {
+                    cart[i].subtotal = cart[i].quantity * cart[i].unit_price;
+                  }
+                  updateCartUI();
+                }
+              });
+            });
+
+            kioskList.querySelectorAll('.btn-kiosk-remove').forEach(function(btn) {
+              btn.addEventListener('click', function() {
+                var i = parseInt(btn.getAttribute('data-idx'), 10);
+                cart.splice(i, 1);
+                updateCartUI();
+              });
+            });
+          }
+        }
+
+        // Totals in Kiosk & Modals
+        var kioskProceedBtn = document.getElementById('btnKioskProceedCheckout');
+        if (kioskProceedBtn) kioskProceedBtn.disabled = (totalQty === 0);
+
+        var kSub = document.getElementById('kioskSubtotalDisplay');
+        if (kSub) kSub.textContent = `₱${subtotal.toFixed(2)}`;
+
+        var kEcoRow = document.getElementById('kioskEcoRow');
+        var kEco = document.getElementById('kioskEcoDisplay');
+        if (kEcoRow && kEco) {
+          kEcoRow.style.display = (currentOrderType === 'take_out') ? 'flex' : 'none';
+          kEco.textContent = `₱${ecoFee.toFixed(2)}`;
+        }
+
+        var kGrand = document.getElementById('kioskGrandTotalDisplay');
+        if (kGrand) kGrand.textContent = `₱${grandTotal.toFixed(2)}`;
+
+        var kFinal = document.getElementById('kioskFinalTotalDisplay');
+        if (kFinal) kFinal.textContent = `₱${grandTotal.toFixed(2)}`;
 
         document.getElementById('cartSubtotalDisplay').textContent = `₱${subtotal.toFixed(2)}`;
         document.getElementById('cartEcoFeeDisplay').textContent = `₱${ecoFee.toFixed(2)}`;
@@ -1691,6 +3460,85 @@ $currentUser = getAuthenticatedUser();
           checkoutTotalEl.textContent = `₱${grandTotal.toFixed(2)}`;
         }
       }
+
+      // Kiosk Header Dining Mode Toggles
+      var kioskBtnDine = document.getElementById('kioskBtnDineIn');
+      var kioskBtnTake = document.getElementById('kioskBtnTakeOut');
+      if (kioskBtnDine) {
+        kioskBtnDine.addEventListener('click', function() {
+          currentOrderType = 'dine_in';
+          sessionStorage.setItem('becoffee_order_type', 'dine_in');
+          updateContextBadge();
+          updateCartUI();
+          syncCheckoutTableDisplay();
+        });
+      }
+      if (kioskBtnTake) {
+        kioskBtnTake.addEventListener('click', function() {
+          currentOrderType = 'take_out';
+          sessionStorage.setItem('becoffee_order_type', 'take_out');
+          updateContextBadge();
+          updateCartUI();
+          syncCheckoutTableDisplay();
+        });
+      }
+
+      // Kiosk Clear Tray
+      var kioskClearBtn = document.getElementById('kioskBtnClearTray');
+      if (kioskClearBtn) {
+        kioskClearBtn.addEventListener('click', function() {
+          if (cart.length === 0) return;
+          cart = [];
+          updateCartUI();
+        });
+      }
+
+      // Kiosk Proceed to In-Place Checkout
+      var btnKioskCheckout = document.getElementById('btnKioskProceedCheckout');
+      if (btnKioskCheckout) {
+        btnKioskCheckout.addEventListener('click', function() {
+          if (cart.length === 0) return;
+          var viewTray = document.getElementById('kioskViewTray');
+          var viewCheckout = document.getElementById('kioskViewCheckout');
+          if (viewTray && viewCheckout) {
+            viewTray.style.display = 'none';
+            viewCheckout.style.display = 'flex';
+          }
+          // Sync table input
+          var tableGrp = document.getElementById('kioskTableGroup');
+          var tableInp = document.getElementById('kioskTableInput');
+          if (tableGrp) tableGrp.style.display = (!isWalkin && currentOrderType === 'dine_in') ? 'flex' : 'none';
+          if (tableInp) {
+            if (currentTableNumber) tableInp.value = currentTableNumber;
+            tableInp.readOnly = true;
+          }
+        });
+      }
+
+      // Kiosk Back to Tray
+      var btnKioskBack = document.getElementById('btnKioskBackToTray');
+      if (btnKioskBack) {
+        btnKioskBack.addEventListener('click', function() {
+          var viewTray = document.getElementById('kioskViewTray');
+          var viewCheckout = document.getElementById('kioskViewCheckout');
+          if (viewTray && viewCheckout) {
+            viewCheckout.style.display = 'none';
+            viewTray.style.display = 'flex';
+          }
+        });
+      }
+
+      // Kiosk Payment Method Pills
+      document.querySelectorAll('#kioskPaymentPills .kiosk-pay-pill').forEach(function(pill) {
+        pill.addEventListener('click', function() {
+          document.querySelectorAll('#kioskPaymentPills .kiosk-pay-pill').forEach(function(p) { p.classList.remove('active'); });
+          pill.classList.add('active');
+          selectedPaymentMethod = pill.getAttribute('data-val');
+          document.querySelectorAll('#paymentMethodRadioGroup .pill-radio-opt').forEach(function(p) {
+            p.classList.toggle('active', p.getAttribute('data-val') === selectedPaymentMethod);
+          });
+        });
+      });
 
       // Cart modal triggers
       document.getElementById('floatingCartBar').addEventListener('click', function() {
@@ -1758,7 +3606,8 @@ $currentUser = getAuthenticatedUser();
       var stopwatchTimer = null;
       var stopwatchSeconds = 0;
 
-      document.getElementById('btnPlaceOrderFinal').addEventListener('click', async function() {
+
+      async function executeOrderSubmission(fromKiosk, gcashRef) {
         if (cart.length === 0) return;
 
         if (currentOrderType === 'dine_in' && !isTableQREnabled) {
@@ -1766,9 +3615,13 @@ $currentUser = getAuthenticatedUser();
           return;
         }
 
-        var name = document.getElementById('checkoutNameInput').value.trim() || 'Guest Customer';
-        var phone = document.getElementById('checkoutPhoneInput').value.trim() || '+63 900 000 0000';
-        var table = (currentOrderType === 'dine_in') ? (currentTableNumber || document.getElementById('checkoutTableInput').value.trim() || '1') : null;
+        var nameInput = fromKiosk ? document.getElementById('kioskNameInput') : document.getElementById('checkoutNameInput');
+        var phoneInput = fromKiosk ? document.getElementById('kioskPhoneInput') : document.getElementById('checkoutPhoneInput');
+        var tableInput = fromKiosk ? document.getElementById('kioskTableInput') : document.getElementById('checkoutTableInput');
+
+        var name = (nameInput && nameInput.value.trim()) || (isWalkin ? 'Walk-in Customer' : 'Guest Customer');
+        var phone = isWalkin ? '' : ((phoneInput && phoneInput.value.trim()) || '');
+        var table = (!isWalkin && currentOrderType === 'dine_in') ? (currentTableNumber || (tableInput && tableInput.value.trim()) || '1') : null;
 
         var orderSource = isWalkin ? 'registrar' : (initialTable || isTableLocked || currentOrderType === 'dine_in' ? 'qr_link' : 'registrar');
 
@@ -1779,13 +3632,14 @@ $currentUser = getAuthenticatedUser();
           table_number: table,
           order_source: orderSource,
           payment_method: selectedPaymentMethod,
+          payment_reference: gcashRef || '',
           items: cart
         };
 
-        var submitBtn = document.getElementById('btnPlaceOrderFinal');
-        submitBtn.disabled = true;
-        var originalBtnHtml = submitBtn.innerHTML;
-        submitBtn.textContent = 'Transmitting Order to Barista...';
+        var submitBtn = fromKiosk ? document.getElementById('btnKioskPlaceOrderFinal') : document.getElementById('btnPlaceOrderFinal');
+        if (submitBtn) submitBtn.disabled = true;
+        var originalBtnHtml = submitBtn ? submitBtn.innerHTML : '';
+        if (submitBtn) submitBtn.textContent = 'Transmitting Order to Barista...';
 
         console.log('PLACE ORDER PAYLOAD:', JSON.stringify(payload));
         try {
@@ -1798,13 +3652,43 @@ $currentUser = getAuthenticatedUser();
           console.log('PLACE ORDER RESPONSE:', res.status, data);
 
           if (data.success) {
-            // Clear cart & checkout modal
+            var placedItems = [...cart];
+            var placedOrderType = payload.order_type;
+            var placedTable = payload.table_number;
+            var placedName = payload.customer_name;
+            var placedPay = payload.payment_method;
+            var placedRef = data.order_reference;
+            var placedQueue = data.queue_number;
+            var grandTotal = payload.items.reduce(function(s, it) { return s + ((parseFloat(it.unit_price) || 0) * (parseInt(it.quantity, 10) || 1)); }, 0);
+
             cart = [];
             updateCartUI();
-            document.getElementById('checkoutModal').classList.remove('active');
+            var checkoutModal = document.getElementById('checkoutModal');
+            if (checkoutModal) checkoutModal.classList.remove('active');
 
-            // Lock into Waiting Screen Starting Fresh at 00:00
-            launchLiveTicketScreen(data.order_reference, data.queue_number, payload.items, payload.order_type, payload.table_number);
+            // 1. Snappy 0.5-second animated checkmark HUD
+            triggerSuccessHud(placedQueue, isWalkin);
+
+            if (isWalkin) {
+              // POS WALK-IN MODE: Stay in POS, clear name field, return sidebar to fresh tray
+              var nameInputKiosk = document.getElementById('kioskNameInput');
+              if (nameInputKiosk) nameInputKiosk.value = '';
+              var nameInputCheckout = document.getElementById('checkoutNameInput');
+              if (nameInputCheckout) nameInputCheckout.value = '';
+
+              var viewTray = document.getElementById('kioskViewTray');
+              var viewCheckout = document.getElementById('kioskViewCheckout');
+              if (viewTray && viewCheckout) {
+                viewCheckout.style.display = 'none';
+                viewTray.style.display = 'flex';
+              }
+              // Register is immediately ready for next walk-in customer!
+            } else {
+              // TABLE QR MODE: Display Digital Paid Order Receipt
+              setTimeout(function() {
+                showDigitalReceipt(placedRef, placedQueue, placedItems, placedOrderType, placedTable, placedName, placedPay, grandTotal, gcashRef);
+              }, 500);
+            }
           } else {
             console.error('Order placement error:', data.error);
             await SystemDialog.alert('Order placement error: ' + (data.error || 'Server rejected request.'), { title: 'Order Failed', type: 'danger' });
@@ -1813,74 +3697,125 @@ $currentUser = getAuthenticatedUser();
           console.error('Network connection error:', err);
           await SystemDialog.alert('Network connection error: ' + err.message, { title: 'Connection Error', type: 'danger' });
         } finally {
-          submitBtn.disabled = false;
-          submitBtn.innerHTML = originalBtnHtml;
-        }
-      });
-
-      // 7. Live Waiting Ticket Screen Logic
-      function updateTicketDiningDisplay(type, table) {
-        var tag = document.getElementById('ticketDiningTag');
-        var btn = document.getElementById('btnSwitchDiningPostOrder');
-        if (!tag) return;
-
-        var isDine = (type === 'dine_in');
-        if (isDine) {
-          tag.innerHTML = `🪑 Dine In · Table #${table || '1'}`;
-          tag.style.background = 'rgba(226, 135, 67, 0.18)';
-          tag.style.color = '#FDBA74';
-          tag.style.borderColor = 'rgba(226, 135, 67, 0.35)';
-          if (btn) btn.textContent = 'Accidentally chose Dine In? Switch to Take Out';
-        } else {
-          tag.innerHTML = `🛍️ Take Out · Counter Pickup`;
-          tag.style.background = 'rgba(16, 185, 129, 0.18)';
-          tag.style.color = '#6EE7B7';
-          tag.style.borderColor = 'rgba(16, 185, 129, 0.35)';
-          if (btn) btn.textContent = 'Accidentally chose Take Out? Switch to Dine In';
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalBtnHtml;
+          }
         }
       }
 
-      function launchLiveTicketScreen(orderRef, queueNum, items, initialType, initialTable) {
+      function handleOrderPlacement(fromKiosk) {
+        if (cart.length === 0) return;
+        executeOrderSubmission(fromKiosk, '');
+      }
+
+      document.getElementById('btnPlaceOrderFinal').addEventListener('click', function() {
+        handleOrderPlacement(false);
+      });
+      var btnKioskPlace = document.getElementById('btnKioskPlaceOrderFinal');
+      if (btnKioskPlace) {
+        btnKioskPlace.addEventListener('click', function() {
+          handleOrderPlacement(true);
+        });
+      }
+
+      // 7. 0.5s Checkmark HUD & Digital Paid Order Receipt Logic
+      function triggerSuccessHud(queueNum, isWalkinMode) {
+        var hud = document.getElementById('orderSuccessHud');
+        var title = document.getElementById('hudSuccessTitle');
+        var sub = document.getElementById('hudSuccessSub');
+        if (!hud) return;
+
+        if (title) title.textContent = isWalkinMode ? 'Order Transmitted to Kitchen!' : 'Order Placed & Sent!';
+        if (sub) sub.textContent = `Queue #${queueNum} · Direct to KDS`;
+
+        hud.classList.add('active');
+        setTimeout(function() {
+          hud.classList.remove('active');
+        }, 550);
+      }
+
+      function showDigitalReceipt(orderRef, queueNum, items, orderType, tableNum, custName, payMethod, total, gcashRef) {
         activeOrderRef = orderRef;
         sessionStorage.setItem('active_ticket_ref', orderRef);
         sessionStorage.setItem('active_ticket_queue', queueNum);
 
-        updateTicketDiningDisplay(initialType || currentOrderType, initialTable || currentTableNumber);
+        var receipt = document.getElementById('orderReceiptScreen');
+        if (!receipt) return;
 
-        // Reset and start stopwatch at 00:00
-        stopwatchSeconds = 0;
-        document.getElementById('stopwatchDisplay').textContent = '00:00';
-        if (stopwatchTimer) clearInterval(stopwatchTimer);
-        stopwatchTimer = setInterval(function() {
-          stopwatchSeconds++;
-          var m = Math.floor(stopwatchSeconds / 60);
-          var s = stopwatchSeconds % 60;
-          document.getElementById('stopwatchDisplay').textContent = 
-            `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-        }, 1000);
+        var queueEl = document.getElementById('receiptQueueNum');
+        if (queueEl) queueEl.textContent = `#${queueNum}`;
 
-        document.getElementById('ticketQueueNum').textContent = `#${queueNum}`;
-        document.getElementById('ticketStatusText').textContent = 'Order Sent – Waiting for Barista.';
-        document.getElementById('ticketStatusCard').className = 'ticket-status-card status-pending';
-        document.getElementById('pickupCelebrateWrap').style.display = 'none';
+        var refEl = document.getElementById('receiptRefVal');
+        if (refEl) refEl.textContent = orderRef || '—';
 
-        var summaryHtml = items.map(function(it) {
-          return `<div>• ${it.quantity}x <strong>${it.name || it.item_name}</strong> (${it.temperature} · ${it.milk_option})</div>`;
-        }).join('');
-        document.getElementById('ticketItemsSummary').innerHTML = summaryHtml;
+        var custEl = document.getElementById('receiptCustomerVal');
+        if (custEl) custEl.textContent = custName || 'Guest Customer';
 
-        var screen = document.getElementById('orderTicketScreen');
-        screen.classList.remove('is-ready');
-        screen.classList.add('active');
+        var diningEl = document.getElementById('receiptDiningVal');
+        if (diningEl) {
+          diningEl.textContent = (orderType === 'dine_in')
+            ? (tableNum ? `Table #${tableNum} (Dine-In)` : 'Dine-In (Counter Pick-Up)')
+            : 'Take-Out (Counter Pickup)';
+        }
 
-        // Start 2.5s Polling loop
+        var payBadge = document.getElementById('receiptPaidBadge');
+        var payText = document.getElementById('receiptPaidText');
+        var isGcash = (payMethod === 'gcash');
+        if (payBadge && payText) {
+          if (isGcash) {
+            payBadge.style.background = 'rgba(223, 155, 100, 0.2)';
+            payBadge.style.borderColor = 'rgba(223, 155, 100, 0.45)';
+            payBadge.style.color = '#FAF7F2';
+            payText.textContent = 'GCASH · Pay via Table Sticker';
+          } else {
+            payBadge.style.background = 'rgba(16, 185, 129, 0.15)';
+            payBadge.style.borderColor = 'rgba(16, 185, 129, 0.35)';
+            payBadge.style.color = '#34D399';
+            payText.textContent = 'CASH · Pay at Counter/Table';
+          }
+        }
+
+        var noticeEl = document.getElementById('receiptStaffNotice');
+        if (noticeEl) {
+          noticeEl.innerHTML = isGcash
+            ? `<strong>📱 Pay via Table GCash Sticker</strong>Please scan the GCash QR sticker on Table #${tableNum || 'Your Table'} to pay <strong>₱${parseFloat(total).toFixed(2)}</strong>. Show your GCash transaction receipt to the server when your drinks arrive!`
+            : `<strong>💵 Cash Payment</strong>Please have <strong>₱${parseFloat(total).toFixed(2)}</strong> ready for the server when your order arrives at Table #${tableNum || 'Your Table'}, or pay at the counter.`;
+        }
+
+        var totalEl = document.getElementById('receiptTotalVal');
+        if (totalEl) totalEl.textContent = `₱${parseFloat(total).toFixed(2)}`;
+
+        var now = new Date();
+        var timeEl = document.getElementById('receiptTimeVal');
+        if (timeEl) timeEl.textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+        var itemsContainer = document.getElementById('receiptItemsBody');
+        if (itemsContainer) {
+          itemsContainer.innerHTML = items.map(function(it) {
+            var specs = [it.temperature, it.milk_option, it.sweetness_level].filter(Boolean).join(' · ');
+            var lineTotal = (parseFloat(it.unit_price) || 0) * (parseInt(it.quantity, 10) || 1);
+            return `
+              <div class="receipt-line">
+                <div class="receipt-line-left">
+                  <span class="receipt-line-name">${it.quantity}x ${escapeHtml(it.name || it.item_name)}</span>
+                  <span class="receipt-line-specs">${escapeHtml(specs)}</span>
+                </div>
+                <span class="receipt-line-price">₱${lineTotal.toFixed(2)}</span>
+              </div>
+            `;
+          }).join('');
+        }
+
+        receipt.classList.add('active');
+
+        // Start background polling to play cafe chime and update badge when barista completes order
         if (pollTimer) clearInterval(pollTimer);
-        pollTimer = setInterval(pollTicketStatus, 2500);
+        pollTimer = setInterval(pollReceiptStatus, 2500);
       }
 
-      async function pollTicketStatus() {
+      async function pollReceiptStatus() {
         if (!activeOrderRef) return;
-
         try {
           var res = await fetch(`api/orders.php?reference=${encodeURIComponent(activeOrderRef)}`, { cache: 'no-store' });
           if (!res.ok) return;
@@ -1888,32 +3823,16 @@ $currentUser = getAuthenticatedUser();
           if (!data.success || !data.order) return;
 
           var ord = data.order;
-          updateTicketDiningDisplay(ord.order_type, ord.table_number);
-          if (ord.status === 'completed' || ord.status === 'cancelled') {
-            var switchBtn = document.getElementById('btnSwitchDiningPostOrder');
-            if (switchBtn) switchBtn.style.display = 'none';
-          }
-
-          document.getElementById('ordersAheadDisplay').textContent = `${ord.orders_ahead} orders ahead of you`;
-
-          // State 1: In Progress
-          if (ord.status === 'in_progress') {
-            document.getElementById('ticketStatusCard').className = 'ticket-status-card status-in_progress';
-            document.getElementById('ticketStatusText').textContent = 'Brewing in Progress – Barista is crafting your order.';
-            document.getElementById('ticketSubNotice').textContent = 'Your order is currently being prepared on the espresso bar.';
-          }
-
-          // State 2: Completed / Pickup Takeover
           if (ord.status === 'completed') {
             clearInterval(pollTimer);
-            clearInterval(stopwatchTimer);
-
-            var screen = document.getElementById('orderTicketScreen');
-            screen.classList.add('is-ready');
-            document.getElementById('ticketStatusCard').style.display = 'none';
-            document.getElementById('pickupCelebrateWrap').style.display = 'block';
-
-            // Audio notification ding
+            var badge = document.getElementById('receiptPaidBadge');
+            var text = document.getElementById('receiptPaidText');
+            if (badge && text) {
+              badge.style.background = 'rgba(16, 185, 129, 0.35)';
+              badge.style.borderColor = '#10B981';
+              text.textContent = '✓ ORDER READY & SERVED!';
+            }
+            // Gentle Cafe Chime
             try {
               var ctx = new (window.AudioContext || window.webkitAudioContext)();
               var osc = ctx.createOscillator();
@@ -1928,15 +3847,26 @@ $currentUser = getAuthenticatedUser();
               osc.start();
               osc.stop(ctx.currentTime + 0.85);
             } catch (e) {}
-
-            // Haptic vibration on mobile
-            if (navigator.vibrate) {
-              navigator.vibrate([200, 100, 200]);
-            }
+            if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
           }
         } catch (e) {
-          console.warn('Polling error:', e);
+          console.warn('Receipt poll warning:', e);
         }
+      }
+
+      var btnMoreDrinks = document.getElementById('btnReceiptOrderMore');
+      if (btnMoreDrinks) {
+        btnMoreDrinks.addEventListener('click', function() {
+          var receipt = document.getElementById('orderReceiptScreen');
+          if (receipt) receipt.classList.remove('active');
+        });
+      }
+
+      var btnExitReceipt = document.getElementById('btnReceiptExit');
+      if (btnExitReceipt) {
+        btnExitReceipt.addEventListener('click', function() {
+          leaveWebEntirely();
+        });
       }
 
       // 8. One-Click Dining Recovery Post-Order
@@ -2010,13 +3940,16 @@ $currentUser = getAuthenticatedUser();
         });
       }
 
-      // Dismiss Pickup Screen
-      document.getElementById('btnDismissPickup').addEventListener('click', function() {
-        sessionStorage.removeItem('active_ticket_ref');
-        sessionStorage.removeItem('active_ticket_queue');
-        document.getElementById('orderTicketScreen').classList.remove('active', 'is-ready');
-        document.getElementById('ticketStatusCard').style.display = 'block';
-      });
+      // Dismiss Pickup Screen (Legacy guard)
+      var btnDismiss = document.getElementById('btnDismissPickup');
+      if (btnDismiss) {
+        btnDismiss.addEventListener('click', function() {
+          sessionStorage.removeItem('active_ticket_ref');
+          sessionStorage.removeItem('active_ticket_queue');
+          var oldScreen = document.getElementById('orderTicketScreen');
+          if (oldScreen) oldScreen.classList.remove('active', 'is-ready');
+        });
+      }
 
       // Leave Ordering Session Button
       var btnLeave = document.getElementById('btnLeaveSession');
@@ -2035,11 +3968,17 @@ $currentUser = getAuthenticatedUser();
         });
       }
 
-      // Resume active ticket on page reload if present in sessionStorage
+      // Resume digital receipt on page reload if active order present in sessionStorage
       var savedRef = sessionStorage.getItem('active_ticket_ref');
       var savedQueue = sessionStorage.getItem('active_ticket_queue');
       if (savedRef && savedQueue) {
-        launchLiveTicketScreen(savedRef, savedQueue, []);
+        fetch('api/orders.php?reference=' + encodeURIComponent(savedRef), { cache: 'no-store' })
+          .then(function(r) { return r.json(); })
+          .then(function(data) {
+            if (data && data.order && data.order.status !== 'completed' && data.order.status !== 'cancelled') {
+              showDigitalReceipt(data.order.order_reference, data.order.queue_number, data.order.items, data.order.order_type, data.order.table_number, data.order.customer_name, data.order.payment_method, data.order.total_amount);
+            }
+          }).catch(function() {});
       }
 
       // Initial Menu Load

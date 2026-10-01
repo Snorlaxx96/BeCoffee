@@ -680,43 +680,517 @@ $currentUser = getAuthenticatedUser();
       cursor: not-allowed;
     }
 
-    /* Live Queue Ticket Card (Order Confirmation) */
-    .ticket-card {
-      background: #1B1512;
-      border: 1px solid rgba(226, 135, 67, 0.3);
-      border-radius: 20px;
-      padding: 1.5rem;
+    /* 0.5s QUICK ORDER SUCCESS HUD */
+    .order-success-hud {
+      position: fixed;
+      inset: 0;
+      z-index: 3500;
+      background: rgba(17, 13, 11, 0.82);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.15s ease-out;
+    }
+    .order-success-hud.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .hud-box {
+      background: #1C1613;
+      border: 1.5px solid rgba(16, 185, 129, 0.5);
+      border-radius: 24px;
+      padding: 1.75rem 2.25rem;
       text-align: center;
-      max-width: 480px;
-      margin: 2rem auto;
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 35px rgba(16, 185, 129, 0.25);
+      transform: scale(0.85);
+      transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
-    .ticket-queue-badge {
-      font-family: var(--font-mono);
-      font-size: 2.2rem;
+    .order-success-hud.active .hud-box {
+      transform: scale(1);
+    }
+    .hud-icon-svg {
+      width: 56px;
+      height: 56px;
+      margin: 0 auto 0.75rem;
+      display: block;
+    }
+    .hud-circle {
+      stroke: #10B981;
+      stroke-width: 3.5;
+      fill: none;
+    }
+    .hud-check {
+      stroke: #10B981;
+      stroke-width: 4;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+      stroke-dasharray: 48;
+      stroke-dashoffset: 48;
+      animation: hudCheckAnim 0.35s 0.08s ease-out forwards;
+    }
+    @keyframes hudCheckAnim {
+      to { stroke-dashoffset: 0; }
+    }
+    .hud-title {
+      font-size: 1.25rem;
       font-weight: 800;
-      color: #FDBA74;
-      background: rgba(226, 135, 67, 0.15);
-      border: 1px solid rgba(226, 135, 67, 0.35);
-      padding: 0.5rem 1.5rem;
-      border-radius: 14px;
-      display: inline-block;
-      margin: 1rem 0;
+      color: #FFF;
+      margin-bottom: 0.25rem;
+      letter-spacing: -0.01em;
     }
-    .ticket-status-pill {
+    .hud-sub {
+      font-size: 0.88rem;
+      color: #6EE7B7;
+      font-weight: 700;
+      font-family: var(--font-mono);
+    }
+
+    /* DIGITAL PAID RECEIPT / PICKUP OVERLAY */
+    .receipt-screen-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(17, 13, 11, 0.95);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      z-index: 2800;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1.25rem;
+      overflow-y: auto;
+    }
+    .receipt-screen-overlay.active {
+      display: flex;
+    }
+    .receipt-card {
+      width: 100%;
+      max-width: 420px;
+      background: #1C1613;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 22px;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .receipt-header-strip {
+      background: linear-gradient(135deg, rgba(223, 155, 100, 0.16) 0%, rgba(223, 155, 100, 0.04) 100%);
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.15);
+      padding: 1.35rem 1.25rem 1rem;
+      text-align: center;
+    }
+    .receipt-brand {
+      font-size: 0.82rem;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #DF9B64;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+    }
+    .receipt-giant-queue {
+      font-size: 2.85rem;
+      font-weight: 900;
+      font-family: var(--font-mono);
+      color: #FFF;
+      line-height: 1;
+      margin: 0.6rem 0 0.4rem;
+      letter-spacing: -0.03em;
+    }
+    .receipt-paid-pill {
       display: inline-flex;
       align-items: center;
       gap: 0.4rem;
-      padding: 0.3rem 0.85rem;
+      background: rgba(16, 185, 129, 0.18);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      color: #6EE7B7;
+      padding: 0.3rem 0.75rem;
       border-radius: 999px;
-      font-size: 0.8rem;
+      font-size: 0.76rem;
       font-weight: 700;
       text-transform: uppercase;
-      margin-bottom: 1rem;
+      letter-spacing: 0.04em;
     }
-    .status-pending { background: rgba(234, 179, 8, 0.2); color: #FDE047; border: 1px solid rgba(234, 179, 8, 0.4); }
-    .status-in_progress { background: rgba(59, 130, 246, 0.2); color: #93C5FD; border: 1px solid rgba(59, 130, 246, 0.4); }
-    .status-completed { background: rgba(16, 185, 129, 0.2); color: #6EE7B7; border: 1px solid rgba(16, 185, 129, 0.4); }
+    .receipt-meta-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.65rem;
+      padding: 0.9rem 1.25rem;
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.12);
+      font-size: 0.82rem;
+    }
+    .receipt-meta-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+    .receipt-meta-label {
+      color: #8C7C72;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .receipt-meta-val {
+      color: #FFF;
+      font-weight: 700;
+    }
+    .receipt-items-body {
+      padding: 1rem 1.25rem;
+      max-height: 180px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+    }
+    .receipt-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      font-size: 0.85rem;
+    }
+    .receipt-line-left {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+      padding-right: 0.5rem;
+    }
+    .receipt-line-name {
+      color: #FFF;
+      font-weight: 600;
+    }
+    .receipt-line-specs {
+      font-size: 0.74rem;
+      color: #A99B92;
+    }
+    .receipt-line-price {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      color: #FDBA74;
+      white-space: nowrap;
+    }
+    .receipt-total-row {
+      padding: 0.85rem 1.25rem;
+      background: rgba(0, 0, 0, 0.25);
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #FFF;
+    }
+    .receipt-total-num {
+      font-family: var(--font-mono);
+      font-size: 1.25rem;
+      color: #10B981;
+    }
+    .receipt-staff-notice {
+      margin: 0.85rem 1.25rem 0.5rem;
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      border-radius: 12px;
+      padding: 0.75rem 0.85rem;
+      text-align: center;
+      font-size: 0.82rem;
+      color: #A7F3D0;
+      line-height: 1.4;
+    }
+    .receipt-staff-notice strong {
+      display: block;
+      color: #6EE7B7;
+      margin-bottom: 0.2rem;
+      font-size: 0.85rem;
+    }
+    .receipt-actions {
+      padding: 0.85rem 1.25rem 1.25rem;
+      display: flex;
+      gap: 0.65rem;
+    }
+    .btn-receipt-order-more {
+      flex: 1;
+      min-height: 44px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 10px;
+      color: #FFF;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+    .btn-receipt-order-more:hover {
+      background: rgba(255, 255, 255, 0.14);
+    }
+    .btn-receipt-exit {
+      min-height: 44px;
+      padding: 0 1.1rem;
+      background: none;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 10px;
+      color: #A99B92;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: color 0.15s ease, border-color 0.15s ease;
+    }
+    .btn-receipt-exit:hover {
+      color: #FFF;
+      border-color: rgba(255, 255, 255, 0.35);
+    }
+
+    /* GCASH PAYMENT MODAL SHEET (WIDE HORIZONTAL LANDSCAPE LAYOUT) */
+    .gcash-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(14, 10, 8, 0.94);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      z-index: 2900;
+      display: none;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 1.25rem;
+      overflow-y: auto;
+    }
+    .gcash-modal-overlay.active {
+      display: flex;
+    }
+    .gcash-modal-card {
+      margin: auto;
+      width: 100%;
+      max-width: 720px;
+      background: #16100D;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 18px;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9), 0 0 20px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .gcash-card-header {
+      background: #130D0A;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+      padding: 0.9rem 1.35rem;
+      color: #FFF;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .gcash-header-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+    }
+    .gcash-header-brand h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      margin: 0;
+      color: #FAF7F2;
+    }
+    .gcash-badge-pill {
+      background: rgba(0, 125, 254, 0.12);
+      border: 1px solid rgba(0, 125, 254, 0.3);
+      color: #60A5FA;
+      border-radius: 999px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 0.12rem 0.5rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .gcash-badge-instapay {
+      background: rgba(223, 155, 100, 0.12);
+      border: 1px solid rgba(223, 155, 100, 0.3);
+      color: #DF9B64;
+      border-radius: 999px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 0.12rem 0.5rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .gcash-btn-close {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 6px;
+      color: #C8B9AF;
+      width: 28px;
+      height: 28px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      line-height: 1;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .gcash-btn-close:hover {
+      background: rgba(255, 255, 255, 0.12);
+      color: #FFF;
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+    .gcash-modal-grid {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 1.5rem;
+      padding: 1.35rem 1.5rem;
+      align-items: stretch;
+    }
+    /* Left Column: QR Code Display */
+    .gcash-grid-col-qr {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      background: #110B09;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 0.85rem;
+    }
+    .gcash-qr-showcase {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .gcash-qr-img {
+      width: 100%;
+      max-width: 220px;
+      height: auto;
+      display: block;
+      border-radius: 8px;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.6);
+    }
+    .gcash-qr-caption {
+      font-size: 0.74rem;
+      color: #9E8E81;
+      text-align: center;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+    /* Right Column: Amount, Channels, Auto-detect & Action */
+    .gcash-grid-col-info {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .gcash-amount-block {
+      background: #110B09;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 1rem 1.15rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+    .gcash-amount-label {
+      font-size: 0.72rem;
+      color: #9E8E81;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 700;
+    }
+    .gcash-amount-val {
+      font-family: var(--font-mono);
+      font-size: 2.35rem;
+      font-weight: 800;
+      color: #FAF7F2;
+      line-height: 1;
+      letter-spacing: -0.02em;
+    }
+    .gcash-channels-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .gcash-channels-title {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: #8E7E73;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .gcash-channels-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+    .channel-chip {
+      font-size: 0.72rem;
+      color: #C8B9AF;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      padding: 0.22rem 0.55rem;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+    .gcash-autodetect-hint {
+      background: rgba(223, 155, 100, 0.08);
+      border: 1px solid rgba(223, 155, 100, 0.2);
+      border-radius: 10px;
+      padding: 0.75rem 0.9rem;
+      font-size: 0.78rem;
+      color: #E2D5CC;
+      line-height: 1.4;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.55rem;
+      box-sizing: border-box;
+    }
+    .gcash-autodetect-hint strong {
+      color: #DF9B64;
+    }
+    .btn-confirm-gcash {
+      width: 100%;
+      min-height: 48px;
+      background: var(--brand-accent, #DF9B64);
+      border: none;
+      border-radius: 10px;
+      color: #140E0C;
+      font-size: 0.92rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: all 0.15s ease;
+      box-shadow: 0 4px 18px rgba(223, 155, 100, 0.25);
+    }
+    .btn-confirm-gcash:hover {
+      background: #E8A876;
+      transform: translateY(-1px);
+    }
+    @media (max-width: 640px) {
+      .gcash-modal-card {
+        max-width: 440px;
+      }
+      .gcash-modal-grid {
+        grid-template-columns: 1fr;
+        gap: 1.15rem;
+        padding: 1.15rem;
+      }
+      .gcash-qr-img {
+        max-width: 170px;
+      }
+      .gcash-badge-pill,
+      .gcash-badge-instapay {
+        display: none;
+      }
+      .gcash-amount-val {
+        font-size: 1.95rem;
+      }
+    }
   </style>
 </head>
 <body class="order-app-body">
@@ -771,38 +1245,74 @@ $currentUser = getAuthenticatedUser();
       <!-- Drink Cards injected dynamically -->
     </div>
 
-    <!-- Active Ticket Polling View -->
-    <div id="activeTicketView" style="display: none;">
-      <div class="ticket-card">
-        <div style="font-size: 0.85rem; color: #A99B92; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700;">Live Kitchen Queue</div>
-        <div class="ticket-queue-badge" id="ticketQueueNumber">#00</div>
-        <div>
-          <span class="ticket-status-pill status-pending" id="ticketStatusPill">● Pending Kitchen Ack</span>
-        </div>
-        <div style="font-size: 0.95rem; color: #F5EBE1; margin-bottom: 0.5rem;" id="ticketOrderRef">Ref: BC-000000</div>
-        
-        <div id="ticketDiningWrap" style="display: flex; flex-direction: column; align-items: center; gap: 0.35rem; margin-bottom: 0.85rem;">
-          <span id="ticketDiningTag" style="display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.35rem 0.85rem; border-radius: 999px; font-size: 0.82rem; font-weight: 700; background: rgba(226, 135, 67, 0.18); color: #FDBA74; border: 1px solid rgba(226, 135, 67, 0.35);">
-            🛍️ Take-out Order
-          </span>
-          <button type="button" id="btnSwitchDiningPostOrder" style="background: none; border: none; color: #DF9B64; font-size: 0.76rem; text-decoration: underline; cursor: pointer; padding: 0.2rem 0.5rem; transition: opacity 0.15s ease;" title="Change dining mode if selected by mistake">
-            Arrived at cafe? Switch to Dine-in Table
-          </button>
-        </div>
+  </main>
+  
+  <!-- 0.5s QUICK ORDER SUCCESS HUD -->
+  <div class="order-success-hud" id="orderSuccessHud" aria-live="assertive" role="alert">
+    <div class="hud-box">
+      <svg class="hud-icon-svg" viewBox="0 0 52 52" aria-hidden="true">
+        <circle class="hud-circle" cx="26" cy="26" r="23"/>
+        <path class="hud-check" d="M14 27l8 8 16-17"/>
+      </svg>
+      <div class="hud-title" id="hudSuccessTitle">Order Transmitted!</div>
+      <div class="hud-sub" id="hudSuccessSub">Queue #00 · Direct to Barista</div>
+    </div>
+  </div>
 
-        <div style="font-size: 0.85rem; color: #DF9B64; margin-bottom: 1.25rem;" id="ticketEstWait">Orders ahead in queue: <strong>0</strong></div>
-
-        <div style="text-align: left; background: #251D18; padding: 1rem; border-radius: 12px; margin-bottom: 1.25rem;">
-          <div style="font-weight: 700; font-size: 0.85rem; color: #DF9B64; margin-bottom: 0.5rem; text-transform: uppercase;">Ticket Items:</div>
-          <div id="ticketItemsList" style="font-size: 0.82rem; line-height: 1.5; color: #D6C7BC;"></div>
+  <!-- DIGITAL ORDER RECEIPT SCREEN (Take-Out Pickup & SMS Notification) -->
+  <div class="receipt-screen-overlay" id="orderReceiptScreen" role="dialog" aria-modal="true" aria-labelledby="receiptQueueNum">
+    <div class="receipt-card">
+      <div class="receipt-header-strip">
+        <div class="receipt-brand">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><line x1="6" y1="1" x2="6" y2="4"></line><line x1="10" y1="1" x2="10" y2="4"></line><line x1="14" y1="1" x2="14" y2="4"></line></svg>
+          <span>BeCoffee Roastery · Take-Out</span>
         </div>
+        <div class="receipt-giant-queue" id="receiptQueueNum">#00</div>
+        <div class="receipt-paid-pill" id="receiptPaidBadge">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          <span id="receiptPaidText">PAID · Take-Out Pickup</span>
+        </div>
+      </div>
 
-        <button type="button" id="btnPlaceNewOrder" style="background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); color: #FFF; padding: 0.55rem 1.25rem; border-radius: 8px; font-size: 0.82rem; font-weight: 600; cursor: pointer;">
-          + Place Another Order
-        </button>
+      <div class="receipt-meta-grid">
+        <div class="receipt-meta-item">
+          <span class="receipt-meta-label">Customer</span>
+          <span class="receipt-meta-val" id="receiptCustomerVal">—</span>
+        </div>
+        <div class="receipt-meta-item">
+          <span class="receipt-meta-label">Contact Phone</span>
+          <span class="receipt-meta-val" id="receiptPhoneVal" style="font-family: var(--font-mono); font-size: 0.8rem;">—</span>
+        </div>
+        <div class="receipt-meta-item">
+          <span class="receipt-meta-label">Order Ref</span>
+          <span class="receipt-meta-val" id="receiptRefVal" style="font-family: var(--font-mono); font-size: 0.78rem;">—</span>
+        </div>
+        <div class="receipt-meta-item">
+          <span class="receipt-meta-label">Time Placed</span>
+          <span class="receipt-meta-val" id="receiptTimeVal">Just now</span>
+        </div>
+      </div>
+
+      <div class="receipt-items-body" id="receiptItemsBody">
+        <!-- Injected line items -->
+      </div>
+
+      <div class="receipt-total-row">
+        <span>Total Amount</span>
+        <span class="receipt-total-num" id="receiptTotalVal">₱0.00</span>
+      </div>
+
+      <div class="receipt-staff-notice" id="receiptStaffNotice">
+        <strong>📱 Cellular SMS Notification Active</strong>
+        We will text your phone (<span id="receiptSmsPhoneNotice">09...</span>) as soon as your drinks are freshly prepared and ready for pickup at the counter!
+      </div>
+
+      <div class="receipt-actions">
+        <button type="button" class="btn-receipt-order-more" id="btnReceiptOrderMore">Order More Drinks</button>
+        <button type="button" class="btn-receipt-exit" id="btnReceiptExit">Exit</button>
       </div>
     </div>
-  </main>
+  </div>
 
   <!-- Floating Sticky Cart Bar -->
   <div class="floating-cart-bar" id="floatingCartBar" style="display: none;">
@@ -1254,7 +1764,9 @@ $currentUser = getAuthenticatedUser();
         document.getElementById('cartDrawerOverlay').classList.remove('active');
       };
 
-      // 5. Confirm Order Action
+      // 5. Confirm Order Action with GCash Auto-Advance Support
+      var gcashAwaitingReturn = false;
+      var gcashHasLeftTab = false;
       document.querySelectorAll('#paymentRadioGroup .pill-radio-opt').forEach(function(pill) {
         pill.onclick = function() {
           document.querySelectorAll('#paymentRadioGroup .pill-radio-opt').forEach(function(p) { p.classList.remove('active'); });
@@ -1263,7 +1775,7 @@ $currentUser = getAuthenticatedUser();
       });
 
       var checkoutBtn = document.getElementById('btnConfirmTakeoutOrder');
-      checkoutBtn.onclick = async function() {
+      checkoutBtn.onclick = function() {
         if (cart.length === 0) return;
 
         var nameInput = document.getElementById('checkoutCustName');
@@ -1274,16 +1786,23 @@ $currentUser = getAuthenticatedUser();
         var payMethod = paymentOpt ? paymentOpt.getAttribute('data-val') : 'cash';
 
         if (!name || name.length < 2) {
-          await SystemDialog.alert('Please enter your full name for order pickup.', { title: 'Name Required', type: 'warning' });
+          SystemDialog.alert('Please enter your full name for order pickup.', { title: 'Name Required', type: 'warning' });
           nameInput.focus();
           return;
         }
         if (!phone || phone.length < 7) {
-          await SystemDialog.alert('Please enter a valid mobile number (+63) for order alerts.', { title: 'Mobile Number Required', type: 'warning' });
+          SystemDialog.alert('Please enter a valid mobile number (+63) for order alerts.', { title: 'Mobile Number Required', type: 'warning' });
           phoneInput.focus();
           return;
         }
 
+        var subtotal = cart.reduce(function(sum, item) { return sum + (item.unit_price * item.quantity); }, 0);
+        var grandTotal = subtotal + 15.00;
+
+        executeTakeoutSubmission(name, phone, payMethod, '', grandTotal);
+      };
+
+      async function executeTakeoutSubmission(name, phone, payMethod, gcashRef, grandTotal) {
         checkoutBtn.disabled = true;
         checkoutBtn.innerHTML = '<span>Transmitting Order...</span>';
 
@@ -1295,8 +1814,11 @@ $currentUser = getAuthenticatedUser();
             table_number: null,
             order_source: 'online',
             payment_method: payMethod,
+            payment_reference: gcashRef || '',
             items: cart
           };
+
+          var cartSnapshot = JSON.parse(JSON.stringify(cart));
 
           var res = await fetch('api/orders.php', {
             method: 'POST',
@@ -1309,7 +1831,10 @@ $currentUser = getAuthenticatedUser();
             cart = [];
             saveCart();
             document.getElementById('cartDrawerOverlay').classList.remove('active');
-            displayLiveTicket(data.order_reference, data.queue_number);
+            triggerSuccessHud(data.queue_number);
+            setTimeout(function() {
+              showTakeoutReceipt(data.order_reference, data.queue_number, name, phone, payMethod, cartSnapshot, grandTotal, gcashRef);
+            }, 500);
           } else {
             await SystemDialog.alert(data.error || 'Could not place order. Please try again.', { title: 'Order Issue', type: 'danger' });
           }
@@ -1319,103 +1844,172 @@ $currentUser = getAuthenticatedUser();
           checkoutBtn.disabled = false;
           checkoutBtn.innerHTML = '<span>Confirm Take-out Order</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>';
         }
-      };
+      }
 
-      // 6. Live Ticket Polling
+      // 6. 0.5s HUD & Digital Take-Out Receipt Card Logic
+      function escapeHtml(str) {
+        if (!str) return '';
+        return String(str).replace(/[&<>"']/g, function(m) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m];
+        });
+      }
+
+      function triggerSuccessHud(queueNum) {
+        var hud = document.getElementById('orderSuccessHud');
+        var sub = document.getElementById('hudSuccessSub');
+        if (!hud) return;
+        if (sub) sub.textContent = `Queue #${queueNum} · Direct to Barista`;
+        hud.classList.add('active');
+        setTimeout(function() {
+          hud.classList.remove('active');
+        }, 550);
+      }
+
       var activeRef = null;
       var pollTimer = null;
 
-      function displayLiveTicket(ref, queue) {
+      function showTakeoutReceipt(ref, queue, name, phone, payMethod, items, total, gcashRef) {
         activeRef = ref;
         sessionStorage.setItem('becoffee_last_order_ref', ref);
-        document.getElementById('activeTicketView').style.display = 'block';
-        document.getElementById('catalogLoadingNotice').style.display = 'none';
-        document.getElementById('drinksCatalogGrid').style.display = 'none';
-        document.getElementById('floatingCartBar').style.display = 'none';
+        sessionStorage.setItem('becoffee_last_order_queue', queue);
 
-        document.getElementById('ticketQueueNumber').textContent = '#' + queue;
-        document.getElementById('ticketOrderRef').textContent = 'Ref: ' + ref;
+        var receipt = document.getElementById('orderReceiptScreen');
+        if (!receipt) return;
 
-        pollTicketStatus();
+        var queueEl = document.getElementById('receiptQueueNum');
+        if (queueEl) queueEl.textContent = '#' + queue;
+
+        var refEl = document.getElementById('receiptRefVal');
+        if (refEl) refEl.textContent = ref || '—';
+
+        var custEl = document.getElementById('receiptCustomerVal');
+        if (custEl) custEl.textContent = name || 'Valued Guest';
+
+        var phoneEl = document.getElementById('receiptPhoneVal');
+        if (phoneEl) phoneEl.textContent = phone || '—';
+
+        var isGcash = (payMethod === 'gcash');
+        var payBadge = document.getElementById('receiptPaidBadge');
+        var payText = document.getElementById('receiptPaidText');
+        if (payBadge && payText) {
+          if (isGcash) {
+            payBadge.style.background = 'rgba(223, 155, 100, 0.2)';
+            payBadge.style.borderColor = 'rgba(223, 155, 100, 0.45)';
+            payBadge.style.color = '#FAF7F2';
+            payText.textContent = 'GCASH · Pay upon Pickup';
+          } else {
+            payBadge.style.background = 'rgba(16, 185, 129, 0.15)';
+            payBadge.style.borderColor = 'rgba(16, 185, 129, 0.35)';
+            payBadge.style.color = '#34D399';
+            payText.textContent = 'CASH · Pay at Counter';
+          }
+        }
+
+        var noticeEl = document.getElementById('receiptStaffNotice');
+        if (noticeEl) {
+          noticeEl.innerHTML = isGcash
+            ? `<strong>📱 Pay via GCash at Counter</strong>Please send <strong>₱${parseFloat(total).toFixed(2)}</strong> via GCash (0994 873 •••• · BeCoffee Roastery). Show your GCash transaction receipt to the barista when claiming your take-out order at the counter!`
+            : `<strong>📱 Cellular SMS Notification Active</strong>We will text your phone (<strong>${escapeHtml(phone || '')}</strong>) as soon as your drinks are freshly prepared and ready for pickup at the counter!`;
+        }
+
+        var totalEl = document.getElementById('receiptTotalVal');
+        if (totalEl) totalEl.textContent = '₱' + parseFloat(total).toFixed(2);
+
+        var now = new Date();
+        var timeEl = document.getElementById('receiptTimeVal');
+        if (timeEl) timeEl.textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+        var itemsContainer = document.getElementById('receiptItemsBody');
+        if (itemsContainer && items && items.length > 0) {
+          itemsContainer.innerHTML = items.map(function(it) {
+            var specs = [it.temperature, it.size, it.milk_option || it.milk, it.sweetness_level || it.sweetness].filter(Boolean).join(' · ');
+            var linePrice = (parseFloat(it.unit_price || it.price) || 0) * (parseInt(it.quantity, 10) || 1);
+            return `
+              <div class="receipt-line">
+                <div class="receipt-line-left">
+                  <span class="receipt-line-name">${it.quantity}x ${escapeHtml(it.name || it.item_name)}</span>
+                  <span class="receipt-line-specs">${escapeHtml(specs)}</span>
+                </div>
+                <span class="receipt-line-price">₱${linePrice.toFixed(2)}</span>
+              </div>
+            `;
+          }).join('');
+        }
+
+        receipt.classList.add('active');
+
+        // Start background polling to notify user if they keep the tab open
         if (pollTimer) clearInterval(pollTimer);
-        pollTimer = setInterval(pollTicketStatus, 5000);
+        pollTimer = setInterval(pollReceiptStatus, 3000);
       }
 
-      async function pollTicketStatus() {
+      async function pollReceiptStatus() {
         if (!activeRef) return;
         try {
           var res = await fetch('api/orders.php?reference=' + encodeURIComponent(activeRef), { cache: 'no-store' });
-          if (res.ok) {
-            var data = await res.json();
-            var ord = data.order;
-            if (ord) {
-              var pill = document.getElementById('ticketStatusPill');
-              if (ord.status === 'completed') {
-                pill.className = 'ticket-status-pill status-completed';
-                pill.textContent = '✅ Order Ready for Pickup!';
-              } else if (ord.status === 'in_progress') {
-                pill.className = 'ticket-status-pill status-in_progress';
-                pill.textContent = '☕ Barista Brewing Now';
-              } else {
-                pill.className = 'ticket-status-pill status-pending';
-                pill.textContent = '● Pending Kitchen Queue';
-              }
-
-              document.getElementById('ticketEstWait').innerHTML = 'Orders ahead in queue: <strong>' + (ord.orders_ahead || 0) + '</strong>';
-
-              var itemsList = document.getElementById('ticketItemsList');
-              if (ord.items && ord.items.length > 0) {
-                itemsList.innerHTML = ord.items.map(function(it) {
-                  return `<div>• ${it.quantity}x ${it.item_name} (${it.temperature}, ${it.milk_option})</div>`;
-                }).join('');
-              }
+          if (!res.ok) return;
+          var data = await res.json();
+          if (!data.order) return;
+          var ord = data.order;
+          if (ord.status === 'completed') {
+            if (pollTimer) clearInterval(pollTimer);
+            var badge = document.getElementById('receiptPaidBadge');
+            var text = document.getElementById('receiptPaidText');
+            if (badge && text) {
+              badge.style.background = 'rgba(16, 185, 129, 0.35)';
+              badge.style.borderColor = '#10B981';
+              text.textContent = '✓ ORDER READY FOR PICKUP!';
             }
+            // Gentle chime
+            try {
+              var ctx = new (window.AudioContext || window.webkitAudioContext)();
+              var osc = ctx.createOscillator();
+              var g = ctx.createGain();
+              osc.type = 'triangle';
+              osc.frequency.setValueAtTime(659.25, ctx.currentTime);
+              osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.12);
+              g.gain.setValueAtTime(0.2, ctx.currentTime);
+              g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.6);
+              osc.connect(g);
+              g.connect(ctx.destination);
+              osc.start();
+              osc.stop(ctx.currentTime + 0.62);
+            } catch(e) {}
           }
         } catch(e) {}
       }
 
-      document.getElementById('btnPlaceNewOrder').onclick = function() {
-        if (pollTimer) clearInterval(pollTimer);
-        activeRef = null;
-        sessionStorage.removeItem('becoffee_last_order_ref');
-        document.getElementById('activeTicketView').style.display = 'none';
-        renderCatalog('all');
-      };
+      var btnMore = document.getElementById('btnReceiptOrderMore');
+      if (btnMore) {
+        btnMore.onclick = function() {
+          if (pollTimer) clearInterval(pollTimer);
+          var receipt = document.getElementById('orderReceiptScreen');
+          if (receipt) receipt.classList.remove('active');
+          renderCatalog('all');
+        };
+      }
 
-      // Post-Order Switch to Dine-in if customer arrived at cafe
-      document.getElementById('btnSwitchDiningPostOrder').onclick = async function() {
-        if (!activeRef) return;
-        var tableNum = await SystemDialog.prompt('What table are you seated at? (e.g. 1 - 10)', '1', {
-          title: 'Table Assignment',
-          placeholder: 'Table number'
-        });
-        if (!tableNum) return;
-
-        try {
-          var res = await fetch('api/orders.php?action=update_dining', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ reference: activeRef, order_type: 'dine_in', table_number: tableNum })
-          });
-          var data = await res.json();
-          if (res.ok && data.success) {
-            document.getElementById('ticketDiningTag').textContent = '🪑 Dine-in (Table #' + tableNum + ')';
-            document.getElementById('btnSwitchDiningPostOrder').style.display = 'none';
-            await SystemDialog.alert('Dining preference updated to Table #' + tableNum + '. Your order will be served to your table!', { title: 'Table Assigned', type: 'success' });
-          } else {
-            await SystemDialog.alert(data.error || 'Could not update dining mode.', { title: 'Update Failed', type: 'danger' });
-          }
-        } catch(e) {
-          await SystemDialog.alert('Network error updating dining mode.', { title: 'Network Error', type: 'danger' });
-        }
-      };
+      var btnExit = document.getElementById('btnReceiptExit');
+      if (btnExit) {
+        btnExit.onclick = function() {
+          if (pollTimer) clearInterval(pollTimer);
+          var receipt = document.getElementById('orderReceiptScreen');
+          if (receipt) receipt.classList.remove('active');
+        };
+      }
 
       // Check for existing active order on page load
+      loadMenuCatalog();
       var savedRef = sessionStorage.getItem('becoffee_last_order_ref');
-      if (savedRef) {
-        displayLiveTicket(savedRef, '...');
-      } else {
-        loadMenuCatalog();
+      var savedQueue = sessionStorage.getItem('becoffee_last_order_queue');
+      if (savedRef && savedQueue) {
+        fetch('api/orders.php?reference=' + encodeURIComponent(savedRef), { cache: 'no-store' })
+          .then(function(r) { return r.json(); })
+          .then(function(data) {
+            if (data && data.order && data.order.status !== 'completed' && data.order.status !== 'cancelled') {
+              showTakeoutReceipt(data.order.order_reference, data.order.queue_number, data.order.customer_name, data.order.customer_phone, data.order.payment_method, data.order.items, data.order.total_amount);
+            }
+          }).catch(function() {});
       }
     })();
   </script>

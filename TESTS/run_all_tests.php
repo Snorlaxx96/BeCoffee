@@ -17,6 +17,8 @@ require_once __DIR__ . '/test_buttons_stock.php';
 require_once __DIR__ . '/test_superadmin_users_system.php';
 require_once __DIR__ . '/test_logout_workflows.php';
 require_once __DIR__ . '/test_customer_flow.php';
+require_once __DIR__ . '/test_walkin_registrar_no_table_phone.php';
+require_once __DIR__ . '/test_sms_and_receipt_flow.php';
 require_once __DIR__ . '/test_backend_transactions.php';
 
 // Execute All Registered Suites

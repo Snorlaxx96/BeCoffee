@@ -47,7 +47,7 @@
         },
         {
           id: 4,
-          name: 'BeCoffee Counter Staff',
+          name: 'COUNTER POS',
           email: 'staff',
           phone: '+63 917 555 2001',
           role: 'staff',
@@ -70,7 +70,7 @@
       return [
         { id: 1, name: 'BeCoffee Administrator', email: 'admin', phone: '+63 917 555 2026', role: 'admin', password: 'admin123' },
         { id: 3, name: 'BeCoffee SuperAdmin (Developer)', email: 'superadmin', phone: '+63 917 555 2000', role: 'superadmin', password: 'superadmin123' },
-        { id: 4, name: 'BeCoffee Counter Staff', email: 'staff', phone: '+63 917 555 2001', role: 'staff', password: 'staff123' }
+        { id: 4, name: 'COUNTER POS', email: 'staff', phone: '+63 917 555 2001', role: 'staff', password: 'staff123' }
       ];
     }
   }

@@ -132,19 +132,32 @@ if ($method === 'POST') {
     $customerName  = trim($input['customer_name'] ?? '');
     $customerPhone = trim($input['customer_phone'] ?? '');
     $customerNotes = trim($input['customer_notes'] ?? '');
+    $paymentRef    = trim($input['payment_reference'] ?? ($input['gcash_reference'] ?? ''));
     $orderType     = in_array($input['order_type'] ?? '', ['dine_in', 'take_out'], true) ? $input['order_type'] : 'dine_in';
-    $tableNumber   = ($orderType === 'dine_in') ? trim($input['table_number'] ?? '1') : null;
+    $rawTable      = isset($input['table_number']) ? trim((string)$input['table_number']) : null;
     $paymentMethod = in_array($input['payment_method'] ?? '', ['cash', 'gcash'], true) ? $input['payment_method'] : 'cash';
+
+    if ($paymentMethod === 'gcash' && !empty($paymentRef)) {
+        $cleanRefNote = "[GCash Ref: {$paymentRef}]";
+        $customerNotes = !empty($customerNotes) ? ($customerNotes . ' | ' . $cleanRefNote) : $cleanRefNote;
+    }
 
     $rawSource = strtolower(trim($input['order_source'] ?? ''));
     if (in_array($rawSource, ['qr_link', 'registrar', 'online'], true)) {
         $orderSource = $rawSource;
-    } elseif ($orderType === 'take_out' && empty($tableNumber)) {
+    } elseif ($orderType === 'take_out' && empty($rawTable)) {
         $orderSource = 'online';
-    } elseif (!empty($tableNumber)) {
+    } elseif (!empty($rawTable)) {
         $orderSource = 'qr_link';
     } else {
         $orderSource = 'registrar';
+    }
+
+    // For registrar / walk-in orders, table number is null (counter pickup) unless explicitly specified
+    if ($orderSource === 'registrar') {
+        $tableNumber = !empty($rawTable) ? $rawTable : null;
+    } else {
+        $tableNumber = ($orderType === 'dine_in') ? ($rawTable ?: '1') : null;
     }
 
     // Operational Guard: Check if Table QR Ordering is paused by management
@@ -178,7 +191,7 @@ if ($method === 'POST') {
         $customerName = 'Guest Customer';
     }
     if (empty($customerPhone)) {
-        $customerPhone = '+63 900 000 0000';
+        $customerPhone = ($orderSource === 'registrar' || $orderSource === 'qr_link') ? '' : '+63 900 000 0000';
     }
 
     $db->beginTransaction();

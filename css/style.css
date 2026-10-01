@@ -2231,11 +2231,11 @@ nav {
 }
 
 .pill-radio-opt.active {
-  background: #FAF5F0 !important;
-  border: 2px solid #8C532B !important;
-  color: #8C532B !important;
+  background: #FAF5F0;
+  border: 2px solid #8C532B;
+  color: #8C532B;
   font-weight: 700;
-  box-shadow: 0 2px 8px rgba(140, 83, 43, 0.12) !important;
+  box-shadow: 0 2px 8px rgba(140, 83, 43, 0.12);
 }
 
 .pill-radio-opt .opt-main {

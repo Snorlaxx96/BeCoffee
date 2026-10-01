@@ -266,10 +266,10 @@ if ($method === 'PATCH' || $method === 'POST') {
 
     // Locate target order
     if ($orderId > 0) {
-        $checkStmt = $db->prepare("SELECT id, queue_number, status, payment_method, order_type, customer_notes FROM orders WHERE id = ?");
+        $checkStmt = $db->prepare("SELECT id, queue_number, status, payment_method, order_type, order_source, customer_name, customer_phone, customer_notes FROM orders WHERE id = ?");
         $checkStmt->execute([$orderId]);
     } else {
-        $checkStmt = $db->prepare("SELECT id, queue_number, status, payment_method, order_type, customer_notes FROM orders WHERE order_reference = ?");
+        $checkStmt = $db->prepare("SELECT id, queue_number, status, payment_method, order_type, order_source, customer_name, customer_phone, customer_notes FROM orders WHERE order_reference = ?");
         $checkStmt->execute([$orderRef]);
     }
     $target = $checkStmt->fetch();
@@ -327,13 +327,21 @@ if ($method === 'PATCH' || $method === 'POST') {
         ");
         $updateStmt->execute([$targetId]);
 
+        // Dispatch SMS notification for online takeout orders with valid phone numbers
+        require_once __DIR__ . '/sms.php';
+        $smsResult = null;
+        if (!empty($target['customer_phone']) && ($target['order_source'] === 'online' || $target['order_type'] === 'take_out')) {
+            $smsResult = SmsService::notifyOrderReady($target);
+        }
+
         jsonResponse([
             'success'      => true,
             'message'      => "Ticket #$queueNum completed and cleared from active queue.",
             'queue_number' => $queueNum,
             'status'       => 'completed',
             'completed_at' => date('Y-m-d H:i:s'),
-            'fast_bump'    => $isFastBump
+            'fast_bump'    => $isFastBump,
+            'sms_status'   => $smsResult
         ]);
     }
 

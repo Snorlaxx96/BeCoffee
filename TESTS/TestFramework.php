@@ -251,6 +251,22 @@ class SuiteReporter {
         $this->assert($testName, false, $error);
     }
 
+    public function assertTrue(string $testName, bool $condition, string $failureMessage = ''): void {
+        $this->assert($testName, $condition === true, $failureMessage ?: 'Expected true');
+    }
+
+    public function assertFalse(string $testName, bool $condition, string $failureMessage = ''): void {
+        $this->assert($testName, $condition === false, $failureMessage ?: 'Expected false');
+    }
+
+    public function assertContains(string $testName, string $needle, string $haystack): void {
+        $this->assert($testName, strpos($haystack, $needle) !== false, "String does not contain '{$needle}'");
+    }
+
+    public function info(string $msg): void {
+        // Log info or stage separator
+    }
+
     public function getTests(): array { return $this->tests; }
     public function getPassedCount(): int { return $this->passed; }
     public function getFailedCount(): int { return $this->failed; }
@@ -261,7 +277,7 @@ class TestClient {
     private string $cookieFile;
 
     public function __construct(string $baseUrl = '') {
-        $defaultUrl = getenv('TEST_BASE_URL') ?: 'http://localhost/BeCoffee/';
+        $defaultUrl = getenv('TEST_BASE_URL') ?: 'http://localhost/YEAR%204/OMS%20-%20CAFE/';
         $this->baseUrl = rtrim(!empty($baseUrl) ? $baseUrl : $defaultUrl, '/') . '/';
         $scratchDir = dirname(__DIR__) . '/scratch';
         if (!is_dir($scratchDir)) {
