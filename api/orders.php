@@ -228,7 +228,7 @@ if ($method === 'POST') {
             $rawSize = $it['size'] ?? 'Medium';
             $size = ($rawSize === 'Large') ? 'Large' : 'Medium';
             $temp = in_array($it['temperature'] ?? '', ['Hot', 'Iced'], true) ? $it['temperature'] : 'Iced';
-            $milk = trim($it['milk_option'] ?? 'Regular Milk');
+            $milk = trim($it['milk_option'] ?? 'No Add-on');
             $sweetness = trim($it['sweetness_level'] ?? 'Normal (100%)');
             $notes = trim($it['custom_notes'] ?? '');
 

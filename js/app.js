@@ -849,7 +849,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     currentCustomizingItem = item;
     customTemp = 'Iced';
-    customAddon = 'Regular Milk';
+    customAddon = 'No Add-on';
     customAddonSurcharge = 0;
     customSweetness = 'Less Sweet (75%)';
     customQty = 1;
@@ -885,7 +885,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    // Default Selection: Iced, Regular Milk (+₱0), 75% Less Sweet, Qty 1
+    // Default Selection: Iced, No Add-on (+₱0), 75% Less Sweet, Qty 1
     if (tempIcedBtn) {
       tempIcedBtn.classList.add('active');
       tempIcedBtn.setAttribute('aria-checked', 'true');
@@ -895,12 +895,12 @@ document.addEventListener('DOMContentLoaded', () => {
       tempHotBtn.setAttribute('aria-checked', 'false');
     }
 
-    // Reset Add-ons pills to Regular Milk active
+    // Reset Add-ons pills to No Add-on active (Regular Milk available)
     if (addonOptionsGroup) {
       addonOptionsGroup.querySelectorAll('.pill-radio-opt').forEach(opt => {
-        const isReg = opt.getAttribute('data-val') === 'Regular Milk';
-        opt.classList.toggle('active', isReg);
-        opt.setAttribute('aria-checked', isReg ? 'true' : 'false');
+        const isDefault = opt.getAttribute('data-val') === 'No Add-on';
+        opt.classList.toggle('active', isDefault);
+        opt.setAttribute('aria-checked', isDefault ? 'true' : 'false');
       });
     }
 

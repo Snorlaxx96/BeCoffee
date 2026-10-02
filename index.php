@@ -3078,7 +3078,7 @@ $isTableQR = !empty($_GET['table']);
       // 3. Customization Modal Logic & Stock Lockouts
       var activeCustomItem = null;
       var currentCustomTemp = 'Iced';
-      var currentCustomAddon = 'Regular Milk';
+      var currentCustomAddon = 'No Add-on';
       var currentAddonSurcharge = 0;
       var currentCustomSweetness = 'Less Sweet (75%)';
       var currentCustomQty = 1;
@@ -3091,10 +3091,20 @@ $isTableQR = !empty($_GET['table']);
         var addons = stockOptions.filter(function(o) { return o.category_type === 'addon'; });
         if (addons.length === 0) {
           addons = [
+            { option_key: 'No Add-on', option_label: 'No Add-on (+₱0)', surcharge: 0 },
             { option_key: 'Regular Milk', option_label: 'Regular Milk (+₱0)', surcharge: 0 },
             { option_key: 'Oat Milk', option_label: 'Oat Milk (+₱30)', surcharge: 30 },
             { option_key: 'Almond Milk', option_label: 'Almond Milk (+₱30)', surcharge: 30 }
           ];
+        } else {
+          // Ensure No Add-on appears first if present
+          addons.sort(function(a, b) {
+            if (a.option_key === 'No Add-on') return -1;
+            if (b.option_key === 'No Add-on') return 1;
+            if (a.option_key === 'Regular Milk') return -1;
+            if (b.option_key === 'Regular Milk') return 1;
+            return 0;
+          });
         }
 
         // Auto-select first available add-on if currently selected is missing or sold out
@@ -3181,9 +3191,9 @@ $isTableQR = !empty($_GET['table']);
         document.getElementById('customItemImg').src = activeCustomItem.image || 'images/menu/hc-spanish.webp';
         document.getElementById('customItemBasePrice').textContent = `₱${parseFloat(activeCustomItem.price).toFixed(2)}`;
 
-        // Reset selections to defaults
+        // Reset selections to defaults (No Add-on is default, Regular Milk available)
         currentCustomTemp = 'Iced';
-        currentCustomAddon = 'Regular Milk';
+        currentCustomAddon = 'No Add-on';
         currentAddonSurcharge = 0;
         currentCustomSweetness = 'Less Sweet (75%)';
         currentCustomQty = 1;
@@ -3684,10 +3694,10 @@ $isTableQR = !empty($_GET['table']);
               }
               // Register is immediately ready for next walk-in customer!
             } else {
-              // TABLE QR MODE: Display Digital Paid Order Receipt
-              setTimeout(function() {
-                showDigitalReceipt(placedRef, placedQueue, placedItems, placedOrderType, placedTable, placedName, placedPay, grandTotal, gcashRef);
-              }, 500);
+              // TABLE QR MODE: 0.5s HUD already confirmed placement.
+              // Mark order active in sessionStorage to silence the 10-minute table ordering timer.
+              sessionStorage.setItem('active_ticket_ref', placedRef);
+              sessionStorage.setItem('active_ticket_queue', placedQueue);
             }
           } else {
             console.error('Order placement error:', data.error);
@@ -3968,18 +3978,6 @@ $isTableQR = !empty($_GET['table']);
         });
       }
 
-      // Resume digital receipt on page reload if active order present in sessionStorage
-      var savedRef = sessionStorage.getItem('active_ticket_ref');
-      var savedQueue = sessionStorage.getItem('active_ticket_queue');
-      if (savedRef && savedQueue) {
-        fetch('api/orders.php?reference=' + encodeURIComponent(savedRef), { cache: 'no-store' })
-          .then(function(r) { return r.json(); })
-          .then(function(data) {
-            if (data && data.order && data.order.status !== 'completed' && data.order.status !== 'cancelled') {
-              showDigitalReceipt(data.order.order_reference, data.order.queue_number, data.order.items, data.order.order_type, data.order.table_number, data.order.customer_name, data.order.payment_method, data.order.total_amount);
-            }
-          }).catch(function() {});
-      }
 
       // Initial Menu Load
       loadMenu();

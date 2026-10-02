@@ -17,6 +17,7 @@ INSERT INTO option_availability (category_type, option_key, option_label, is_ava
 ('milk', 'Regular Milk', 'Regular Milk (+₱0)', 1),
 ('milk', 'Oat Milk', 'Oat Milk (+₱30)', 1),
 ('milk', 'Almond Milk', 'Almond Milk (+₱30)', 1),
+('addon', 'No Add-on', 'No Add-on (+₱0)', 1),
 ('sweetness', 'Normal (100%)', '100% Normal', 1),
 ('sweetness', 'Less Sweet (75%)', '75% Less Sweet', 1),
 ('sweetness', 'Half Sweet (50%)', '50% Half Sweet', 1),

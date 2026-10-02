@@ -1105,8 +1105,12 @@ $currentUser = getAuthenticatedUser();
           <span class="option-group-label">ADD ONS</span>
           <span class="option-group-badge">Select 1</span>
         </div>
-        <div class="pill-radio-group grid-3" id="addonOptionsGroup" role="radiogroup" aria-label="Add-on Options">
-          <div class="pill-radio-opt active" data-val="Regular Milk" data-surcharge="0" role="radio" aria-checked="true">
+        <div class="pill-radio-group grid-4" id="addonOptionsGroup" role="radiogroup" aria-label="Add-on Options">
+          <div class="pill-radio-opt active" data-val="No Add-on" data-surcharge="0" role="radio" aria-checked="true">
+            <span class="opt-name">No Add-on</span>
+            <span class="opt-price">+₱0</span>
+          </div>
+          <div class="pill-radio-opt" data-val="Regular Milk" data-surcharge="0" role="radio" aria-checked="false">
             <span class="opt-name">Regular Milk</span>
             <span class="opt-price">+₱0</span>
           </div>

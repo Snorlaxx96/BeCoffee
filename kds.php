@@ -222,6 +222,63 @@ $isStaff = ($currentUser['role'] === 'staff');
       transform: translateX(1px);
     }
 
+    /* KDS Fast Search Bar */
+    .kds-search-wrap {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      margin: 0 0.4rem;
+    }
+    .kds-search-icon {
+      position: absolute;
+      left: 0.65rem;
+      color: #8E8279;
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+    }
+    .kds-search-input {
+      background: #251D18;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 7px;
+      color: #FAF7F2;
+      font-size: 0.8125rem;
+      font-family: inherit;
+      padding: 0.38rem 1.85rem 0.38rem 2.05rem;
+      width: 170px;
+      transition: width 0.2s ease, border-color 0.15s ease, background 0.15s ease;
+      box-sizing: border-box;
+      outline: none;
+    }
+    .kds-search-input::placeholder {
+      color: #7A6F66;
+    }
+    .kds-search-input:focus {
+      width: 220px;
+      border-color: #DF9B64;
+      background: #2A211B;
+      box-shadow: 0 0 0 2px rgba(223, 155, 100, 0.18);
+    }
+    .kds-search-clear {
+      position: absolute;
+      right: 0.4rem;
+      background: transparent;
+      border: none;
+      color: #8E8279;
+      cursor: pointer;
+      font-size: 0.95rem;
+      line-height: 1;
+      padding: 0.2rem;
+      display: none;
+      border-radius: 4px;
+    }
+    .kds-search-clear:hover {
+      color: #FFF;
+    }
+    .kds-search-wrap.has-val .kds-search-clear {
+      display: inline-flex;
+    }
+
     /* KDS Main Multi-Column Board */
     .kds-board {
       flex: 1;
@@ -1364,6 +1421,14 @@ $isStaff = ($currentUser['role'] === 'staff');
     </div>
 
     <div class="kds-actions" aria-label="Staff Navigation">
+      <div class="kds-search-wrap" id="kdsSearchWrap">
+        <span class="kds-search-icon" aria-hidden="true">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        </span>
+        <input type="text" id="kdsSearchInput" class="kds-search-input" placeholder="Search orders..." autocomplete="off" spellcheck="false" aria-label="Search orders by queue number, name, or item">
+        <button type="button" class="kds-search-clear" id="kdsSearchClear" title="Clear search query" aria-label="Clear search">&times;</button>
+      </div>
+      <span class="kds-header-divider" aria-hidden="true"></span>
       <a href="index.php?mode=walkin" class="kds-btn btn-kds-pos" id="kdsPosBtn" title="Open Cashier Register to take customer orders">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
         <span>Take Orders (POS)</span>
@@ -1540,6 +1605,7 @@ $isStaff = ($currentUser['role'] === 'staff');
       var currentVoidOrderId = null;
       var currentHistoryTab = 'completed';
       var enteredPin = '';
+      var kdsSearchQuery = '';
 
       function escapeHtml(str) {
         if (!str) return '';
@@ -1618,7 +1684,7 @@ $isStaff = ($currentUser['role'] === 'staff');
 
       // Helper to generate high-contrast badge for milk alternatives
       function getMilkBadgeHtml(milkOption) {
-        if (!milkOption || milkOption === 'Regular Milk') return '';
+        if (!milkOption || milkOption === 'Regular Milk' || milkOption === 'No Add-on') return '';
         var lower = milkOption.toLowerCase();
         if (lower.includes('oat')) {
           return `<span class="spec-tag mod-badge-oat">🥛 Oat Milk</span>`;
@@ -1687,6 +1753,25 @@ $isStaff = ($currentUser['role'] === 'staff');
         var pending = rawPending;
         var inProgress = rawInProgress;
 
+        // Apply real-time search query filtering
+        if (kdsSearchQuery) {
+          var q = kdsSearchQuery.toLowerCase();
+          var filterFn = function(ord) {
+            var qNum = String(ord.queue_number || '');
+            if (qNum.includes(q) || ('#' + qNum).includes(q)) return true;
+            if ((ord.order_reference || '').toLowerCase().includes(q)) return true;
+            if ((ord.customer_name || '').toLowerCase().includes(q)) return true;
+            if (ord.table_number && ('t#' + ord.table_number).toLowerCase().includes(q)) return true;
+            if (ord.table_number && String(ord.table_number).toLowerCase().includes(q)) return true;
+            if (ord.items && ord.items.some(function(it) {
+              return (it.item_name || '').toLowerCase().includes(q) || (it.custom_notes || '').toLowerCase().includes(q);
+            })) return true;
+            return false;
+          };
+          pending = pending.filter(filterFn);
+          inProgress = inProgress.filter(filterFn);
+        }
+
         // Update column counts
         document.getElementById('pendingCount').textContent = pending.length;
         document.getElementById('inProgressCount').textContent = inProgress.length;
@@ -1694,7 +1779,9 @@ $isStaff = ($currentUser['role'] === 'staff');
         // Render Pending Column
         var pendingList = document.getElementById('pendingTicketList');
         if (pending.length === 0) {
-          pendingList.innerHTML = '<div class="kds-empty-notice">No pending orders right now.</div>';
+          pendingList.innerHTML = kdsSearchQuery
+            ? `<div class="kds-empty-notice">No pending orders matching "${escapeHtml(kdsSearchQuery)}".</div>`
+            : '<div class="kds-empty-notice">No pending orders right now.</div>';
         } else {
           pendingList.innerHTML = pending.map(function(ord) {
             return buildTicketCardHtml(ord);
@@ -1704,7 +1791,9 @@ $isStaff = ($currentUser['role'] === 'staff');
         // Render In Progress Column
         var progressList = document.getElementById('inProgressTicketList');
         if (inProgress.length === 0) {
-          progressList.innerHTML = '<div class="kds-empty-notice">No orders in progress right now.</div>';
+          progressList.innerHTML = kdsSearchQuery
+            ? `<div class="kds-empty-notice">No in-progress orders matching "${escapeHtml(kdsSearchQuery)}".</div>`
+            : '<div class="kds-empty-notice">No orders in progress right now.</div>';
         } else {
           progressList.innerHTML = inProgress.map(function(ord) {
             return buildTicketCardHtml(ord);
@@ -1960,7 +2049,7 @@ $isStaff = ($currentUser['role'] === 'staff');
           // Drinks receive drink modifiers (temperature, milk, sweetness)
           if (!isFood) {
             if (it.temperature) specs.push(`<span class="spec-tag">${it.temperature}</span>`);
-            if (it.milk_option) {
+            if (it.milk_option && it.milk_option !== 'No Add-on' && it.milk_option !== 'Regular Milk') {
               specs.push(getMilkBadgeHtml(it.milk_option) || `<span class="spec-tag">${it.milk_option}</span>`);
             }
             if (it.sweetness_level) specs.push(`<span class="spec-tag">${it.sweetness_level}</span>`);
@@ -2043,7 +2132,7 @@ $isStaff = ($currentUser['role'] === 'staff');
 
           var customList = [];
           ord.items.forEach(function(it) {
-            if (it.milk_option && it.milk_option !== 'Regular Milk') customList.push(it.milk_option);
+            if (it.milk_option && it.milk_option !== 'Regular Milk' && it.milk_option !== 'No Add-on') customList.push(it.milk_option);
             if (it.sweetness_level && it.sweetness_level !== 'Normal (100%)') customList.push(it.sweetness_level);
             if (it.custom_notes) customList.push(it.custom_notes);
           });
@@ -2365,6 +2454,47 @@ $isStaff = ($currentUser['role'] === 'staff');
             }
             display.textContent = enteredPin ? '•'.repeat(enteredPin.length) : '----';
           });
+        });
+      }
+
+      // KDS Ticket Real-Time Search Handler
+      var searchInput = document.getElementById('kdsSearchInput');
+      var searchWrap = document.getElementById('kdsSearchWrap');
+      var searchClear = document.getElementById('kdsSearchClear');
+
+      if (searchInput) {
+        searchInput.addEventListener('input', function() {
+          kdsSearchQuery = (this.value || '').trim();
+          if (searchWrap) {
+            searchWrap.classList.toggle('has-val', Boolean(kdsSearchQuery));
+          }
+          if (lastData) {
+            renderBoard(lastData);
+          }
+        });
+
+        if (searchClear) {
+          searchClear.addEventListener('click', function() {
+            searchInput.value = '';
+            kdsSearchQuery = '';
+            if (searchWrap) searchWrap.classList.remove('has-val');
+            searchInput.focus();
+            if (lastData) {
+              renderBoard(lastData);
+            }
+          });
+        }
+
+        searchInput.addEventListener('keydown', function(e) {
+          if (e.key === 'Escape') {
+            this.value = '';
+            kdsSearchQuery = '';
+            if (searchWrap) searchWrap.classList.remove('has-val');
+            this.blur();
+            if (lastData) {
+              renderBoard(lastData);
+            }
+          }
         });
       }
 

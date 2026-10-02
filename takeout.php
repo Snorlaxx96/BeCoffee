@@ -1357,7 +1357,8 @@ $currentUser = getAuthenticatedUser();
         <!-- Milk & Dairy Options -->
         <span class="custom-section-label">Milk / Dairy Base</span>
         <div class="pill-radio-group" id="milkRadioGroup">
-          <div class="pill-radio-opt active" data-val="Regular Milk">Fresh Dairy</div>
+          <div class="pill-radio-opt active" data-val="No Add-on">No Add-on (+₱0)</div>
+          <div class="pill-radio-opt" data-val="Regular Milk">Regular Milk (+₱0)</div>
           <div class="pill-radio-opt" data-val="Oat Milk">Oat Milk (+₱30)</div>
           <div class="pill-radio-opt" data-val="Soy Milk">Soy Milk (+₱25)</div>
           <div class="pill-radio-opt" data-val="Almond Milk">Almond Milk (+₱30)</div>
@@ -1631,7 +1632,7 @@ $currentUser = getAuthenticatedUser();
 
         var size = sizeOpt ? sizeOpt.getAttribute('data-val') : 'Medium';
         var temp = tempOpt ? tempOpt.getAttribute('data-val') : 'Iced';
-        var milk = milkOpt ? milkOpt.getAttribute('data-val') : 'Regular Milk';
+        var milk = milkOpt ? milkOpt.getAttribute('data-val') : 'No Add-on';
 
         var base = parseFloat(currentItem.price || 150);
         if (temp === 'Hot' && currentItem.priceHot) {
