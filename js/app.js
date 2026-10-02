@@ -447,6 +447,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const state = {
     currentUser: null,
     pendingCheckout: false,
+    pendingOrderItemId: null,
+    pendingAction: null,
+    pendingReserveType: null,
     activeCategory: 'house-coffee',
     activeLocation: 'putik',
     activeFlavorFilter: null,
@@ -788,6 +791,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (trigger && trigger.dataset.id) {
       e.preventDefault();
       e.stopPropagation();
+      if (!state.currentUser) {
+        state.pendingOrderItemId = trigger.dataset.id;
+        openAuthModal('signin');
+        showToast('Please sign in or create an account to customize and place your order.');
+        return;
+      }
       openOrderModal(trigger.dataset.id);
     }
   });
@@ -1258,6 +1267,12 @@ document.addEventListener('DOMContentLoaded', () => {
   // Cart Drawer open/close
   if (cartToggleBtn && cartDrawerOverlay && closeDrawerBtn) {
     cartToggleBtn.addEventListener('click', () => {
+      if (!state.currentUser) {
+        state.pendingAction = 'openCart';
+        openAuthModal('signin');
+        showToast('Please sign in or create an account to view your cart.');
+        return;
+      }
       cartDrawerOverlay.classList.add('active');
     });
 
@@ -1276,6 +1291,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const heroOrderPickupBtn = document.getElementById('heroOrderPickupBtn');
   if (heroOrderPickupBtn && cartDrawerOverlay) {
     heroOrderPickupBtn.addEventListener('click', () => {
+      if (!state.currentUser) {
+        state.pendingAction = 'openCart';
+        openAuthModal('signin');
+        showToast('Please sign in or create an account to start your order.');
+        return;
+      }
       cartDrawerOverlay.classList.add('active');
       if (state.cart.length === 0) {
         showToast('Your pickup cart is ready. Select any drink below to customize and order!');
@@ -1287,6 +1308,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const mobileBarCartBtn = document.getElementById('mobileBarCartBtn');
   if (mobileBarCartBtn && cartDrawerOverlay) {
     mobileBarCartBtn.addEventListener('click', () => {
+      if (!state.currentUser) {
+        state.pendingAction = 'openCart';
+        openAuthModal('signin');
+        showToast('Please sign in or create an account to view your cart.');
+        return;
+      }
       cartDrawerOverlay.classList.add('active');
     });
   }
@@ -1458,17 +1485,22 @@ document.addEventListener('DOMContentLoaded', () => {
   openReserveBtns.forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.preventDefault();
-      const presetType = btn.dataset.presetType;
+      const presetType = btn.dataset.presetType || 'table';
+      if (!state.currentUser) {
+        state.pendingAction = 'openReservation';
+        state.pendingReserveType = presetType;
+        openAuthModal('signin');
+        showToast('Please sign in or create an account to book your reservation.');
+        return;
+      }
       if (presetType && bookingTypeSelect) {
         bookingTypeSelect.value = presetType;
         updateReservationEstimate();
       }
-      if (state.currentUser) {
-        const nameInput = document.getElementById('bookingName');
-        const phoneInput = document.getElementById('bookingPhone');
-        if (nameInput && !nameInput.value) nameInput.value = state.currentUser.name;
-        if (phoneInput && !phoneInput.value && state.currentUser.phone) phoneInput.value = state.currentUser.phone;
-      }
+      const nameInput = document.getElementById('bookingName');
+      const phoneInput = document.getElementById('bookingPhone');
+      if (nameInput && !nameInput.value) nameInput.value = state.currentUser.name;
+      if (phoneInput && !phoneInput.value && state.currentUser.phone) phoneInput.value = state.currentUser.phone;
       if (reserveModalOverlay) reserveModalOverlay.classList.add('active');
     });
   });
@@ -1489,6 +1521,13 @@ document.addEventListener('DOMContentLoaded', () => {
   if (reservationForm) {
     reservationForm.addEventListener('submit', async (e) => {
       e.preventDefault();
+      if (!state.currentUser) {
+        state.pendingAction = 'openReservation';
+        if (reserveModalOverlay) reserveModalOverlay.classList.remove('active');
+        openAuthModal('signin');
+        showToast('Please sign in or create an account to confirm your reservation.');
+        return;
+      }
       const reservePrivacyConsent = document.getElementById('reservePrivacyConsent');
       if (reservePrivacyConsent && !reservePrivacyConsent.checked) {
         showToast('Please accept the privacy consent to complete your reservation.');
@@ -1842,11 +1881,24 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
           state.currentUser = null;
           updateAuthUI();
+          checkUrlAuthTrigger();
         }
       }
     } catch (err) {
       console.warn('Authentication status check offline/deferred.');
     }
+  }
+
+  function checkUrlAuthTrigger() {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      if ((params.get('action') === 'login' || params.get('auth') === '1') && !state.currentUser) {
+        openAuthModal('signin');
+        if (params.get('origin') === 'takeout' || params.get('origin') === 'instore') {
+          showToast('Please sign in or create an account to access ordering.');
+        }
+      }
+    } catch (e) {}
   }
 
   function setAuthAlert(message, type = 'error') {
@@ -2047,18 +2099,80 @@ document.addEventListener('DOMContentLoaded', () => {
           }
 
           if (data.user && data.user.role === 'customer') {
-            setAuthAlert('Welcome! Redirecting to Take Out Order...', 'success');
-            showToast('Welcome! Loading Take Out ordering...');
-            setTimeout(() => {
+            const firstName = data.user.name ? data.user.name.split(' ')[0] : 'Member';
+            if (state.pendingOrderItemId) {
+              const pendingId = state.pendingOrderItemId;
+              state.pendingOrderItemId = null;
               closeAuthModal();
-              window.location.href = 'takeout.php';
-            }, 600);
+              openOrderModal(pendingId);
+              showToast(`Welcome back, ${firstName}! You can now customize your drink.`);
+              return;
+            }
+            if (state.pendingAction === 'openCart') {
+              state.pendingAction = null;
+              closeAuthModal();
+              if (cartDrawerOverlay) cartDrawerOverlay.classList.add('active');
+              showToast(`Welcome back, ${firstName}! Your pickup cart is active.`);
+              return;
+            }
+            if (state.pendingAction === 'openReservation') {
+              const presetType = state.pendingReserveType || 'table';
+              state.pendingAction = null;
+              state.pendingReserveType = null;
+              closeAuthModal();
+              if (bookingTypeSelect) {
+                bookingTypeSelect.value = presetType;
+                updateReservationEstimate();
+              }
+              const nameInput = document.getElementById('bookingName');
+              const phoneInput = document.getElementById('bookingPhone');
+              if (nameInput) nameInput.value = data.user.name || '';
+              if (phoneInput && data.user.phone) phoneInput.value = data.user.phone;
+              if (reserveModalOverlay) reserveModalOverlay.classList.add('active');
+              showToast(`Welcome back, ${firstName}! Complete your reservation details below.`);
+              return;
+            }
+
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('origin') === 'takeout' || (!window.location.pathname.includes('home.php') && !window.location.pathname.endsWith('/'))) {
+              setAuthAlert('Welcome! Redirecting to Take Out Order...', 'success');
+              showToast('Welcome! Loading Take Out ordering...');
+              setTimeout(() => {
+                closeAuthModal();
+                window.location.href = 'takeout.php';
+              }, 600);
+              return;
+            }
+
+            closeAuthModal();
+            showToast(`Welcome back, ${firstName}! You can now place orders.`);
             return;
           }
 
           setTimeout(() => {
             closeAuthModal();
-            if (state.pendingCheckout && state.cart.length > 0) {
+            if (state.pendingOrderItemId) {
+              const pendingId = state.pendingOrderItemId;
+              state.pendingOrderItemId = null;
+              openOrderModal(pendingId);
+            } else if (state.pendingAction === 'openCart') {
+              state.pendingAction = null;
+              if (cartDrawerOverlay) cartDrawerOverlay.classList.add('active');
+            } else if (state.pendingAction === 'openReservation') {
+              const presetType = state.pendingReserveType || 'table';
+              state.pendingAction = null;
+              state.pendingReserveType = null;
+              if (bookingTypeSelect) {
+                bookingTypeSelect.value = presetType;
+                updateReservationEstimate();
+              }
+              const nameInput = document.getElementById('bookingName');
+              const phoneInput = document.getElementById('bookingPhone');
+              if (nameInput && state.currentUser) nameInput.value = state.currentUser.name || '';
+              if (phoneInput && state.currentUser && state.currentUser.phone) phoneInput.value = state.currentUser.phone;
+              if (reserveModalOverlay) reserveModalOverlay.classList.add('active');
+              showToast(`Welcome back! Complete your reservation details below.`);
+            } else if (state.pendingCheckout && state.cart.length > 0) {
               state.pendingCheckout = false;
               if (cartDrawerOverlay) cartDrawerOverlay.classList.add('active');
               showToast('Account ready! Click below to confirm order pickup.');
@@ -2159,7 +2273,31 @@ document.addEventListener('DOMContentLoaded', () => {
           }
           setTimeout(() => {
             closeAuthModal();
-            if (state.pendingCheckout && state.cart.length > 0) {
+            const firstName = data.user.name ? data.user.name.split(' ')[0] : 'Member';
+            if (state.pendingOrderItemId) {
+              const pendingId = state.pendingOrderItemId;
+              state.pendingOrderItemId = null;
+              openOrderModal(pendingId);
+              showToast(`Welcome to BeCoffee, ${firstName}! You can now customize your drink.`);
+            } else if (state.pendingAction === 'openCart') {
+              state.pendingAction = null;
+              if (cartDrawerOverlay) cartDrawerOverlay.classList.add('active');
+              showToast(`Welcome to BeCoffee, ${firstName}! Your pickup cart is active.`);
+            } else if (state.pendingAction === 'openReservation') {
+              const presetType = state.pendingReserveType || 'table';
+              state.pendingAction = null;
+              state.pendingReserveType = null;
+              if (bookingTypeSelect) {
+                bookingTypeSelect.value = presetType;
+                updateReservationEstimate();
+              }
+              const nameInput = document.getElementById('bookingName');
+              const phoneInput = document.getElementById('bookingPhone');
+              if (nameInput) nameInput.value = data.user.name || '';
+              if (phoneInput && data.user.phone) phoneInput.value = data.user.phone;
+              if (reserveModalOverlay) reserveModalOverlay.classList.add('active');
+              showToast(`Welcome to BeCoffee, ${firstName}! Complete your reservation details below.`);
+            } else if (state.pendingCheckout && state.cart.length > 0) {
               state.pendingCheckout = false;
               if (cartDrawerOverlay) cartDrawerOverlay.classList.add('active');
               showToast('Account created! Click below to confirm order pickup.');

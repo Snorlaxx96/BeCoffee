@@ -1169,7 +1169,7 @@ $currentUser = getAuthenticatedUser();
       <div class="auth-header">
         <div class="logo-symbol auth-logo-symbol">B</div>
         <h3 class="modal-heading" id="authModalTitle">Welcome to BeCoffee</h3>
-        <p class="modal-sub" id="authModalSubtitle">Sign in to save your orders, track coffee cupping reservations, and access exclusive roastery offerings.</p>
+        <p class="modal-sub" id="authModalSubtitle">Sign in to place orders, customize your drinks, and access exclusive roastery offerings.</p>
       </div>
 
       <!-- Auth Tabs -->
