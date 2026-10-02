@@ -277,7 +277,7 @@ class TestClient {
     private string $cookieFile;
 
     public function __construct(string $baseUrl = '') {
-        $defaultUrl = getenv('TEST_BASE_URL') ?: 'http://localhost/YEAR%204/OMS%20-%20CAFE/';
+        $defaultUrl = getenv('TEST_BASE_URL') ?: 'http://localhost/BeCoffee/';
         $this->baseUrl = rtrim(!empty($baseUrl) ? $baseUrl : $defaultUrl, '/') . '/';
         $scratchDir = dirname(__DIR__) . '/scratch';
         if (!is_dir($scratchDir)) {

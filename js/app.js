@@ -8,6 +8,8 @@
 // ==============================================================================
 (function initDemoEngine() {
   const isStaticPlatform =
+    window.location.hostname.includes('web.app') ||
+    window.location.hostname.includes('firebaseapp.com') ||
     window.location.hostname.includes('netlify.app') ||
     window.location.hostname.includes('github.io') ||
     window.location.hostname.includes('vercel.app') ||
