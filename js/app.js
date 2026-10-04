@@ -149,10 +149,15 @@
         return makeJsonResponse({ success: false, error: 'Invalid email or password. Please try again.' }, 401);
       }
 
-      let targetView = 'index.php';
-      if (user.role === 'superadmin') targetView = 'admin.php?view=developer';
-      else if (user.role === 'admin') targetView = 'admin.php';
-      else if (user.role === 'staff') targetView = 'kds.php';
+      const isStatic = window.location.hostname.includes('web.app') || 
+                       window.location.hostname.includes('firebaseapp.com') || 
+                       window.location.protocol === 'file:' ||
+                       window.location.hostname.includes('github.io');
+      let targetView = isStatic ? 'index.html' : 'index.php';
+      if (user.role === 'superadmin') targetView = isStatic ? 'admin.html?view=developer' : 'admin.php?view=developer';
+      else if (user.role === 'admin') targetView = isStatic ? 'admin.html' : 'admin.php';
+      else if (user.role === 'staff') targetView = isStatic ? 'kds.html' : 'kds.php';
+      else if (user.role === 'customer') targetView = isStatic ? 'takeout.html' : 'takeout.php';
 
       const safeUser = {
         id: user.id,
@@ -2079,8 +2084,8 @@ document.addEventListener('DOMContentLoaded', () => {
         </span>
       </div>
       <div style="display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;">
-        ${isAdmin ? `<a href="${isSuper ? 'admin.php?view=developer' : 'admin.php'}" style="text-decoration: none; font-size: 0.8rem; background: rgba(226, 135, 67, 0.25); border: 1px solid rgba(226, 135, 67, 0.5); color: #FDBA74; padding: 0.35rem 0.75rem; border-radius: 8px; font-weight: 600; display: inline-flex; align-items: center; gap: 0.3rem;">📊 Admin Studio</a>` : ''}
-        <a href="kds.php" target="_blank" style="text-decoration: none; font-size: 0.8rem; background: rgba(59, 130, 246, 0.2); border: 1px solid rgba(59, 130, 246, 0.4); color: #93C5FD; padding: 0.35rem 0.75rem; border-radius: 8px; font-weight: 600; display: inline-flex; align-items: center; gap: 0.3rem;">
+        ${isAdmin ? `<a href="${(window.location.hostname.includes('web.app') || window.location.hostname.includes('firebaseapp.com') || window.location.protocol === 'file:') ? (isSuper ? 'admin.html?view=developer' : 'admin.html') : (isSuper ? 'admin.php?view=developer' : 'admin.php')}" style="text-decoration: none; font-size: 0.8rem; background: rgba(226, 135, 67, 0.25); border: 1px solid rgba(226, 135, 67, 0.5); color: #FDBA74; padding: 0.35rem 0.75rem; border-radius: 8px; font-weight: 600; display: inline-flex; align-items: center; gap: 0.3rem;">📊 Admin Studio</a>` : ''}
+        <a href="${(window.location.hostname.includes('web.app') || window.location.hostname.includes('firebaseapp.com') || window.location.protocol === 'file:') ? 'kds.html' : 'kds.php'}" target="_blank" style="text-decoration: none; font-size: 0.8rem; background: rgba(59, 130, 246, 0.2); border: 1px solid rgba(59, 130, 246, 0.4); color: #93C5FD; padding: 0.35rem 0.75rem; border-radius: 8px; font-weight: 600; display: inline-flex; align-items: center; gap: 0.3rem;">
           📋 Kitchen KDS
         </a>
         <button type="button" id="staffQuickCartBtn" style="cursor: pointer; font-size: 0.8rem; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #FFF; padding: 0.35rem 0.75rem; border-radius: 8px; font-weight: 600;">
@@ -2103,7 +2108,15 @@ document.addEventListener('DOMContentLoaded', () => {
           await fetch(getApiUrl('api/auth.php?action=logout'), { method: 'POST', credentials: 'include' });
         } catch(e){}
         localStorage.removeItem('becoffee_demo_session');
-        window.location.href = 'api/auth.php?action=logout';
+        const isStaticHost = window.location.hostname.includes('web.app') || 
+                             window.location.hostname.includes('firebaseapp.com') || 
+                             window.location.protocol === 'file:' ||
+                             window.location.hostname.includes('github.io');
+        if (isStaticHost) {
+          window.location.href = 'index.html';
+        } else {
+          window.location.href = 'api/auth.php?action=logout';
+        }
       };
     }
   }
@@ -2406,10 +2419,16 @@ document.addEventListener('DOMContentLoaded', () => {
           }
 
           // Role-specific redirects upon sign-in
+          const isStaticEnvironment = window.location.hostname.includes('web.app') || 
+                                     window.location.hostname.includes('firebaseapp.com') || 
+                                     window.location.protocol === 'file:' ||
+                                     window.location.hostname.includes('github.io');
           if (data.user && (data.user.role === 'admin' || data.user.role === 'superadmin')) {
             const isSuper = data.user.role === 'superadmin';
             const roleTitle = isSuper ? 'SuperAdmin (Developer)' : 'Administrator';
-            const targetUrl = isSuper ? 'admin.php?view=developer' : 'admin.php';
+            const targetUrl = isStaticEnvironment 
+              ? (isSuper ? 'admin.html?view=developer' : 'admin.html')
+              : (isSuper ? 'admin.php?view=developer' : 'admin.php');
             setAuthAlert(`${roleTitle} verified. Leading to Studio...`, 'success');
             showToast(`${roleTitle} verified! Redirecting...`);
             setTimeout(() => {
@@ -2419,11 +2438,12 @@ document.addEventListener('DOMContentLoaded', () => {
           }
 
           if (data.user && data.user.role === 'staff') {
+            const targetUrl = isStaticEnvironment ? 'kds.html' : 'kds.php';
             setAuthAlert('Kitchen Staff verified. Redirecting to Kitchen Screen (KDS)...', 'success');
             showToast('Staff verified! Loading Kitchen Display System...');
             setTimeout(() => {
               closeAuthModal();
-              window.location.href = 'kds.php';
+              window.location.href = targetUrl;
             }, 600);
             return;
           }
@@ -2469,7 +2489,7 @@ document.addEventListener('DOMContentLoaded', () => {
               showToast('Welcome! Loading Take Out ordering...');
               setTimeout(() => {
                 closeAuthModal();
-                window.location.href = 'takeout.php';
+                window.location.href = isStaticEnvironment ? 'takeout.html' : 'takeout.php';
               }, 600);
               return;
             }

@@ -4,6 +4,42 @@
     "cleanUrls": true,
     "rewrites": [
       {
+        "source": "/admin.php",
+        "destination": "/admin.html"
+      },
+      {
+        "source": "/admin",
+        "destination": "/admin.html"
+      },
+      {
+        "source": "/kds.php",
+        "destination": "/kds.html"
+      },
+      {
+        "source": "/kds",
+        "destination": "/kds.html"
+      },
+      {
+        "source": "/takeout.php",
+        "destination": "/takeout.html"
+      },
+      {
+        "source": "/takeout",
+        "destination": "/takeout.html"
+      },
+      {
+        "source": "/home.php",
+        "destination": "/index.html"
+      },
+      {
+        "source": "/home",
+        "destination": "/index.html"
+      },
+      {
+        "source": "/index.php",
+        "destination": "/index.html"
+      },
+      {
         "source": "**",
         "destination": "/index.html"
       }
@@ -19,7 +55,8 @@
       ".agents/**",
       "package.json",
       "package-lock.json",
-      "*.md"
+      "*.md",
+      "**/*.php"
     ],
     "headers": [
       {

@@ -83,9 +83,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  const isStaticEnv = window.location.hostname.includes('web.app') || 
+                      window.location.hostname.includes('firebaseapp.com') || 
+                      window.location.protocol === 'file:' ||
+                      window.location.hostname.includes('github.io');
+
   function showAuth() {
     localStorage.removeItem('becoffee_demo_session');
-    window.location.replace('index.php');
+    window.location.replace(isStaticEnv ? 'index.html' : 'index.php');
   }
 
   function showStudio() {
@@ -103,7 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       } catch (e) {}
       localStorage.removeItem('becoffee_demo_session');
-      window.location.replace('home.php');
+      window.location.replace(isStaticEnv ? 'index.html' : 'home.php');
     });
   }
 
