@@ -277,7 +277,19 @@ class TestClient {
     private string $cookieFile;
 
     public function __construct(string $baseUrl = '') {
-        $defaultUrl = getenv('TEST_BASE_URL') ?: 'http://localhost/BeCoffee/';
+        $defaultUrl = getenv('TEST_BASE_URL');
+        if (empty($defaultUrl)) {
+            // Auto-detect webroot path relative to htdocs
+            $rawDoc = !empty($_SERVER['DOCUMENT_ROOT']) && is_string($_SERVER['DOCUMENT_ROOT']) ? $_SERVER['DOCUMENT_ROOT'] : 'C:/xampp/htdocs';
+            $docRoot = str_replace('\\', '/', realpath($rawDoc) ?: 'C:/xampp/htdocs');
+            $projectRoot = str_replace('\\', '/', realpath(dirname(__DIR__)));
+            if (strpos($projectRoot, $docRoot) === 0) {
+                $relPath = trim(substr($projectRoot, strlen($docRoot)), '/');
+                $defaultUrl = 'http://localhost/' . str_replace(' ', '%20', $relPath) . '/';
+            } else {
+                $defaultUrl = 'http://localhost/YEAR%204/OMS%20-%20CAFE/';
+            }
+        }
         $this->baseUrl = rtrim(!empty($baseUrl) ? $baseUrl : $defaultUrl, '/') . '/';
         $scratchDir = dirname(__DIR__) . '/scratch';
         if (!is_dir($scratchDir)) {

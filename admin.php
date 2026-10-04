@@ -1249,6 +1249,84 @@ if ($currentUser['role'] === 'staff') {
       padding: 0.65rem 0.5rem;
     }
 
+    /* Live Sync Indicator & Real-Time Stream Badges */
+    .live-sync-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-size: 0.74rem;
+      font-weight: 600;
+      color: #34D399;
+      background: rgba(16, 185, 129, 0.08);
+      border: 1px solid rgba(16, 185, 129, 0.22);
+      padding: 0.22rem 0.55rem;
+      border-radius: 999px;
+      user-select: none;
+    }
+    .live-pulse-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #10B981;
+      box-shadow: 0 0 6px rgba(16, 185, 129, 0.75);
+      animation: adminPulse 2s infinite ease-in-out;
+    }
+    @keyframes adminPulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.35; transform: scale(0.8); }
+    }
+    .sidebar-order-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #E28743;
+      color: #110D0B;
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 0.12rem 0.45rem;
+      border-radius: 999px;
+      margin-left: auto;
+      min-width: 18px;
+      height: 18px;
+      box-sizing: border-box;
+      line-height: 1;
+    }
+    .source-tag-chip {
+      display: inline-block;
+      font-size: 0.64rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 0.12rem 0.38rem;
+      border-radius: 3px;
+      line-height: 1.2;
+    }
+    .chip-online {
+      background: rgba(59, 130, 246, 0.12);
+      color: #60A5FA;
+      border: 1px solid rgba(59, 130, 246, 0.25);
+    }
+    .chip-qr {
+      background: rgba(168, 85, 247, 0.12);
+      color: #C084FC;
+      border: 1px solid rgba(168, 85, 247, 0.25);
+    }
+    .chip-pos {
+      background: rgba(226, 135, 67, 0.12);
+      color: #E28743;
+      border: 1px solid rgba(226, 135, 67, 0.25);
+    }
+    .btn-action-danger {
+      background: rgba(239, 68, 68, 0.12);
+      color: #F87171;
+      border: 1px solid rgba(239, 68, 68, 0.25);
+    }
+    .btn-action-danger:hover {
+      background: rgba(239, 68, 68, 0.22);
+      color: #FFF;
+      border-color: #EF4444;
+    }
+
     /* Mobile Ticket Cards Container */
     .ledger-mobile-cards {
       display: none;
@@ -2794,6 +2872,7 @@ if ($currentUser['role'] === 'staff') {
       <button type="button" class="sidebar-nav-btn" id="navBtnAuditTrail" data-view="audit-trail">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
         <span>Customer Orders</span>
+        <span class="sidebar-order-badge" id="sidebarOrderBadge" style="display: none;" title="Active orders in kitchen">0</span>
       </button>
 
       <!-- Menu & Stock Tab -->
@@ -2884,6 +2963,7 @@ if ($currentUser['role'] === 'staff') {
           <div class="date-presets-strip" role="group" aria-label="Date range selector">
             <button type="button" class="date-preset-btn active" id="presetTodayBtn">Today</button>
             <button type="button" class="date-preset-btn" id="presetYesterdayBtn">Yesterday</button>
+            <button type="button" class="date-preset-btn" id="presetAllBtn">All Dates</button>
           </div>
           <input type="date" id="ledgerDatePicker" class="date-input-clean" aria-label="Select ledger date">
           <button type="button" class="admin-action-btn btn-action-secondary" id="btnRefreshLedger" title="Refresh data">
@@ -3160,6 +3240,10 @@ if ($currentUser['role'] === 'staff') {
             <p>Chronological stream of dine-in and takeout tickets, customizations, and kitchen QA status.</p>
           </div>
           <div class="diag-actions-group">
+            <div class="live-sync-indicator" id="ledgerLiveIndicator" title="Live background order sync active">
+              <span class="live-pulse-dot"></span>
+              <span class="live-sync-text">Live Sync</span>
+            </div>
             <span id="ledgerRowCountNotice" style="font-size: 0.78rem; color: #8E7E73; font-weight: 500;">Showing 0 orders</span>
             <button type="button" class="admin-action-btn btn-action-secondary" id="btnRefreshLedgerOrders" title="Refresh order stream">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg>
@@ -3804,6 +3888,8 @@ if ($currentUser['role'] === 'staff') {
             <div style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--admin-muted); margin-bottom: 0.35rem; font-weight: 700;">Customer Information</div>
             <div id="modalOrderCustomer" style="font-weight: 600; color: #FFF; font-size: 0.85rem;">Walk-in Customer</div>
             <div id="modalOrderPhone" style="font-size: 0.75rem; color: #8E7E73; margin-top: 0.2rem; font-family: var(--font-mono);">No phone recorded</div>
+            <div id="modalOrderSource" style="font-size: 0.72rem; color: #DF9B64; margin-top: 0.25rem;"></div>
+            <div id="modalOrderNotes" style="font-size: 0.72rem; color: #A99B92; margin-top: 0.2rem; font-style: italic;"></div>
           </div>
           <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.07); border-radius: 6px; padding: 0.75rem 0.85rem;">
             <div style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--admin-muted); margin-bottom: 0.35rem; font-weight: 700;">Prep &amp; Kitchen QA</div>
@@ -3839,7 +3925,7 @@ if ($currentUser['role'] === 'staff') {
         </div>
       </div>
 
-      <div style="display: flex; gap: 0.65rem; justify-content: flex-end; align-items: center; margin-top: 1.25rem; flex-shrink: 0;">
+      <div style="display: flex; gap: 0.65rem; justify-content: flex-end; align-items: center; margin-top: 1.25rem; flex-shrink: 0;" id="modalOrderActionsContainer">
         <button type="button" class="admin-action-btn btn-action-secondary" id="btnCloseOrderDetailModalBtn">
           Close
         </button>
@@ -5100,6 +5186,7 @@ if ($currentUser['role'] === 'staff') {
       var ledgerDatePicker = document.getElementById('ledgerDatePicker');
       var presetTodayBtn = document.getElementById('presetTodayBtn');
       var presetYesterdayBtn = document.getElementById('presetYesterdayBtn');
+      var presetAllBtn = document.getElementById('presetAllBtn');
 
       function getLocalDateStr(offsetDays = 0) {
         var d = new Date();
@@ -5118,8 +5205,9 @@ if ($currentUser['role'] === 'staff') {
         presetTodayBtn.addEventListener('click', function() {
           presetTodayBtn.classList.add('active');
           if (presetYesterdayBtn) presetYesterdayBtn.classList.remove('active');
+          if (presetAllBtn) presetAllBtn.classList.remove('active');
           ledgerDatePicker.value = getLocalDateStr(0);
-          loadLedgerData();
+          loadLedgerData(getLocalDateStr(0));
         });
       }
 
@@ -5127,14 +5215,26 @@ if ($currentUser['role'] === 'staff') {
         presetYesterdayBtn.addEventListener('click', function() {
           presetYesterdayBtn.classList.add('active');
           if (presetTodayBtn) presetTodayBtn.classList.remove('active');
+          if (presetAllBtn) presetAllBtn.classList.remove('active');
           ledgerDatePicker.value = getLocalDateStr(1);
-          loadLedgerData();
+          loadLedgerData(getLocalDateStr(1));
+        });
+      }
+
+      if (presetAllBtn) {
+        presetAllBtn.addEventListener('click', function() {
+          presetAllBtn.classList.add('active');
+          if (presetTodayBtn) presetTodayBtn.classList.remove('active');
+          if (presetYesterdayBtn) presetYesterdayBtn.classList.remove('active');
+          ledgerDatePicker.value = '';
+          loadLedgerData('all');
         });
       }
 
       ledgerDatePicker.addEventListener('change', function() {
         var todayStr = getLocalDateStr(0);
         var yestStr = getLocalDateStr(1);
+        if (presetAllBtn) presetAllBtn.classList.remove('active');
         if (ledgerDatePicker.value === todayStr) {
           if (presetTodayBtn) presetTodayBtn.classList.add('active');
           if (presetYesterdayBtn) presetYesterdayBtn.classList.remove('active');
@@ -5145,7 +5245,7 @@ if ($currentUser['role'] === 'staff') {
           if (presetTodayBtn) presetTodayBtn.classList.remove('active');
           if (presetYesterdayBtn) presetYesterdayBtn.classList.remove('active');
         }
-        loadLedgerData();
+        loadLedgerData(ledgerDatePicker.value);
       });
 
       document.getElementById('btnRefreshLedger').addEventListener('click', function() {
@@ -5216,8 +5316,18 @@ if ($currentUser['role'] === 'staff') {
         });
       }
 
-      async function loadLedgerData() {
-        var dateVal = (ledgerDatePicker && ledgerDatePicker.value) ? ledgerDatePicker.value : getLocalDateStr(0);
+      async function loadLedgerData(overrideDate, isSilent) {
+        var dateVal;
+        if (overrideDate === 'all') {
+          dateVal = 'all';
+        } else if (overrideDate) {
+          dateVal = overrideDate;
+        } else if (presetAllBtn && presetAllBtn.classList.contains('active')) {
+          dateVal = 'all';
+        } else {
+          dateVal = (ledgerDatePicker && ledgerDatePicker.value) ? ledgerDatePicker.value : getLocalDateStr(0);
+        }
+
         try {
           var res = await fetch(`api/ledger.php?date=${encodeURIComponent(dateVal)}`, { cache: 'no-store', credentials: 'include' });
           if (!res.ok) return;
@@ -5225,10 +5335,18 @@ if ($currentUser['role'] === 'staff') {
           if (!data.success) return;
 
           var kpi = data.kpi || {};
+          var prevOrders = rawLedgerOrders;
           rawLedgerOrders = data.orders || [];
+
+          // Detect new orders on background sync and alert
+          if (isSilent && prevOrders.length > 0 && rawLedgerOrders.length > prevOrders.length) {
+            var newest = rawLedgerOrders[0];
+            showToast(`🔔 New Order #${newest.queue_number} received! (${newest.customer_name || 'Walk-in'})`, false);
+          }
 
           // 1. Executive Performance Strip Updates
           var totalRev = parseFloat(kpi.total_revenue || 0);
+          var activeRev = parseFloat(kpi.active_revenue || 0);
           var completedCount = parseInt(kpi.completed_orders || 0, 10);
           var inProgressCount = parseInt(kpi.in_progress_orders || 0, 10);
           var pendingCount = parseInt(kpi.pending_orders || 0, 10);
@@ -5242,6 +5360,17 @@ if ($currentUser['role'] === 'staff') {
           var aov = (completedCount > 0) ? (totalRev / completedCount) : 0;
           var avgPrep = parseFloat(kpi.avg_prep_minutes || 0);
           var dineInPct = (totalDining > 0) ? Math.round((dineInCount / totalDining) * 100) : 0;
+
+          // Update sidebar badge
+          var sidebarOrderBadge = document.getElementById('sidebarOrderBadge');
+          if (sidebarOrderBadge) {
+            if (activeTotal > 0) {
+              sidebarOrderBadge.textContent = activeTotal;
+              sidebarOrderBadge.style.display = 'inline-flex';
+            } else {
+              sidebarOrderBadge.style.display = 'none';
+            }
+          }
 
           // Customer Orders 4 Stat Cards
           var statOrdersTotalEl = document.getElementById('statOrdersTotal');
@@ -5257,12 +5386,22 @@ if ($currentUser['role'] === 'staff') {
 
           var statOrdersRevenueEl = document.getElementById('statOrdersRevenue');
           if (statOrdersRevenueEl) statOrdersRevenueEl.textContent = `₱${totalRev.toLocaleString('en-PH', { minimumFractionDigits: 2 })}`;
+          var statOrdersRevenueMetaEl = document.getElementById('statOrdersRevenueMeta');
+          if (statOrdersRevenueMetaEl) {
+            statOrdersRevenueMetaEl.textContent = (activeRev > 0)
+              ? `Daily completed volume (+₱${activeRev.toFixed(2)} active)`
+              : 'Daily gross order volume';
+          }
 
           // Sales & Reports Summary Cards (Safe Checks)
           var grossRevEl = document.getElementById('ledgerGrossRevenue');
           if (grossRevEl) grossRevEl.textContent = `₱${totalRev.toLocaleString('en-PH', { minimumFractionDigits: 2 })}`;
           var grossSubEl = document.getElementById('ledgerGrossSub');
-          if (grossSubEl) grossSubEl.textContent = `${completedCount} finished order${completedCount === 1 ? '' : 's'} today`;
+          if (grossSubEl) {
+            grossSubEl.textContent = (activeRev > 0)
+              ? `${completedCount} finished · ₱${activeRev.toFixed(2)} in active queue`
+              : `${completedCount} finished order${completedCount === 1 ? '' : 's'}`;
+          }
 
           var aovValEl = document.getElementById('ledgerAovValue');
           if (aovValEl) aovValEl.textContent = `₱${aov.toLocaleString('en-PH', { minimumFractionDigits: 2 })}`;
@@ -5589,9 +5728,18 @@ if ($currentUser['role'] === 'staff') {
               itemsHtml = '<span style="color: var(--admin-muted); font-size: 0.78rem;">No line items</span>';
             }
 
+            var sourceTag = '';
+            if (ord.order_source === 'online') {
+              sourceTag = '<span class="source-tag-chip chip-online">Online</span>';
+            } else if (ord.order_source === 'qr_link') {
+              sourceTag = `<span class="source-tag-chip chip-qr">QR Table ${sanitizeHtml(String(ord.table_number || ''))}</span>`;
+            } else if (ord.order_source === 'registrar') {
+              sourceTag = '<span class="source-tag-chip chip-pos">Counter POS</span>';
+            }
+
             var diningBadge = ord.order_type === 'take_out'
-              ? '<span class="dining-badge badge-takeout">Take-Out</span>'
-              : `<span class="dining-badge badge-dine-in">Table ${sanitizeHtml(String(ord.table_number || '1'))}</span>`;
+              ? `<div style="display: flex; flex-direction: column; gap: 0.25rem;"><span class="dining-badge badge-takeout">Take-Out</span>${sourceTag}</div>`
+              : `<div style="display: flex; flex-direction: column; gap: 0.25rem;"><span class="dining-badge badge-dine-in">Table ${sanitizeHtml(String(ord.table_number || '1'))}</span>${sourceTag}</div>`;
 
             var paymentBadge = ord.payment_method === 'gcash'
               ? '<span class="payment-badge badge-gcash">GCASH</span>'
@@ -5615,12 +5763,17 @@ if ($currentUser['role'] === 'staff') {
               ? `${Math.round((ord.elapsed_seconds || 0) / 60)}m prep`
               : (ord.status === 'cancelled' ? 'Cancelled' : 'Preparing');
 
+            var notesHtml = ord.customer_notes
+              ? `<div style="font-size: 0.72rem; color: #DF9B64; margin-top: 0.22rem; font-family: var(--font-mono);">${sanitizeHtml(ord.customer_notes)}</div>`
+              : '';
+
             return `
               <tr>
                 <td style="font-family: var(--font-mono); font-weight: 700; color: #FFF; font-size: 1.05rem;">#${sanitizeHtml(String(ord.queue_number))}</td>
                 <td>
                   <span class="order-ref-code">${sanitizeHtml(String(ord.order_reference))}</span>
                   <span class="order-customer-sub"><strong style="color: #FFF;">${sanitizeHtml(ord.customer_name || 'Walk-in')}</strong>${ord.customer_phone ? ' · ' + sanitizeHtml(ord.customer_phone) : ''}</span>
+                  ${notesHtml}
                 </td>
                 <td>${itemsHtml}</td>
                 <td>${diningBadge}</td>
@@ -5663,12 +5816,22 @@ if ($currentUser['role'] === 'staff') {
               ? '<span style="color: #10B981; font-size: 0.72rem; font-weight: 700;">● Checks Complete</span>'
               : '<span style="color: #7D6F64; font-size: 0.72rem; font-weight: 600;">● Checks Incomplete</span>';
 
+            var mobileSource = '';
+            if (ord.order_source === 'online') {
+              mobileSource = '<span class="source-tag-chip chip-online">Online</span>';
+            } else if (ord.order_source === 'qr_link') {
+              mobileSource = '<span class="source-tag-chip chip-qr">QR Table</span>';
+            } else if (ord.order_source === 'registrar') {
+              mobileSource = '<span class="source-tag-chip chip-pos">Counter POS</span>';
+            }
+
             return `
               <div class="mobile-order-ticket">
                 <div class="mobile-ticket-header">
                   <div class="mobile-ticket-queue">
                     <span>#${sanitizeHtml(String(ord.queue_number))}</span>
                     <span style="font-size: 0.75rem; color: #DF9B64; font-weight: 600;">(${diningText})</span>
+                    ${mobileSource}
                   </div>
                   <div class="mobile-ticket-amount">₱${parseFloat(ord.grand_total || 0).toFixed(2)}</div>
                 </div>
@@ -5676,6 +5839,7 @@ if ($currentUser['role'] === 'staff') {
                 <div style="font-size: 0.82rem; color: #FFF; font-weight: 700;">
                   ${sanitizeHtml(ord.customer_name || 'Walk-in')} <span style="font-size: 0.75rem; color: #8E7E73; font-weight: normal;">${sanitizeHtml(ord.customer_phone || '')}</span>
                 </div>
+                ${ord.customer_notes ? `<div style="font-size: 0.72rem; color: #DF9B64; font-family: var(--font-mono);">${sanitizeHtml(ord.customer_notes)}</div>` : ''}
 
                 <div class="mobile-ticket-items">
                   ${itemsList}
@@ -5775,6 +5939,19 @@ if ($currentUser['role'] === 'staff') {
         var phoneEl = document.getElementById('modalOrderPhone');
         if (phoneEl) phoneEl.textContent = ord.customer_phone ? `Phone: ${ord.customer_phone}` : 'No phone recorded';
 
+        var sourceEl = document.getElementById('modalOrderSource');
+        if (sourceEl) {
+          var srcText = 'Order Origin: Counter POS Walk-in';
+          if (ord.order_source === 'online') srcText = 'Order Origin: Online Takeout';
+          else if (ord.order_source === 'qr_link') srcText = `Order Origin: Table QR #${ord.table_number || ''}`;
+          sourceEl.textContent = srcText;
+        }
+
+        var notesEl = document.getElementById('modalOrderNotes');
+        if (notesEl) {
+          notesEl.textContent = ord.customer_notes ? `Notes / Reference: ${ord.customer_notes}` : '';
+        }
+
         var prepEl = document.getElementById('modalOrderPrepTime');
         if (prepEl) {
           if (ord.completed_at) {
@@ -5844,6 +6021,99 @@ if ($currentUser['role'] === 'staff') {
 
         var grandEl = document.getElementById('modalOrderGrandTotal');
         if (grandEl) grandEl.textContent = `₱${parseFloat(ord.grand_total || 0).toFixed(2)}`;
+
+        // Dynamic Action Buttons
+        var actionsContainer = document.getElementById('modalOrderActionsContainer');
+        if (actionsContainer) {
+          var actionBtnsHtml = '';
+          if (ord.status === 'pending') {
+            actionBtnsHtml += `<button type="button" class="admin-action-btn btn-action-accent" id="btnAdminAckOrder"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg> Start Prep</button>`;
+            actionBtnsHtml += `<button type="button" class="admin-action-btn btn-action-danger" id="btnAdminCancelOrder">Cancel / Void</button>`;
+          } else if (ord.status === 'in_progress') {
+            actionBtnsHtml += `<button type="button" class="admin-action-btn btn-action-accent" id="btnAdminCompleteOrder"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Mark Completed</button>`;
+            actionBtnsHtml += `<button type="button" class="admin-action-btn btn-action-danger" id="btnAdminCancelOrder">Cancel / Void</button>`;
+          }
+          actionBtnsHtml += `<button type="button" class="admin-action-btn btn-action-secondary" id="btnCloseOrderDetailModalBtn">Close</button>`;
+          actionsContainer.innerHTML = actionBtnsHtml;
+
+          document.getElementById('btnCloseOrderDetailModalBtn')?.addEventListener('click', closeOrderDetailModal);
+
+          var btnAck = document.getElementById('btnAdminAckOrder');
+          if (btnAck) {
+            btnAck.addEventListener('click', async function() {
+              try {
+                var res = await fetch('api/kds.php?action=acknowledge', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ order_id: ord.id })
+                });
+                var data = await res.json();
+                if (data.success) {
+                  showToast(`Order #${ord.queue_number} moved to In Progress!`, false);
+                  closeOrderDetailModal();
+                  loadLedgerData();
+                } else {
+                  showToast(data.error || 'Failed to update order.', true);
+                }
+              } catch (err) {
+                showToast('Error: ' + err.message, true);
+              }
+            });
+          }
+
+          var btnComp = document.getElementById('btnAdminCompleteOrder');
+          if (btnComp) {
+            btnComp.addEventListener('click', async function() {
+              try {
+                var res = await fetch('api/kds.php?action=complete', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ order_id: ord.id, fast_bump: true })
+                });
+                var data = await res.json();
+                if (data.success) {
+                  showToast(`Order #${ord.queue_number} marked Completed!`, false);
+                  closeOrderDetailModal();
+                  loadLedgerData();
+                } else {
+                  showToast(data.error || 'Failed to complete order.', true);
+                }
+              } catch (err) {
+                showToast('Error: ' + err.message, true);
+              }
+            });
+          }
+
+          var btnCancel = document.getElementById('btnAdminCancelOrder');
+          if (btnCancel) {
+            btnCancel.addEventListener('click', async function() {
+              var conf = await SystemDialog.confirm(`Are you sure you want to cancel Order #${ord.queue_number}?`, {
+                title: 'Cancel Order',
+                confirmText: 'Yes, Cancel Order',
+                isDestructive: true
+              });
+              if (!conf) return;
+
+              try {
+                var res = await fetch('api/kds.php?action=cancel', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ order_id: ord.id, reason: 'Admin Cancelled' })
+                });
+                var data = await res.json();
+                if (data.success) {
+                  showToast(`Order #${ord.queue_number} has been cancelled.`, false);
+                  closeOrderDetailModal();
+                  loadLedgerData();
+                } else {
+                  showToast(data.error || 'Failed to cancel order.', true);
+                }
+              } catch (err) {
+                showToast('Error: ' + err.message, true);
+              }
+            });
+          }
+        }
 
         modal.classList.add('active');
         document.body.style.overflow = 'hidden';
@@ -6505,6 +6775,20 @@ if ($currentUser['role'] === 'staff') {
 
       // Initial View Load (Analytics Ledger by default)
       loadLedgerData();
+
+      // Real-Time Background Order Sync (Poll every 4s)
+      var ledgerPollInterval = null;
+      function startOrderPolling() {
+        if (ledgerPollInterval) clearInterval(ledgerPollInterval);
+        ledgerPollInterval = setInterval(function() {
+          // Only sync if no modal is active and admin is viewing Customer Orders or Analytics
+          var activeModal = document.querySelector('.oms-modal-overlay.active');
+          if (!activeModal && (viewAuditTrail.classList.contains('active') || viewAnalytics.classList.contains('active'))) {
+            loadLedgerData(null, true);
+          }
+        }, 4000);
+      }
+      startOrderPolling();
 
     })();
   </script>
