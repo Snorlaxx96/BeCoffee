@@ -17,7 +17,7 @@ $currentUser = getAuthenticatedUser();
   <meta http-equiv="Expires" content="0">
   
   <!-- Stylesheet (cache-busted) -->
-  <link rel="stylesheet" href="css/style.css?v=15.0">
+  <link rel="stylesheet" href="css/style.css?v=17.0">
 
   <!-- Critical Inlined Mobile Auth Sheet Guard (guarantees zero-cache lag) -->
   <style>
@@ -1626,7 +1626,7 @@ $currentUser = getAuthenticatedUser();
   </aside>
 
   <!-- Application JavaScript & Catalog Data -->
-  <script src="js/menu_data.js?v=15.0"></script>
-  <script src="js/app.js?v=15.0"></script>
+  <script src="js/menu_data.js?v=17.0"></script>
+  <script src="js/app.js?v=17.0"></script>
 </body>
 </html>
