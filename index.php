@@ -1924,10 +1924,77 @@ $isTableQR = !empty($_GET['table']);
       margin-bottom: 0.2rem;
       font-size: 0.85rem;
     }
+    .receipt-screenshot-banner {
+      background: linear-gradient(135deg, rgba(223, 155, 100, 0.2) 0%, rgba(140, 83, 43, 0.12) 100%);
+      border-bottom: 1px solid rgba(223, 155, 100, 0.3);
+      padding: 0.85rem 1.15rem;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+    .receipt-screenshot-icon {
+      width: 36px;
+      height: 36px;
+      min-width: 36px;
+      background: rgba(223, 155, 100, 0.25);
+      border: 1px solid rgba(223, 155, 100, 0.45);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #FDBA74;
+    }
+    .receipt-screenshot-content {
+      flex: 1;
+      min-width: 0;
+    }
+    .receipt-screenshot-title {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #FFF;
+      letter-spacing: 0.02em;
+      margin-bottom: 0.12rem;
+    }
+    .receipt-screenshot-sub {
+      font-size: 0.72rem;
+      color: #D6C7BE;
+      line-height: 1.35;
+      margin: 0;
+    }
     .receipt-actions {
       padding: 0.85rem 1.25rem 1.25rem;
       display: flex;
-      gap: 0.65rem;
+      flex-direction: column;
+      gap: 0.55rem;
+    }
+    .btn-receipt-download {
+      width: 100%;
+      min-height: 46px;
+      background: linear-gradient(135deg, #8C532B 0%, #6E3F1F 100%);
+      border: 1px solid rgba(223, 155, 100, 0.4);
+      border-radius: 12px;
+      color: #FFF;
+      font-weight: 700;
+      font-size: 0.9rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.55rem;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 4px 14px rgba(140, 83, 43, 0.35);
+    }
+    .btn-receipt-download:hover {
+      background: linear-gradient(135deg, #9C5E32 0%, #7E4924 100%);
+      border-color: rgba(223, 155, 100, 0.6);
+      transform: translateY(-1px);
+    }
+    .btn-receipt-download:active {
+      transform: translateY(0);
+    }
+    .receipt-secondary-actions {
+      display: flex;
+      gap: 0.5rem;
     }
     .btn-receipt-order-more {
       flex: 1;
@@ -2213,7 +2280,7 @@ $isTableQR = !empty($_GET['table']);
 
   <!-- Direct Order Header -->
   <header class="order-header">
-    <a href="index.php" class="order-brand-link">
+    <a href="home.php" class="order-brand-link">
       <div class="order-brand-logo">B</div>
       <div>
         <span class="order-brand-title">BeCoffee</span>
@@ -2671,9 +2738,23 @@ $isTableQR = !empty($_GET['table']);
     </div>
   </div>
 
-  <!-- DIGITAL PAID ORDER RECEIPT SCREEN (For Table QR) -->
+  <!-- DIGITAL PAID ORDER RECEIPT SCREEN (For Table QR & In-Store Orders) -->
   <div class="receipt-screen-overlay" id="orderReceiptScreen" role="dialog" aria-modal="true" aria-labelledby="receiptQueueNum">
     <div class="receipt-card">
+      <!-- Screenshot & Download Callout Banner -->
+      <div class="receipt-screenshot-banner" id="receiptScreenshotBanner">
+        <div class="receipt-screenshot-icon" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+            <circle cx="12" cy="13" r="4"></circle>
+          </svg>
+        </div>
+        <div class="receipt-screenshot-content">
+          <div class="receipt-screenshot-title">📸 Take a Screenshot of This Receipt</div>
+          <p class="receipt-screenshot-sub">Please screenshot this receipt or download it as a photo below. Present your queue number to our barista when claiming your drinks!</p>
+        </div>
+      </div>
+
       <div class="receipt-header-strip">
         <div class="receipt-brand">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><line x1="6" y1="1" x2="6" y2="4"></line><line x1="10" y1="1" x2="10" y2="4"></line><line x1="14" y1="1" x2="14" y2="4"></line></svg>
@@ -2720,8 +2801,18 @@ $isTableQR = !empty($_GET['table']);
       </div>
 
       <div class="receipt-actions">
-        <button type="button" class="btn-receipt-order-more" id="btnReceiptOrderMore">Order More Drinks</button>
-        <button type="button" class="btn-receipt-exit" id="btnReceiptExit">Exit</button>
+        <button type="button" class="btn-receipt-download" id="btnReceiptDownload">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          Download as Photo
+        </button>
+        <div class="receipt-secondary-actions">
+          <button type="button" class="btn-receipt-order-more" id="btnReceiptOrderMore">Order More Drinks</button>
+          <button type="button" class="btn-receipt-exit" id="btnReceiptExit">Exit</button>
+        </div>
       </div>
     </div>
   </div>
@@ -3750,8 +3841,19 @@ $isTableQR = !empty($_GET['table']);
         }, 550);
       }
 
+      var currentReceiptData = null;
+
       function showDigitalReceipt(orderRef, queueNum, items, orderType, tableNum, custName, payMethod, total, gcashRef) {
         activeOrderRef = orderRef;
+        currentReceiptData = {
+          ref: orderRef,
+          queue: queueNum,
+          customerName: custName || 'Guest Customer',
+          dining: (orderType === 'dine_in') ? (tableNum ? `Table #${tableNum} (Dine-In)` : 'Dine-In') : 'Take-Out Pickup',
+          items: items,
+          total: total,
+          timePlaced: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        };
         sessionStorage.setItem('active_ticket_ref', orderRef);
         sessionStorage.setItem('active_ticket_queue', queueNum);
 
@@ -3881,6 +3983,170 @@ $isTableQR = !empty($_GET['table']);
       if (btnExitReceipt) {
         btnExitReceipt.addEventListener('click', function() {
           leaveWebEntirely();
+        });
+      }
+
+      var btnDownload = document.getElementById('btnReceiptDownload');
+      if (btnDownload) {
+        btnDownload.addEventListener('click', function() {
+          if (!currentReceiptData) return;
+          try {
+            var canvas = document.createElement('canvas');
+            var dpr = 2;
+            var width = 640;
+            var itemsCount = (currentReceiptData.items || []).length;
+            var height = 740 + (itemsCount * 54);
+            canvas.width = width * dpr;
+            canvas.height = height * dpr;
+            var ctx = canvas.getContext('2d');
+            ctx.scale(dpr, dpr);
+
+            ctx.fillStyle = '#161210';
+            ctx.fillRect(0, 0, width, height);
+
+            ctx.strokeStyle = 'rgba(223, 155, 100, 0.35)';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(16, 16, width - 32, height - 32);
+
+            var grad = ctx.createLinearGradient(0, 16, 0, 175);
+            grad.addColorStop(0, 'rgba(223, 155, 100, 0.22)');
+            grad.addColorStop(1, 'rgba(223, 155, 100, 0.03)');
+            ctx.fillStyle = grad;
+            ctx.fillRect(18, 18, width - 36, 157);
+
+            ctx.fillStyle = '#DF9B64';
+            ctx.font = 'bold 15px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('BECOFFEE SPECIALTY ROASTERY · ZAMBOANGA', width / 2, 48);
+
+            ctx.fillStyle = '#A99B92';
+            ctx.font = '11px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+            ctx.fillText('OFFICIAL ORDER RECEIPT', width / 2, 68);
+
+            ctx.fillStyle = '#FFFFFF';
+            ctx.font = '900 48px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace';
+            ctx.fillText('#' + String(currentReceiptData.queue || '01').padStart(2, '0'), width / 2, 124);
+
+            var badgeW = 220;
+            var badgeH = 26;
+            ctx.fillStyle = 'rgba(16, 185, 129, 0.2)';
+            ctx.fillRect((width - badgeW) / 2, 138, badgeW, badgeH);
+            ctx.strokeStyle = 'rgba(16, 185, 129, 0.55)';
+            ctx.lineWidth = 1;
+            ctx.strokeRect((width - badgeW) / 2, 138, badgeW, badgeH);
+
+            ctx.fillStyle = '#6EE7B7';
+            ctx.font = 'bold 11px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+            ctx.fillText('✓ CONFIRMED ORDER', width / 2, 155);
+
+            function drawDash(yPos) {
+              ctx.strokeStyle = 'rgba(255, 255, 255, 0.16)';
+              ctx.lineWidth = 1;
+              ctx.setLineDash([4, 4]);
+              ctx.beginPath();
+              ctx.moveTo(34, yPos);
+              ctx.lineTo(width - 34, yPos);
+              ctx.stroke();
+              ctx.setLineDash([]);
+            }
+            drawDash(188);
+
+            var y = 216;
+            var col1X = 42;
+            var col2X = 330;
+
+            function drawPair(l1, v1, l2, v2, curY) {
+              ctx.textAlign = 'left';
+              ctx.fillStyle = '#8C7C72';
+              ctx.font = 'bold 10px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+              ctx.fillText(l1.toUpperCase(), col1X, curY);
+              ctx.fillText(l2.toUpperCase(), col2X, curY);
+
+              ctx.fillStyle = '#FFFFFF';
+              ctx.font = 'bold 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+              ctx.fillText(val1 || '—', col1X, curY + 18);
+              ctx.fillText(val2 || '—', col2X, curY + 18);
+            }
+
+            drawPair('Customer', currentReceiptData.customerName, 'Dining Option', currentReceiptData.dining, y);
+            y += 44;
+            drawPair('Order Reference', currentReceiptData.ref, 'Time Placed', currentReceiptData.timePlaced, y);
+            y += 40;
+
+            drawDash(y);
+            y += 24;
+
+            ctx.textAlign = 'left';
+            ctx.fillStyle = '#DF9B64';
+            ctx.font = 'bold 11px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+            ctx.fillText('ITEMIZED COFFEE SELECTION', 42, y);
+            ctx.textAlign = 'right';
+            ctx.fillText('AMOUNT', width - 42, y);
+            y += 20;
+
+            (currentReceiptData.items || []).forEach(function(it) {
+              ctx.textAlign = 'left';
+              ctx.fillStyle = '#FFFFFF';
+              ctx.font = 'bold 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+              var itemName = (it.quantity || it.qty || 1) + 'x ' + (it.name || it.item_name || 'Artisanal Drink');
+              ctx.fillText(itemName, 42, y);
+
+              ctx.textAlign = 'right';
+              ctx.fillStyle = '#FDBA74';
+              ctx.font = 'bold 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace';
+              var linePrice = (parseFloat(it.unit_price || it.price || 0) * (parseInt(it.quantity || it.qty, 10) || 1));
+              ctx.fillText('₱' + linePrice.toFixed(2), width - 42, y);
+
+              y += 16;
+              ctx.textAlign = 'left';
+              ctx.fillStyle = '#9C8E85';
+              ctx.font = '11px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+              var specs = [it.temperature, it.size, it.milk_option, it.sweetness_level].filter(Boolean).join(' · ');
+              ctx.fillText(specs || 'Standard Preparation', 42, y);
+              y += 24;
+            });
+
+            drawDash(y);
+            y += 22;
+
+            ctx.textAlign = 'left';
+            ctx.fillStyle = '#FFFFFF';
+            ctx.font = 'bold 15px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+            ctx.fillText('Total Amount', 42, y);
+
+            ctx.textAlign = 'right';
+            ctx.fillStyle = '#10B981';
+            ctx.font = 'bold 18px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace';
+            ctx.fillText('₱' + parseFloat(currentReceiptData.total || 0).toFixed(2), width - 42, y);
+            y += 32;
+
+            ctx.fillStyle = 'rgba(223, 155, 100, 0.12)';
+            ctx.fillRect(34, y, width - 68, 50);
+            ctx.strokeStyle = 'rgba(223, 155, 100, 0.3)';
+            ctx.strokeRect(34, y, width - 68, 50);
+
+            ctx.fillStyle = '#DF9B64';
+            ctx.font = 'bold 11px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('☕ PRESENT THIS RECEIPT AT THE BARISTA COUNTER', width / 2, y + 21);
+            ctx.fillStyle = '#D6C7BE';
+            ctx.font = '10px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+            ctx.fillText('Show this screen or saved photo upon claiming.', width / 2, y + 38);
+
+            var link = document.createElement('a');
+            link.download = 'BeCoffee-Receipt-' + (currentReceiptData.ref || 'Order') + '.png';
+            link.href = canvas.toDataURL('image/png');
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            if (typeof showSystemNotice === 'function') {
+              showSystemNotice('Receipt photo downloaded!');
+            }
+          } catch(e) {
+            console.error('Error downloading receipt photo:', e);
+            alert('Receipt ready! Please take a screenshot of your screen.');
+          }
         });
       }
 

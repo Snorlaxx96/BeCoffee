@@ -5,6 +5,7 @@
  */
 
 require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/SupabaseService.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     jsonResponse(['success' => false, 'error' => 'Method not allowed'], 405);
@@ -32,14 +33,36 @@ $ext = match ($mimeType) {
     default => 'jpg'
 };
 
+$cleanBase = preg_replace('/[^a-zA-Z0-9_\-]/', '', pathinfo($file['name'], PATHINFO_FILENAME));
+$cleanBase = substr($cleanBase, 0, 24) ?: 'item';
+$filename = $cleanBase . '_' . time() . '.' . $ext;
+
+// --- 1. Supabase Cloud Storage (Primary when configured) ---
+if (SupabaseService::isEnabled()) {
+    $remotePath = 'menu/' . $filename;
+    $uploadRes = SupabaseService::uploadFile($remotePath, $file['tmp_name'], $mimeType, true);
+
+    if (!empty($uploadRes['success'])) {
+        jsonResponse([
+            'success'   => true,
+            'message'   => 'Image uploaded successfully to Supabase Storage.',
+            'image_url' => $uploadRes['public_url'],
+            'storage'   => 'supabase',
+            'bucket'    => $uploadRes['bucket'] ?? 'becoffee-storage',
+            'path'      => $remotePath
+        ]);
+    }
+
+    // Log fallback note if Supabase storage upload hit an error
+    error_log("Supabase storage upload error: " . ($uploadRes['error'] ?? 'Unknown') . ". Falling back to local storage.");
+}
+
+// --- 2. Local Disk Storage Fallback ---
 $uploadDir = dirname(__DIR__) . '/images/menu';
 if (!is_dir($uploadDir)) {
     mkdir($uploadDir, 0755, true);
 }
 
-$cleanBase = preg_replace('/[^a-zA-Z0-9_\-]/', '', pathinfo($file['name'], PATHINFO_FILENAME));
-$cleanBase = substr($cleanBase, 0, 24) ?: 'item';
-$filename = $cleanBase . '_' . time() . '.' . $ext;
 $destPath = $uploadDir . '/' . $filename;
 
 if (!move_uploaded_file($file['tmp_name'], $destPath)) {
@@ -49,7 +72,8 @@ if (!move_uploaded_file($file['tmp_name'], $destPath)) {
 $webPath = 'images/menu/' . $filename;
 
 jsonResponse([
-    'success' => true,
-    'message' => 'Image uploaded successfully.',
-    'image_url' => $webPath
+    'success'   => true,
+    'message'   => 'Image uploaded successfully.',
+    'image_url' => $webPath,
+    'storage'   => 'local'
 ]);

@@ -970,6 +970,103 @@ $currentUser = getAuthenticatedUser();
     </div>
   </div>
 
+  <!-- DIGITAL ORDER RECEIPT MODAL (Pickup Order Confirmation & Photo Download) -->
+  <div class="receipt-screen-overlay" id="orderReceiptScreen" role="dialog" aria-modal="true" aria-labelledby="receiptQueueNum">
+    <div class="receipt-card">
+      <!-- Screenshot & Download Callout Banner -->
+      <div class="receipt-screenshot-banner" id="receiptScreenshotBanner">
+        <div class="receipt-screenshot-icon" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+            <circle cx="12" cy="13" r="4"></circle>
+          </svg>
+        </div>
+        <div class="receipt-screenshot-content">
+          <div class="receipt-screenshot-title">📸 Take a Screenshot of This Receipt</div>
+          <p class="receipt-screenshot-sub">Please screenshot this receipt or download it as a photo below. Present your queue number to our barista when claiming your drinks!</p>
+        </div>
+      </div>
+
+      <div class="receipt-header-strip">
+        <div class="receipt-brand">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><line x1="6" y1="1" x2="6" y2="4"></line><line x1="10" y1="1" x2="10" y2="4"></line><line x1="14" y1="1" x2="14" y2="4"></line></svg>
+          <span>BeCoffee Roastery · Pickup</span>
+        </div>
+        <div class="receipt-giant-queue" id="receiptQueueNum">#01</div>
+        <div class="receipt-paid-pill" id="receiptPaidBadge">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          <span id="receiptPaidText">CONFIRMED · PICKUP ORDER</span>
+        </div>
+      </div>
+
+      <div class="receipt-meta-grid">
+        <div class="receipt-meta-item">
+          <span class="receipt-meta-label">Customer</span>
+          <span class="receipt-meta-val" id="receiptCustomerVal">—</span>
+        </div>
+        <div class="receipt-meta-item">
+          <span class="receipt-meta-label">Contact Mobile</span>
+          <span class="receipt-meta-val" id="receiptPhoneVal" style="font-family: var(--font-mono, monospace); font-size: 0.8rem;">—</span>
+        </div>
+        <div class="receipt-meta-item">
+          <span class="receipt-meta-label">Pickup Outpost</span>
+          <span class="receipt-meta-val" id="receiptOutpostVal">Putik</span>
+        </div>
+        <div class="receipt-meta-item">
+          <span class="receipt-meta-label">Ready By</span>
+          <span class="receipt-meta-val" id="receiptEtaVal">ASAP</span>
+        </div>
+        <div class="receipt-meta-item">
+          <span class="receipt-meta-label">Order Ref</span>
+          <span class="receipt-meta-val" id="receiptRefVal" style="font-family: var(--font-mono, monospace); font-size: 0.78rem;">—</span>
+        </div>
+        <div class="receipt-meta-item">
+          <span class="receipt-meta-label">Time Placed</span>
+          <span class="receipt-meta-val" id="receiptTimeVal">Just now</span>
+        </div>
+      </div>
+
+      <div class="receipt-items-body" id="receiptItemsBody">
+        <!-- Injected line items -->
+      </div>
+
+      <div class="receipt-breakdown-box">
+        <div class="receipt-breakdown-row">
+          <span>Subtotal</span>
+          <span id="receiptSubtotalVal">₱0.00</span>
+        </div>
+        <div class="receipt-breakdown-row">
+          <span>Sustainable Packaging</span>
+          <span id="receiptEcoFeeVal">₱25.00</span>
+        </div>
+        <div class="receipt-total-row">
+          <span>Total (VAT incl.)</span>
+          <span class="receipt-total-num" id="receiptTotalVal">₱0.00</span>
+        </div>
+      </div>
+
+      <div class="receipt-staff-notice" id="receiptStaffNotice">
+        <strong>☕ Outpost Pickup Instructions</strong>
+        Please present this digital receipt or queue number at the barista pick-up counter when claiming your drinks. Pay cash or scan GCash QR upon pickup!
+      </div>
+
+      <div class="receipt-actions">
+        <button type="button" class="btn-receipt-download" id="btnReceiptDownload">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          Download as Photo
+        </button>
+        <div class="receipt-secondary-actions">
+          <button type="button" class="btn-receipt-order-more" id="btnReceiptOrderMore">Order More Drinks</button>
+          <button type="button" class="btn-receipt-close" id="btnReceiptClose">Done</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Reservation / Workshop Booking Modal -->
   <div class="modal-overlay" id="reserveModalOverlay" aria-modal="true" role="dialog" aria-label="Reserve Table or Workshop">
     <div class="modal-box">
@@ -1232,6 +1329,58 @@ $currentUser = getAuthenticatedUser();
           Create Member Account
         </button>
       </form>
+
+      <!-- Verification Email Notice Screen (Supabase Gmail Confirmation) -->
+      <div id="verifyNoticeBox" class="verify-notice-box" style="display: none;">
+        <div class="verify-hero-badge">
+          <div class="verify-hero-icon-ring">
+            <svg class="verify-mail-svg" width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#8C532B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="4" width="20" height="16" rx="3"></rect>
+              <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+            </svg>
+            <span class="verify-sparkle-dot"></span>
+          </div>
+        </div>
+        <span class="verify-brand-kicker">BeCoffee Specialty Roastery</span>
+        <h3 class="verify-title">Check Your Gmail</h3>
+        <p class="verify-subtitle">We've sent a secure activation link to complete your membership registration.</p>
+        <div class="verify-email-chip">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#8C532B" stroke-width="2.2" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+          <span id="verifyTargetEmail" class="verify-target-email">you@gmail.com</span>
+        </div>
+        <div class="verify-steps-box">
+          <div class="verify-step-item">
+            <span class="verify-step-num">1</span>
+            <span class="verify-step-text">Open the confirmation email in your inbox.</span>
+          </div>
+          <div class="verify-step-item">
+            <span class="verify-step-num">2</span>
+            <span class="verify-step-text">Click <strong>Confirm your mail</strong> to activate.</span>
+          </div>
+          <div class="verify-step-item">
+            <span class="verify-step-num">3</span>
+            <span class="verify-step-text">Return here to sign in and enjoy member perks!</span>
+          </div>
+        </div>
+        <div class="verify-tip-box">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8C532B" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+          <span>Can't find it? Check your <strong>Spam</strong> or <strong>Promotions</strong> tab.</span>
+        </div>
+        <div class="verify-actions">
+          <a href="https://mail.google.com/" target="_blank" rel="noopener noreferrer" class="btn-verify-primary" id="openGmailBtn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            Open Gmail (mail.google.com)
+          </a>
+          <button type="button" class="btn-verify-resend" id="resendVerificationBtn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
+            Resend Verification Link
+          </button>
+          <button type="button" class="btn-verify-back" id="backToSignInBtn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            Back to Sign In
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 

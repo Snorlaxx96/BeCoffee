@@ -1383,13 +1383,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const data = await res.json();
         if (res.ok && data.success) {
+          const snapshotItems = state.cart.map(i => ({ ...i }));
+          const subtotalVal = state.cart.reduce((sum, i) => sum + (parseFloat(i.price || 0) * (parseInt(i.qty, 10) || 1)), 0);
+          const ecoFeeVal = 25.00;
+          const grandTotalVal = subtotalVal + ecoFeeVal;
           const ref = data.order_reference || (data.order && (data.order.order_code || data.order.order_reference)) || 'BC-ORDER';
-          const totalDrinks = state.cart.reduce((sum, i) => sum + i.qty, 0);
+          const queue = data.queue_number || (data.order && data.order.queue_number) || '01';
+          const totalDrinks = snapshotItems.reduce((sum, i) => sum + i.qty, 0);
           let estMins = '8–12';
           if (totalDrinks >= 2 && totalDrinks <= 3) estMins = '10–15';
           else if (totalDrinks >= 4 && totalDrinks <= 5) estMins = '15–20';
           else if (totalDrinks > 5) estMins = '20–25';
-          showToast(`Order ${ref} confirmed! Customer can come by ~${displayTimeStr} at ${custNotes || 'Putik'}.`);
+          const pickupOutpost = (orderCustomerNotes && orderCustomerNotes.value) ? orderCustomerNotes.value : (custNotes || 'Putik');
+
+          showToast(`Order ${ref} confirmed! Please save your receipt.`);
           state.cart = [];
           saveCart();
           if (cartDrawerOverlay) cartDrawerOverlay.classList.remove('active');
@@ -1403,6 +1410,21 @@ document.addEventListener('DOMContentLoaded', () => {
           if (arrivalSelect) arrivalSelect.selectedIndex = 0;
           if (customTimeInput) customTimeInput.value = '';
           if (customTimeWrap) customTimeWrap.style.display = 'none';
+
+          // Pop up Digital Order Receipt with screenshot advisory & photo download
+          showOrderReceiptModal({
+            queue: queue,
+            ref: ref,
+            customerName: custName,
+            customerPhone: custPhone,
+            outpost: pickupOutpost,
+            arrival: arrivalLabel,
+            timePlaced: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            items: snapshotItems,
+            subtotal: subtotalVal,
+            ecoFee: ecoFeeVal,
+            grandTotal: grandTotalVal
+          });
         } else {
           showToast(data.error || 'Unable to complete order. Please try again.');
         }
@@ -1442,6 +1464,299 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
+
+  // --- 10b. Digital Order Receipt Modal (Screenshots & Photo Download) ---
+  let activeReceiptData = null;
+
+  function safeEscapeReceipt(str) {
+    if (!str) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  function showOrderReceiptModal(data) {
+    activeReceiptData = data;
+    const modal = document.getElementById('orderReceiptScreen');
+    if (!modal) return;
+
+    const queueEl = document.getElementById('receiptQueueNum');
+    if (queueEl) queueEl.textContent = '#' + String(data.queue || '01').padStart(2, '0');
+
+    const customerEl = document.getElementById('receiptCustomerVal');
+    if (customerEl) customerEl.textContent = data.customerName || 'Valued Guest';
+
+    const phoneEl = document.getElementById('receiptPhoneVal');
+    if (phoneEl) phoneEl.textContent = data.customerPhone || '—';
+
+    const outpostEl = document.getElementById('receiptOutpostVal');
+    if (outpostEl) outpostEl.textContent = data.outpost || 'Putik Outpost';
+
+    const etaEl = document.getElementById('receiptEtaVal');
+    if (etaEl) etaEl.textContent = data.arrival || 'ASAP';
+
+    const refEl = document.getElementById('receiptRefVal');
+    if (refEl) refEl.textContent = data.ref || '—';
+
+    const timeEl = document.getElementById('receiptTimeVal');
+    if (timeEl) timeEl.textContent = data.timePlaced || new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    const itemsContainer = document.getElementById('receiptItemsBody');
+    if (itemsContainer && data.items && data.items.length > 0) {
+      itemsContainer.innerHTML = data.items.map(it => {
+        const specs = [it.temperature, it.size, it.milk_option, it.sweetness_level].filter(Boolean).join(' · ');
+        const itemTotal = (parseFloat(it.price || it.unit_price || 0) * (parseInt(it.qty || it.quantity, 10) || 1));
+        return `
+          <div class="receipt-line">
+            <div class="receipt-line-left">
+              <span class="receipt-line-name">${it.qty || it.quantity || 1}x ${safeEscapeReceipt(it.name || it.item_name || 'Artisanal Drink')}</span>
+              <span class="receipt-line-specs">${safeEscapeReceipt(specs || 'Standard Preparation')}</span>
+            </div>
+            <span class="receipt-line-price">₱${itemTotal.toFixed(2)}</span>
+          </div>
+        `;
+      }).join('');
+    }
+
+    const subtotalEl = document.getElementById('receiptSubtotalVal');
+    if (subtotalEl) subtotalEl.textContent = '₱' + parseFloat(data.subtotal || 0).toFixed(2);
+
+    const ecoFeeEl = document.getElementById('receiptEcoFeeVal');
+    if (ecoFeeEl) ecoFeeEl.textContent = '₱' + parseFloat(data.ecoFee || 0).toFixed(2);
+
+    const totalEl = document.getElementById('receiptTotalVal');
+    if (totalEl) totalEl.textContent = '₱' + parseFloat(data.grandTotal || 0).toFixed(2);
+
+    modal.classList.add('active');
+  }
+
+  function closeOrderReceiptModal() {
+    const modal = document.getElementById('orderReceiptScreen');
+    if (modal) modal.classList.remove('active');
+  }
+
+  function downloadReceiptAsPhoto(data) {
+    if (!data) return;
+    try {
+      const canvas = document.createElement('canvas');
+      const dpr = 2; // Retina 2x resolution
+      const width = 640;
+      const itemsCount = (data.items || []).length;
+      const height = 780 + (itemsCount * 54);
+
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+      const ctx = canvas.getContext('2d');
+      ctx.scale(dpr, dpr);
+
+      // Dark roast background
+      ctx.fillStyle = '#161210';
+      ctx.fillRect(0, 0, width, height);
+
+      // Border outline
+      ctx.strokeStyle = 'rgba(223, 155, 100, 0.35)';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(16, 16, width - 32, height - 32);
+
+      // Header strip gradient
+      const grad = ctx.createLinearGradient(0, 16, 0, 175);
+      grad.addColorStop(0, 'rgba(223, 155, 100, 0.22)');
+      grad.addColorStop(1, 'rgba(223, 155, 100, 0.03)');
+      ctx.fillStyle = grad;
+      ctx.fillRect(18, 18, width - 36, 157);
+
+      // Brand Roastery title
+      ctx.fillStyle = '#DF9B64';
+      ctx.font = 'bold 15px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('BECOFFEE SPECIALTY ROASTERY · ZAMBOANGA', width / 2, 48);
+
+      ctx.fillStyle = '#A99B92';
+      ctx.font = '11px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+      ctx.fillText('OFFICIAL PICKUP ORDER RECEIPT', width / 2, 68);
+
+      // Giant Queue Number
+      ctx.fillStyle = '#FFFFFF';
+      ctx.font = '900 48px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace';
+      ctx.fillText('#' + String(data.queue || '01').padStart(2, '0'), width / 2, 124);
+
+      // Status Pill: CONFIRMED · PICKUP ORDER
+      const badgeW = 220;
+      const badgeH = 26;
+      ctx.fillStyle = 'rgba(16, 185, 129, 0.2)';
+      ctx.fillRect((width - badgeW) / 2, 138, badgeW, badgeH);
+      ctx.strokeStyle = 'rgba(16, 185, 129, 0.55)';
+      ctx.lineWidth = 1;
+      ctx.strokeRect((width - badgeW) / 2, 138, badgeW, badgeH);
+
+      ctx.fillStyle = '#6EE7B7';
+      ctx.font = 'bold 11px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+      ctx.fillText('✓ CONFIRMED · PICKUP ORDER', width / 2, 155);
+
+      function drawDashedLine(yPos) {
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.16)';
+        ctx.lineWidth = 1;
+        ctx.setLineDash([4, 4]);
+        ctx.beginPath();
+        ctx.moveTo(34, yPos);
+        ctx.lineTo(width - 34, yPos);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
+
+      drawDashedLine(188);
+
+      let y = 216;
+      const col1X = 42;
+      const col2X = 330;
+
+      function drawMetaPair(lbl1, val1, lbl2, val2, curY) {
+        ctx.textAlign = 'left';
+        ctx.fillStyle = '#8C7C72';
+        ctx.font = 'bold 10px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+        ctx.fillText(lbl1.toUpperCase(), col1X, curY);
+        ctx.fillText(lbl2.toUpperCase(), col2X, curY);
+
+        ctx.fillStyle = '#FFFFFF';
+        ctx.font = 'bold 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+        ctx.fillText(val1 || '—', col1X, curY + 18);
+        ctx.fillText(val2 || '—', col2X, curY + 18);
+      }
+
+      drawMetaPair('Customer', data.customerName, 'Contact Mobile', data.customerPhone, y);
+      y += 44;
+      drawMetaPair('Pickup Outpost', data.outpost, 'Estimated Pickup', data.arrival, y);
+      y += 44;
+      drawMetaPair('Order Reference', data.ref, 'Time Placed', data.timePlaced, y);
+      y += 40;
+
+      drawDashedLine(y);
+      y += 24;
+
+      // Section: Itemized Coffee Selection
+      ctx.textAlign = 'left';
+      ctx.fillStyle = '#DF9B64';
+      ctx.font = 'bold 11px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+      ctx.fillText('ITEMIZED COFFEE SELECTION', 42, y);
+
+      ctx.textAlign = 'right';
+      ctx.fillText('AMOUNT', width - 42, y);
+      y += 20;
+
+      (data.items || []).forEach(it => {
+        ctx.textAlign = 'left';
+        ctx.fillStyle = '#FFFFFF';
+        ctx.font = 'bold 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+        const itemName = `${it.qty || it.quantity || 1}x ${it.name || it.item_name || 'Artisanal Drink'}`;
+        ctx.fillText(itemName, 42, y);
+
+        ctx.textAlign = 'right';
+        ctx.fillStyle = '#FDBA74';
+        ctx.font = 'bold 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace';
+        const linePrice = (parseFloat(it.price || it.unit_price || 0) * (it.qty || it.quantity || 1));
+        ctx.fillText('₱' + linePrice.toFixed(2), width - 42, y);
+
+        y += 16;
+        ctx.textAlign = 'left';
+        ctx.fillStyle = '#9C8E85';
+        ctx.font = '11px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+        const specs = [it.temperature, it.size, it.milk_option, it.sweetness_level].filter(Boolean).join(' · ');
+        ctx.fillText(specs || 'Standard Preparation', 42, y);
+        y += 24;
+      });
+
+      drawDashedLine(y);
+      y += 22;
+
+      function drawMoneyRow(label, amtStr, isBold) {
+        ctx.textAlign = 'left';
+        ctx.fillStyle = isBold ? '#FFFFFF' : '#A99B92';
+        ctx.font = isBold ? 'bold 14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' : '12px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+        ctx.fillText(label, 42, y);
+
+        ctx.textAlign = 'right';
+        ctx.fillStyle = isBold ? '#10B981' : '#FFFFFF';
+        ctx.font = isBold ? 'bold 18px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace' : '13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace';
+        ctx.fillText(amtStr, width - 42, y);
+        y += isBold ? 30 : 20;
+      }
+
+      drawMoneyRow('Subtotal', '₱' + parseFloat(data.subtotal || 0).toFixed(2), false);
+      drawMoneyRow('Sustainable Packaging', '₱' + parseFloat(data.ecoFee || 0).toFixed(2), false);
+      drawMoneyRow('Total (VAT incl.)', '₱' + parseFloat(data.grandTotal || 0).toFixed(2), true);
+
+      // Instructions Box
+      ctx.fillStyle = 'rgba(223, 155, 100, 0.12)';
+      ctx.fillRect(34, y, width - 68, 50);
+      ctx.strokeStyle = 'rgba(223, 155, 100, 0.3)';
+      ctx.strokeRect(34, y, width - 68, 50);
+
+      ctx.fillStyle = '#DF9B64';
+      ctx.font = 'bold 11px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('☕ PRESENT THIS RECEIPT AT THE BARISTA COUNTER', width / 2, y + 21);
+
+      ctx.fillStyle = '#D6C7BE';
+      ctx.font = '10px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+      ctx.fillText('Show this screen or saved photo upon claiming at the outpost.', width / 2, y + 38);
+
+      const link = document.createElement('a');
+      link.download = `BeCoffee-Receipt-${data.ref || 'Order'}.png`;
+      link.href = canvas.toDataURL('image/png');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      showToast('Receipt photo downloaded! You can also take a screenshot.');
+    } catch (e) {
+      console.error('Error generating receipt photo:', e);
+      showToast('Unable to export photo. Please take a manual screenshot.');
+    }
+  }
+
+  // Bind Receipt Modal Controls
+  const btnReceiptDownload = document.getElementById('btnReceiptDownload');
+  if (btnReceiptDownload) {
+    btnReceiptDownload.addEventListener('click', () => {
+      if (activeReceiptData) {
+        downloadReceiptAsPhoto(activeReceiptData);
+      } else {
+        showToast('Receipt details ready. Please take a screenshot.');
+      }
+    });
+  }
+
+  const btnReceiptOrderMore = document.getElementById('btnReceiptOrderMore');
+  if (btnReceiptOrderMore) {
+    btnReceiptOrderMore.addEventListener('click', () => {
+      closeOrderReceiptModal();
+      const menuEl = document.getElementById('menu');
+      if (menuEl) menuEl.scrollIntoView({ behavior: 'smooth' });
+    });
+  }
+
+  const btnReceiptClose = document.getElementById('btnReceiptClose');
+  if (btnReceiptClose) {
+    btnReceiptClose.addEventListener('click', () => {
+      closeOrderReceiptModal();
+    });
+  }
+
+  const receiptModalOverlay = document.getElementById('orderReceiptScreen');
+  if (receiptModalOverlay) {
+    receiptModalOverlay.addEventListener('click', (e) => {
+      if (e.target === receiptModalOverlay) {
+        closeOrderReceiptModal();
+      }
+    });
+  }
+
+  window.showOrderReceiptModal = showOrderReceiptModal;
+  window.downloadReceiptAsPhoto = downloadReceiptAsPhoto;
+  window.closeOrderReceiptModal = closeOrderReceiptModal;
 
   // --- 11. Reservations & Workshops Modal ---
   function updateReservationEstimate() {
@@ -1917,6 +2232,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function switchAuthTab(tab) {
     setAuthAlert('');
+    const verifyBox = document.getElementById('verifyNoticeBox');
+    const authTabs = document.querySelector('.auth-tabs');
+    const authHeader = document.querySelector('.auth-modal-box .auth-header');
+    if (verifyBox) verifyBox.style.display = 'none';
+    if (authTabs) authTabs.style.display = '';
+    if (authHeader) authHeader.style.display = '';
+
     if (tab === 'signin') {
       if (tabSignInBtn) {
         tabSignInBtn.classList.add('active');
@@ -1987,6 +2309,12 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.classList.remove('modal-open');
     restoreFloatingMobileBars();
     setAuthAlert('');
+    const verifyBox = document.getElementById('verifyNoticeBox');
+    const authTabs = document.querySelector('.auth-tabs');
+    const authHeader = document.querySelector('.auth-modal-box .auth-header');
+    if (verifyBox) verifyBox.style.display = 'none';
+    if (authTabs) authTabs.style.display = '';
+    if (authHeader) authHeader.style.display = '';
     if (signInForm) signInForm.reset();
     if (registerForm) registerForm.reset();
   }
@@ -2265,6 +2593,26 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (res.ok && data.success) {
+          if (data.requires_verification) {
+            const verifyBox = document.getElementById('verifyNoticeBox');
+            const targetEmailEl = document.getElementById('verifyTargetEmail');
+            const authTabs = document.querySelector('.auth-tabs');
+            const authHeader = document.querySelector('.auth-modal-box .auth-header');
+
+            if (verifyBox) {
+              if (targetEmailEl) targetEmailEl.textContent = email;
+              if (registerForm) registerForm.style.display = 'none';
+              if (signInForm) signInForm.style.display = 'none';
+              if (authTabs) authTabs.style.display = 'none';
+              if (authHeader) authHeader.style.display = 'none';
+              verifyBox.style.display = 'flex';
+            } else {
+              setAuthAlert(data.message || `A verification email has been sent to ${email}! Please check your Gmail.`, 'success');
+            }
+            showToast(`Verification email sent to ${email}! Check your Gmail.`);
+            return;
+          }
+
           state.currentUser = data.user;
           setAuthAlert('Account created successfully! Welcome to BeCoffee.', 'success');
           showToast(`Welcome to BeCoffee, ${data.user.name}!`);
@@ -2323,6 +2671,101 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
+
+  // Handle Resend Verification Email Button (Supabase Auth)
+  const resendVerificationBtn = document.getElementById('resendVerificationBtn');
+  if (resendVerificationBtn) {
+    resendVerificationBtn.addEventListener('click', async () => {
+      const emailEl = document.getElementById('verifyTargetEmail');
+      const email = emailEl ? emailEl.textContent.trim() : '';
+      if (!email) return;
+
+      const origHtml = resendVerificationBtn.innerHTML;
+      resendVerificationBtn.disabled = true;
+      resendVerificationBtn.innerHTML = `
+        <svg class="spin-anim" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><line x1="12" y1="2" x2="12" y2="6"></line><line x1="12" y1="18" x2="12" y2="22"></line><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line><line x1="2" y1="12" x2="6" y2="12"></line><line x1="18" y1="12" x2="22" y2="12"></line><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line></svg>
+        Resending...
+      `;
+
+      try {
+        const res = await fetch(getApiUrl('api/auth.php?action=resend-verification'), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email })
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast(`Verification link resent to ${email}!`);
+          let countdown = 30;
+          resendVerificationBtn.textContent = `Resend in ${countdown}s`;
+          const interval = setInterval(() => {
+            countdown--;
+            if (countdown > 0) {
+              resendVerificationBtn.textContent = `Resend in ${countdown}s`;
+            } else {
+              clearInterval(interval);
+              resendVerificationBtn.disabled = false;
+              resendVerificationBtn.innerHTML = origHtml;
+            }
+          }, 1000);
+        } else {
+          showToast(data.error || 'Failed to resend. Please try again.');
+          resendVerificationBtn.disabled = false;
+          resendVerificationBtn.innerHTML = origHtml;
+        }
+      } catch (err) {
+        showToast('Network error resending verification link.');
+        resendVerificationBtn.disabled = false;
+        resendVerificationBtn.innerHTML = origHtml;
+      }
+    });
+  }
+
+  // Handle Back to Sign In Button from Verification Notice
+  const backToSignInBtn = document.getElementById('backToSignInBtn');
+  if (backToSignInBtn) {
+    backToSignInBtn.addEventListener('click', () => {
+      const verifyBox = document.getElementById('verifyNoticeBox');
+      const authTabs = document.querySelector('.auth-tabs');
+      const authHeader = document.querySelector('.auth-modal-box .auth-header');
+      if (verifyBox) verifyBox.style.display = 'none';
+      if (authTabs) authTabs.style.display = '';
+      if (authHeader) authHeader.style.display = '';
+      const emailEl = document.getElementById('verifyTargetEmail');
+      const loginEmail = document.getElementById('loginEmail');
+      if (emailEl && loginEmail) loginEmail.value = emailEl.textContent.trim();
+      switchAuthTab('signin');
+    });
+  }
+
+  // Check for Supabase Email Verification Return (from Gmail confirmation link)
+  function checkEmailVerificationReturn() {
+    const hash = window.location.hash || '';
+    const params = new URLSearchParams(window.location.search);
+    const isVerifiedQuery = params.get('verified') === 'true';
+    const emailParam = params.get('email');
+
+    if (hash.includes('access_token=') || isVerifiedQuery) {
+      if (emailParam) {
+        fetch(getApiUrl(`api/auth.php?action=verify-email&email=${encodeURIComponent(emailParam)}`)).catch(() => {});
+      }
+      setTimeout(() => {
+        showToast('🎉 Email verified successfully! Your account is active. Please sign in to continue.');
+        openAuthModal('signin');
+        if (emailParam) {
+          const loginEmail = document.getElementById('loginEmail');
+          if (loginEmail) loginEmail.value = emailParam;
+        }
+      }, 500);
+
+      // Clean URL params/hash without reloading
+      if (window.history && window.history.replaceState) {
+        const cleanUrl = window.location.pathname;
+        window.history.replaceState(null, '', cleanUrl);
+      }
+    }
+  }
+  checkEmailVerificationReturn();
 
   // Handle Logout
   async function handleLogout() {

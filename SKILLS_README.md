@@ -1,6 +1,6 @@
 # Agent Skills & Workspace Configurations
 
-A curated collection of production-grade AI agent skills, rules, and automated workflow hooks designed for modern AI coding assistants (such as Google Antigravity, Gemini, Claude Code, and Cursor).
+A collection of **173 top-level AI agent skills**, architectural rules, and workflow resources, with separate **AGY / Gemini** and **GPT / Codex** editions.
 
 ---
 
@@ -8,358 +8,203 @@ A curated collection of production-grade AI agent skills, rules, and automated w
 
 ```text
 ├── .agents/
-│   ├── hooks.json         # Automated lifecycle hooks (e.g., UI checks & design deep passes)
-│   ├── rules/             # 6 architectural guidelines & proactive rules (UI, backend, security, setup)
-│   └── skills/            # 150+ specialized agent skills (UI/UX, Backend, Security, DevOps, etc.)
-├── skills-lock.json       # Skill dependency manifest and integrity hash lockfile
-└── .gitignore             # Git ignore configuration for development and agent environments
+│   ├── hooks.json         # Automated lifecycle hooks (UI checks & design deep passes)
+│   ├── rules/             # 8 architectural guidelines & proactive rules (UI, backend, security, testing, install)
+│   ├── skills/            # 173 specialized agent skills across 12 engineering domains
+│   └── resources/         # Creative libraries, shader utilities, and ambient types
+├── .codex/                # Active GPT / Codex skills, rules, and resources
+├── tools/codex/           # Conversion, validation, and Codex export tools
+├── AGENTS.md              # Codex policy: ADHD Mode, local rules, browser checks & installation
+├── INSTALL.md             # Shared installer: ask GPT / CODEX or AGY / GEMINI
+├── GEMINI.MD              # Original AGY / Gemini workspace policy and installer routing
+├── skills-lock.json       # Skill dependency manifest and integrity lockfile
+└── .gitignore             # Environment and ephemeral file ignore rules
 ```
 
 ---
 
-### 1. Add to an Existing Project
+## 🚀 Quick Install & Setup
 
-Choose one of the following methods to integrate these skills into your project:
+### AI Agent Mode
 
-#### Method A: Clone & Copy (Recommended)
-Clone the repository temporarily, copy the `.agents/` directory and `skills-lock.json` into your project's root, and clean up:
+Inside your coding assistant, say:
+
+> "Install this skills repo here: https://github.com/janusinss/skills-v2. Read its INSTALL.md first."
+
+The agent follows [INSTALL.md](INSTALL.md) and asks:
+
+> **Which version would you like to install: GPT / CODEX or AGY / GEMINI?**
+
+It waits for your choice, then installs that edition into the current target project. Choosing GPT / CODEX automatically executes the converted `install.md`: copy the bundle, install local Playwright and Chromium, verify the runner, and delete the target's one-time rule after success. The source copy stays available. You can still use "INSTALL THIS SKILLS REPO HERE" when the agent already has this checkout. To skip the choice, specify the edition in your request, such as "Install the Codex edition here."
+
+| Choice | Payload | Target instruction file |
+| --- | --- | --- |
+| GPT / CODEX | Prebuilt converted `.codex/` edition, installed directly as `.codex/` | `AGENTS.md` |
+| AGY / GEMINI | Original `.agents/` tree and `skills-lock.json` | `GEMINI.MD` |
+
+The root `AGENTS.md` and `GEMINI.MD` route installation requests through the same choice. The original `@.agents/rules/install.md` entry point also checks the edition before setup.
+
+### Manual Setup
+
+Clone this repository separately from the target project, then follow the selected branch in [INSTALL.md](INSTALL.md). Codex export commands, profiles, and optional hooks are documented in [.codex/README.md](.codex/README.md).
+
+For GPT / CODEX, use Node.js 20 or newer and npm:
+
+```powershell
+node tools/codex/install.mjs --target "C:/Projects/my-project" --profile all
+```
+
+This installs the committed bundle directly into `.codex/` with root `AGENTS.md`, sets up and verifies Playwright, then removes only the installed `.codex/rules/install.md`. Failed setup keeps the rule; retry with the same target and `--resume`. No conversion build, conversion-tool npm dependencies, AGY submodule download, or path rewriting is needed. An AGY / Gemini assistant can run the same command when the selected target is Codex. `export.mjs` remains available for copy-only staging.
+
+### Active Codex Edition in This Repository
+
+The local Codex loader discovers all 190 converted skills under `.codex/skills/`. Root `AGENTS.md` contains the user's three-section policy with ADHD Mode, local rule selection, and inline browser checks. The builder generates `.codex/AGENTS.md` from those sections for installation as the target project's root instructions. Source-only routing and maintenance notes below `<!-- source-repository-only -->` stay in this collection. Both editions can appear in this collection's skill catalog; root instructions prefer the converted copy when names match. The `.agents/` payload remains available to AGY / Gemini. Restart Codex to reload project instructions. Exported Codex targets use the same `.codex/` structure and contain only the selected edition.
+
+### Codex Global Instructions
+
+Use `~/.codex/AGENTS.md` for general instructions across projects. On Windows, this is `%USERPROFILE%\.codex\AGENTS.md`. `CODEX_HOME` can change that directory, and a nonempty `AGENTS.override.md` takes precedence. Each target project can also have its own root `AGENTS.md`. See [OpenAI's instruction guide](https://learn.chatgpt.com/docs/agent-configuration/agents-md).
+
+---
+
+## 🔄 Updating Skills
+
+For the original AGY / Gemini edition, update upstream skills while cleaning CLI-generated symlinks (`playwright-skill` is decoupled from `skills-lock.json` to protect `lib/helpers.js` and local dependencies from being overwritten):
 
 **Windows (PowerShell):**
-```powershell
-# 1. Clone to a temporary folder
-git clone https://github.com/janusinss/skills-v2.git temp-skills
-
-# 2. Copy into your project root
-Copy-Item -Recurse -Path "temp-skills\.agents" -Destination "C:\path\to\your-project\"
-Copy-Item -Path "temp-skills\skills-lock.json" -Destination "C:\path\to\your-project\"
-
-# 3. Clean up the temporary folder
-Remove-Item -Recurse -Force "temp-skills"
-```
-
----
-
-## 🚀 How to Install & Use in Your Project
-
-### 2. Clone the Repository
-
-To clone this repository directly:
-
-```bash
-git clone https://github.com/janusinss/skills-v2.git
-```
-
----
-
-### 3. Configure `.gitignore` (Tracking vs. Ignoring)
-
-Depending on your team workflow, decide whether the agent configuration should be committed to your project's Git repository or kept local-only.
-
-Refer to **lines 107 and 108** in .gitignore:
-
-```gitignore
-# .agents/                    # Uncomment this if the agent is installed and you don't want to push the .agents directory
-# skills-lock.json           # Uncomment this if the agent is installed and you don't want to push the skills-lock.json file
-```
-
-#### Option A: Local-Only Installation (Recommended if you don't want agent files in your project repo)
-If you want to use the agent skills locally without polluting your repository's commit history or git remote:
-1. Open your project's `.gitignore`.
-2. Add or uncomment the following lines:
-   ```gitignore
-   .agents/
-   skills-lock.json
-   ```
-This ensures your AI assistant has access to the skills locally while keeping your Git repository clean.
-
----
-
-## 🧠 How to Use Rules and Skills
-
-### Understanding Rules vs. Skills
-
-| Concept | Location | Activation | Purpose |
-| :--- | :--- | :--- | :--- |
-| **Rules** | `.agents/rules/*.md` | **Persistent & Ambient** | Architectural guidelines, coding standards, and safety guardrails enforced across all interactions. |
-| **Skills** | `.agents/skills/*/SKILL.md` | **On-Demand & Modular** | Deep, domain-specific instruction sets, battle-tested workflows, CLI tooling, and component patterns. |
-
----
-
-### 📋 Using Workspace Rules (`.agents/rules/`)
-
-Rules provide foundational instructions and safety guardrails that modern AI assistants (like Google Antigravity, Cursor, and Claude Code) load when planning, writing, and reviewing code.
-
-The repository includes **7 core rules**:
-
-1. **`ADHD_MODE.md`** — **Action-First & Low Cognitive Friction Execution (`trigger: always`)**
-   - Direct, low-friction responses: lead with command/file path, numbered bounded steps, visible wins, maximum 5-item lists, and zero conversational filler.
-
-2. **`UI_Always.md`** — **Proactive Frontend Self-Correction (`trigger: model_decision`)**
-   - Autonomous, progressive guardrails that self-correct ubiquitous UI defects on sight without manual prompting:
-     - Eliminates unwanted horizontal scrollbars (`overflow-x`) and flex child blowouts (`min-width: 0`).
-     - Enforces interactive affordances (`cursor: pointer` on clickables, minimum `44×44px` touch targets).
-     - Prevents iOS Safari auto-zoom by enforcing `≥16px` font on form inputs.
-     - Mandates accessible focus rings (`:focus-visible`), WCAG AA contrast (≥ 4.5:1), and line length limits (`max-width: 65ch`).
-     - Bans raw, untinted grays (`#808080`, `#000000`), unicode emojis as icons, and placeholder links.
-
-3. **`frontend.md`** — **Active UI Development Pipeline (`trigger: auto`)**
-   - 4-stage UI delivery workflow executed on frontend features and refactors:
-     - **Stage 1 (Aesthetic Alignment):** Adheres to `DESIGN.md` tokens via `design-taste-frontend` and replaces legacy styles.
-     - **Stage 2 (Anti-Slop Standards):** Enforces composition dials (`DESIGN_VARIANCE`, `VISUAL_DENSITY`, `MOTION_INTENSITY`), maps complex state with `archify workflow`/`lifecycle`, and bans nested cards or purple-blue gradients.
-     - **Stage 3 (Bounded Quality Audit):** Batched technical & visual audit via `impeccable` with single-pass remediation.
-     - **Stage 4 (Browser Verification):** Real browser inspection across mobile (375px), tablet (768px), and desktop (1280px+) via `playwright-skill`.
-
-4. **`starting-brandnew.md`** — **Greenfield Project Scaffolding (`trigger: manual`)**
-   - Phase 0 bootstrapping for brand-new projects:
-     - Scaffolds package manifest (`package.json`) and verifies Playwright browser automation runtimes.
-     - Scopes system boundaries into interactive `ARCHITECTURE.html` via `archify architecture`.
-     - Captures durable product truth, audience, and workflows into `PRODUCT.md` via `impeccable`.
-     - Establishes visual archetype, core dials, and design tokens into `DESIGN.md` via `design-taste-frontend`.
-     - Tracks `package.json`, `PRODUCT.md`, `DESIGN.md`, and `ARCHITECTURE.html` as persistent Git assets.
-
-5. **`starting-existing.md`** — **Legacy Codebase Redesign & Modernization (`trigger: manual`)**
-   - Phase 0 baseline extraction for existing applications:
-     - Scans directory and route topology into interactive `ARCHITECTURE.html` via `archify architecture`.
-     - Reverse-engineers legacy font usage, palettes, and components into `DESIGN.md`.
-     - Establishes a `## Target Redesign Specification` section in `DESIGN.md` before mutating code.
-     - Supports per-view density overrides (e.g., `Compact` for data tables vs. `Spacious` for landing heroes).
-
-6. **`backend.md`** — **Backend Connection & Data Layer Standards (`trigger: manual`)**
-   - Production-grade data layer architecture:
-     - Enforces service/repository boundaries (`architecture-patterns`, `backend-dev-guidelines`).
-     - Generates interactive maps (`archify architecture` for service/DB boundaries, `archify sequence` for request flows, `archify dataflow` for pipelines).
-     - Mandates strict connection pooling and lifecycle cleanup to prevent resource leaks.
-     - Enforces schema integrity, explicit foreign key constraints, and targeted indexing (`postgres-best-practices`).
-     - Requires atomic mutations in explicit transactions (`BEGIN`/`COMMIT`/`ROLLBACK`) with race condition defenses.
-
-7. **`security.md`** — **Application Security & Vulnerability Standards (`trigger: manual`)**
-   - Zero-trust DevSecOps pipeline:
-     - Phase 0 threat modeling (`security-auditor`) and trust boundary mapping (`archify architecture` / `archify sequence`).
-     - Strict edge input validation (Zod, Joi, Pydantic) and 100% parameterized SQL queries (`backend-security-coder`).
-     - Context-aware output encoding to prevent Reflected and DOM XSS (`frontend-security-coder`).
-     - Identity verification and Object-Level Authorization to prevent BOLA/IDOR (`api-security-best-practices`).
-     - OWASP Top 10 audits, secure headers (CORS, CSP, nosniff), and automated negative TDD.
-
-#### Rule Trigger Modes:
-- **`model_decision`:** Progressive disclosure. The assistant checks the rule's summary and autonomously activates it when relevant to the task (e.g., `always.md` activates for UI tasks but stays idle during theoretical ML questions).
-- **`auto`:** Automatically loaded during relevant file edits or feature implementations (e.g., `frontend.md`).
-- **`manual`:** Invoked explicitly in prompts when initiating specific architectural phases (e.g., `starting-brandnew.md`, `starting-existing.md`).
-
----
-
-### ⚡ Using Agent Skills (`.agents/skills/`)
-
-Skills are specialized runbooks that give your AI assistant expert capabilities in specific domains, frameworks, or tools.
-
-#### How Skills Are Activated:
-
-1. **Automatic Detection (Context-Aware):**
-   Modern coding assistants automatically read the matching `SKILL.md` when your prompt or task calls for it (e.g., asking to write Playwright tests automatically activates `playwright-skill`).
-
-2. **Explicit Invocation (Recommended for Best Results):**
-   Explicitly reference one or more skills in your prompt to enforce specific design systems, architectural patterns, or security audits:
-
-   - **Frontend & UI/UX:**
-     > *"Build a responsive pricing section using `ui-ux-pro-max`, `impeccable`, and `tailwind-patterns`."*
-   - **Fullstack & Backend:**
-     > *"Create a REST API with FastAPI and PostgreSQL using `fastapi-pro`, `database-architect`, and `api-patterns`."*
-   - **Security Review:**
-     > *"Review our authentication routes for vulnerabilities using `backend-security-coder` and `top-web-vulnerabilities`."*
-   - **Testing & QA:**
-     > *"Write automated end-to-end browser tests for the checkout flow using `playwright-skill` and `e2e-testing-patterns`."*
-   - **DevOps & Cloud:**
-     > *"Write production-ready multi-stage Dockerfiles and compose setups following `docker-expert`."*
-   - **AI & Agent Architecture:**
-     > *"Design a multi-agent retrieval system using `ai-agents-architect`, `rag-engineer`, and `langgraph`."*
-
----
-
-### 🔄 Updating Skills via CLI
-
-To update all installed upstream skills to their latest versions while keeping your workspace clean (updating `.agents/` and automatically removing any `.claude` symlinks generated by the CLI):
-
 ```powershell
 npx skills update -y; if (Test-Path .claude) { Remove-Item -Recurse -Force .claude }
 ```
 
+**macOS / Linux (Bash):**
+```bash
+npx skills update -y && rm -rf .claude
+```
+
+For the Codex edition, maintain the source collection and publish a rebuilt, validated bundle. Installers consume that prebuilt release; they do not rebuild during setup. Review and merge converted updates into an existing target, since the exporter refuses existing files. The original updater lockfile does not describe converted skill hashes.
+
 ---
 
-## 🛠️ Included Skill Categories (150+ Skills)
+## 🌐 Universal Agent Policy (`GEMINI.MD`)
 
-All 152 skills are organized into 12 domain categories:
+Loadable at workspace root or globally at `~/.gemini/GEMINI.md`:
+- **Workspace Design Delegation**: Automatically delegates all frontend, UI/UX, and motion requests to local workspace rules (`starting-brandnew.md`, `starting-existing.md`, `frontend.md`, `UI_Always.md`).
+- **Indirect-Intent Dispatch Matrix**: Maps fuzzy user intents across 11 non-design domains directly to target skills (Backend, Security, DevOps, Testing, AI Agents, Growth, etc.).
+- **Global ADHD Mode**: Enforces action-first formatting (Line 1 action, bounded numbered steps, max 5-item lists, zero conversational filler, and sub-2-minute next steps).
 
-### 1. 🎨 Frontend, UI/UX & Visual Design (27 Skills)
-- `3d-web-experience` — Three.js, React Three Fiber, Spline, WebGL, and interactive 3D web scenes
-- `banner-design` — Multi-platform banners, social ads, and hero visual generation
-- `canvas-design` — Visual design philosophy, canvas generation, and vector aesthetics
-- `claude-d3js-skill` — Sophisticated, interactive data visualizations with D3.js
-- `design` — Comprehensive brand identity, design tokens, and UI design systems
-- `design-system` — Token architecture (primitive → semantic → component) and CSS variable specs
-- `design-taste-frontend` — Anti-generic, opinionated design direction for web applications and landing pages
-- `design-taste-frontend-v1` — Backward-compatible v1 frontend taste skill
-- `frontend-design` — Thoughtful frontend design and component aesthetics
-- `frontend-developer` — React 19, Next.js 15, responsive layouts, and modern frontend architecture
-- `gpt-taste` — Elite UX/UI with advanced GSAP motion, bento grids, and editorial typography
-- `high-end-visual-design` — High-end agency visual standards, bespoke typography, and luxury aesthetics
-- `image-to-code` — High-fidelity website implementation matching generated visual concepts
-- `imagegen-frontend-web` — Conversion-aware website and landing page visual reference generation
-- `impeccable` — Comprehensive UI critique, accessibility audit, visual polish, and layout refinement
-- `industrial-brutalist-ui` — Swiss typography, mechanical grids, and utilitarian industrial aesthetics
-- `interactive-portfolio` — High-converting developer and designer portfolio experiences
-- `minimalist-ui` — Warm monochrome editorial layouts, typographic contrast, and minimalist interfaces
-- `react-best-practices` — Vercel-curated React and Next.js performance and code optimization patterns
-- `react-patterns` — Modern React hooks, state patterns, composition, and TypeScript standards
-- `redesign-existing-projects` — Upgrades existing websites to premium quality without breaking functionality
-- `scroll-experience` — Immersive scroll-driven storytelling, parallax effects, and interactive narratives
-- `slides` — Strategic HTML presentations with Chart.js, design tokens, and contextual slides
-- `stitch-design-taste` — Semantic design systems, strict typography, and micro-interactions
-- `tailwind-patterns` — Tailwind CSS v4 principles, container queries, and token architecture
-- `ui-styling` — Accessible UI development with shadcn/ui, Radix, and Tailwind CSS
-- `ui-ux-pro-max` — UI/UX design intelligence with 79 styles, 192 palettes, and 74 font pairings
+---
 
-### 2. 📱 Mobile App Development (7 Skills)
-- `app-store-optimization` — App Store Optimization (ASO) for Apple App Store and Google Play Store
-- `flutter-expert` — Cross-platform mobile development with Dart 3 and advanced widgets
-- `imagegen-frontend-mobile` — Premium, app-native mobile UI screen concepts and mockups
-- `ios-developer` — Native iOS development with Swift, SwiftUI, UIKit, and Core Data
-- `mobile-design` — Mobile-first, touch-friendly, platform-respectful interface design
-- `mobile-developer` — Cross-platform mobile apps with React Native, Flutter, and native integrations
-- `react-native-architecture` — Production-ready React Native patterns with Expo, offline sync, and navigation
+## 📋 Workspace Rules (`.agents/rules/`)
 
-### 3. ⚙️ Backend, Microservices & API Architecture (23 Skills)
-- `api-patterns` — REST vs GraphQL vs tRPC decision-making, API versioning, and pagination
-- `architecture-patterns` — Clean Architecture, Hexagonal Architecture, and Domain-Driven Design (DDD)
-- `archify` — Interactive system maps, service boundaries, workflows, sequence diagrams, and dataflows
-- `async-python-patterns` — High-performance concurrent Python with `asyncio` and async/await
-- `backend-dev-guidelines` — Production-grade backend engineering under strict reliability constraints
-- `cpp-pro` — Modern idiomatic C++ (RAII, smart pointers, move semantics, and templates)
-- `django-pro` — Scalable Django 5.x with async views, DRF, Celery, and Django Channels
-- `event-sourcing-architect` — Event sourcing, CQRS, projection building, and saga orchestration
-- `fastapi-pro` — High-performance async APIs with FastAPI, SQLAlchemy 2.0, and Pydantic V2
-- `fastapi-templates` — Production-ready FastAPI blueprints with dependency injection
-- `go-concurrency-patterns` — Goroutines, channels, sync primitives, worker pools, and race-free Go
-- `golang-pro` — Idiomatic Go 1.21+ patterns, microservices, and performance optimization
-- `javascript-pro` — Modern ES6+, async patterns, promises, event loop, and Node.js APIs
-- `microservices-patterns` — Distributed systems, service boundaries, event-driven communications, and resilience
-- `nextjs-app-router-patterns` — Next.js 14+ App Router, Server Components, and full-stack React
-- `nextjs-best-practices` — Server Components, data fetching, caching, and routing best practices
-- `nodejs-best-practices` — Production Node.js architecture, error handling, and security patterns
-- `python-patterns` — Python architecture, type hints, async patterns, and package structure
-- `python-pro` — Master Python 3.12+, `uv`, `ruff`, `pydantic`, and modern async frameworks
-- `rust-pro` — Systems programming with Rust 1.75+, advanced type system, and concurrency
-- `senior-architect` — Senior technical architecture toolkit and decision-making frameworks
-- `senior-fullstack` — Full-stack system design, frontend-backend coordination, and modern tooling
-- `typescript-expert` — Type-level programming, monorepo management, performance, and tooling
+Foundational architectural guidelines, proactive quality floors, and execution pipelines:
 
-### 4. 🛡️ Security, Penetration Testing & Compliance (13 Skills)
-- `api-security-best-practices` — API authentication, authorization, rate limiting, and vulnerability defense
-- `backend-security-coder` — Secure backend implementation, input sanitization, and auth hardening
-- `burp-suite-testing` — Web application security testing, traffic interception, and vulnerability scanning
-- `cc-skill-security-review` — Proactive security review for auth flows, file uploads, and endpoints
-- `cloud-penetration-testing` — Infrastructure security assessments across AWS, Azure, and GCP
-- `ethical-hacking-methodology` — 5-stage penetration testing lifecycle from reconnaissance to reporting
-- `frontend-security-coder` — Client-side security, XSS prevention, and output sanitization
-- `linux-privilege-escalation` — Systematic Linux security assessments and privilege escalation checks
-- `memory-safety-patterns` — Cross-language memory safety, RAII, ownership, and resource cleanup
-- `pci-compliance` — PCI DSS compliance guidelines for secure payment processing
-- `security-auditor` — Comprehensive cybersecurity, DevSecOps, and compliance audits
-- `top-web-vulnerabilities` — Structured reference for the 100 most critical web vulnerabilities
-- `vulnerability-scanner` — OWASP 2025 analysis, supply chain security, and attack surface mapping
+| Rule | Trigger | Activation Criteria | Core Guardrails & Skills Integrated |
+| :--- | :---: | :--- | :--- |
+| [`UI_Always.md`](.agents/rules/UI_Always.md) | `model_decision` | Always-on when inspecting, writing, or refactoring UI | Proactive CSS floor: fixed-header clearance (`calc(var(--header-height) + 24px)`), zero horizontal overflow (`min-width: 0`), authentic photography (strict no AI slop), 48px touch targets, and inline Node Playwright audits. |
+| [`frontend.md`](.agents/rules/frontend.md) | `model_decision` | Designing, building, or refactoring UI components | 4-stage delivery pipeline: `prompt-enhancer-frontend` scoping, 21st.dev/ThreeUI instant bundle extraction via inline Node, design token adherence from `DESIGN.md`, and multi-viewport responsive QA. |
+| [`starting-brandnew.md`](.agents/rules/starting-brandnew.md) | `manual` | Greenfield project or building web app from scratch | 6-phase scaffolding: pre-flight conflict check, 74 curated brand systems in `awesome-design-md`, component blueprints, responsive layout implementation, and Playwright verification. |
+| [`starting-existing.md`](.agents/rules/starting-existing.md) | `manual` | Auditing, refactoring, or redesigning an existing app | 7-phase redesign: baseline design token extraction, selective visual overhauls, scoped non-breaking refactors, and browser verification against legacy regression. |
+| [`backend.md`](.agents/rules/backend.md) | `model_decision` | Database schemas, ORMs, API routes, or data layers | Production persistence standards: service/repository separation, connection pooling, schema integrity, atomic transaction boundaries, and backend skill dispatching. |
+| [`security.md`](.agents/rules/security.md) | `model_decision` | Server routing, configs, auth, APIs, or data intake | Zero-trust DevSecOps: 7 defensive hardening phases, plaintext secret eradication, Argon2id/bcrypt auth, anti-CSRF architecture, strict CORS, error suppression, and negative TDD. |
+| [`penetrating-and-testing.md`](.agents/rules/penetrating-and-testing.md) | `manual` | Dynamic pentesting, exploit auditing, or full-surface QA | Dual-surface validation: Strix autonomous exploit validation with working PoCs, machine-readable `vulnerabilities.json` generation, and Playwright functional QA across 5 UI states (Empty, Loading, Error, Partial, Ideal). |
+| [`install.md`](.agents/rules/install.md) | `manual` | Initial workspace setup or onboarding (`@install.md`) | Checks GPT / CODEX or AGY / GEMINI first; the AGY branch runs the legacy Playwright bootstrapper and target-only setup cleanup. |
 
-### 5. 🔌 Third-Party Integrations, Auth & FinTech (9 Skills)
-- `algolia-search` — Algolia search implementation, indexing strategies, and React InstantSearch
-- `auth-implementation-patterns` — OAuth2, JWT, sessions, multi-tenant RBAC, and modern authentication
-- `build-with-exa` — Exa API integration for semantic search, web extraction, and agent monitors
-- `exa-contents` — Raw HTTP crawling, text extraction, highlights, and web content retrieval
-- `exa-search` — Semantic web retrieval, ranked results, domain filtering, and real-time search
-- `hubspot-integration` — HubSpot CRM objects, associations, webhooks, and SDK integration
-- `plaid-fintech` — Plaid API integration (Link tokens, transactions sync, ACH auth, and balance checks)
-- `stripe-integration` — PCI-compliant checkout flows, subscriptions, webhooks, and refunds
-- `twilio-communications` — SMS messaging, voice calls, WhatsApp Business API, and 2FA verification
+### Rule Lifecycle & Interaction Map
 
-### 6. 🗄️ Databases, Data Engineering & Pipelines (8 Skills)
-- `airflow-dag-patterns` — Production Apache Airflow DAGs, custom operators, sensors, and batch workflows
-- `data-engineer` — Scalable data pipelines, data warehouses, streaming, and Spark/dbt architectures
-- `database-architect` — Database schema modeling, engine selection, and scalable data layers
-- `database-design` — Schema design, indexing strategies, ORM selection, and query optimization
-- `dbt-transformation-patterns` — dbt model organization, testing strategies, documentation, and incremental models
-- `postgres-best-practices` — Supabase-backed Postgres performance tuning, indexing, and schema design
-- `sql-pro` — Advanced SQL query techniques, OLTP/OLAP optimization, and performance tuning
-- `vector-database-engineer` — Pinecone, Weaviate, Qdrant, Milvus, and pgvector for semantic search & RAG
+```text
+  [ Greenfield ] ──► starting-brandnew.md ┐
+                                          ├──► frontend.md ◄──► UI_Always.md (Always-On CSS Floor)
+  [ Existing ]   ──► starting-existing.md ┘        ▲
+                                                   │
+  [ Data Layer ] ──► backend.md ───────────────────┼──► security.md (Defensive Hardening)
+                                                   │          ▲
+  [ Pentest/QA ] ──► penetrating-and-testing.md ───┴──────────┘ (Fixes via vulnerabilities.json)
+```
 
-### 7. 🤖 AI Agents, LLMs & Vector Search (12 Skills)
-- `agent-evaluation` — Testing, capability assessment, and reliability benchmarking for LLM agents
-- `ai-agents-architect` — Multi-agent orchestration, tool use, memory systems, and planning strategies
-- `context-window-management` — Context window optimization, summarization, routing, and avoiding context rot
-- `embedding-strategies` — Model selection and dimensionality optimization for vector search
-- `langfuse` — LLM observability platform: tracing, prompt management, and production datasets
-- `langgraph` — Stateful multi-actor AI graph construction, checkpointers, and ReAct loops
-- `llm-app-patterns` — Production-grade patterns for building robust LLM-powered applications
-- `mcp-builder` — Model Context Protocol (MCP) server creation for exposing external tools to LLMs
-- `prompt-caching` — Anthropic prompt caching, response caching, and Cache Augmented Generation (CAG)
-- `prompt-engineering` — Advanced prompt engineering patterns, few-shot techniques, and optimization
-- `rag-engineer` — End-to-end Retrieval-Augmented Generation: chunking, retrieval, and reranking
-- `rag-implementation` — Practical RAG implementation workflow covering vector databases and embeddings
+---
 
-### 8. ☁️ DevOps, Cloud Infrastructure & SRE (12 Skills)
-- `aws-serverless` — AWS Lambda, API Gateway, DynamoDB, SQS/SNS event patterns, and SAM/CDK
-- `bash-linux` — Advanced Linux terminal commands, piping, scripting, and automation
-- `deployment-procedures` — Zero-downtime deployment workflows, rollback strategies, and verification
-- `distributed-tracing` — Jaeger and Tempo distributed tracing across microservices
-- `docker-expert` — Multi-stage container builds, security hardening, and production containerization
-- `incident-responder` — SRE incident response, root cause triage, and post-incident restoration
-- `kubernetes-architect` — Kubernetes cluster architecture, GitOps workflows (ArgoCD/Flux), and Helm
-- `observability-engineer` — Monitoring, structured logging, distributed tracing, and Prometheus/Grafana
-- `performance-engineer` — Web and backend performance profiling, flame graphs, and latency reduction
-- `postmortem-writing` — Blameless postmortem authoring to prevent incident recurrence
-- `slo-implementation` — Framework for SLIs, SLOs, and error budget implementation
-- `terraform-specialist` — Infrastructure as Code (IaC) automation, state management, and Terraform modules
+## 🛡️ Penetration Testing & Security Workflow (`penetrating-and-testing.md`)
 
-### 9. 🧪 Testing, QA & Debugging (9 Skills)
-- `browser-automation` — Resilient browser automation, selectors, waiting strategies, and anti-detection
-- `code-review-checklist` — Rigorous code review for functionality, security, performance, and style
-- `e2e-testing-patterns` — Flake-free end-to-end test suites for fast and confident releases
-- `lint-and-validate` — Validation and lint enforcement after code changes
-- `playwright-skill` — Complete browser testing with Playwright, responsive checks, and screenshots
-- `python-testing-patterns` — Comprehensive testing with pytest, fixtures, and mocking
-- `systematic-debugging` — Root-cause debugging methodologies before attempting fixes
-- `test-driven-development` — Strict TDD (Red-Green-Refactor) implementation workflows
-- `test-fixing` — Systematic identification and resolution of failing test suites
+The workspace includes a dual-engine security pipeline linking offensive adversarial penetration testing with defensive root-cause remediation:
 
-### 10. 🎮 Game & Creative Development (4 Skills)
-- `algorithmic-art` — Computational art generation producing interactive viewers and algorithmic JS
-- `game-development` — Game development routing across 2D/3D engines (Phaser, Godot, Three.js, Unity)
-- `godot-gdscript-patterns` — Godot 4 GDScript patterns, scene architecture, and state machines
-- `unity-developer` — Unity 6 LTS C# scripting, URP/HDRP pipelines, and cross-platform game builds
+### The 3-Step Security Cycle
 
-### 11. 📈 Product Management, Growth & Marketing (22 Skills)
-- `ab-test-setup` — Hypothesis formulation, statistical gating, and experiment execution
-- `analytics-tracking` — Tracking plans, event taxonomies, and analytics data integrity
-- `brand` — Brand voice, visual identity consistency, and messaging frameworks
-- `brandkit` — Visual identity boards, logo systems, and art-directed brand deck generation
-- `business-analyst` — Business analytics, KPI dashboards, and data-driven strategic models
-- `company-research` — In-depth company, competitor, financial, and market intelligence via Exa
-- `competitive-landscape` — Competitive positioning, moat analysis, and differentiation strategy
-- `competitor-alternatives` — SEO-ranking competitor comparison and alternatives landing pages
-- `content-creator` — Brand-aligned content frameworks, multi-platform publishing, and SEO
-- `copy-editing` — Conversion-focused editing passes to sharpen clarity and tone
-- `copywriting` — High-converting marketing copy for landing pages, emails, and ads
-- `email-sequence` — Multi-stage email marketing sequences for onboarding and conversion
-- `form-cro` — Conversion rate optimization for lead, contact, demo, and checkout forms
-- `kpi-dashboard-design` — Executive and operational KPI dashboard design principles
-- `launch-strategy` — SaaS product launch playbooks, feature announcements, and momentum building
-- `lead-generation` — ICP company discovery, enrichment, and prospect list generation
-- `market-sizing-analysis` — TAM, SAM, and SOM calculation methodologies for startups
-- `product-manager-toolkit` — Discovery, PRDs, prioritization, and roadmapping frameworks
-- `programmatic-seo` — Programmatic SEO strategy, template design, and structured data
-- `seo-audit` — Crawlability, indexation, speed, and technical SEO diagnostic audits
-- `startup-financial-modeling` — 3-5 year startup financial models, cash runway, and scenario forecasting
-- `startup-metrics-framework` — SaaS metric tracking (CAC, LTV, churn, NDR) from seed through Series A
+```text
+┌────────────────────────────────────────┐
+│ 1. OFFENSIVE PENTEST                   │  Run: "Run penetrating-and-testing on <path>"
+│    (penetrating-and-testing.md)        │  Outputs: strix_runs/<run>/vulnerabilities.json
+└───────────────────┬────────────────────┘
+                    │
+                    ▼
+┌────────────────────────────────────────┐
+│ 2. DEFENSIVE REMEDIATION               │  Run: "Apply fixes from vulnerabilities.json using security.md"
+│    (security.md + Strix fix skill)     │  Applies root-cause patches (CSRF, SQL params, headers, etc.)
+└───────────────────┬────────────────────┘
+                    │
+                    ▼
+┌────────────────────────────────────────┐
+│ 3. REGRESSION RE-TEST                  │  Run: "Re-test the fixes from vulnerabilities.json"
+│    (PoC & Negative TDD test suite)     │  Executes automated test scripts to prove attack vectors closed
+└────────────────────────────────────────┘
+```
 
-### 12. 🛠️ Engineering Workflow & Codebase Governance (6 Skills)
-- `architecture-decision-records` — ADR patterns to document context and rationale for architectural decisions
-- `concise-planning` — Actionable, atomic checklists and plans for complex coding tasks
-- `environment-setup-guide` — Step-by-step developer machine and workspace onboarding
-- `full-output-enforcement` — Overrides LLM truncation to ensure complete, unabridged code generation
-- `git-pushing` — Safe git staging, conventional commits, and clean push procedures
-- `kaizen` — Continuous code quality improvement, refactoring, and error-proofing
+### Common Prompts to Trigger the Workflow
+
+- **Adversarial Pentest & QA**:
+  > *"Run penetrating-and-testing on `<path_or_url>`"*
+  > 
+  > Probes live endpoints and source code for OWASP Top 10 vulnerabilities, validates exploitability with working PoCs, audits functional web-flow states via Playwright, and writes structured findings to `strix_runs/<run-name>/vulnerabilities.json`.
+
+- **Defensive Remediation**:
+  > *"Apply fixes from vulnerabilities.json according to security.md"*
+  > 
+  > Invokes [`fix-security-vulnerabilities-with-strix`](.agents/skills/fix-security-vulnerabilities-with-strix/SKILL.md) and [`security.md`](.agents/rules/security.md) to patch root causes by severity order (Critical → High → Medium → Low).
+
+- **Regression Verification**:
+  > *"Verify and re-test the applied security patches"*
+  > 
+  > Runs negative TDD test scripts and replays the original PoCs to verify that the vulnerabilities are completely closed without breaking application functionality.
+
+> [!TIP]
+> **Proactive Rule of Thumb**: Reference [`security.md`](.agents/rules/security.md) while writing new features so code is hardened from day one. Run [`penetrating-and-testing.md`](.agents/rules/penetrating-and-testing.md) before merges or deployments as the adversarial QA gate.
+
+---
+
+## 🛠️ Included Skill Domains (173 Skills)
+
+| Domain | Count | Key Skills |
+| :--- | :---: | :--- |
+| **🎨 Frontend & UI/UX** | 35 | `ui-ux-pro-max`, `impeccable`, `21st-ui-build`, `tailwind-patterns`, `react-best-practices`, `design-taste-frontend`, `awesome-design-md`, `minimalist-ui` |
+| **📱 Mobile Development** | 7 | `flutter-expert`, `ios-developer`, `react-native-architecture`, `mobile-design`, `app-store-optimization` |
+| **⚙️ Backend & APIs** | 23 | `fastapi-pro`, `database-architect`, `backend-dev-guidelines`, `postgres-best-practices`, `api-patterns`, `golang-pro`, `django-pro`, `sql-pro` |
+| **🔒 Security & Auth** | 23 | `penetration-testing-with-strix`, `backend-security-coder`, `top-web-vulnerabilities`, `security-auditor`, `auth-implementation-patterns`, `fix-security-vulnerabilities-with-strix` |
+| **🧪 Testing & QA** | 8 | `playwright-skill`, `e2e-testing-patterns`, `systematic-debugging`, `test-driven-development`, `test-fixing` |
+| **☁️ DevOps, Cloud & SRE** | 12 | `docker-expert`, `kubernetes-architect`, `aws-serverless`, `terraform-specialist`, `observability-engineer`, `incident-responder` |
+| **🤖 AI & LLM Systems** | 11 | `ai-agents-architect`, `langgraph`, `rag-engineer`, `langfuse`, `prompt-engineering`, `context-window-management` |
+| **💳 FinTech & Integrations** | 6 | `stripe-integration`, `plaid-fintech`, `twilio-communications`, `hubspot-integration` |
+| **🔍 Data & Search** | 11 | `data-engineer`, `dbt-transformation-patterns`, `airflow-dag-patterns`, `algolia-search`, `vector-database-engineer` |
+| **🎮 Creative, 3D & Games** | 5 | `3d-web-experience`, `game-development`, `godot-gdscript-patterns`, `unity-developer`, `algorithmic-art` |
+| **📈 Product & Growth** | 26 | `prompt-enhancer`, `copywriting`, `avoid-ai-writing`, `seo-audit`, `analytics-tracking`, `launch-strategy`, `competitor-alternatives` |
+| **🛠️ Engineering Workflow** | 6 | `architecture-decision-records`, `concise-planning`, `full-output-enforcement`, `git-pushing`, `kaizen` |
+
+---
+
+## ⚙️ Target Project `.gitignore` Configuration
+
+The GPT / CODEX installer automatically creates the target's root `.gitignore`, or merges missing entries while preserving existing project rules. [.codex/project.gitignore](.codex/project.gitignore) includes the full supplied OS, secrets, editor, dependency, test, cache, agent-runtime, and audit rules, plus these local Codex entries:
+
+```gitignore
+/.codex/
+/AGENTS.md
+/scratch/
+/.impeccable/
+```
+
+For an already completed Codex installation, run `node tools/codex/install.mjs --target <absolute-project-path> --resume` from the source checkout to create or update this file. This adds the current defaults without reinstalling dependencies or rerunning browser setup. Environment example/template and VS Code exceptions are retained after their exclusions.
+
+For the original AGY / GEMINI edition, if you want agent skills to remain local to your machine without being committed to your application's remote repository, ensure your target project's `.gitignore` includes:
+
+```gitignore
+.agents/
+skills-lock.json
+GEMINI.MD
+```

@@ -318,7 +318,8 @@ class TestClient {
     public function get(string $path, array $queryParams = [], bool $followRedirects = false): array {
         $url = $this->baseUrl . ltrim($path, '/');
         if (!empty($queryParams)) {
-            $url .= '?' . http_build_query($queryParams);
+            $separator = (strpos($url, '?') !== false) ? '&' : '?';
+            $url .= $separator . http_build_query($queryParams);
         }
         return $this->request('GET', $url, null, $followRedirects);
     }

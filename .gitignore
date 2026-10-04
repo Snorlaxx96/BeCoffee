@@ -122,6 +122,7 @@ composer.phar
 # Agent / Antigravity Local Runtime Data
 .agents/
 skills-lock.json
+GEMINI.MD
 .gemini/
 .antigravity/
 .system_generated/

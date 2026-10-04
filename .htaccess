@@ -7,7 +7,7 @@ ServerSignature Off
     RewriteEngine On
 
     # Prevent direct /admin browsing - redirect unauthenticated attempts to home
-    RewriteRule ^admin/?$ index.html [R=302,L]
+    RewriteRule ^admin/?$ home.php [R=302,L]
 
     # Block access to hidden dotfiles and configuration directories
     RewriteRule (^|/)\.(?!well-known) - [F]
