@@ -30,12 +30,13 @@ if ($method === 'GET') {
             COUNT(CASE WHEN status = 'pending' THEN 1 END) AS pending_orders,
             COUNT(CASE WHEN status = 'in_progress' THEN 1 END) AS in_progress_orders,
             COUNT(CASE WHEN status = 'cancelled' THEN 1 END) AS cancelled_orders,
-            COALESCE(SUM(CASE WHEN status = 'completed' THEN grand_total ELSE 0 END), 0) AS total_revenue,
+            COALESCE(SUM(CASE WHEN status != 'cancelled' THEN grand_total ELSE 0 END), 0) AS gross_sales,
+            COALESCE(SUM(CASE WHEN status = 'completed' THEN grand_total ELSE 0 END), 0) AS completed_revenue,
             COALESCE(SUM(CASE WHEN status IN ('pending', 'in_progress') THEN grand_total ELSE 0 END), 0) AS active_revenue,
-            COALESCE(SUM(CASE WHEN status = 'completed' AND payment_method = 'cash' THEN grand_total ELSE 0 END), 0) AS cash_revenue,
-            COALESCE(SUM(CASE WHEN status = 'completed' AND payment_method = 'gcash' THEN grand_total ELSE 0 END), 0) AS gcash_revenue,
-            COUNT(CASE WHEN status = 'completed' AND order_type = 'dine_in' THEN 1 END) AS dine_in_count,
-            COUNT(CASE WHEN status = 'completed' AND order_type = 'take_out' THEN 1 END) AS take_out_count,
+            COALESCE(SUM(CASE WHEN status != 'cancelled' AND payment_method = 'cash' THEN grand_total ELSE 0 END), 0) AS cash_revenue,
+            COALESCE(SUM(CASE WHEN status != 'cancelled' AND payment_method = 'gcash' THEN grand_total ELSE 0 END), 0) AS gcash_revenue,
+            COUNT(CASE WHEN status != 'cancelled' AND order_type = 'dine_in' THEN 1 END) AS dine_in_count,
+            COUNT(CASE WHEN status != 'cancelled' AND order_type = 'take_out' THEN 1 END) AS take_out_count,
             COALESCE(ROUND(AVG(CASE WHEN status = 'completed' AND completed_at IS NOT NULL 
                 THEN TIMESTAMPDIFF(SECOND, created_at, completed_at) / 60 ELSE NULL END), 1), 0) AS avg_prep_minutes
         FROM orders
@@ -79,7 +80,9 @@ if ($method === 'GET') {
         'selected_date'       => $isAll ? 'all' : $rawDate,
         'total_system_orders' => $totalSystemCount,
         'kpi'                 => [
-            'total_revenue'        => (float) $kpi['total_revenue'],
+            'gross_sales'          => (float) $kpi['gross_sales'],
+            'total_revenue'        => (float) $kpi['gross_sales'],
+            'completed_revenue'    => (float) $kpi['completed_revenue'],
             'active_revenue'       => (float) $kpi['active_revenue'],
             'cash_revenue'         => (float) $kpi['cash_revenue'],
             'gcash_revenue'        => (float) $kpi['gcash_revenue'],

@@ -2989,8 +2989,8 @@ if ($currentUser['role'] === 'staff') {
           <!-- Persona Badge (Hidden from UI, retained for test compatibility) -->
           <span id="previewPersonaBadge" class="preview-persona-badge" style="display: none !important;" aria-hidden="true"></span>
 
-          <!-- Viewport Simulator Controls -->
-          <div class="preview-device-strip" id="previewDeviceStrip" role="group" aria-label="Device viewport simulator">
+          <!-- Viewport Simulator Controls (Hidden per user request, retained for test compatibility) -->
+          <div class="preview-device-strip" id="previewDeviceStrip" role="group" aria-label="Device viewport simulator" style="display: none !important;">
             <button type="button" class="preview-device-btn" data-width="375px" title="Mobile Viewport (375px)">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><line x1="12" x2="12.01" y1="18" y2="18"/></svg>
               <span>Mobile</span>
@@ -4349,6 +4349,8 @@ if ($currentUser['role'] === 'staff') {
           if (embeddedHeaderControls) embeddedHeaderControls.style.display = 'flex';
           var personaBadge = document.getElementById('previewPersonaBadge');
           if (personaBadge) personaBadge.style.display = 'none';
+          var deviceStrip = document.getElementById('previewDeviceStrip');
+          if (deviceStrip) deviceStrip.style.display = 'none';
 
           if (btnTopPopOutFrame) btnTopPopOutFrame.href = 'qr_stickers.php';
           if (iframeQRStickers && (!iframeQRStickers.getAttribute('src') || iframeQRStickers.getAttribute('src') === 'about:blank')) {
@@ -5357,7 +5359,8 @@ if ($currentUser['role'] === 'staff') {
           var totalTickets = rawLedgerOrders.length;
           var activeTotal = inProgressCount + pendingCount;
 
-          var aov = (completedCount > 0) ? (totalRev / completedCount) : 0;
+          var aovOrdersCount = (completedCount > 0) ? completedCount : (activeTotal > 0 ? activeTotal : 0);
+          var aov = (aovOrdersCount > 0) ? (totalRev / aovOrdersCount) : 0;
           var avgPrep = parseFloat(kpi.avg_prep_minutes || 0);
           var dineInPct = (totalDining > 0) ? Math.round((dineInCount / totalDining) * 100) : 0;
 
@@ -5389,7 +5392,7 @@ if ($currentUser['role'] === 'staff') {
           var statOrdersRevenueMetaEl = document.getElementById('statOrdersRevenueMeta');
           if (statOrdersRevenueMetaEl) {
             statOrdersRevenueMetaEl.textContent = (activeRev > 0)
-              ? `Daily completed volume (+₱${activeRev.toFixed(2)} active)`
+              ? `Daily gross order volume (₱${parseFloat(kpi.completed_revenue || 0).toFixed(2)} finished)`
               : 'Daily gross order volume';
           }
 
@@ -5406,7 +5409,7 @@ if ($currentUser['role'] === 'staff') {
           var aovValEl = document.getElementById('ledgerAovValue');
           if (aovValEl) aovValEl.textContent = `₱${aov.toLocaleString('en-PH', { minimumFractionDigits: 2 })}`;
           var aovSubEl = document.getElementById('ledgerAovSub');
-          if (aovSubEl) aovSubEl.textContent = (completedCount > 0) ? `From ${completedCount} customer order${completedCount === 1 ? '' : 's'}` : 'No sales recorded yet';
+          if (aovSubEl) aovSubEl.textContent = (aovOrdersCount > 0) ? `From ${aovOrdersCount} customer order${aovOrdersCount === 1 ? '' : 's'}` : 'No sales recorded yet';
 
           var pipelineValEl = document.getElementById('ledgerPipelineValue');
           if (pipelineValEl) pipelineValEl.textContent = `${totalTickets} Total`;
